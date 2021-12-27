@@ -1,8 +1,11 @@
 # To import required modules:
 import numpy as np
+import os
 
 import src.functions_general as gen
 from src.functions_load_sims import N_Kep
+
+path_data = os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), 'data')
 
 
 
@@ -11,51 +14,21 @@ from src.functions_load_sims import N_Kep
 # Functions to load and analyze the Kepler observed catalog:
 
 def load_Kepler_planets_cleaned():
-    # q1_q17_dr25_gaia_fgk_HFR2020a_koi_cleaned.csv
-    # q1_q17_dr25_gaia_berger_fgk_HFR2020b_koi_cleaned.csv
-    planets_cleaned = np.genfromtxt('/Users/hematthi/Documents/GradSchool/Research/ExoplanetsSysSim_Clusters/SysSimExClusters/plotting/q1_q17_dr25_gaia_berger_fgk_HFR2020b_koi_cleaned.csv', dtype={'names': ('kepid', 'KOI', 'koi_disposition', 'koi_pdisposition', 'koi_score', 'P', 't_D', 'depth', 'Rp', 'teff', 'logg', 'Rstar', 'Mstar'), 'formats': ('i8', 'S9', 'S15', 'S15', 'f8', 'f8', 'f8', 'f8', 'f8', 'f8', 'f8', 'f8', 'f8',)}, delimiter=',') #orbit periods 'P' are in days; transit durations 't_D' are in hrs; transit depths 'depth' are in ppm; planetary radii 'Rp' are in Rearth; stellar radii 'Rstar' are in Rsolar
+    # q1_q17_dr25_gaia_fgk_HFR2021a_koi_cleaned.csv for Paper II
+    # q1_q17_dr25_gaia_berger_fgk_H2020_koi_cleaned.csv for Paper III
+    planets_cleaned = np.genfromtxt(os.path.join(path_data, 'q1_q17_dr25_gaia_berger_fgk_H2020_koi_cleaned.csv'), dtype={'names': ('kepid', 'KOI', 'koi_disposition', 'koi_pdisposition', 'koi_score', 'P', 't_D', 'depth', 'Rp', 'teff', 'logg', 'Rstar', 'Mstar'), 'formats': ('i8', 'S9', 'S15', 'S15', 'f8', 'f8', 'f8', 'f8', 'f8', 'f8', 'f8', 'f8', 'f8',)}, delimiter=',') #orbit periods 'P' are in days; transit durations 't_D' are in hrs; transit depths 'depth' are in ppm; planetary radii 'Rp' are in Rearth; stellar radii 'Rstar' are in Rsolar
     planets_cleaned = planets_cleaned[1:]
     return planets_cleaned
 
 def load_Kepler_stars_cleaned():
-    # q1_q17_dr25_gaia_fgk_HFR2020a_cleaned.csv
-    # q1_q17_dr25_gaia_berger_fgk_HFR2020b_cleaned.csv
-    #stars_cleaned = np.genfromtxt('/Users/hematthi/Documents/GradSchool/Research/ExoplanetsSysSim_Clusters/SysSimExClusters/plotting/q1_q17_dr25_gaia_fgk_HFR2020a_cleaned.csv', dtype={'names': ('kepid', 'mass', 'radius', 'teff', 'bp_rp', 'e_bp_rp_interp', 'e_bp_rp_true', 'rrmscdpp04p5'), 'formats': ('i8', 'f8', 'f8', 'f8', 'f8', 'f8', 'f8', 'f8')}, delimiter=',')
-    stars_cleaned = np.genfromtxt('/Users/hematthi/Documents/GradSchool/Research/ExoplanetsSysSim_Clusters/SysSimExClusters/plotting/q1_q17_dr25_gaia_berger_fgk_HFR2020b_cleaned.csv', dtype={'names': ('kepid', 'mass', 'radius', 'teff', 'bp_rp', 'lum_val', 'e_bp_rp_interp', 'e_bp_rp_true', 'rrmscdpp04p5'), 'formats': ('i8', 'f8', 'f8', 'f8', 'f8', 'f8', 'f8', 'f8', 'f8')}, delimiter=',')
+    # q1_q17_dr25_gaia_fgk_HFR2021a_cleaned.csv for Paper II
+    # q1_q17_dr25_gaia_berger_fgk_H2020_cleaned.csv for Paper III
+    #stars_cleaned = np.genfromtxt(os.path.join(path_data, 'q1_q17_dr25_gaia_fgk_HFR2021a_cleaned.csv'), dtype={'names': ('kepid', 'mass', 'radius', 'teff', 'bp_rp', 'e_bp_rp_interp', 'e_bp_rp_true', 'rrmscdpp04p5'), 'formats': ('i8', 'f8', 'f8', 'f8', 'f8', 'f8', 'f8', 'f8')}, delimiter=',')
+    stars_cleaned = np.genfromtxt(os.path.join(path_data, 'q1_q17_dr25_gaia_berger_fgk_H2020_cleaned.csv'), dtype={'names': ('kepid', 'mass', 'radius', 'teff', 'bp_rp', 'lum_val', 'e_bp_rp_interp', 'e_bp_rp_true', 'rrmscdpp04p5'), 'formats': ('i8', 'f8', 'f8', 'f8', 'f8', 'f8', 'f8', 'f8', 'f8')}, delimiter=',')
     stars_cleaned = stars_cleaned[1:]
     return stars_cleaned
 
 def compute_summary_stats_from_Kepler_catalog(P_min, P_max, radii_min, radii_max, Rstar_min=0., Rstar_max=1e6, Mstar_min=0., Mstar_max=1e6, teff_min=0., teff_max=1e6, bp_rp_min=-1e6, bp_rp_max=1e6, i_stars_custom=None, compute_ratios=gen.compute_ratios_adjacent):
-    
-    '''
-    #To load and compute the exoplanet multiplicities, periods, and period ratios of the Kepler exoplanet candidates:
-    Q1Q17_DR25 = np.genfromtxt('q1_q17_dr25_koi.tab_selectcols_new.csv', dtype={'names': ('KepID', 'KOI', 'Archive_Disp', 'Kepler_Disp', 'Disp', 'P', 't_D', 'depth', 'Rp', 'Rstar'), 'formats': ('i8', 'S9', 'S15', 'S15', 'f8', 'f8', 'f8', 'f8', 'f8', 'f8',)}, delimiter=',', usecols=(1,2,3,4,5,10,11,12,13,14)) #orbit periods 'P' are in days; transit durations 't_D' are in hrs; transit depths 'depth' are in ppm; planetary radii 'Rp' are in Rearth; stellar radii 'Rstar' are in Rsolar
-    Q1Q17_DR25 = Q1Q17_DR25[1:] #skip_header doesn't work so manually get rid of first row of NaNs
-
-    #If using a stellar table with cuts already made and just matching kepids to get a koi catalog:
-    in_stellar_catalog_kepois = np.loadtxt('ExoplanetsSysSim_Clusters/clusters_v0.7/kepoi_names.txt', delimiter=', ', dtype='S10')
-    planets_cleaned = Q1Q17_DR25[(Q1Q17_DR25['Archive_Disp'] == 'CONFIRMED') + (Q1Q17_DR25['Archive_Disp'] == 'CANDIDATE')]
-
-    in_stellar_catalog_indices = []
-    for kepoi in in_stellar_catalog_kepois:
-        if len(np.where(planets_cleaned['KOI'] == kepoi)[0]) == 1:
-            in_stellar_catalog_indices.append(np.where(planets_cleaned['KOI'] == kepoi)[0][0])
-        elif len(np.where(planets_cleaned['KOI'] == kepoi)[0]) == 0:
-            continue
-        else:
-            print('More than one match to the kepoi in the Exoplanets table!')
-    print('Number of CONFIRMED and CANDIDATE planets in sample: ', len(in_stellar_catalog_indices))
-
-    planets_cleaned = planets_cleaned[in_stellar_catalog_indices]
-
-    #The stellar properties (and thus also planet radii) in 'planets_cleaned' (i.e. the file loaded into 'Q1Q17_DR25') are not as reliable as the stellar properties in the Gaia catalog; will replace them in the following lines:
-    kepid_Rstar_gaia_all = np.loadtxt('ExoplanetsSysSim_Clusters/clusters_v0.7/stellar_radii_q1_q17_dr25_gaia_fgk.txt', delimiter=',', skiprows=1, dtype={'names': ('KepID', 'Rstar'), 'formats': ('i8', 'f8',)})
-
-    for i,kepid in enumerate(planets_cleaned['KepID']):
-        stellar_radii_new = kepid_Rstar_gaia_all['Rstar'][np.where(kepid_Rstar_gaia_all['KepID'] == kepid)[0][0]]
-        planets_cleaned['Rstar'][i] = stellar_radii_new
-        planets_cleaned['Rp'][i] = (Rsun/Rearth)*stellar_radii_new*np.sqrt(planets_cleaned['depth'][i]/(1e6))
-    '''
     
     planets_cleaned = load_Kepler_planets_cleaned()
     stars_cleaned = load_Kepler_stars_cleaned()
@@ -533,7 +506,7 @@ def load_split_stars_model_evaluations_and_weights(file_name):
     return Nmult_evals, d_all_keys_evals, d_all_vals_evals, weights_all
 
 def load_split_stars_weights_only():
-    Nmult_evals, d_all_keys_evals, d_all_vals_evals, weights_all = load_split_stars_model_evaluations_and_weights('/Users/hematthi/Documents/GradSchool/Research/ExoplanetsSysSim_Clusters/SysSimExClusters/src/Clustered_P_R_split_stars_weights_ADmod_true_targs88912_evals100_all_pairs.txt')
+    Nmult_evals, d_all_keys_evals, d_all_vals_evals, weights_all = load_split_stars_model_evaluations_and_weights(os.path.join(path_data, 'Clustered_P_R_split_stars_weights_ADmod_true_targs88912_evals100_all_pairs.txt'))
     return weights_all
 
 def compute_total_weighted_dist(weights, dists, dists_w, dists_include=[]):
