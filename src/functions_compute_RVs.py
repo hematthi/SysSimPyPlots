@@ -11,7 +11,7 @@ from scipy.optimize import brentq # for solving roots of equations
 import scipy.linalg # for linear algebra
 import time
 
-import functions_general as gen
+import src.functions_general as gen
 
 
 

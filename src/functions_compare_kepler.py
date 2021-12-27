@@ -1,8 +1,8 @@
 # To import required modules:
 import numpy as np
 
-import functions_general as gen
-from functions_load_sims import N_Kep
+import src.functions_general as gen
+from src.functions_load_sims import N_Kep
 
 
 

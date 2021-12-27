@@ -10,9 +10,9 @@ from mpl_toolkits.axes_grid1.inset_locator import inset_axes #for inset axes
 import corner #corner.py package for corner plots
 import scipy.stats
 
-import functions_general as gen
-import functions_compare_kepler as ckep
-import functions_load_sims as lsims
+import src.functions_general as gen
+import src.functions_compare_kepler as ckep
+import src.functions_load_sims as lsims
 
 
 

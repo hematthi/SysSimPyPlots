@@ -3,8 +3,8 @@ import numpy as np
 import pandas as pd
 import time
 
-import functions_general as gen
-import functions_compare_kepler as ckep
+import src.functions_general as gen
+import src.functions_compare_kepler as ckep
 
 
 
