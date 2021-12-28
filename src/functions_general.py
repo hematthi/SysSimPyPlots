@@ -62,14 +62,13 @@ def AMD(mu, a, e, im):
     return y
 
 def photoevap_boundary_Carrera2018(R, P):
-    #R is the planet radius in Earth radii, P is the period in days
-    #This function returns 1 if the planet is above the boundary, and 0 if the planet is below the boundary as defined by Eq. 5 in Carrera et al 2018
-    Rtrans = 2.6*(P)**(-0.1467)
-    if R > Rtrans:
+    # R is the planet radius in Earth radii, P is the period in days
+    # This function returns 1 if the planet is above the boundary, and 0 if the planet is below the boundary as defined by Eq. 5 in Carrera et al 2018
+    Rtrans = 2.6*P**(-0.1467)
+    if R >= Rtrans:
         above_boundary = 1
-    elif R < Rtrans:
+    else:
         above_boundary = 0
-
     return above_boundary
 
 def incl_mult_power_law_Zhu2018(k, sigma_5=0.8, alpha=-3.5):
@@ -172,7 +171,7 @@ def linear_alphaP_bprp(bprp, bprp_med, alphaP_med=0.5, slope=0.):
 
 def bin_Nmult(Nmult_obs, m_geq=5):
     # This function bins an observed multiplicity distribution at multiplicity orders greater than or equal to 'm_geq' (default to m_geq=5, so returns counts for m=1,2,3,4,5+)
-    Nmult_obs = list(Nmult_obs) + [0]*(5-len(Nmult_obs)) # zero-pad first
+    Nmult_obs = list(Nmult_obs) + [0]*(m_geq-len(Nmult_obs)) # zero-pad first
     Nmult_obs[m_geq-1] = np.sum(Nmult_obs[m_geq-1:]) # bin everything greater than or equal to m_geq
     return np.array(Nmult_obs[:m_geq])
 
@@ -198,7 +197,7 @@ def disequilibrium(p):
     return D
 
 def LMC_complexity(K, p):
-    # Lopez-Ruiz, Mancini, & Calbet (1995) complexity; product of Shannon entropy and disequilibritum
+    # Lopez-Ruiz, Mancini, & Calbet (1995) complexity; product of Shannon entropy and disequilibrium
     assert K > 0
     
     H = Shannon_entropy(p)
@@ -224,7 +223,7 @@ def Spearman_correlation_coefficient(x, y):
 def radii_star_ratio(r, Rstar):
     # Sum of planet to stellar radii ratios for a system
     # Similar to "dynamical mass" mu as in GF2020
-    assert all(r >= 0 ), 'Negative radii!'
+    assert all(r >= 0), 'Negative planet radii!'
     assert Rstar > 0, 'Negative stellar radii!'
 
     mu = np.sum(r/Rstar)
