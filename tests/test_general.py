@@ -109,3 +109,29 @@ def test_correlation_coefficients(seed=42):
     y = x*np.random.rand()
     assert np.isclose(Pearson_correlation_coefficient(x, y), 1.)
     assert np.isclose(Spearman_correlation_coefficient(x, y), 1.)
+
+def test_radii_star_ratio():
+    r, Rstar = np.array([0.0134, 0.0085, 0.0211]), 0.94
+    mu = radii_star_ratio(r, Rstar)
+    assert np.isclose(mu, 0.045745, atol=1e-5)
+
+def test_partitioning(seed=42):
+    np.random.seed(seed)
+    x = np.random.rand(10)
+    x_lowpart = np.array([2., 2., 2., 2.])
+    x_highpart = np.array([1., 1., 1., 5.])
+    assert 0 <= partitioning(x) <= 1
+    assert partitioning(x_lowpart) < partitioning(x_highpart)
+    assert partitioning(np.random.rand()*x_lowpart) == 0
+
+def test_monotonicity_GF2020():
+    x_pos1, x_pos2 = np.array([1.1, 1.2, 1.3, 1.4]), np.array([1., 2., 3., 4.])
+    x_neg1, x_neg2 = np.array([1.2, 2., 1.5, 0.9]), np.array([2., 1.5, 1.2, 0.9])
+    assert 0 < monotonicity_GF2020(x_pos1) < monotonicity_GF2020(x_pos2)
+    assert monotonicity_GF2020(x_neg2) < monotonicity_GF2020(x_neg1) < 0
+
+def test_gap_complexity_GF2020():
+    x_lowgc = np.array([1., 2., 4., 8.])
+    x_highgc = np.array([1., 1.2, 8., 9.5])
+    assert 0 <= gap_complexity_GF2020(x_lowgc) < gap_complexity_GF2020(x_highgc) <= 1
+    assert np.isclose(gap_complexity_GF2020(x_highgc), gap_complexity_GF2020(x_highgc[::-1]))
