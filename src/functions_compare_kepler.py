@@ -429,7 +429,7 @@ def AD_dist(x1, x2):
 def AD_dist2(x1, x2): #I tested this and it returns the same results as AD_dist()
     #This function computes and returns the AD distance for two continuous distributions (no repeated values), according to Scholz & Stephens (1987) Eq. (3)
     n1, n2 = len(x1), len(x2)
-    if n > 1 and m > 1:
+    if n1 > 1 and n2 > 1:
         N = n1 + n2
         x_all = np.concatenate((x1, x2)) #combined array
         i_all_sorted = np.argsort(x_all) #array of indices that would sort the combined array
@@ -524,7 +524,7 @@ def compute_total_weighted_dist(weights, dists, dists_w, dists_include=[]):
 
     return tot_dist_w
 
-def compute_distances_sim_Kepler(sss_per_sys, sss, ssk_per_sys, ssk, weights, dists_include, N_sim, cos_factor=1., AD_mod='true', print_dists=True, compute_ratios=gen.compute_ratios_adjacent):
+def compute_distances_sim_Kepler(sss_per_sys, sss, ssk_per_sys, ssk, weights, dists_include, N_sim, cos_factor=1., AD_mod=True, print_dists=True, compute_ratios=gen.compute_ratios_adjacent):
     # This function computes the K-S (and their positions), A-D, and other distances as well as additional statistics:
 
     # To create a dict of all distance terms:
@@ -571,12 +571,7 @@ def compute_distances_sim_Kepler(sss_per_sys, sss, ssk_per_sys, ssk, weights, di
     dists['gap_complexity_KS'] = KS_dist(sss_per_sys['gap_complexity'], ssk_per_sys['gap_complexity'])[0]
 
     # AD distances:
-    if AD_mod == 'true':
-        AD_stat = AD_mod_dist
-    elif AD_mod == 'false':
-        AD_stat = AD_dist
-    else:
-        print('Invalid input for AD_mod; must be a string true or false.')
+    AD_stat = AD_mod_dist if AD_mod else AD_dist
 
     dists['periods_AD'] = AD_stat(sss['P_obs'], ssk['P_obs'])
     dists['period_ratios_AD'] = AD_stat(sss['Rm_obs'], ssk['Rm_obs'])
@@ -619,5 +614,6 @@ def compute_distances_sim_Kepler(sss_per_sys, sss, ssk_per_sys, ssk, weights, di
         print('(Planets Kepler obs, Planet pairs Kepler obs) = (%s, %s)' % (len(ssk['P_obs']), len(ssk['Rm_obs'])))
         print('(Planets obs, Planet pairs obs) = (%s, %s)' % (len(sss['P_obs']), len(sss['Rm_obs'])))
         tot_dist_w = compute_total_weighted_dist(weights, dists, dists_w, dists_include=dists_include)
+        dists_w['tot_dist_w_include'] = tot_dist_w
 
     return dists, dists_w
