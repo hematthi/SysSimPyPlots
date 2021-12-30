@@ -36,7 +36,7 @@ run_number = ''
 model_name = 'Maximum_AMD_Model' + run_number #'Non_Clustered_Model', 'Clustered_P_Model', 'Clustered_P_R_Model'
 
 compute_ratios = compute_ratios_all #compute_ratios_adjacent
-AD_mod = 'true' # 'true' or 'false'
+AD_mod = True
 weights_all = load_split_stars_weights_only()
 dists_include = ['delta_f',
                  'mult_CRPD_r',

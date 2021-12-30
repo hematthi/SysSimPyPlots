@@ -36,7 +36,7 @@ run_number = ''
 model_name = 'Maximum_AMD_model' + run_number
 
 compute_ratios = compute_ratios_adjacent
-AD_mod = 'true' # 'true' or 'false'
+AD_mod = True
 weights_all = load_split_stars_weights_only()
 dists_include = ['delta_f',
                  'mult_CRPD_r',

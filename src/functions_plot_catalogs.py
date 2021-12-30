@@ -280,7 +280,7 @@ def plot_fig_pdf_composite(x_sim_all, x_Kep_all, param_vals=None, x_mins=[None],
         plt.savefig(save_name)
         plt.close()
 
-def load_cat_obs_and_plot_fig_pdf_composite(loadfiles_directory, weights, run_number='', Rstar_min=0., Rstar_max=1e6, Mstar_min=0., Mstar_max=1e6, teff_min=0., teff_max=1e6, bp_rp_min=-1e6, bp_rp_max=1e6, label_dist=True, AD_mod='true', dists_include=[], n_bins=100, lw=1, alpha=0.2, afs=12, tfs=12, lfs=12, save_name='no_name_fig.pdf', save_fig=False):
+def load_cat_obs_and_plot_fig_pdf_composite(loadfiles_directory, weights, run_number='', Rstar_min=0., Rstar_max=1e6, Mstar_min=0., Mstar_max=1e6, teff_min=0., teff_max=1e6, bp_rp_min=-1e6, bp_rp_max=1e6, label_dist=True, AD_mod=True, dists_include=[], n_bins=100, lw=1, alpha=0.2, afs=12, tfs=12, lfs=12, save_name='no_name_fig.pdf', save_fig=False):
 
     #To load and analyze the simulated and Kepler observed catalogs:
     
@@ -393,7 +393,7 @@ def load_cat_obs_and_plot_fig_pdf_composite(loadfiles_directory, weights, run_nu
         plt.savefig(save_name)
         plt.close()
 
-def load_cat_obs_and_plot_fig_pdf_composite_simple(loadfiles_directory, weights, run_number='', Rstar_min=0., Rstar_max=1e6, Mstar_min=0., Mstar_max=1e6, teff_min=0., teff_max=1e6, bp_rp_min=-1e6, bp_rp_max=1e6, label_dist=True, AD_mod='true', dists_include=[], n_bins=100, c_sim=['k'], lw=1, alpha=0.2, afs=12, tfs=12, lfs=12, fig_size=(16,8), save_name='no_name_fig.pdf', save_fig=False):
+def load_cat_obs_and_plot_fig_pdf_composite_simple(loadfiles_directory, weights, run_number='', Rstar_min=0., Rstar_max=1e6, Mstar_min=0., Mstar_max=1e6, teff_min=0., teff_max=1e6, bp_rp_min=-1e6, bp_rp_max=1e6, label_dist=True, AD_mod=True, dists_include=[], n_bins=100, c_sim=['k'], lw=1, alpha=0.2, afs=12, tfs=12, lfs=12, fig_size=(16,8), save_name='no_name_fig.pdf', save_fig=False):
     
     #To load and analyze the simulated and Kepler observed catalogs:
     
@@ -493,7 +493,7 @@ def load_cat_obs_and_plot_fig_pdf_composite_simple(loadfiles_directory, weights,
         plt.savefig(save_name)
         plt.close()
 
-def load_cat_obs_and_plot_fig_pdf_split_bprp_GF2020_metrics(loadfiles_directory, weights_all, run_number='', label_dist=True, AD_mod='true', dists_include=[], n_bins=100, lw=1, alpha=0.2, afs=12, tfs=12, lfs=12, fig_size=(16,8), save_name='no_name_fig.pdf', save_fig=False):
+def load_cat_obs_and_plot_fig_pdf_split_bprp_GF2020_metrics(loadfiles_directory, weights_all, run_number='', label_dist=True, AD_mod=True, dists_include=[], n_bins=100, lw=1, alpha=0.2, afs=12, tfs=12, lfs=12, fig_size=(16,8), save_name='no_name_fig.pdf', save_fig=False):
     
     #To load and analyze the simulated and Kepler observed catalogs:
     
