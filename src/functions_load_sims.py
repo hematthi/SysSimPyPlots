@@ -92,7 +92,7 @@ def load_cat_phys(file_name):
     start = time.time()
     #cat_phys = pd.read_csv(file_name, comment='#', dtype={'target_id': 'Int64', 'star_id': 'Int64', 'planet_mass': 'f8', 'planet_radius': 'f8', 'clusterid': 'Int64', 'period': 'f8', 'ecc': 'f8', 'incl_mut': 'f8', 'incl': 'f8', 'star_mass': 'f8', 'star_radius': 'f8'}) # faster than np.genfromtxt, BUT indexing the pandas DataFrame is much slower later!
     #'''
-    with open(file_name, 'r') as file: #open(loadfiles_directory + 'physical_catalog_planets%s.txt' % run_number, 'r')
+    with open(file_name, 'r') as file:
         lines = (line for line in file if not line.startswith('#'))
         #cat_phys = np.genfromtxt(lines, names=True, dtype=('i4', 'i4', 'f8', 'f8', 'i4', 'f8', 'f8', 'f8', 'f8', 'f8'), delimiter=',')
         cat_phys = np.genfromtxt(lines, names=True, dtype=('i4', 'i4', 'f8', 'f8', 'i4', 'f8', 'f8', 'f8', 'f8', 'f8', 'f8', 'f8', 'f8', 'f8', 'f8'), delimiter=',') # faster than np.loadtxt
@@ -107,7 +107,7 @@ def load_star_phys(file_name):
     start = time.time()
     #star_phys = pd.read_csv(file_name, comment='#', dtype={'target_id': 'Int64', 'star_id': 'Int64', 'star_mass': 'f8', 'star_radius': 'f8', 'num_planets': 'Int64'}) # faster than np.genfromtxt, BUT indexing the pandas DataFrame is much slower later!
     #'''
-    with open(file_name, 'r') as file: #open(loadfiles_directory + 'physical_catalog_stars%s.txt' % run_number, 'r')
+    with open(file_name, 'r') as file:
         lines = (line for line in file if not line.startswith('#'))
         star_phys = np.genfromtxt(lines, names=True, dtype=('i4', 'i4', 'f8', 'f8', 'i4'), delimiter=',') # faster than np.loadtxt
     #'''
