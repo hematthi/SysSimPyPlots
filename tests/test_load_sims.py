@@ -89,3 +89,60 @@ def test_compute_basic_summary_stats_per_sys_cat_phys(load_dir=loadfiles_directo
     keys = ['P_all', 'clusterids_all', 'e_all', 'inclmut_all', 'incl_all', 'radii_all', 'mass_all', 'Mstar_all', 'Rstar_all', 'mu_all', 'a_all', 'AMD_all', 'AMD_tot_all']
     for key in keys:
         assert N_sys_pl == len(sssp_per_sys_basic[key])
+
+def test_compute_summary_stats_from_cat_phys(load_dir=loadfiles_directory, run_number=''):
+    clusterids_per_sys, P_per_sys, radii_per_sys, mass_per_sys, e_per_sys, inclmut_per_sys, incl_per_sys, Mstar_all, Rstar_all = load_planets_stars_phys_separate(load_dir, run_number=run_number)
+    N_sim, cos_factor, P_min, P_max, radii_min, radii_max = read_targets_period_radius_bounds(load_dir + 'periods_all%s.out' % run_number)
+    
+    N_sys_pl, N_pl = len(clusterids_per_sys), len(list(chain(*clusterids_per_sys)))
+    
+    sssp_per_sys, sssp = compute_summary_stats_from_cat_phys(file_name_path=load_dir, run_number=run_number, load_full_tables=True, match_observed=True)
+    N_pl_pairs = np.sum(sssp_per_sys['Mtot_all'][sssp_per_sys['Mtot_all'] >= 2] - 1) # number of adjacent pairs of planets
+    assert N_pl == np.sum(sssp_per_sys['Mtot_all'])
+    
+    # Check that all fields in 'sssp_per_sys' have the right number of systems:
+    keys = ['clusterids_all', 'P_all', 'a_all', 'radii_all', 'mass_all', 'mu_all', 'e_all', 'inclmut_all', 'incl_all', 'AMD_all', 'Rm_all', 'radii_ratio_all', 'N_mH_all', 'dynamical_mass']
+    for key in keys:
+        assert N_sim == len(sssp_per_sys[key])
+    assert len(sssp_per_sys['radii_partitioning']) == np.sum(sssp_per_sys['Mtot_all'] >= 2)
+    assert len(sssp_per_sys['radii_monotonicity']) == np.sum(sssp_per_sys['Mtot_all'] >= 2)
+    assert len(sssp_per_sys['gap_complexity']) == np.sum(sssp_per_sys['Mtot_all'] >= 3)
+    
+    # Check that all fields in 'sssp' have the right number of systems and planets:
+    assert np.sum(sssp['clustertot_all']) == len(sssp['pl_per_cluster_all'])
+    assert N_pl == np.sum(sssp['pl_per_cluster_all'])
+    
+    keys = ['Mstar_all', 'Rstar_all', 'clustertot_all', 'AMD_tot_all']
+    for key in keys:
+        assert N_sim == len(sssp[key])
+    
+    keys = ['P_all', 'radii_all', 'mass_all', 'e_all', 'incl_all']
+    for key in keys:
+        assert N_pl == len(sssp[key])
+    assert np.sum(sssp_per_sys['Mtot_all'][sssp_per_sys['Mtot_all'] >= 2]) == len(sssp['inclmut_all'])
+    assert N_pl == len(sssp['radii_above_all']) + len(sssp['radii_below_all'])
+    assert N_pl_pairs == len(sssp['Rm_all'])
+    assert N_pl_pairs == len(sssp['radii_ratio_all'])
+    assert N_pl_pairs == len(sssp['N_mH_all'])
+    assert N_pl_pairs == len(sssp['radii_ratio_above_all']) + len(sssp['radii_ratio_below_all']) + len(sssp['radii_ratio_across_all'])
+    
+    # Check that each field in 'sssp' has reasonable values:
+    assert 0 < np.min(sssp['Mstar_all'])
+    assert 0 < np.min(sssp['Rstar_all'])
+    assert 0 <= np.min(sssp['clustertot_all'])
+    assert 0 <= np.min(sssp['AMD_tot_all'])
+    assert 1 <= np.min(sssp['pl_per_cluster_all'])
+    assert P_min <= np.min(sssp['P_all']) <= np.max(sssp['P_all']) <= P_max
+    assert radii_min <= np.min(sssp['radii_all']) <= np.max(sssp['radii_all']) #<= radii_max # NOTE: 'radii_max' check fails due to differences in precision of Rsun/Rearth in SysSim vs. in 'functions_general.py'
+    assert 0 <= np.min(sssp['mass_all'])
+    assert 0 <= np.min(sssp['e_all']) <= np.max(sssp['e_all']) <= 1
+    assert 0 <= np.min(sssp['inclmut_all']) <= np.max(sssp['inclmut_all']) <= np.pi
+    assert 0 <= np.min(sssp['incl_all']) <= np.max(sssp['incl_all']) <= np.pi
+    assert radii_min <= np.min(sssp['radii_above_all']) <= np.max(sssp['radii_above_all']) #<= radii_max
+    assert radii_min <= np.min(sssp['radii_below_all']) <= np.max(sssp['radii_below_all']) #<= radii_max
+    assert 1 < np.min(sssp['Rm_all']) <= np.max(sssp['Rm_all']) <= P_max/P_min
+    assert radii_min/radii_max <= np.min(sssp['radii_ratio_all']) <= np.max(sssp['radii_ratio_all']) <= radii_max/radii_min
+    assert 0 < np.min(sssp['N_mH_all'])
+    assert radii_min/radii_max <= np.min(sssp['radii_ratio_above_all']) <= np.max(sssp['radii_ratio_above_all']) <= radii_max/radii_min
+    assert radii_min/radii_max <= np.min(sssp['radii_ratio_below_all']) <= np.max(sssp['radii_ratio_below_all']) <= radii_max/radii_min
+    assert radii_min/radii_max <= np.min(sssp['radii_ratio_across_all']) <= np.max(sssp['radii_ratio_across_all']) <= radii_max/radii_min
