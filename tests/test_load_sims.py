@@ -146,3 +146,46 @@ def test_compute_summary_stats_from_cat_phys(load_dir=loadfiles_directory, run_n
     assert radii_min/radii_max <= np.min(sssp['radii_ratio_above_all']) <= np.max(sssp['radii_ratio_above_all']) <= radii_max/radii_min
     assert radii_min/radii_max <= np.min(sssp['radii_ratio_below_all']) <= np.max(sssp['radii_ratio_below_all']) <= radii_max/radii_min
     assert radii_min/radii_max <= np.min(sssp['radii_ratio_across_all']) <= np.max(sssp['radii_ratio_across_all']) <= radii_max/radii_min
+
+def test_load_cat_obs(load_dir=loadfiles_directory, run_number=''):
+    cat_obs = load_cat_obs(load_dir + 'observed_catalog%s.csv' % run_number)
+    assert 1 <= np.min(cat_obs['target_id']) <= np.max(cat_obs['target_id']) <= N_sim
+    assert 1 <= np.min(cat_obs['star_id']) <= np.max(cat_obs['star_id']) <= N_Kep
+    assert 0 < np.min(cat_obs['period']) # due to simulated observation uncertainty, can be slightly outside [P_min,P_max]
+    assert 0 <= np.min(cat_obs['period_err']) <= np.max(cat_obs['period_err']) <= 0.1 # check range of period errors (days)
+    assert 0 <= np.min(cat_obs['depth']) <= np.max(cat_obs['depth']) <= 1. # check range of transit depths
+    assert 0 <= np.min(cat_obs['depth_err']) <= np.max(cat_obs['depth_err']) <= 1. # check range of transit depth errors
+    assert 0 <= np.min(cat_obs['duration']) <= np.max(cat_obs['duration']) <= 1. # check range of transit durations (days)
+    assert 0 <= np.min(cat_obs['duration_err']) <= np.max(cat_obs['duration_err']) <= 1. # check range of transit duration errors (days)
+    assert 0 < np.min(cat_obs['star_mass'])
+    assert 0 < np.min(cat_obs['star_radius'])
+
+def test_load_star_obs(load_dir=loadfiles_directory, run_number=''):
+    star_obs = load_star_obs(load_dir + 'observed_catalog_stars%s.csv' % run_number)
+    assert 1 <= np.min(star_obs['target_id']) <= np.max(star_obs['target_id']) <= N_sim
+    assert 1 <= np.min(star_obs['star_id']) <= np.max(star_obs['star_id']) <= N_Kep
+    assert 0 < np.min(star_obs['star_mass']) <= np.max(star_obs['star_mass']) < 2. # check range of stellar masses (Solar masses)
+    assert 0 < np.min(star_obs['star_radius']) <= np.max(star_obs['star_radius']) < 4. # check range of stellar radii (Solar radii)
+    assert 1 <= np.min(star_obs['num_obs_planets']) <= np.max(star_obs['num_obs_planets']) <= 8 # NOTE: SysSim includes parameter 'max_tranets_in_sys' which is set to 8
+
+def test_load_planets_stars_obs_separate(load_dir=loadfiles_directory, run_number=''):
+    P_per_sys, D_per_sys, tdur_per_sys, Mstar_per_sys, Rstar_per_sys = load_planets_stars_obs_separate(load_dir,  run_number)
+    
+    periods = list(chain(*P_per_sys))
+    depths = list(chain(*D_per_sys))
+    durations = list(chain(*tdur_per_sys))
+    N_sys, N_pl = len(P_per_sys), len(periods)
+    
+    assert N_sys == len(D_per_sys) == len(tdur_per_sys) == len(Mstar_per_sys) == len(Rstar_per_sys)
+    assert N_pl == len(depths) == len(durations)
+    assert 0 < np.min(periods) # due to simulated observation uncertainty, can be slightly outside [P_min,P_max]
+    assert 0 <= np.min(depths) <= np.max(depths) <= 1. # check range of transit depths
+    assert 0 <= np.min(durations) <= np.max(durations) <= 1. # check range of transit durations (days)
+    assert 0 < np.min(Mstar_per_sys)
+    assert 0 < np.min(Rstar_per_sys)
+
+def test_compute_summary_stats_from_cat_obs(load_dir=loadfiles_directory, run_number=''):
+    sss_per_sys, sss = compute_summary_stats_from_cat_obs(file_name_path=load_dir, run_number=run_number)
+    
+    N_sys = len(sss_per_sys['Mstar_obs']) # total number of systems
+    N_pl = np.sum(sss['Nmult_obs'] * np.arange(1,len(sss['Nmult_obs'])+1)) # total number of planets

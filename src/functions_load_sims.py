@@ -601,9 +601,9 @@ def compute_summary_stats_from_cat_phys(cat_phys=None, star_phys=None, file_name
 
 def load_cat_obs(file_name):
     # Load a simulated observed catalog of planets
-    with open(file_name, 'r') as file: #open(loadfiles_directory + 'observed_catalog_planets%s.txt' % run_number, 'r')
+    with open(file_name, 'r') as file:
         lines = (line for line in file if not line.startswith('#'))
-        cat_obs = np.loadtxt(lines, skiprows=1, dtype={'names': ('target_id', 'star_id', 'period', 'depth', 'duration', 'star_mass', 'star_radius'), 'formats': ('i4', 'i4', 'f8', 'f8', 'f8', 'f8', 'f8')}, delimiter=',')
+        cat_obs = np.loadtxt(lines, skiprows=1, dtype={'names': ('target_id', 'star_id', 'period', 'period_err', 'depth', 'depth_err', 'duration', 'duration_err', 'star_mass', 'star_radius'), 'formats': ('i4', 'i4', 'f8', 'f8', 'f8', 'f8', 'f8', 'f8', 'f8', 'f8')}, delimiter=',')
 
     return cat_obs
 
@@ -616,7 +616,7 @@ def load_star_obs(file_name):
     return star_obs
 
 def load_planets_stars_obs_separate(file_name_path, run_number):
-    #This function loads the simulated observed planets and stars from the individual files their properties were saved in
+    # This function loads the simulated observed planets and stars from the individual files their properties were saved in
     
     P_per_sys = [] #list to be filled with lists of the observed periods per system (days)
     with open(file_name_path + 'periods%s.out' % run_number, 'r') as file:
