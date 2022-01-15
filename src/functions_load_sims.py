@@ -956,11 +956,11 @@ def compute_summary_stats_from_cat_obs(cat_obs=None, star_obs=None, file_name_pa
     # Planet property ratios:
     sss['Rm_obs'] = Rm_obs[Rm_obs > 0]
     sss['D_ratio_obs'] = D_ratio_obs[D_ratio_obs > 0]
-    sss['xi_obs'] = xi_obs[xi_obs> 0]
-    sss['xi_res_obs'] = xi_res_obs[xi_res_obs > 0]
-    sss['xi_res32_obs'] = xi_res32_obs[xi_res32_obs > 0]
-    sss['xi_res21_obs'] = xi_res21_obs[xi_res21_obs > 0]
-    sss['xi_nonres_obs'] = xi_nonres_obs[xi_nonres_obs > 0]
+    sss['xi_obs'] = xi_obs[xi_obs >= 0]
+    sss['xi_res_obs'] = xi_res_obs[xi_res_obs >= 0]
+    sss['xi_res32_obs'] = xi_res32_obs[xi_res32_obs >= 0]
+    sss['xi_res21_obs'] = xi_res21_obs[xi_res21_obs >= 0]
+    sss['xi_nonres_obs'] = xi_nonres_obs[xi_nonres_obs >= 0]
     sss['D_ratio_above_obs'] = D_ratio_above_obs_flat
     sss['D_ratio_below_obs'] = D_ratio_below_obs_flat
     sss['D_ratio_across_obs'] = D_ratio_across_obs_flat
@@ -1004,13 +1004,22 @@ def combine_sss_or_sssp_per_sys(s1, s2):
     for key in s1.keys():
         #print(key, ': ', np.shape(s1[key]), ', ', np.shape(s2[key]))
         
+        if key == 'Nmult_obs':
+            m_max = max(len(s1[key]), len(s2[key])) # highest multiplicity of the two catalogs
+            Nmult_obs1 = np.append(s1[key], np.zeros(m_max - len(s1[key]), dtype=int))
+            Nmult_obs2 = np.append(s2[key], np.zeros(m_max - len(s2[key]), dtype=int))
+            scombined[key] = Nmult_obs1 + Nmult_obs2
+            continue
+        
         # For 2d arrays, need to pad them equally before concatenating:
         if np.ndim(s1[key]) == 2:
             npad1, npad2 = np.shape(s1[key])[1], np.shape(s2[key])[1]
             npad = max(npad1, npad2)
             if npad1 != npad2:
-                s1[key] = np.concatenate((s1[key], np.zeros((len(s1[key]),npad-npad1))), axis=1)
-                s2[key] = np.concatenate((s2[key], np.zeros((len(s2[key]),npad-npad2))), axis=1)
+                s1_key_pad = np.concatenate((s1[key], -1.*np.ones((len(s1[key]),npad-npad1))), axis=1)
+                s2_key_pad = np.concatenate((s2[key], -1.*np.ones((len(s2[key]),npad-npad2))), axis=1)
+                scombined[key] = np.concatenate((s1_key_pad, s2_key_pad), axis=0)
+                continue
         
         scombined[key] = np.concatenate((s1[key], s2[key]), axis=0)
     return scombined

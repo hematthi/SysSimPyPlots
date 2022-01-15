@@ -40,19 +40,18 @@ def test_compute_summary_stats_from_Kepler_catalog():
     N_pl_pairs = np.sum(ssk['Nmult_obs'] * np.arange(len(ssk['Nmult_obs']))) # total number of adjacent planet pairs
     
     # Check that all the fields in 'ssk_per_sys' have the same number of systems:
-    keys = ['Rstar_obs', 'Mstar_obs', 'teff_obs', 'bp_rp_obs', 'e_bp_rp_obs', 'cdpp4p5_obs', 'P_obs', 'D_obs', 'tdur_obs', 'tdur_tcirc_obs', 'radii_obs', 'Rm_obs', 'D_ratio_obs', 'xi_obs']
+    keys = ['Rstar_obs', 'Mstar_obs', 'teff_obs', 'bp_rp_obs', 'e_bp_rp_obs', 'cdpp4p5_obs', 'P_obs', 'D_obs', 'tdur_obs', 'tdur_tcirc_obs', 'radii_obs', 'Rm_obs', 'D_ratio_obs', 'xi_obs', 'radii_star_ratio']
     for key in keys:
         assert N_sys == len(ssk_per_sys[key])
+    
+    assert N_multis == len(ssk_per_sys['radii_partitioning'])
+    assert N_multis == len(ssk_per_sys['radii_monotonicity'])
+    assert np.sum(ssk['Nmult_obs'][2:]) == len(ssk_per_sys['gap_complexity'])
     
     # Check that all the fields in 'ssk_per_sys' have the same number of planets:
     assert N_pl == np.sum(ssk_per_sys['P_obs'] > 0) == np.sum(ssk_per_sys['D_obs'] > 0) == np.sum(ssk_per_sys['radii_obs'] > 0)
     assert N_pl == np.sum(ssk_per_sys['tdur_obs'] >= 0) == np.sum(ssk_per_sys['tdur_tcirc_obs'] >= 0)
     assert N_pl_pairs == np.sum(ssk_per_sys['Rm_obs'] > 0) == np.sum(ssk_per_sys['D_ratio_obs'] > 0) == np.sum(ssk_per_sys['xi_obs'] >= 0)
-    
-    assert N_sys == len(ssk_per_sys['radii_star_ratio'])
-    assert N_multis == len(ssk_per_sys['radii_partitioning'])
-    assert N_multis == len(ssk_per_sys['radii_monotonicity'])
-    assert np.sum(ssk['Nmult_obs'][2:]) == len(ssk_per_sys['gap_complexity'])
     
     # Check that all the fields in 'ssk' have the right number of planets:
     keys = ['Rstar_obs', 'Mstar_obs', 'teff_obs', 'bp_rp_obs', 'e_bp_rp_obs', 'cdpp4p5_obs', 'P_obs', 'D_obs', 'tdur_obs', 'tdur_tcirc_obs', 'radii_obs']
@@ -64,6 +63,7 @@ def test_compute_summary_stats_from_Kepler_catalog():
     assert N_pl_pairs == len(ssk['Rm_obs'])
     assert N_pl_pairs == len(ssk['D_ratio_obs']) == len(ssk['D_ratio_above_obs']) + len(ssk['D_ratio_below_obs']) + len(ssk['D_ratio_across_obs'])
     assert N_pl_pairs == len(ssk['xi_obs']) == len(ssk['xi_res_obs']) + len(ssk['xi_nonres_obs'])
+    assert len(ssk['xi_res_obs']) >= len(ssk['xi_res32_obs']) + len(ssk['xi_res21_obs'])
 
 def test_CRPD_dist(seed=42):
     np.random.seed(seed)
