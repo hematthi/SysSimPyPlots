@@ -676,6 +676,28 @@ def load_planets_stars_obs_separate(file_name_path, run_number):
 
     return P_per_sys, D_per_sys, tdur_per_sys, Mstar_per_sys, Rstar_per_sys
 
+def count_planets_from_loading_cat_obs_stars_only(file_name_path=None, run_number='', Rstar_min=0., Rstar_max=1e6, Mstar_min=0., Mstar_max=1e6, teff_min=0., teff_max=1e6, bp_rp_min=-1e6, bp_rp_max=1e6):
+    # This function loads an "observed_catalog_stars.csv" file (and the full stellar catalog using "ckep.load_Kepler_stars_cleaned"), which contains a column of the number of observed planets for each star, and applies cuts on the stellar sample to return the resulting multiplicity distribution
+    
+    stars_cleaned = ckep.load_Kepler_stars_cleaned() # NOTE: make sure that this is loading the same stellar catalog used for the simulations!
+    
+    star_obs = load_star_obs(file_name_path + 'observed_catalog_stars%s.csv' % run_number)
+    i_stars_obs = list(star_obs['star_id']-1) # star_id were indexed in Julia, which starts at 1
+    bools_stars_obs_in_custom = np.ones(len(i_stars_obs), dtype=bool)
+    
+    Mstar_per_sys = star_obs['star_mass']
+    Rstar_per_sys = star_obs['star_radius']
+    teff_per_sys = stars_cleaned['teff'][i_stars_obs]
+    bp_rp_per_sys = stars_cleaned['bp_rp'][i_stars_obs]
+    e_bp_rp_per_sys = stars_cleaned['e_bp_rp_interp'][i_stars_obs]
+    
+    indices_keep = np.arange(len(Rstar_per_sys))[bools_stars_obs_in_custom & (Rstar_per_sys >= Rstar_min) & (Rstar_per_sys < Rstar_max) & (Mstar_per_sys >= Mstar_min) & (Mstar_per_sys < Mstar_max) & (teff_per_sys >= teff_min) & (teff_per_sys < teff_max) & (bp_rp_per_sys - e_bp_rp_per_sys >= bp_rp_min) & (bp_rp_per_sys - e_bp_rp_per_sys < bp_rp_max)]
+    
+    star_obs_keep = star_obs[indices_keep]
+    Mtot_obs = star_obs_keep['num_obs_planets']
+    Nmult_obs = np.array([np.sum(Mtot_obs == x) for x in range(1,np.max(Mtot_obs)+1)])
+    return Mtot_obs, Nmult_obs
+
 def compute_summary_stats_from_cat_obs(cat_obs=None, star_obs=None, file_name_path=None, run_number='', P_min=0., P_max=300., Rstar_min=0., Rstar_max=1e6, Mstar_min=0., Mstar_max=1e6, teff_min=0., teff_max=1e6, bp_rp_min=-1e6, bp_rp_max=1e6, i_stars_custom=None, compute_ratios=gen.compute_ratios_adjacent):
     #This function takes in a simulated observed catalog of planets 'cat_obs' in table format and returns many arrays (1D and 2D) of the summary stats
     
