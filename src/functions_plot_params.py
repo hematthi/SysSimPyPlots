@@ -17,10 +17,10 @@ def load_training_points(dims, file_name_path='', file_name='Active_params_recom
 
     data_table = np.genfromtxt(file_name_path + file_name, delimiter=' ', names=True, dtype='f8')
     cols = len(data_table.dtype.names)
-    
+
     active_params_names = data_table.dtype.names[:dims]
     print('Active param names: ', active_params_names)
-    
+
     #xtrain = data_table[np.array(active_params_names)]
     #xtrain = xtrain.view((float, dims))
     xtrain = data_table.view(np.float64).reshape(data_table.shape + (cols,))
@@ -77,7 +77,7 @@ def transform_sum_diff_params_inverse(xpoints, i, j):
 
 def make_cuts_GP_mean_std_post(x_names, xprior_table, max_mean=np.inf, max_std=np.inf, max_post=np.inf):
     dims = len(x_names)
-    
+
     xpoints_all = xprior_table[np.array(x_names)]
     xpoints_cut = xpoints_all[(xprior_table['GP_mean'] < max_mean) & (xprior_table['GP_std'] < max_std) & (xprior_table['GP_posterior_draw'] < max_post)]
     #xpoints_cut = xpoints_cut.view((float, dims))
@@ -90,27 +90,27 @@ def make_cuts_GP_mean_std_post(x_names, xprior_table, max_mean=np.inf, max_std=n
 def plot_fig_hists_GP_draws(fig_size, xprior_table, bins=100, save_name='no_name_fig.pdf', save_fig=False):
     fig = plt.figure(figsize=fig_size)
     plot = GridSpec(2,2,left=0.1,bottom=0.1,right=0.95,top=0.95,wspace=0.2,hspace=0.2)
-    
+
     ax = plt.subplot(plot[0,0])
     plt.hist(xprior_table['GP_mean'], bins=bins)
     plt.xlabel('GP mean prediction')
     plt.ylabel('Points')
-    
+
     ax = plt.subplot(plot[0,1])
     plt.hist(xprior_table['GP_posterior_draw'], bins=bins)
     plt.xlabel('GP prediction')
     plt.ylabel('Points')
-    
+
     ax = plt.subplot(plot[1,0])
     plt.hist(xprior_table['GP_std'], bins=bins)
     plt.xlabel('GP std of prediction')
     plt.ylabel('Points')
-    
+
     ax = plt.subplot(plot[1,1])
     plt.scatter(xprior_table['GP_mean'], xprior_table['GP_std'], marker='.')
     plt.xlabel('GP mean prediction')
     plt.ylabel('GP std of prediction')
-    
+
     if save_fig:
         plt.savefig(save_name)
         plt.close()
@@ -118,7 +118,7 @@ def plot_fig_hists_GP_draws(fig_size, xprior_table, bins=100, save_name='no_name
 def plot_cornerpy_wrapper(x_symbols, xpoints, xpoints_extra=None, c_extra='r', s_extra=1, quantiles=[0.16, 0.5, 0.84], verbose=False, fig=None, show_titles=True, label_kwargs={'fontsize': 20}, title_kwargs={'fontsize':20}, save_name='no_name_fig.pdf', save_fig=False):
 
     dims = len(x_symbols)
-    
+
     fig = corner.corner(xpoints, labels=x_symbols, quantiles=quantiles, verbose=verbose, fig=fig, show_titles=show_titles, label_kwargs=label_kwargs, title_kwargs=title_kwargs)
 
     # If want to plot an additional set of points:
@@ -136,10 +136,10 @@ def plot_cornerpy_wrapper(x_symbols, xpoints, xpoints_extra=None, c_extra='r', s
         return fig
 
 def plot_contours_and_points_corner(x_symbols, xlower, xupper, contour_2d_grids, xpoints=None, points_size=1., points_alpha=1., fig_size=(16,16), fig_lbrtwh=[0.05, 0.05, 0.98, 0.98, 0.05, 0.05], afs=10, tfs=12, lfs=10, save_name='no_name_fig.pdf', save_fig=False):
-    
+
     dims = len(x_symbols)
     grid_dims = np.shape(contour_2d_grids)[2]
-    
+
     fig = plt.figure(figsize=fig_size)
     left, bottom, right, top, wspace, hspace = fig_lbrtwh
     plot = GridSpec(dims, dims, left=left, bottom=bottom, right=right, top=top, wspace=wspace, hspace=hspace)
@@ -149,7 +149,7 @@ def plot_contours_and_points_corner(x_symbols, xlower, xupper, contour_2d_grids,
             xaxis = np.linspace(xlower[j], xupper[j], grid_dims)
             yaxis = np.linspace(xlower[i], xupper[i], grid_dims)
             xgrid, ygrid = np.meshgrid(xaxis, yaxis)
-            
+
             ax = plt.subplot(plot[i,j])
             cplot = plt.contour(xgrid, ygrid, contour_2d_grids[grid_index])
             plt.clabel(cplot, inline=1, fontsize=lfs)
@@ -183,16 +183,16 @@ def plot_contours_and_points_corner(x_symbols, xlower, xupper, contour_2d_grids,
         plt.savefig(save_name)
         plt.close()
 
-def plot_2d_points_and_contours_with_histograms(x, y, x_min=None, x_max=None, y_min=None, y_max=None, log_x=False, log_y=False, n_bins=50, points_only=False, xlabel_text='x', ylabel_text='y', extra_text=None, plot_qtls=True, log_x_qtls=False, log_y_qtls=False, x_str_format='{:0.2f}', y_str_format='{:0.2f}', x_symbol=r'$x$', y_symbol=r'$y$', afs=20, tfs=20, lfs=16, fig_size=(8,8), fig_lbrtwh=[0.15,0.15,0.95,0.95,0.,0.], save_name='no_name_fig.pdf', save_fig=False):
+def plot_2d_points_and_contours_with_histograms(x, y, x_min=None, x_max=None, y_min=None, y_max=None, log_x=False, log_y=False, bins_hist=50, bins_cont=50, points_only=False, xlabel_text='x', ylabel_text='y', extra_text=None, plot_qtls=True, log_x_qtls=False, log_y_qtls=False, x_str_format='{:0.2f}', y_str_format='{:0.2f}', x_symbol=r'$x$', y_symbol=r'$y$', afs=20, tfs=20, lfs=16, fig_size=(8,8), fig_lbrtwh=[0.15,0.15,0.95,0.95,0.,0.], save_name='no_name_fig.pdf', save_fig=False):
     # NOTE: The 'log_x' and 'log_y' are options to take the log of the x and y inputs, NOT to mean that the x and y are already logged; user should always pass unlogged values for x and y (and their limits).
-    
+
     if log_x:
         x = np.log10(x)
         x_min, x_max = np.log10(x_min), np.log10(x_max)
     if log_y:
         y = np.log10(y)
         y_min, y_max = np.log10(y_min), np.log10(y_max)
-    
+
     fig = plt.figure(figsize=fig_size)
     left, bottom, right, top, wspace, hspace = fig_lbrtwh
     plot = GridSpec(5, 5, left=left, bottom=bottom, right=right, top=top, wspace=wspace, hspace=hspace)
@@ -201,7 +201,7 @@ def plot_2d_points_and_contours_with_histograms(x, y, x_min=None, x_max=None, y_
     if points_only:
         plt.scatter(x, y, color='k')
     else:
-        corner.hist2d(x, y, bins=50, plot_datapoints=True, plot_density=False, fill_contours=True, contour_kwargs={'colors': ['0.6','0.4','0.2','0']}, data_kwargs={'color': 'k'})
+        corner.hist2d(x, y, bins=bins_cont, plot_datapoints=True, plot_density=False, fill_contours=True, contour_kwargs={'colors': ['0.6','0.4','0.2','0']}, data_kwargs={'color': 'k'})
     plt.text(x=0.05, y=0.95, s=extra_text, ha='left', va='top', fontsize=lfs, transform=ax_main.transAxes)
     ax_main.tick_params(axis='both', labelsize=afs)
     plt.xlim([x_min, x_max])
@@ -210,13 +210,13 @@ def plot_2d_points_and_contours_with_histograms(x, y, x_min=None, x_max=None, y_
     plt.ylabel(ylabel_text, fontsize=tfs)
 
     ax = plt.subplot(plot[0,:4]) # top histogram
-    xhist = plt.hist(x, bins=np.linspace(x_min, x_max, n_bins+1), histtype='step', color='k', ls='-')
+    xhist = plt.hist(x, bins=np.linspace(x_min, x_max, bins_hist+1), histtype='step', color='k', ls='-')
     if plot_qtls:
         x_qtls = np.quantile(x, q=[0.16,0.5,0.84])
         plt.vlines(x=x_qtls, ymin=0., ymax=1.1*np.max(xhist[0]), colors='k', linestyles=[':','--',':'])
         if log_x and not log_x_qtls: # if plotting contours/histograms in log(x), but want to report unlogged quantiles
             x_qtls = 10.**x_qtls
-        
+
         qmed_str = x_str_format.format(x_qtls[1])
         q_m_str = x_str_format.format(x_qtls[1]-x_qtls[0])
         q_p_str = x_str_format.format(x_qtls[2]-x_qtls[1])
@@ -228,13 +228,13 @@ def plot_2d_points_and_contours_with_histograms(x, y, x_min=None, x_max=None, y_
     plt.yticks([])
 
     ax = plt.subplot(plot[1:,4]) # side histogram
-    yhist = plt.hist(y, bins=np.linspace(y_min, y_max, n_bins+1), histtype='step', orientation='horizontal', color='k', ls='-')
+    yhist = plt.hist(y, bins=np.linspace(y_min, y_max, bins_hist+1), histtype='step', orientation='horizontal', color='k', ls='-')
     if plot_qtls:
         y_qtls = np.quantile(y, q=[0.16,0.5,0.84])
         plt.hlines(y=y_qtls, xmin=0., xmax=1.1*np.max(yhist[0]), colors='k', linestyles=[':','--',':'])
         if log_y and not log_y_qtls: # if plotting contours/histograms in log(y), but want to report unlogged quantiles
             y_qtls = 10.**y_qtls
-        
+
         qmed_str = y_str_format.format(y_qtls[1])
         q_m_str = y_str_format.format(y_qtls[1]-y_qtls[0])
         q_p_str = y_str_format.format(y_qtls[2]-y_qtls[1])
@@ -257,7 +257,7 @@ def plot_function_heatmap_contours_given_irregular_points_corner(x_symbols, xpoi
         xlower = np.min(xpoints, axis=0)
     if xupper == None:
         xupper = np.max(xpoints, axis=0)
-    
+
     fig = plt.figure(figsize=fig_size)
     left, bottom, right, top, wspace, hspace = fig_lbrtwh
     plot = GridSpec(dims, dims, left=left, bottom=bottom, right=right, top=top, wspace=wspace, hspace=hspace)
@@ -298,26 +298,26 @@ def plot_function_heatmap_contours_given_irregular_points_corner(x_symbols, xpoi
         plt.close()
 
 def plot_function_heatmap_averaged_grid_given_irregular_points_corner(x_symbols, xpoints, fpoints, flabel='f', xlower=None, xupper=None, x_bins=20, show_cbar=True, show_points=True, points_size=1., points_alpha=1., fig_size=(16,16), fig_lbrtwh=[0.05, 0.05, 0.98, 0.98, 0.05, 0.05], afs=10, tfs=12, lfs=10, save_name='no_name_fig.pdf', save_fig=False):
-    
+
     if any(np.isinf(fpoints)):
         bools_inf = np.isinf(fpoints)
         xpoints = xpoints[~bools_inf]
         fpoints = fpoints[~bools_inf]
         print('Infinite f values provided; discarding those points (n = %s).' % np.sum(bools_inf))
-    
+
     dims = len(x_symbols)
     if xlower == None:
         xlower = np.min(xpoints, axis=0)
     if xupper == None:
         xupper = np.max(xpoints, axis=0)
-    
+
     fig = plt.figure(figsize=fig_size)
     left, bottom, right, top, wspace, hspace = fig_lbrtwh
     plot = GridSpec(dims, dims, left=left, bottom=bottom, right=right, top=top, wspace=wspace, hspace=hspace)
     for i in range(dims): # indexes the row or y-axis variable
         for j in range(i): # indexes the column or x-axis variable
             ax = plt.subplot(plot[i,j])
-            
+
             # Construct the grid of averaged f values from the points in each grid square:
             grid_f_avg = np.zeros((x_bins, x_bins))
             xj_bins = np.linspace(xlower[j], xupper[j], x_bins+1)
@@ -333,7 +333,7 @@ def plot_function_heatmap_averaged_grid_given_irregular_points_corner(x_symbols,
             current_cmap = cm.get_cmap()
             current_cmap.set_bad(color='red')
             plt.imshow(grid_f_avg, aspect='auto', origin='lower', extent=(xlower[j], xupper[j], xlower[i], xupper[i]))
-            
+
             if show_points:
                 plt.scatter(xpoints[:,j], xpoints[:,i], s=points_size, alpha=points_alpha, c='k')
             ax.axis((xlower[j], xupper[j], xlower[i], xupper[i]))
@@ -369,4 +369,3 @@ def plot_function_heatmap_averaged_grid_given_irregular_points_corner(x_symbols,
     if save_fig:
         plt.savefig(save_name)
         plt.close()
-
