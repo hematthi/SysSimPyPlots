@@ -29,7 +29,7 @@ from src.functions_plot_params import *
 
 savefigures = False
 
-savefigures_directory = '../../Meeting_plots/Nov_20_2020/'
+savefigures_directory = '/Users/hematthi/Documents/GradSchool/Misc_Presentations/PhD_Thesis_Defense/Figures/'
 save_name = 'Models_Compare_Kepler'
 
 compute_ratios = compute_ratios_adjacent
@@ -60,8 +60,8 @@ dists_include = ['delta_f',
 ##### To load the files with the systems with observed planets:
 
 # Model 1:
-loadfiles_directory1 = '/Users/hematthi/Documents/GradSchool/Research/ACI/Simulated_Data/AMD_system/Split_stars/Singles_ecc/Params11_KS/Distribute_AMD_per_mass/durations_norm_circ_singles_multis_GF2020_KS/GP_med/Extra_outputs/'
-run_number1 = '_a'
+loadfiles_directory1 = '/Users/hematthi/Documents/GradSchool/Research/ACI/Simulated_Data/Split_stars/Clustered_P_R_fswp_bprp/Params13_KS/durations_KS/GP_med/incl0_ecc0p02/' #incl0_ecc0p02/ #ecc0_incl1/
+run_number1 = ''
 
 N_sim, cos_factor, P_min, P_max, radii_min, radii_max = read_targets_period_radius_bounds(loadfiles_directory1 + 'periods%s.out' % run_number1)
 
@@ -69,8 +69,8 @@ param_vals_all1 = read_sim_params(loadfiles_directory1 + 'periods%s.out' % run_n
 sss_per_sys1, sss1 = compute_summary_stats_from_cat_obs(file_name_path=loadfiles_directory1, run_number=run_number1, compute_ratios=compute_ratios)
 
 # Model 2:
-loadfiles_directory2 = '/Users/hematthi/Documents/GradSchool/Research/ACI/Simulated_Data/AMD_system/Split_stars/Singles_ecc/Params11_KS/Distribute_AMD_per_mass/durations_norm_circ_singles_multis_GF2020_KS/GP_med/Extra_outputs/'
-run_number2 = '_b'
+loadfiles_directory2 = '/Users/hematthi/Documents/GradSchool/Research/ACI/Simulated_Data/Split_stars/Clustered_P_R_fswp_bprp/Params13_KS/durations_KS/GP_med/incl2_ecc0p02/' #incl2_ecc0p02/ #ecc0p1_incl1/
+run_number2 = ''
 
 param_vals_all2 = read_sim_params(loadfiles_directory2 + 'periods%s.out' % run_number2)
 sss_per_sys2, sss2 = compute_summary_stats_from_cat_obs(file_name_path=loadfiles_directory2, run_number=run_number2, compute_ratios=compute_ratios)
@@ -86,9 +86,9 @@ sss_per_sys2, sss2 = compute_summary_stats_from_cat_obs(file_name_path=loadfiles
 
 model_sss = [sss1, sss2]
 model_sss_per_sys = [sss_per_sys1, sss_per_sys2]
-model_names = [r'$\omega = {\rm atan}(x,y)$', r'$\omega \sim {\rm Unif}(-\pi,\pi)$'] # Make sure this matches the models loaded!
-model_linestyles = ['-', '--']
-model_colors = ['b', 'r']
+model_names = [r'$\sigma_i = 0^\circ$', r'$\sigma_i = 2^\circ$'] #[r'$\sigma_e = 0$', r'$\sigma_e = 0.1$'] #[r'$\sigma_i = 0^\circ$', r'$\sigma_i = 2^\circ$'] #[r'$\omega = {\rm atan}(x,y)$', r'$\omega \sim {\rm Unif}(-\pi,\pi)$'] # Make sure this matches the models loaded!
+model_linestyles = ['-', '-']
+model_colors = ['b', 'r'] #['b', 'r']
 
 # To load and process the observed Kepler catalog and compare with our simulated catalog:
 ssk_per_sys, ssk = compute_summary_stats_from_Kepler_catalog(P_min, P_max, radii_min, radii_max)
@@ -225,3 +225,11 @@ plt.text(x=0.98, y=0.9, s='Kepler data', ha='right', fontsize=lfs, transform=ax.
 if savefigures:
     plt.savefig(savefigures_directory + subdirectory + save_name + '_logxi_per_mult.pdf')
     plt.close()
+
+
+
+
+##### To remake the log(xi) plot for defense talk:
+
+plot_fig_pdf_simple((8,4), [np.log10(sss['xi_obs']) for sss in model_sss], [], x_min=-0.5, x_max=0.5, n_bins=n_bins, c_sim=model_colors, ls_sim=model_linestyles, lw=3, labels_sim=model_names, xlabel_text=r'$\log{\xi}$', afs=afs, tfs=tfs, lfs=20, legend=True, fig_lbrt=[0.15, 0.2, 0.95, 0.925], save_name=savefigures_directory + subdirectory + save_name + '_logxi_incl.pdf', save_fig=savefigures)
+plt.show()

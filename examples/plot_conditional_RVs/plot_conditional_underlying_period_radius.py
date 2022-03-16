@@ -33,8 +33,8 @@ from src.functions_compute_RVs import *
 ##### To load the underlying and observed populations:
 
 savefigures = False
-loadfiles_directory = '/Users/hematthi/Documents/GradSchool/Research/ACI/Simulated_Data/AMD_system/Split_stars/Singles_ecc/Params11_KS/Distribute_AMD_per_mass/durations_norm_circ_singles_multis_GF2020_KS/GP_med/Conditional_Venus/' #'Conditional_Venus/' #'Conditional_P8_12d_R1p5_2_transiting/'
-savefigures_directory = '/Users/hematthi/Documents/GradSchool/Research/ExoplanetsSysSim_Clusters/Figures/Model_Optimization/AMD_system/Split_stars/Singles_ecc/Params11_KS/Distribute_AMD_per_mass/durations_norm_circ_singles_multis_GF2020_KS/Best_models/GP_med/Systems_conditional/Conditional_Venus/' #'Conditional_Venus/' #'Conditional_P8_12d_R1p5_2_transiting/'
+loadfiles_directory = '/Users/hematthi/Documents/GradSchool/Research/ACI/Simulated_Data/AMD_system/Split_stars/Singles_ecc/Params11_KS/Distribute_AMD_per_mass/durations_norm_circ_singles_multis_GF2020_KS/GP_med/Conditional_P8_12d_R1p5_2_transiting/' #'Conditional_Venus/' #'Conditional_P8_12d_R1p5_2_transiting/'
+savefigures_directory = '/Users/hematthi/Documents/GradSchool/Research/ExoplanetsSysSim_Clusters/Figures/Model_Optimization/AMD_system/Split_stars/Singles_ecc/Params11_KS/Distribute_AMD_per_mass/durations_norm_circ_singles_multis_GF2020_KS/Best_models/GP_med/Systems_conditional/Conditional_P8_12d_R1p5_2_transiting/' #'Conditional_Venus/' #'Conditional_P8_12d_R1p5_2_transiting/'
 run_number = ''
 model_name = 'Maximum_AMD_model' + run_number
 
@@ -43,12 +43,12 @@ N_sim, cos_factor, P_min, P_max, radii_min, radii_max = read_targets_period_radi
 param_vals_all = read_sim_params(loadfiles_directory + 'periods%s.out' % run_number)
 sssp_per_sys, sssp = compute_summary_stats_from_cat_phys(file_name_path=loadfiles_directory, run_number=run_number, load_full_tables=True)
 
-#P_cond_bounds, Rp_cond_bounds, Mp_cond_bounds = [8.,11.3137], [1.5874,2.0], [0.,np.inf]
+P_cond_bounds, Rp_cond_bounds, Mp_cond_bounds = [8.,11.3137], [1.5874,2.0], [0.,np.inf]
 #P_cond_bounds, Rp_cond_bounds, Mp_cond_bounds = [8.,12.], [1.8,2.0], [0.,np.inf]
 #P_cond_bounds, Rp_cond_bounds, Mp_cond_bounds = [8.,12.], [0.9,1.1], [0.,np.inf]
 #P_cond_bounds, Rp_cond_bounds, Mp_cond_bounds = [8.,12.], [3.,4.], [0.,np.inf]
-P_cond_bounds, Rp_cond_bounds, Mp_cond_bounds = [215.,235.], [0.9,1.0], [0.77,0.86] # Venus
-det = False # set False for Venus
+#P_cond_bounds, Rp_cond_bounds, Mp_cond_bounds = [215.,235.], [0.9,1.0], [0.77,0.86] # Venus
+det = True # set False for Venus
 conds = conditionals_dict(P_cond_bounds=P_cond_bounds, Rp_cond_bounds=Rp_cond_bounds, Mp_cond_bounds=Mp_cond_bounds, det=det)
 
 n_per_sys = sssp_per_sys['Mtot_all']
@@ -175,7 +175,104 @@ bleg, tleg = tgrid - (tgrid-bgrid)/n_R_bins, tgrid
 
 
 
-# Occurrence rates (intrinsic mean number of planets per star and fraction of stars with planets) in each bin:
+# First, plot overall occurrence rates (all systems):
+
+fig = plt.figure(figsize=(16,8))
+plot = GridSpec(1,1,left=lgrid,bottom=bgrid,right=rgrid,top=tgrid)
+plt.figtext(0.5, 0.95, r'Occurrence rates', va='center', ha='center', fontsize=tfs)
+
+ax = plt.subplot(plot[:,:])
+mpps_grid = np.zeros((n_R_bins, n_P_bins))
+mpps_dlnPR_grid = np.zeros((n_R_bins, n_P_bins))
+for j in range(n_R_bins):
+    for i in range(n_P_bins):
+        dlnP, dlnR = np.log(P_bins[i+1]/P_bins[i]), np.log(R_bins[j+1]/R_bins[j])
+        pl_cell_bools_full = (P_all_full > P_bins[i]) & (P_all_full < P_bins[i+1]) & (Rp_all_full > R_bins[j]) & (Rp_all_full < R_bins[j+1])
+        pl_tot_cell_full = np.sum(pl_cell_bools_full)
+        sys_cell_bools_full = np.any(pl_cell_bools_full, axis=1)
+        sys_tot_cell_full = np.sum(sys_cell_bools_full)
+        print('(i=%s,j=%s): n_pl (all) = %s/%s' % (i,j,pl_tot_cell_full,n_sys_full))
+        
+        mpps_cell_full = pl_tot_cell_full/n_sys_full # mean number of planets in bin per star, for all systems
+        mpps_dlnPR_cell_full = mpps_cell_full/(dlnP*dlnR)
+        mpps_grid[j,i] = mpps_cell_full
+        mpps_dlnPR_grid[j,i] = mpps_dlnPR_cell_full
+        
+        plt.text(x=(i+0.95)*(1./n_P_bins), y=(j+0.95)*(1./n_R_bins), s=r'${:.3f}$'.format(np.round(mpps_cell_full, 3)), ha='right', va='top', color='b', fontsize=sfs, transform=ax.transAxes)
+        plt.text(x=(i+0.05)*(1./n_P_bins), y=(j+0.5)*(1./n_R_bins), s=r'${:.2f}$'.format(np.round(mpps_dlnPR_cell_full, 2)), ha='left', va='center', color='k', fontsize=mfs, fontweight='bold', transform=ax.transAxes)
+img = plt.imshow(mpps_dlnPR_grid, cmap='coolwarm', aspect='auto', interpolation="nearest", origin='lower', extent=np.log10((P_bins[0], P_bins[-1], R_bins[0], R_bins[-1]))) #cmap='coolwarm'
+ax.tick_params(axis='both', labelsize=afs)
+plt.xticks(np.log10(P_bins[::2]), ['{:.1f}'.format(x) for x in P_bins[::2]])
+plt.yticks(np.log10(R_bins[::3]), ['{:.1f}'.format(x) for x in R_bins[::3]])
+plt.xlabel(r'Orbital period $P$ (days)', fontsize=tfs)
+plt.ylabel(r'Planet radius $R_p$ ($R_\oplus$)', fontsize=tfs)
+
+plot = GridSpec(1,1,left=rgrid+0.01,bottom=bgrid,right=rgrid+0.03,top=tgrid) # colorbar
+cax = plt.subplot(plot[:,:])
+cbar = plt.colorbar(img, cax=cax)
+cbar.ax.tick_params(labelsize=lfs)
+cbar.set_label(r'$\frac{\bar{n}_{\rm bin}}{d(\ln{R_p}) d(\ln{P})}$', rotation=270, va='bottom', fontsize=tfs)
+
+plot = GridSpec(1,1,left=lleg,bottom=bleg,right=rleg,top=tleg) # legend
+ax = plt.subplot(plot[:,:])
+plt.text(x=0.95, y=0.9, s='(2)', ha='right', va='top', color='b', fontsize=sfs, transform=ax.transAxes)
+plt.text(x=0.05, y=0.5, s='(1)', ha='left', va='center', color='k', fontsize=mfs, transform=ax.transAxes)
+plt.text(x=-0.3, y=-1.5, s=r'(1) $\frac{\bar{n}_{\rm bin}}{d(\ln{R_p}) d(\ln{P})}$', ha='left', va='center', color='k', fontsize=lfs, transform=ax.transAxes)
+plt.text(x=-0.3, y=-2.25, s=r'(2) $\bar{n}_{\rm bin}$', ha='left', va='center', color='b', fontsize=lfs, transform=ax.transAxes)
+plt.xticks([])
+plt.yticks([])
+plt.xlabel('Legend', fontsize=tfs)
+
+if savefigures:
+    fig_name = savefigures_directory + model_name + '_all_PR_grid_rates.pdf'
+    plt.savefig(fig_name)
+    plt.close()
+
+##### Remake for defense talk:
+
+fig = plt.figure(figsize=(16,8))
+plot = GridSpec(1,1,left=0.1,bottom=bgrid,right=0.865,top=tgrid,wspace=0,hspace=0)
+plt.figtext(0.5, 0.95, r'Occurrence rates over all systems', va='center', ha='center', fontsize=tfs)
+
+ax = plt.subplot(plot[:,:])
+mpps_grid = np.zeros((n_R_bins, n_P_bins))
+mpps_dlnPR_grid = np.zeros((n_R_bins, n_P_bins))
+for j in range(n_R_bins):
+    for i in range(n_P_bins):
+        dlnP, dlnR = np.log(P_bins[i+1]/P_bins[i]), np.log(R_bins[j+1]/R_bins[j])
+        pl_cell_bools_full = (P_all_full > P_bins[i]) & (P_all_full < P_bins[i+1]) & (Rp_all_full > R_bins[j]) & (Rp_all_full < R_bins[j+1])
+        pl_tot_cell_full = np.sum(pl_cell_bools_full)
+        sys_cell_bools_full = np.any(pl_cell_bools_full, axis=1)
+        sys_tot_cell_full = np.sum(sys_cell_bools_full)
+        print('(i=%s,j=%s): n_pl (all) = %s/%s' % (i,j,pl_tot_cell_full,n_sys_full))
+        
+        mpps_cell_full = pl_tot_cell_full/n_sys_full # mean number of planets in bin per star, for all systems
+        mpps_dlnPR_cell_full = mpps_cell_full/(dlnP*dlnR)
+        mpps_grid[j,i] = mpps_cell_full
+        mpps_dlnPR_grid[j,i] = mpps_dlnPR_cell_full
+        
+        plt.text(x=(i+0.5)*(1./n_P_bins), y=(j+0.5)*(1./n_R_bins), s=r'${:.3f}$'.format(np.round(mpps_cell_full, 3)), ha='center', va='center', color='k', fontsize=16, fontweight='bold', transform=ax.transAxes)
+img = plt.imshow(mpps_grid, cmap='coolwarm', aspect='auto', interpolation="nearest", vmax=0.072, origin='lower', extent=np.log10((P_bins[0], P_bins[-1], R_bins[0], R_bins[-1]))) #cmap='coolwarm'
+ax.tick_params(axis='both', labelsize=afs)
+plt.xticks(np.log10(P_bins[::2]), ['{:.1f}'.format(x) for x in P_bins[::2]])
+plt.yticks(np.log10(R_bins[::3]), ['{:.1f}'.format(x) for x in R_bins[::3]])
+plt.xlabel(r'Orbital period $P$ (days)', fontsize=tfs)
+plt.ylabel(r'Planet radius $R_p$ ($R_\oplus$)', fontsize=tfs)
+
+plot = GridSpec(1,1,left=0.89,bottom=bgrid,right=0.92,top=tgrid) # colorbar
+cax = plt.subplot(plot[:,:])
+cbar = plt.colorbar(img, cax=cax)
+cbar.ax.tick_params(labelsize=lfs)
+cbar.set_label(r'$\bar{n}_{\rm bin,all}$', rotation=270, va='bottom', fontsize=tfs)
+
+if savefigures:
+    fig_name = savefigures_directory + model_name + '_all_PR_grid_rates_simple.pdf'
+    plt.savefig(fig_name)
+    plt.close()
+
+
+
+# Occurrence rates in the conditioned systems:
 
 fig = plt.figure(figsize=(16,8))
 plot = GridSpec(1,1,left=lgrid,bottom=bgrid,right=rgrid,top=tgrid)
@@ -230,6 +327,53 @@ plt.xlabel('Legend', fontsize=tfs)
 
 if savefigures:
     fig_name = savefigures_directory + model_name + '_P%s_%s_R%s_%s_cond_PR_grid_rates.pdf' % (P_cond_bounds[0], P_cond_bounds[1], Rp_cond_bounds[0], Rp_cond_bounds[1])
+    plt.savefig(fig_name)
+    plt.close()
+
+##### Remake for defense talk:
+
+fig = plt.figure(figsize=(16,8))
+plot = GridSpec(1,1,left=0.1,bottom=bgrid,right=0.865,top=tgrid,wspace=0,hspace=0)
+plt.figtext(0.5, 0.95, r'Occurrence rates conditioned on a planet in $P = [{:.1f},{:.1f}]$d, $R_p = [{:.2f},{:.2f}] R_\oplus$'.format(conds['P_lower'], conds['P_upper'], conds['Rp_lower'], conds['Rp_upper']), va='center', ha='center', fontsize=tfs)
+#plt.figtext(0.5, 0.95, r'Occurrence rates conditioned on a Venus-like planet', va='center', ha='center', fontsize=tfs)
+
+ax = plt.subplot(plot[:,:])
+mpps_grid = np.zeros((n_R_bins, n_P_bins))
+mpps_dlnPR_grid = np.zeros((n_R_bins, n_P_bins))
+fswp_grid = np.zeros((n_R_bins, n_P_bins))
+for j in range(n_R_bins):
+    for i in range(n_P_bins):
+        dlnP, dlnR = np.log(P_bins[i+1]/P_bins[i]), np.log(R_bins[j+1]/R_bins[j])
+        pl_cell_bools = (P_all_cond > P_bins[i]) & (P_all_cond < P_bins[i+1]) & (Rp_all_cond > R_bins[j]) & (Rp_all_cond < R_bins[j+1]) & (~bools_cond_all_cond) # last condition is to NOT count the conditioned planets themselves
+        pl_tot_cell = np.sum(pl_cell_bools)
+        sys_cell_bools = np.any(pl_cell_bools, axis=1)
+        sys_tot_cell = np.sum(sys_cell_bools)
+        
+        mpps_cell = pl_tot_cell/n_sys_cond # mean number of planets in bin per star, for conditioned systems
+        mpps_dlnPR_cell = mpps_cell/(dlnP*dlnR)
+        fswp_cell = sys_tot_cell/n_sys_cond # fraction of stars with planets in bin, for conditioned systems
+        mpps_grid[j,i] = mpps_cell
+        mpps_dlnPR_grid[j,i] = mpps_dlnPR_cell
+        fswp_grid[j,i] = fswp_cell
+        
+        plt.text(x=(i+0.5)*(1./n_P_bins), y=(j+0.5)*(1./n_R_bins), s=r'${:.3f}$'.format(np.round(mpps_cell, 3)), ha='center', va='center', color='k', fontsize=16, fontweight='bold', transform=ax.transAxes)
+img = plt.imshow(mpps_grid, cmap='coolwarm', aspect='auto', interpolation="nearest", vmax=0.072, origin='lower', extent=np.log10((P_bins[0], P_bins[-1], R_bins[0], R_bins[-1]))) #cmap='coolwarm'
+box_cond = patches.Rectangle(np.log10((conds['P_lower'], conds['Rp_lower'])), np.log10(conds['P_upper']/conds['P_lower']), np.log10(conds['Rp_upper']/conds['Rp_lower']), linewidth=2, edgecolor='g', facecolor='none')
+ax.add_patch(box_cond)
+ax.tick_params(axis='both', labelsize=afs)
+plt.xticks(np.log10(P_bins[::2]), ['{:.1f}'.format(x) for x in P_bins[::2]])
+plt.yticks(np.log10(R_bins[::3]), ['{:.1f}'.format(x) for x in R_bins[::3]])
+plt.xlabel(r'Orbital period $P$ (days)', fontsize=tfs)
+plt.ylabel(r'Planet radius $R_p$ ($R_\oplus$)', fontsize=tfs)
+
+plot = GridSpec(1,1,left=0.89,bottom=bgrid,right=0.92,top=tgrid) # colorbar
+cax = plt.subplot(plot[:,:])
+cbar = plt.colorbar(img, cax=cax)
+cbar.ax.tick_params(labelsize=lfs)
+cbar.set_label(r'$\bar{n}_{\rm bin,cond}$', rotation=270, va='bottom', fontsize=tfs)
+
+if savefigures:
+    fig_name = savefigures_directory + model_name + '_P%s_%s_R%s_%s_cond_PR_grid_rates_simple.pdf' % (P_cond_bounds[0], P_cond_bounds[1], Rp_cond_bounds[0], Rp_cond_bounds[1])
     plt.savefig(fig_name)
     plt.close()
 
@@ -305,7 +449,7 @@ if savefigures:
     plt.close()
 plt.show()
 
-# Remake relative occurrence rates for paper version:
+##### Remake relative occurrence rates for paper version:
 
 fig = plt.figure(figsize=(16,8))
 plot = GridSpec(1,1,left=0.1,bottom=bgrid,right=0.865,top=tgrid,wspace=0,hspace=0)

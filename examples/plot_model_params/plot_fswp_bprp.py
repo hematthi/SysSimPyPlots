@@ -77,13 +77,13 @@ param_vals_all_KS_2 = []
 for i in range(1,runs+1): #range(1,runs+1)
     run_number = i
     
-    param_vals_i = read_sim_params(loadfiles_directory1_KS+'periods%s.out' % run_number)
+    param_vals_i = read_sim_params(loadfiles_directory1_KS+'observed_catalog_stars%s.csv' % run_number)
     param_vals_all_KS_1.append(param_vals_i)
 
     #param_vals_i = read_sim_params(loadfiles_directory1_AD+'periods%s.out' % run_number)
     #param_vals_all_AD_1.append(param_vals_i)
 
-    param_vals_i = read_sim_params(loadfiles_directory2_KS+'periods%s.out' % run_number)
+    param_vals_i = read_sim_params(loadfiles_directory2_KS+'observed_catalog_stars%s.csv' % run_number)
     param_vals_all_KS_2.append(param_vals_i)
     
     #param_vals_i = read_sim_params(loadfiles_directory2_AD+'periods%s.out' % run_number)
@@ -127,14 +127,14 @@ lfs = 14 #legend labels font size
 
 c1, c2 = 'b', 'g'
 
-fig = plt.figure(figsize=(7,8)) #(10,8), (7,8)
+fig = plt.figure(figsize=(10,8)) #(10,8), (7,8)
 
 plot = GridSpec(1,1,left=0.12,bottom=0.85,right=0.95,top=0.98,wspace=0,hspace=0)
 ax = plt.subplot(plot[0,0])
 plt.hist(bp_rp_all, bins=bp_rp_array, label='FGK stars')
 plt.axvline(x=bp_rp_corr_med, c='k', ls='--', label='Median') #label=r'Median $b_p - r_p - E^*(b_p - r_p)$'
-plt.annotate(r'10%', xy=(bp_rp_10, 0), xytext=(bp_rp_10, 2000), arrowprops=dict(arrowstyle="->"), ha='center')
-plt.annotate(r'90%', xy=(bp_rp_90, 0), xytext=(bp_rp_90, 1000), arrowprops=dict(arrowstyle="->"), ha='center')
+#plt.annotate(r'10%', xy=(bp_rp_10, 0), xytext=(bp_rp_10, 2000), arrowprops=dict(arrowstyle="->"), ha='center')
+#plt.annotate(r'90%', xy=(bp_rp_90, 0), xytext=(bp_rp_90, 1000), arrowprops=dict(arrowstyle="->"), ha='center')
 plt.xlim([np.min(bp_rp_all), np.max(bp_rp_all)])
 ax.tick_params(labelbottom=False)
 plt.yticks([])
@@ -143,14 +143,14 @@ plt.legend(loc='upper right', bbox_to_anchor=(1,1), ncol=1, frameon=False, fonts
 
 plot = GridSpec(1,1,left=0.12,bottom=0.1,right=0.95,top=0.8,wspace=0,hspace=0)
 ax = plt.subplot(plot[0,0])
-plt.plot(bp_rp_array, fswp_sim_2, lw=3, c=c2, label=r'$\frac{df_{\rm swpa}}{d(b_p-r_p-E^*)} = %s$, $f_{\rm swpa,med} = %s$' % (slope_2, fswp_med_2))
+#plt.plot(bp_rp_array, fswp_sim_2, lw=3, c=c2, label=r'$\frac{df_{\rm swpa}}{d(b_p-r_p-E^*)} = %s$, $f_{\rm swpa,med} = %s$' % (slope_2, fswp_med_2))
 plt.plot(bp_rp_array, fswp_sim_1, lw=3, c=c1, label=r'$\frac{df_{\rm swpa}}{d(b_p-r_p-E^*)} = %s$, $f_{\rm swpa,med} = %s$' % (slope_1, fswp_med_1))
-plt.text(x=0.98, y=0.7, s='Maximum AMD model', ha='right', fontsize=lfs, color=c2, transform=ax.transAxes)
-plt.text(x=0.98, y=0.65, s='Two-Rayleigh model', ha='right', fontsize=lfs, color=c1, transform=ax.transAxes)
-plt.fill_between(bp_rp_array, fswp_16_KS_2, fswp_84_KS_2, color=c2, alpha=0.4)
-plt.fill_between(bp_rp_array, fswp_16_KS_1, fswp_84_KS_1, color=c1, alpha=0.4) # label='$1\sigma$ region using KS'
-for pvs in param_vals_all_KS_2:
-    plt.plot(bp_rp_array, linear_fswp_bprp(bp_rp_array, bp_rp_corr_med, fswp_med=pvs["f_stars_with_planets_attempted_at_med_color"], slope=pvs["f_stars_with_planets_attempted_color_slope"]), lw=1, c=c2, alpha=0.2, label=None)
+#plt.text(x=0.98, y=0.7, s='Maximum AMD model', ha='right', fontsize=lfs, color=c2, transform=ax.transAxes)
+#plt.text(x=0.98, y=0.65, s='Two-Rayleigh model', ha='right', fontsize=lfs, color=c1, transform=ax.transAxes)
+#plt.fill_between(bp_rp_array, fswp_16_KS_2, fswp_84_KS_2, color=c2, alpha=0.4)
+plt.fill_between(bp_rp_array, fswp_16_KS_1, fswp_84_KS_1, color=c1, alpha=0.4, label='$1\sigma$ region using KS') # label='$1\sigma$ region using KS'
+#for pvs in param_vals_all_KS_2:
+#    plt.plot(bp_rp_array, linear_fswp_bprp(bp_rp_array, bp_rp_corr_med, fswp_med=pvs["f_stars_with_planets_attempted_at_med_color"], slope=pvs["f_stars_with_planets_attempted_color_slope"]), lw=1, c=c2, alpha=0.2, label=None)
 for pvs in param_vals_all_KS_1:
     plt.plot(bp_rp_array, linear_fswp_bprp(bp_rp_array, bp_rp_corr_med, fswp_med=pvs["f_stars_with_planets_attempted_at_med_color"], slope=pvs["f_stars_with_planets_attempted_color_slope"]), lw=1, c=c1, alpha=0.2, label=None)
 #for pvs in param_vals_all_AD_1:
