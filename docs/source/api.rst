@@ -10,3 +10,8 @@ Detailed API
    :toctree: generated
 
    functions_general
+
+
+.. autofunction::
+   functions_general.a_from_P
+   functions_general.AMD
