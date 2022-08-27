@@ -1,7 +1,7 @@
 # To import required modules:
 import numpy as np
-from matplotlib.colors import LogNorm #for log color scales
-from scipy.special import erf #error function, used in computing CDF of normal distribution
+from matplotlib.colors import LogNorm # for log color scales
+from scipy.special import erf # error function, used in computing CDF of normal distribution
 
 
 
@@ -23,7 +23,7 @@ Rjup = 6.991*10.**9. # Jupiter radius in cm
 
 # Miscellaneous definitions:
 
-res_ratios, res_width = [2.0, 1.5, 4/3., 5/4.], 0.05 #NOTE: in the model, the near-resonant planets have period ratios between X and (1+w)*X where X = [2/1, 3/2, 4/3, 5/4] and w = 0.05!
+res_ratios, res_width = [2.0, 1.5, 4/3., 5/4.], 0.05 # NOTE: in the model, the near-resonant planets have period ratios between X and (1+w)*X where X = [2/1, 3/2, 4/3, 5/4] and w = 0.05
 
 
 
@@ -33,8 +33,27 @@ res_ratios, res_width = [2.0, 1.5, 4/3., 5/4.], 0.05 #NOTE: in the model, the ne
 
 def a_from_P(P, Mstar):
     # Convert period (days) to semi-major axis (AU) assuming mass of planet m << Mstar (Msun)
-    y = (P/365.25)**(2./3.)*(Mstar/1.0)**(1./3.)
-    return y
+    """
+    Compute the semi-major axis using Kepler's third law.
+
+    Note
+    ----
+    Assumes that the planet mass is negligible compared to the stellar mass.
+
+    Parameters
+    ----------
+    P : float or array[floats]
+        The orbital period(s) (days).
+    Mstar : float or array[floats]
+        The stellar mass(es) (solar masses).
+
+    Returns
+    -------
+    a : float or array[floats]
+        The semi-major axis/axes (AU).
+    """
+    a = (P/365.25)**(2./3.)*(Mstar/1.0)**(1./3.)
+    return a
 
 def P_from_a(a, Mstar):
     # Convert semi-major axis (AU) to period (days) assuming mass of planet m << Mstar (Msun)
@@ -57,9 +76,31 @@ def tdur_circ(P, Mstar, Rstar):
     return y
 
 def AMD(mu, a, e, im):
-    # Compute the AMD (angular momentum deficit) of a planet given the planet/star mass ratio mu, semimajor axis a (AU), eccentricity e, and mutual inclination im (rad); assumes GMstar = 1
-    y = mu*np.sqrt(a) * (1. - np.sqrt(1. - e**2.)*np.cos(im))
-    return y
+    """
+    Compute the AMD (angular momentum deficit) of a planet or planets.
+
+    Note
+    ----
+    Uses units of ``G*M_star = 1``.
+
+    Parameters
+    ----------
+    mu : float or array[floats]
+        The planet/star mass ratio(s).
+    a : float or array[floats]
+        The semi-major axis/axes (AU).
+    e : float or array[floats]
+        The eccentricity/eccentricities.
+    im : float or array[floats]
+        The inclination(s) relative to the system invariable plane (radians).
+
+    Returns
+    -------
+    amd_pl : float or array[floats]
+        The AMD(s) of the planet(s).
+    """
+    amd_pl = mu*np.sqrt(a) * (1. - np.sqrt(1. - e**2.)*np.cos(im))
+    return amd_pl
 
 def photoevap_boundary_Carrera2018(R, P):
     # R is the planet radius in Earth radii, P is the period in days
@@ -90,11 +131,11 @@ def cdf_empirical(xdata, xeval):
     if xeval.ndim == 0:
         xeval = xeval[None] # turn x_eval into array with 1 element
         is_xeval_scalar = True
-    
+
     cdf_at_xeval = np.zeros(len(xeval))
     for i,x in enumerate(xeval):
         cdf_at_xeval[i] = np.sum(xdata <= x)/N
-    
+
     if is_xeval_scalar:
         return np.squeeze(cdf_at_xeval)
     return cdf_at_xeval
@@ -107,7 +148,7 @@ def calc_f_near_pratios(sssp_per_sys, pratios=res_ratios, pratio_width=res_width
         mmr_sys = np.zeros(len(p_sys))
         pr_sys = p_sys[1:]/p_sys[:-1]
         pr_mmr_sys = np.zeros(len(pr_sys))
-        
+
         for mmr in res_ratios:
             pr_mmr_sys[(pr_sys >= mmr) & (pr_sys <= mmr*(1.+res_width))] = 1
         for j,res in enumerate(pr_mmr_sys):
@@ -122,14 +163,14 @@ def compute_ratios_adjacent(x):
     # This function computes an array of the adjacent ratios (x[j+1]/x[j]) of the terms given in an input array
     if len(x) <= 1:
         return np.array([])
-    
+
     return x[1:]/x[0:-1]
 
 def compute_ratios_all(x):
     # This function computes an array of all the unique ratios (x[j]/x[i] for j > i) of the terms given in an input array
     if len(x) <= 1:
         return np.array([])
-    
+
     ratios = list(x[1:]/x[0])
     for i in range(len(x)-2):
         ratios += list(x[i+2:]/x[i+1])
@@ -185,21 +226,21 @@ def Shannon_entropy(p):
     # Assuming natural log, although any choice is valid
     assert all(p >= 0), 'Negative probabilities!'
     assert all(p <= 1), 'Probabilities greater than 1!'
-    
+
     H = -np.sum(p*np.log(p))
     return H
 
 def disequilibrium(p):
     assert all(p >= 0), 'Negative probabilities!'
     assert all(p <= 1), 'Probabilities greater than 1!'
-    
+
     D = np.sum((p - (1./len(p)))**2.)
     return D
 
 def LMC_complexity(K, p):
     # Lopez-Ruiz, Mancini, & Calbet (1995) complexity; product of Shannon entropy and disequilibrium
     assert K > 0
-    
+
     H = Shannon_entropy(p)
     D = disequilibrium(p)
     C = K*H*D
@@ -234,7 +275,7 @@ def partitioning(x):
     # E.g. "mass partitioning", Q if x=mass, as in GF2020
     # Factor of (N/(N-1)) should normalize Q to (0,1)
     assert all(x >= 0), 'Negative x values!'
-    
+
     xnorm = x/np.sum(x)
     Q = (len(x)/(len(x)-1.))*disequilibrium(xnorm)
     return Q
@@ -277,14 +318,14 @@ def Cmax_approx_GF2020(n):
 
 # Useful functions for general purposes:
 
-# Class to set midpoint of colormap on a log scale:
-# Taken from: https://stackoverflow.com/questions/48625475/python-shifted-logarithmic-colorbar-white-color-offset-to-center
 class MidPointLogNorm(LogNorm):
+    """
+    Set the midpoint of a colormap on a log scale, taken from: https://stackoverflow.com/questions/48625475/python-shifted-logarithmic-colorbar-white-color-offset-to-center (in a post by ImportanceOfBeingErnest)
+    """
     def __init__(self, vmin=None, vmax=None, midpoint=None, clip=False):
         LogNorm.__init__(self,vmin=vmin, vmax=vmax, clip=clip)
         self.midpoint=midpoint
     def __call__(self, value, clip=None):
-        # I'm ignoring masked values and all kinds of edge cases to make a
-        # simple example...
+        result, is_scalar = self.process_value(value)
         x, y = [np.log(self.vmin), np.log(self.midpoint), np.log(self.vmax)], [0, 0.5, 1]
-        return np.ma.masked_array(np.interp(np.log(value), x, y))
+        return np.ma.array(np.interp(np.log(value), x, y), mask=result.mask, copy=False)
