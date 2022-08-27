@@ -7,11 +7,10 @@ Detailed API
 
 
 .. autosummary::
-   :toctree: generated
+   :toctree: _autosummary
 
    functions_general
 
 
-.. autofunction::
-   functions_general.a_from_P
-   functions_general.AMD
+.. autofunction:: functions_general.a_from_P
+.. autofunction:: functions_general.AMD
