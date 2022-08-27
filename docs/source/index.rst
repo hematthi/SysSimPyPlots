@@ -23,19 +23,19 @@ The scripts in this package have been used to produce the figures and results in
 
 - `Architectures of Exoplanetary Systems. I: A Clustered Forward Model for Exoplanetary Systems around Kepler's FGK Stars <https://ui.adsabs.harvard.edu/abs/2019MNRAS.490.4575H/abstract>`_
   **Matthias Y. He**, Eric B. Ford, Darin Ragozzine, 2019, MNRAS, 490, 4575-4605
-  `[arXiv] <https://arxiv.org/abs/1907.07773>`_
+  `[arXiv] <https://arxiv.org/abs/1907.07773>`__
 
 - `Architectures of Exoplanetary Systems. II: An Increase in Inner Planetary System Occurrence Towards Later Spectral Types for Kepler's FGK Dwarfs <https://ui.adsabs.harvard.edu/abs/2021AJ....161...16H/abstract>`_
   **Matthias Y. He**, Eric B. Ford, Darin Ragozzine, 2021a, AJ, 161, 16-40
-  `(arXiv) <https://arxiv.org/abs/2003.04348>`_
+  `[arXiv] <https://arxiv.org/abs/2003.04348>`__
 
 - `Architectures of Exoplanetary Systems. III: Eccentricity and Mutual Inclination Distributions of AMD-stable Planetary Systems <https://ui.adsabs.harvard.edu/abs/2020arXiv200714473H/abstract>`_
   **Matthias Y. He**, Eric B. Ford, Darin Ragozzine, Daniel Carrera, 2020, AJ, 160, 276-314
-  `(arXiv) <https://arxiv.org/abs/2007.14473>`_
+  `[arXiv] <https://arxiv.org/abs/2007.14473>`__
 
 - `Friends and Foes: Conditional Occurrence Rates of Exoplanet Companions and their Impact on Radial Velocity Follow-up Surveys <https://ui.adsabs.harvard.edu/abs/2021arXiv210504703H/abstract>`_
   **Matthias Y. He**, Eric B. Ford, Darin Ragozzine, 2021b, AJ, 162, 216-238
-  `(arXiv) <https://arxiv.org/abs/2105.04703>`_
+  `[arXiv] <https://arxiv.org/abs/2105.04703>`__
 
 
 Contents
