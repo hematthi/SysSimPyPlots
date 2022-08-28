@@ -8,9 +8,7 @@ Detailed API
 
 .. autosummary::
    :toctree: _autosummary
+   :template: custom-module-template.rst
+   :recursive:
 
-   functions_general
-
-
-.. autofunction:: functions_general.a_from_P
-.. autofunction:: functions_general.AMD
+   src
