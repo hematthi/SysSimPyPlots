@@ -3,8 +3,8 @@ import numpy as np
 import pandas as pd
 import time
 
-import src.syssimpyplots.general as gen
-import src.syssimpyplots.compare_kepler as ckep
+import syssimpyplots.general as gen
+import syssimpyplots.compare_kepler as ckep
 
 
 
