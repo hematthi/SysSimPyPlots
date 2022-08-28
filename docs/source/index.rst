@@ -46,4 +46,5 @@ Contents
 
    installation
    loading
+   histograms
    api
