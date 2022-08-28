@@ -2,7 +2,7 @@
 import numpy as np
 import os
 
-import src.syssimpyplots.functions_general as gen
+import src.syssimpyplots.general as gen
 
 path_data = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(__file__)))), 'data')
 
