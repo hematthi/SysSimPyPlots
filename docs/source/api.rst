@@ -11,4 +11,4 @@ Detailed API
    :template: custom-module-template.rst
    :recursive:
 
-   src
+   syssimpyplots
