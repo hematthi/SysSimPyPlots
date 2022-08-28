@@ -2,16 +2,17 @@
 import numpy as np
 import os
 
-import src.functions_general as gen
-from src.functions_load_sims import N_Kep
+import syssimpyplots.general as gen
 
-path_data = os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), 'data')
+path_data = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(__file__)))), 'data')
 
 
 
 
 
 # Functions to load and analyze the Kepler observed catalog:
+
+N_Kep = 86760 #86760 (Paper III) #88912 (Paper II) #79935 (Paper I) # number of Kepler targets satisfying our cuts to give our observed catalog
 
 def load_Kepler_planets_cleaned():
     # q1_q17_dr25_gaia_fgk_HFR2021a_koi_cleaned.csv for Paper II
@@ -29,13 +30,13 @@ def load_Kepler_stars_cleaned():
     return stars_cleaned
 
 def compute_summary_stats_from_Kepler_catalog(P_min, P_max, radii_min, radii_max, Rstar_min=0., Rstar_max=1e6, Mstar_min=0., Mstar_max=1e6, teff_min=0., teff_max=1e6, bp_rp_min=-1e6, bp_rp_max=1e6, i_stars_custom=None, compute_ratios=gen.compute_ratios_adjacent):
-    
+
     planets_cleaned = load_Kepler_planets_cleaned()
     stars_cleaned = load_Kepler_stars_cleaned()
-    
+
     if i_stars_custom is not None:
         stars_cleaned = stars_cleaned[i_stars_custom]
-        
+
         i_pl_from_stars = []
         for i,kepid in enumerate(planets_cleaned['kepid']):
             i_stars_cleaned = np.where(stars_cleaned['kepid'] == kepid)[0]
@@ -60,11 +61,11 @@ def compute_summary_stats_from_Kepler_catalog(P_min, P_max, radii_min, radii_max
         bp_rp_per_pl[i] = stars_cleaned['bp_rp'][i_stars_cleaned]
         e_bp_rp_per_pl[i] = stars_cleaned['e_bp_rp_interp'][i_stars_cleaned]
         cdpp4p5_per_pl[i] = stars_cleaned['rrmscdpp04p5'][i_stars_cleaned]
-    
+
     planets_cleaned['Rstar'] = Rstar_per_pl
     planets_cleaned['Mstar'] = Mstar_per_pl
     planets_cleaned['teff'] = teff_per_pl
-    
+
     # To make cuts in period, planet radii, and stellar properties:
     indices_keep = np.arange(len(planets_cleaned))[(planets_cleaned['P'] >= P_min) &
                                                    (planets_cleaned['P'] < P_max) &
@@ -80,16 +81,16 @@ def compute_summary_stats_from_Kepler_catalog(P_min, P_max, radii_min, radii_max
                                                    (bp_rp_per_pl - e_bp_rp_per_pl < bp_rp_max)]
 
     planets_cleaned = planets_cleaned[indices_keep]
-    
-    
-    
+
+
+
     Rstar_cand = Rstar_per_pl[indices_keep] #planets_cleaned['Rstar']
     Mstar_cand = Mstar_per_pl[indices_keep] #planets_cleaned['Mstar']
     teff_cand = teff_per_pl[indices_keep] #planets_cleaned['teff']
     bp_rp_cand = bp_rp_per_pl[indices_keep]
     e_bp_rp_cand = e_bp_rp_per_pl[indices_keep]
     cdpp4p5_cand = cdpp4p5_per_pl[indices_keep]
-    
+
     # To keep arrays for the stellar properties only counting each star once:
     Rstar_sys_cand = []
     Mstar_sys_cand = []
@@ -97,7 +98,7 @@ def compute_summary_stats_from_Kepler_catalog(P_min, P_max, radii_min, radii_max
     bp_rp_sys_cand = []
     e_bp_rp_sys_cand = []
     cdpp4p5_sys_cand = []
-    
+
 
 
     #To compute the arrays of observables:
@@ -122,7 +123,7 @@ def compute_summary_stats_from_Kepler_catalog(P_min, P_max, radii_min, radii_max
     xi_res21_cand = [] # period-normalized duration ratios of planet pairs near 2:1 resonance
     xi_nonres_cand = [] # period-normalized duration ratios of planet pairs not near resonance
     tdur_cand = planets_cleaned['t_D'] # durations (hrs)
-    
+
     D_cand = planets_cleaned['depth']/(1e6) # depths (fraction)
     radii_cand = planets_cleaned['Rp'] # planet radii (Rearth)
     D_above_cand = [] # depths of planets above the photoevaporation boundary
@@ -143,7 +144,7 @@ def compute_summary_stats_from_Kepler_catalog(P_min, P_max, radii_min, radii_max
             system_bp_rp = bp_rp_cand[system_i][0]
             system_e_bp_rp = e_bp_rp_cand[system_i][0]
             system_cdpp4p5 = cdpp4p5_cand[system_i][0]
-            
+
             #To get the planet properties in this system:
             system_P = planets_cleaned['P'][system_i] #periods of all the planets in this system
             system_tdur = planets_cleaned['t_D'][system_i] #transit durations of all the planets in this system
@@ -154,13 +155,13 @@ def compute_summary_stats_from_Kepler_catalog(P_min, P_max, radii_min, radii_max
             system_tdur = system_tdur[system_sort_i] #transit durations of all the planets in this system, sorted by period
             system_D = system_D[system_sort_i] #transit depths of all the planets in this system, sorted by period
             system_radii = system_radii[system_sort_i] #radii of all the planets in this system, sorted by period
-            
+
             system_tdur_tcirc = system_tdur/gen.tdur_circ(system_P, system_Mstar, system_Rstar)
-            
+
             system_Rm = compute_ratios(system_P) #period ratios of all the adjacent planet pairs in this system
             system_D_ratio = compute_ratios(system_D) #transit depth ratios of all the adjacent planet pairs in this system
             system_xi = (1./compute_ratios(system_tdur))*compute_ratios(system_P)**(1./3.) #period-normalized transit duration ratios of all the adjacent planet pairs in this system
-            
+
             # To append the stellar properties counting the star only once:
             Rstar_sys_cand.append(system_Rstar)
             Mstar_sys_cand.append(system_Mstar)
@@ -168,10 +169,10 @@ def compute_summary_stats_from_Kepler_catalog(P_min, P_max, radii_min, radii_max
             bp_rp_sys_cand.append(system_bp_rp)
             e_bp_rp_sys_cand.append(system_e_bp_rp)
             cdpp4p5_sys_cand.append(system_cdpp4p5)
-            
+
             # To count the total number of planets in this system:
             M_cand.append(len(system_P))
-            
+
             # To save arrays of planet properties per system:
             P_sys_cand.append(list(system_P) + [-1]*(pad_extra - len(system_P)))
             D_sys_cand.append(list(system_D) + [-1]*(pad_extra - len(system_D)))
@@ -181,12 +182,12 @@ def compute_summary_stats_from_Kepler_catalog(P_min, P_max, radii_min, radii_max
             Rm_sys_cand.append(list(system_Rm) + [-1]*(pad_extra - len(system_Rm)))
             D_ratio_sys_cand.append(list(system_D_ratio) + [-1]*(pad_extra - len(system_D_ratio)))
             xi_sys_cand.append(list(system_xi) + [-1]*(pad_extra - len(system_xi)))
-            
+
             # To separate into planet pairs near vs. not in resonance:
             mask_res_system = np.zeros(len(system_Rm), dtype=bool)
             mask_res32_system = np.zeros(len(system_Rm), dtype=bool)
             mask_res21_system = np.zeros(len(system_Rm), dtype=bool)
-            
+
             for ratio in gen.res_ratios:
                 mask_res_system[(system_Rm >= ratio) & (system_Rm <= ratio*(1.+gen.res_width))] = 1
 
@@ -198,7 +199,7 @@ def compute_summary_stats_from_Kepler_catalog(P_min, P_max, radii_min, radii_max
             system_xi_nonres = system_xi[~mask_res_system]
             #if sum(mask_res_system) > 0:
             #print(system_R[mask_res_system], system_xi_res)
-            
+
             for Rm in system_Rm:
                 Rm_cand.append(Rm)
             for D_ratio in system_D_ratio:
@@ -218,11 +219,11 @@ def compute_summary_stats_from_Kepler_catalog(P_min, P_max, radii_min, radii_max
             system_above_bools = np.array([gen.photoevap_boundary_Carrera2018(system_radii[x], system_P[x]) for x in range(len(system_P))])
             #if len(system_above_bools) > 1:
             #print(system_above_bools)
-            
+
             #To record the transit depths of the planets above and below the boundary:
             for j in range(len(system_D)):
                 D_above_cand.append(system_D[j]) if system_above_bools[j] == 1 else D_below_cand.append(system_D[j])
-                
+
             #To record the transit depth ratios of the planets above, below, and across the boundary:
             if compute_ratios == gen.compute_ratios_adjacent:
                 for j in range(len(system_D_ratio)):
@@ -282,7 +283,7 @@ def compute_summary_stats_from_Kepler_catalog(P_min, P_max, radii_min, radii_max
     tdur_tcirc_2p_cand = tdur_tcirc_2p_cand[~np.isnan(tdur_tcirc_2p_cand)] # observed multis, 1d
 
     # Create dictionaries to hold summary stats ('ssk' stands for 'summary stats Kepler'):
-    
+
     ssk_per_sys = {}
     # Stellar properties:
     ssk_per_sys['Rstar_obs'] = Rstar_sys_cand
@@ -302,7 +303,7 @@ def compute_summary_stats_from_Kepler_catalog(P_min, P_max, radii_min, radii_max
     ssk_per_sys['Rm_obs'] = Rm_sys_cand
     ssk_per_sys['D_ratio_obs'] = D_ratio_sys_cand
     ssk_per_sys['xi_obs'] = xi_sys_cand
-    
+
     ssk = {}
     # Stellar properties (repeated to match number of planets):
     ssk['Rstar_obs'] = Rstar_cand
@@ -346,9 +347,9 @@ def compute_summary_stats_from_Kepler_catalog(P_min, P_max, radii_min, radii_max
     for i in range(Nsys_obs):
         P_sys = P_sys_cand[i][P_sys_cand[i] > 0]
         radii_sys = radii_sys_cand[i][P_sys_cand[i] > 0]
-        
+
         radii_star_ratio.append(gen.radii_star_ratio(radii_sys, Rstar_sys_cand[i]))
-        
+
         if len(radii_sys) >= 2:
             radii_partitioning.append(gen.partitioning(radii_sys))
             radii_monotonicity.append(gen.monotonicity_GF2020(radii_sys))
@@ -358,7 +359,7 @@ def compute_summary_stats_from_Kepler_catalog(P_min, P_max, radii_min, radii_max
     ssk_per_sys['radii_partitioning'] = np.array(radii_partitioning)
     ssk_per_sys['radii_monotonicity'] = np.array(radii_monotonicity)
     ssk_per_sys['gap_complexity'] = np.array(gap_complexity)
-    
+
     return [ssk_per_sys, ssk]
 
 
@@ -373,7 +374,7 @@ def CRPD_dist(En, On): #NOTE: this distance can potentially give negative values
     n_max = max(len(En), len(On))
     En = np.array(list(En) + [0]*(n_max - len(En)))
     On = np.array(list(On) + [0]*(n_max - len(On)))
-    
+
     E_array = En/float(np.sum(En)) #normalized numbers (fractions) of simulated systems with 1,2,3,... observed planets
     O_array = On/float(np.sum(On)) #normalized numbers (fractions) of actual Kepler systems with 1,2,3,... observed planets
     rho = 0.
@@ -394,7 +395,7 @@ def KS_dist_mult(x1, x2):
     cdf_diffs = np.cumsum(pdf_diffs)
     KS_dist = np.max(np.abs(cdf_diffs)) #K-S distance
     KS_x = np.arange(1, x12_max+1)[np.where(np.abs(cdf_diffs) == KS_dist)[0][0]] #x value where the distance is the largest
-    
+
     return KS_dist, KS_x
 
 def KS_dist(x1, x2):
@@ -406,7 +407,7 @@ def KS_dist(x1, x2):
     cdf_diffs = np.cumsum(pdf_diffs)
     KS_dist = np.max(np.abs(cdf_diffs)) #K-S distance
     KS_x = x_all[i_all_sorted][np.where(np.abs(cdf_diffs) == KS_dist)[0][0]] #x value (a value in either x1 or x2) where the distance is the largest
-    
+
     return KS_dist, KS_x
 
 def AD_dist(x1, x2):
@@ -423,7 +424,7 @@ def AD_dist(x1, x2):
     else:
         print('Not enough points to compute AD distance; returning inf.')
         AD_dist = np.inf
-    
+
     return AD_dist
 
 def AD_dist2(x1, x2): #I tested this and it returns the same results as AD_dist()
@@ -433,18 +434,18 @@ def AD_dist2(x1, x2): #I tested this and it returns the same results as AD_dist(
         N = n1 + n2
         x_all = np.concatenate((x1, x2)) #combined array
         i_all_sorted = np.argsort(x_all) #array of indices that would sort the combined array
-        
+
         M_1j_diffs = np.concatenate((np.ones(n1), np.zeros(n2)))[i_all_sorted]
         M_1j_array = np.cumsum(M_1j_diffs)[:-1] #array of M_1j except for last element, i.e. from j=1 to j=N-1
         M_2j_diffs = np.concatenate((np.zeros(n1), np.ones(n2)))[i_all_sorted]
         M_2j_array = np.cumsum(M_2j_diffs)[:-1] #array of M_2j except for last element, i.e. from j=1 to j=N-1
         j_array = 1. + np.arange(N-1) #array of j from j=1 to j=N-1
-        
+
         AD_dist = (1./N)*((1./n1)*np.sum(((N*M_1j_array - n1*j_array)**2.)/(j_array*(N - j_array))) + (1./n2)*np.sum(((N*M_2j_array - n2*j_array)**2.)/(j_array*(N - j_array)))) #AD distance
     else:
         print('Not enough points to compute AD distance; returning inf.')
         AD_dist = np.inf
-    
+
     return AD_dist
 
 def AD_mod_dist(x1, x2):
@@ -461,17 +462,17 @@ def AD_mod_dist(x1, x2):
     else:
         print('Not enough points to compute AD distance; returning inf.')
         AD_dist = np.inf
-    
+
     return AD_dist
 
 def load_split_stars_model_evaluations_and_weights(file_name):
     sample_names = ['all', 'bluer', 'redder']
-    
+
     Nmult_max = 8
     Nmult_evals = {key: [] for key in sample_names}
     d_all_keys_evals = {key: [] for key in sample_names}
     d_all_vals_evals = {key: [] for key in sample_names}
-    
+
     with open(file_name, 'r') as file:
         for line in file:
             for key in sample_names:
@@ -481,11 +482,11 @@ def load_split_stars_model_evaluations_and_weights(file_name):
                     #Nmult_str, counts_str = line[n+3+9:-2].split('][')
                     #Nmult = tuple([int(x) for x in Nmult_str.split(', ')])
                     #Nmult_evals[key].append(Nmult)
-                    
+
                     if line[n+3:n+3+11] == 'd_all_keys:':
                         d_all_keys = line[n+3+14:-3].split('", "')
                         d_all_keys_evals[key].append(d_all_keys)
-                    
+
                     elif line[n+3:n+3+11] == 'd_all_vals:':
                         d_all_vals_str = line[n+3+13:-2].split(', ')
                         d_all_vals = tuple([float(x) for x in d_all_vals_str])
@@ -495,14 +496,14 @@ def load_split_stars_model_evaluations_and_weights(file_name):
         Nmult_evals[key] = np.array(Nmult_evals[key], dtype=[(str(n), 'i8') for n in range(1,Nmult_max+1)])
         d_all_keys_evals[key] = np.array(d_all_keys_evals[key])
         d_all_vals_evals[key] = np.array(d_all_vals_evals[key], dtype=[(dist_key, 'f8') for dist_key in d_all_keys_evals[key][0]])
-    
+
     weights_all = {}
     for key in sample_names:
         dict_weights = {}
         for dist_key in d_all_vals_evals[key].dtype.names:
             dict_weights[dist_key] = 1./np.sqrt(np.mean(d_all_vals_evals[key][dist_key]**2.))
         weights_all[key] = dict_weights
-    
+
     return Nmult_evals, d_all_keys_evals, d_all_vals_evals, weights_all
 
 def load_split_stars_weights_only():
@@ -529,19 +530,19 @@ def compute_distances_sim_Kepler(sss_per_sys, sss, ssk_per_sys, ssk, weights, di
 
     # To create a dict of all distance terms:
     dists = {}
-    
+
     dists['delta_f'] = np.abs(len(sss['P_obs'])/(float(N_sim)/cos_factor) - len(ssk['P_obs'])/float(N_Kep)) # absolute difference in the rates of observed planets per star
-    
+
     Nmult_obs_sim_5plus = np.array(list(sss['Nmult_obs'][:4]) + [sum(sss['Nmult_obs'][4:])])
     Nmult_obs_Kep_5plus = np.array(list(ssk['Nmult_obs'][:4]) + [sum(ssk['Nmult_obs'][4:])])
     dists['mult_CRPD'] = CRPD_dist(Nmult_obs_sim_5plus, Nmult_obs_Kep_5plus)
     dists['mult_CRPD_r'] = CRPD_dist(Nmult_obs_Kep_5plus, Nmult_obs_sim_5plus)
-    
+
     R_res32_sim, R_res32_Kep = np.float(sum((sss['Rm_obs'] >= 1.5) & (sss['Rm_obs'] <= 1.5*(1.+gen.res_width))))/np.float(len(sss['Rm_obs'])), np.float(sum((ssk['Rm_obs'] >= 1.5) & (ssk['Rm_obs'] <= 1.5*(1.+gen.res_width))))/np.float(len(ssk['Rm_obs'])) # fractions of planet pairs within 5% of 3:2 MMR, for simulated and Kepler data
     R_res21_sim, R_res21_Kep = np.float(sum((sss['Rm_obs'] >= 2.) & (sss['Rm_obs'] <= 2.*(1.+gen.res_width))))/np.float(len(sss['Rm_obs'])), np.float(sum((ssk['Rm_obs'] >= 2.) & (ssk['Rm_obs'] <= 2.*(1.+gen.res_width))))/np.float(len(ssk['Rm_obs'])) # fractions of planet pairs within 5% of 2:1 MMR, for simulated and Kepler data
     R_res32_diff = np.abs(R_res32_sim - R_res32_Kep) # difference in fractions of planet pairs close to 3:2 MMR between simulated and Kepler data
     R_res21_diff = np.abs(R_res21_sim - R_res21_Kep) # difference in fractions of planet pairs close to 2:1 MMR between simulated and Kepler data
-    
+
     tdur_tcirc_1 = sss_per_sys['tdur_tcirc_obs'][sss_per_sys['Mtot_obs'] == 1, 0]
     tdur_tcirc_Kep_1 = ssk_per_sys['tdur_tcirc_obs'][ssk_per_sys['Mtot_obs'] == 1, 0]
     tdur_tcirc_2p = sss_per_sys['tdur_tcirc_obs'][sss_per_sys['Mtot_obs'] > 1]

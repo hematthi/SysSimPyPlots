@@ -3,15 +3,13 @@ import numpy as np
 import pandas as pd
 import time
 
-import src.functions_general as gen
-import src.functions_compare_kepler as ckep
+import syssimpyplots.general as gen
+import syssimpyplots.compare_kepler as ckep
 
 
 
 
 # Fixed parameters:
-
-N_Kep = 86760 #86760 (Paper III) #88912 (Paper II) #79935 (Paper I) # number of Kepler targets satisfying our cuts to give our observed catalog
 
 param_symbols = {
     "num_targets_sim_pass_one": r'$N_{\rm stars,sim}$',
@@ -118,7 +116,7 @@ def load_star_phys(file_name):
 
 def load_planets_stars_phys_separate(file_name_path, run_number):
     # Load the simulated physical planets and stars from the individual files their properties were saved in
-    
+
     start = time.time()
 
     clusterids_per_sys = [] # list to be filled with lists of all the cluster id's per system
@@ -131,7 +129,7 @@ def load_planets_stars_phys_separate(file_name_path, run_number):
                     clusterids_per_sys.append(clusterids_sys)
     except:
         print('No file with cluster ids found.')
-    
+
     P_per_sys = [] # list to be filled with lists of all periods per system (days)
     try:
         with open(file_name_path + 'periods_all%s.out' % run_number, 'r') as file:
@@ -167,7 +165,7 @@ def load_planets_stars_phys_separate(file_name_path, run_number):
                     #print(mass_sys)
     except:
         print('No file with planet masses found.')
-    
+
     e_per_sys = [] # list to be filled with lists of all eccentricities per system
     try:
         with open(file_name_path + 'eccentricities_all%s.out' % run_number, 'r') as file:
@@ -222,7 +220,7 @@ def load_planets_stars_phys_separate(file_name_path, run_number):
     return clusterids_per_sys, P_per_sys, radii_per_sys, mass_per_sys, e_per_sys, inclmut_per_sys, incl_per_sys, Mstar_all, Rstar_all
 
 def compute_basic_summary_stats_per_sys_cat_phys(clusterids_per_sys, P_per_sys, radii_per_sys, mass_per_sys, e_per_sys, inclmut_per_sys, incl_per_sys, Mstar_all, Rstar_all):
-    
+
     assert len(clusterids_per_sys) != 0
 
     clusterids_all = []
@@ -232,14 +230,14 @@ def compute_basic_summary_stats_per_sys_cat_phys(clusterids_per_sys, P_per_sys, 
     incl_all = []
     radii_all = []
     mass_all = []
-    
+
     Pmin = 0. # set a minimum period (days), discarding planets less than this period
-    
+
     Mmax = np.max([len(x) for x in clusterids_per_sys]) # maximum planet multiplicity
     Mtot_all = [] # 1d, len = number of systems
     clustertot_all = [] # 1d, len = number of systems
     pl_per_cluster_all = [] # 1d, len = number of clusters
-    
+
     start = time.time()
     for i in range(len(clusterids_per_sys)):
         # Clusters and planets per cluster:
@@ -248,7 +246,7 @@ def compute_basic_summary_stats_per_sys_cat_phys(clusterids_per_sys, P_per_sys, 
         clustertot_all.append(len(clusterids_unique))
         for c in clusterids_unique:
             pl_per_cluster_all.append(np.sum(np.array(clusterids_per_sys[i]) == c))
-    
+
         if len(P_per_sys) != 0:
             i_sorted = np.argsort(P_per_sys[i])
             P_sorted = np.array(P_per_sys[i])[i_sorted]
@@ -258,21 +256,21 @@ def compute_basic_summary_stats_per_sys_cat_phys(clusterids_per_sys, P_per_sys, 
             incl_sorted_cut = np.array(incl_per_sys[i])[i_sorted][P_sorted > Pmin] if len(incl_per_sys) > 0 else []
             radii_sorted_cut = np.array(radii_per_sys[i])[i_sorted][P_sorted > Pmin]
             mass_sorted_cut = np.array(mass_per_sys[i])[i_sorted][P_sorted > Pmin]
-            
+
             P_sys = list(P_sorted_cut) + [0]*(Mmax - len(P_sorted_cut))
             clusterids_sys = list(cids_sorted_cut) + [0]*(Mmax - len(cids_sorted_cut))
             e_sys = list(e_sorted_cut) + [0]*(Mmax - len(e_sorted_cut))
             incl_sys = list(incl_sorted_cut) + [0]*(Mmax - len(incl_sorted_cut))
             radii_sys = list(radii_sorted_cut) + [0]*(Mmax - len(radii_sorted_cut))
             mass_sys = list(mass_sorted_cut) + [0]*(Mmax - len(mass_sorted_cut))
-            
+
             P_all.append(P_sys)
             clusterids_all.append(clusterids_sys)
             e_all.append(e_sys)
             incl_all.append(incl_sys)
             radii_all.append(radii_sys)
             mass_all.append(mass_sys)
-            
+
             # Mutual inclinations:
             if len(inclmut_per_sys) != 0:
                 inclmut_sorted_cut = np.array(inclmut_per_sys[i])[i_sorted][P_sorted > Pmin]
@@ -280,11 +278,11 @@ def compute_basic_summary_stats_per_sys_cat_phys(clusterids_per_sys, P_per_sys, 
                 inclmut_all.append(inclmut_sys)
     stop = time.time()
     print('Time to analyze (basic): %s s' % (stop-start))
-    
+
     Mtot_all = np.array(Mtot_all)
     clustertot_all = np.array(clustertot_all)
     pl_per_cluster_all = np.array(pl_per_cluster_all)
-    
+
     P_all = np.array(P_all)
     clusterids_all = np.array(clusterids_all)
     e_all = np.array(e_all)
@@ -355,9 +353,9 @@ def compute_summary_stats_from_cat_phys(cat_phys=None, star_phys=None, file_name
             cat_phys = load_cat_phys(file_name_path + 'physical_catalog%s.csv' % run_number)
         if star_phys is None:
             star_phys = load_star_phys(file_name_path + 'physical_catalog_stars%s.csv' % run_number)
-        
+
         start = time.time()
-        
+
         i_sys = np.unique(cat_phys['target_id'])
         N_sys_with_planets = len(i_sys) # number of simulated systems with planets
 
@@ -371,7 +369,7 @@ def compute_summary_stats_from_cat_phys(cat_phys=None, star_phys=None, file_name
         num_planets_cumu = np.concatenate((np.array([0]), np.cumsum(np.array(star_phys['num_planets']))))
         for i in range(len(num_planets_cumu) - 1):
             cat_phys_sys = cat_phys[num_planets_cumu[i]:num_planets_cumu[i+1]]
-            
+
             clusterids_per_sys.append(cat_phys_sys['clusterid'])
             P_per_sys.append(cat_phys_sys['period'])
             e_per_sys.append(cat_phys_sys['ecc'])
@@ -390,7 +388,7 @@ def compute_summary_stats_from_cat_phys(cat_phys=None, star_phys=None, file_name
         clusterids_per_sys, P_per_sys, radii_per_sys, mass_per_sys, e_per_sys, inclmut_per_sys, incl_per_sys, Mstar_all, Rstar_all = load_planets_stars_phys_separate(file_name_path, run_number)
 
 
-    
+
     sssp_per_sys_basic = compute_basic_summary_stats_per_sys_cat_phys(clusterids_per_sys, P_per_sys, radii_per_sys, mass_per_sys, e_per_sys, inclmut_per_sys, incl_per_sys, Mstar_all, Rstar_all)
 
     # Total planet, cluster, and planets per cluster multiplicities:
@@ -421,10 +419,10 @@ def compute_summary_stats_from_cat_phys(cat_phys=None, star_phys=None, file_name
         start = time.time()
         print('Loading observed catalog to match observed planets to physical planets...')
         cat_obs = load_cat_obs(file_name_path + 'observed_catalog%s.csv' % run_number)
-        
+
         ferr_match = 0.05 # fractional error in period to match
         print('Matching periods to within %s (fractional error)...' % ferr_match)
-        
+
         det_all = np.zeros(np.shape(P_all))
         for i,tid in enumerate(cat_obs['target_id']):
             id_sys = np.where(targetid_all == tid)[0][0]
@@ -436,7 +434,7 @@ def compute_summary_stats_from_cat_phys(cat_phys=None, star_phys=None, file_name
         stop = time.time()
         print('Time to match planets: %s s' % (stop - start))
 
-    
+
 
     #To calculate the underlying period ratios, radii ratios, and separations in mutual Hill radii:
     Rm_all = [] #list to be filled with all the period ratios
@@ -456,17 +454,17 @@ def compute_summary_stats_from_cat_phys(cat_phys=None, star_phys=None, file_name
         e_all_system = e_all[i][P_all[i] > 0]
         radii_all_system = radii_all[i][P_all[i] > 0]
         mass_all_system = mass_all[i][P_all[i] > 0]
-        
+
         #To calculate all the period ratios:
         Rm_all_system = list(compute_ratios(P_all_system)) #list of period ratios in this system
         Rm_all_system = np.array(Rm_all_system + [0]*(Mmax - 1 - len(Rm_all_system))) #to add filler 0's to Rm_all_system to pad it to Mmax - 1 elements
         Rm_all.append(Rm_all_system)
-        
+
         #To calculate all the radii ratios:
         radii_ratio_all_system = list(compute_ratios(radii_all_system)) #list of radii ratios in this system
         radii_ratio_all_system = np.array(radii_ratio_all_system + [0]*(Mmax - 1 - len(radii_ratio_all_system))) #to add filler 0's to radii_ratio_all_system to pad it to Mmax - 1 elements
         radii_ratio_all.append(radii_ratio_all_system)
-        
+
         #To calculate all the separations in mutual Hill radii between adjacent planet pairs:
         a_all_system = gen.a_from_P(P_all_system, Mstar_system)
         R_mH_all_system = ((a_all_system[0:-1] + a_all_system[1:])/2.)*(gen.Mearth*(mass_all_system[0:-1] + mass_all_system[1:])/(3.*Mstar_system*gen.Msun))**(1./3.) #mutual Hill radii between adjacent planet pairs in this system, in AU
@@ -475,12 +473,12 @@ def compute_summary_stats_from_cat_phys(cat_phys=None, star_phys=None, file_name
         N_mH_all_system = list(R_sep_all_system/R_mH_all_system) #separations between adjacent planet pairs in this system, in mutual Hill radii
         N_mH_all_system = np.array(N_mH_all_system + [0]*(Mmax - 1 - len(N_mH_all_system))) #to add filler 0's to N_mH_all_system to pad it to Mmax - 1 elements
         N_mH_all.append(N_mH_all_system)
-    
+
         #To separate the planets in the system as above and below the boundary:
         system_above_bools = np.array([gen.photoevap_boundary_Carrera2018(radii_all_system[x], P_all_system[x]) for x in range(len(P_all_system))])
         #if len(system_above_bools) > 1:
         #print(system_above_bools)
-        
+
         #To record the transit depths of the planets above and below the boundary:
         for j in range(len(radii_all_system)):
             radii_above_all_flat.append(radii_all_system[j]) if system_above_bools[j] == 1 else radii_below_all_flat.append(radii_all_system[j])
@@ -516,7 +514,7 @@ def compute_summary_stats_from_cat_phys(cat_phys=None, star_phys=None, file_name
     radii_ratio_across_all_flat = np.array(radii_ratio_across_all_flat)
 
     # Create dictionaries to hold summary stats ('sssp' stands for 'summary stats simulated physical'):
-    
+
     sssp_per_sys = {}
     # Planet properties:
     if match_observed and cat_phys is not None:
@@ -536,7 +534,7 @@ def compute_summary_stats_from_cat_phys(cat_phys=None, star_phys=None, file_name
     sssp_per_sys['Rm_all'] = Rm_all
     sssp_per_sys['radii_ratio_all'] = radii_ratio_all
     sssp_per_sys['N_mH_all'] = N_mH_all
-    
+
     sssp = {}
     # Stellar properties:
     sssp['Mstar_all'] = Mstar_all
@@ -564,7 +562,7 @@ def compute_summary_stats_from_cat_phys(cat_phys=None, star_phys=None, file_name
     # To compute some summary stats (system-level metrics) from GF2020:
     Nsys_all = len(Mtot_all)
     assert Nsys_all == len(radii_all) == len(P_all)
-    
+
     dynamical_mass = []
     radii_partitioning = []
     radii_monotonicity = []
@@ -575,9 +573,9 @@ def compute_summary_stats_from_cat_phys(cat_phys=None, star_phys=None, file_name
         P_all_system = P_all[i][P_all[i] > 0]
         radii_all_system = radii_all[i][P_all[i] > 0]
         mu_all_system = mu_all[i][P_all[i] > 0]
-        
+
         dynamical_mass.append(np.sum(mu_all_system))
-        
+
         if len(P_all_system) >= 2:
             radii_partitioning.append(gen.partitioning(radii_all_system))
             radii_monotonicity.append(gen.monotonicity_GF2020(radii_all_system))
@@ -590,7 +588,7 @@ def compute_summary_stats_from_cat_phys(cat_phys=None, star_phys=None, file_name
     sssp_per_sys['radii_partitioning'] = np.array(radii_partitioning)
     sssp_per_sys['radii_monotonicity'] = np.array(radii_monotonicity)
     sssp_per_sys['gap_complexity'] = np.array(gap_complexity)
-    
+
     return [sssp_per_sys, sssp]
 
 
@@ -617,7 +615,7 @@ def load_star_obs(file_name):
 
 def load_planets_stars_obs_separate(file_name_path, run_number):
     # This function loads the simulated observed planets and stars from the individual files their properties were saved in
-    
+
     P_per_sys = [] #list to be filled with lists of the observed periods per system (days)
     with open(file_name_path + 'periods%s.out' % run_number, 'r') as file:
         for line in file:
@@ -663,7 +661,7 @@ def load_planets_stars_obs_separate(file_name_path, run_number):
                 Mstars = [float(i) for i in Mstars]
                 Mstar_per_sys += Mstars
     Mstar_per_sys = np.array(Mstar_per_sys)
-    
+
     Rstar_per_sys = [] #list to be filled with the stellar radii of the systems with observed planets (Rsun)
     with open(file_name_path + 'stellar_radii_obs%s.out' % run_number, 'r') as file:
         for line in file:
@@ -678,21 +676,21 @@ def load_planets_stars_obs_separate(file_name_path, run_number):
 
 def count_planets_from_loading_cat_obs_stars_only(file_name_path=None, run_number='', Rstar_min=0., Rstar_max=1e6, Mstar_min=0., Mstar_max=1e6, teff_min=0., teff_max=1e6, bp_rp_min=-1e6, bp_rp_max=1e6):
     # This function loads an "observed_catalog_stars.csv" file (and the full stellar catalog using "ckep.load_Kepler_stars_cleaned"), which contains a column of the number of observed planets for each star, and applies cuts on the stellar sample to return the resulting multiplicity distribution
-    
+
     stars_cleaned = ckep.load_Kepler_stars_cleaned() # NOTE: make sure that this is loading the same stellar catalog used for the simulations!
-    
+
     star_obs = load_star_obs(file_name_path + 'observed_catalog_stars%s.csv' % run_number)
     i_stars_obs = list(star_obs['star_id']-1) # star_id were indexed in Julia, which starts at 1
     bools_stars_obs_in_custom = np.ones(len(i_stars_obs), dtype=bool)
-    
+
     Mstar_per_sys = star_obs['star_mass']
     Rstar_per_sys = star_obs['star_radius']
     teff_per_sys = stars_cleaned['teff'][i_stars_obs]
     bp_rp_per_sys = stars_cleaned['bp_rp'][i_stars_obs]
     e_bp_rp_per_sys = stars_cleaned['e_bp_rp_interp'][i_stars_obs]
-    
+
     indices_keep = np.arange(len(Rstar_per_sys))[bools_stars_obs_in_custom & (Rstar_per_sys >= Rstar_min) & (Rstar_per_sys < Rstar_max) & (Mstar_per_sys >= Mstar_min) & (Mstar_per_sys < Mstar_max) & (teff_per_sys >= teff_min) & (teff_per_sys < teff_max) & (bp_rp_per_sys - e_bp_rp_per_sys >= bp_rp_min) & (bp_rp_per_sys - e_bp_rp_per_sys < bp_rp_max)]
-    
+
     star_obs_keep = star_obs[indices_keep]
     Mtot_obs = star_obs_keep['num_obs_planets']
     Nmult_obs = np.array([np.sum(Mtot_obs == x) for x in range(1,np.max(Mtot_obs)+1)])
@@ -700,7 +698,7 @@ def count_planets_from_loading_cat_obs_stars_only(file_name_path=None, run_numbe
 
 def compute_summary_stats_from_cat_obs(cat_obs=None, star_obs=None, file_name_path=None, run_number='', P_min=0., P_max=300., Rstar_min=0., Rstar_max=1e6, Mstar_min=0., Mstar_max=1e6, teff_min=0., teff_max=1e6, bp_rp_min=-1e6, bp_rp_max=1e6, i_stars_custom=None, compute_ratios=gen.compute_ratios_adjacent):
     #This function takes in a simulated observed catalog of planets 'cat_obs' in table format and returns many arrays (1D and 2D) of the summary stats
-    
+
     if cat_obs is not None and star_obs is not None:
         i_sys = np.unique(cat_obs['target_id'])
 
@@ -715,7 +713,7 @@ def compute_summary_stats_from_cat_obs(cat_obs=None, star_obs=None, file_name_pa
             tdur_sys = cat_obs['duration'][cat_obs['target_id'] == i]
             Mstar_sys = star_obs['star_mass'][star_obs['target_id'] == i][0]
             Rstar_sys = star_obs['star_radius'][star_obs['target_id'] == i][0]
-            
+
             P_per_sys.append(P_sys)
             D_per_sys.append(D_sys)
             tdur_per_sys.append(tdur_sys)
@@ -798,7 +796,7 @@ def compute_summary_stats_from_cat_obs(cat_obs=None, star_obs=None, file_name_pa
         P_sorted_cut = P_sorted[(P_sorted > P_min) & (P_sorted < P_max)]
         D_sorted_cut = np.array(D_per_sys[i])[i_sorted][(P_sorted > P_min) & (P_sorted < P_max)]
         tdur_sorted_cut = np.array(tdur_per_sys[i])[i_sorted][(P_sorted > P_min) & (P_sorted < P_max)]
-        
+
         P_sys = list(P_sorted_cut) + [-1]*(Mmax - len(P_sorted_cut)) #zero-pad the list up to Mmax elements
         D_sys = list(D_sorted_cut) + [0]*(Mmax - len(D_sorted_cut)) #zero-pad the list up to Mmax elements
         tdur_sys = list(tdur_sorted_cut) + [-1]*(Mmax - len(tdur_sorted_cut)) #zero-pad the list up to Mmax elements
@@ -814,7 +812,7 @@ def compute_summary_stats_from_cat_obs(cat_obs=None, star_obs=None, file_name_pa
     Mtot_obs = np.sum(P_obs > 0, axis=1) #array of observed planet multiplicites
     Nmult_obs = np.array([np.sum(Mtot_obs == x) for x in range(1,Mmax+1)]) #array of total numbers of systems with observed planet multiplicities of 1,2,3,...,Mmax planets
     radii_obs = np.sqrt(D_obs)*np.transpose([Rstar_per_sys])*(gen.Rsun/gen.Rearth) #array of planet radii, in Earth radii
-    
+
     # To split 'tdur_tcirc_obs' into arrays for observed singles and multis:
     tdur_tcirc_1_obs = tdur_tcirc_obs[Mtot_obs == 1, 0] # observed singles, 1d
     tdur_tcirc_2p_obs = tdur_tcirc_obs[Mtot_obs > 1] # observed multis, but 2d
@@ -838,39 +836,39 @@ def compute_summary_stats_from_cat_obs(cat_obs=None, star_obs=None, file_name_pa
     D_ratio_across_obs_flat = [] #list to be filled with the transit depth ratios of adjacent observed planet pairs across the photoevaporation boundary
 
     pad_extra = 100 #####
-    
+
     for i in range(len(P_obs)):
         P_obs_system = P_obs[i][(P_obs[i] > P_min) & (P_obs[i] < P_max)]
         radii_obs_system = radii_obs[i][(P_obs[i] > P_min) & (P_obs[i] < P_max)]
         tdur_obs_system = tdur_obs[i][(P_obs[i] > P_min) & (P_obs[i] < P_max)]
         D_obs_system = D_obs[i][(P_obs[i] > P_min) & (P_obs[i] < P_max)]
-        
+
         #To calculate all the observed period ratios:
         Rm_obs_system = list(compute_ratios(P_obs_system)) #list of period ratios observed in this system
         Rm_obs_system = np.array(Rm_obs_system + [-1]*(pad_extra - 1 - len(Rm_obs_system))) #to add filler 0's to Rm_obs_system to pad it to Mmax - 1 elements
         Rm_obs.append(Rm_obs_system)
-        
+
         #To calculate all the observed transit depth ratios:
         D_ratio_obs_system = list(compute_ratios(D_obs_system)) #list of transit depth ratios observed in this system
         D_ratio_obs_system = np.array(D_ratio_obs_system + [-1]*(pad_extra - 1 - len(D_ratio_obs_system))) #to add filler 0's to D_ratio_obs_system to pad it to Mmax - 1 elements
         D_ratio_obs.append(D_ratio_obs_system)
-        
+
         #To calculate all the period-normalized transit duration ratios:
         xi_obs_system = list((1./compute_ratios(tdur_obs_system))*(compute_ratios(P_obs_system)**(1./3.))) #list of period-normalized transit duration ratios in this system
         xi_obs_system = np.array(xi_obs_system + [-1]*(pad_extra - 1 - len(xi_obs_system))) #to add filler 0's to xi_obs_system to pad it to Mmax - 1 elements
         xi_obs.append(xi_obs_system)
-        
+
         #To separate the period-normalized transit duration ratios for planet pairs near vs. not in resonance:
         mask_res_system = np.zeros(len(Rm_obs_system), dtype=bool)
         mask_res32_system = np.zeros(len(Rm_obs_system), dtype=bool)
         mask_res21_system = np.zeros(len(Rm_obs_system), dtype=bool)
-        
+
         for ratio in gen.res_ratios:
             mask_res_system[(Rm_obs_system >= ratio) & (Rm_obs_system <= ratio*(1.+gen.res_width))] = 1
 
         mask_res32_system[(Rm_obs_system >= 1.5) & (Rm_obs_system <= 1.5*(1.+gen.res_width))] = 1
         mask_res21_system[(Rm_obs_system >= 2.) & (Rm_obs_system <= 2.*(1.+gen.res_width))] = 1
-        
+
         xi_res_obs_system = list(xi_obs_system[mask_res_system])
         xi_res32_obs_system = list(xi_obs_system[mask_res32_system])
         xi_res21_obs_system = list(xi_obs_system[mask_res21_system])
@@ -888,11 +886,11 @@ def compute_summary_stats_from_cat_obs(cat_obs=None, star_obs=None, file_name_pa
         system_above_bools = np.array([gen.photoevap_boundary_Carrera2018(radii_obs_system[x], P_obs_system[x]) for x in range(len(P_obs_system))])
         #if len(system_above_bools) > 1:
         #print(system_above_bools)
-        
+
         #To record the transit depths of the planets above and below the boundary:
         for j in range(len(D_obs_system)):
             D_above_obs_flat.append(D_obs_system[j]) if system_above_bools[j] == 1 else D_below_obs_flat.append(D_obs_system[j])
-            
+
         #To record the transit depth ratios of the planets above, below, and across the boundary:
         D_ratio_obs_system = list(compute_ratios(D_obs_system)) #list of transit depth ratios observed in this system
         if compute_ratios == gen.compute_ratios_adjacent:
@@ -990,7 +988,7 @@ def compute_summary_stats_from_cat_obs(cat_obs=None, star_obs=None, file_name_pa
     # To compute some summary stats (system-level metrics) from GF2020:
     Nsys_obs = len(Mtot_obs)
     assert Nsys_obs == len(radii_obs) == len(P_obs)
-    
+
     radii_star_ratio = []
     radii_partitioning = []
     radii_monotonicity = []
@@ -998,9 +996,9 @@ def compute_summary_stats_from_cat_obs(cat_obs=None, star_obs=None, file_name_pa
     for i in range(Nsys_obs):
         P_obs_system = P_obs[i][P_obs[i] > 0]
         radii_obs_system = radii_obs[i][P_obs[i] > 0]
-        
+
         radii_star_ratio.append(gen.radii_star_ratio(radii_obs_system, Rstar_per_sys[i]))
-        
+
         if len(P_obs_system) >= 2:
             radii_partitioning.append(gen.partitioning(radii_obs_system))
             radii_monotonicity.append(gen.monotonicity_GF2020(radii_obs_system))
@@ -1021,18 +1019,18 @@ def compute_summary_stats_from_cat_obs(cat_obs=None, star_obs=None, file_name_pa
 
 def combine_sss_or_sssp_per_sys(s1, s2):
     assert s1.keys() == s2.keys()
-    
+
     scombined = {}
     for key in s1.keys():
         #print(key, ': ', np.shape(s1[key]), ', ', np.shape(s2[key]))
-        
+
         if key == 'Nmult_obs':
             m_max = max(len(s1[key]), len(s2[key])) # highest multiplicity of the two catalogs
             Nmult_obs1 = np.append(s1[key], np.zeros(m_max - len(s1[key]), dtype=int))
             Nmult_obs2 = np.append(s2[key], np.zeros(m_max - len(s2[key]), dtype=int))
             scombined[key] = Nmult_obs1 + Nmult_obs2
             continue
-        
+
         # For 2d arrays, need to pad them equally before concatenating:
         if np.ndim(s1[key]) == 2:
             npad1, npad2 = np.shape(s1[key])[1], np.shape(s2[key])[1]
@@ -1042,19 +1040,19 @@ def combine_sss_or_sssp_per_sys(s1, s2):
                 s2_key_pad = np.concatenate((s2[key], -1.*np.ones((len(s2[key]),npad-npad2))), axis=1)
                 scombined[key] = np.concatenate((s1_key_pad, s2_key_pad), axis=0)
                 continue
-        
+
         scombined[key] = np.concatenate((s1[key], s2[key]), axis=0)
     return scombined
 
 def load_cat_phys_multiple_and_compute_combine_summary_stats(file_name_path, run_numbers=range(1,11), load_full_tables=False, compute_ratios=gen.compute_ratios_adjacent, match_observed=True):
-    
+
     print('Attempting to load %s physical catalogs to compute and combine their summary statistics...' % len(run_numbers))
 
     sssp_per_sys, sssp = compute_summary_stats_from_cat_phys(file_name_path=file_name_path, run_number=run_numbers[0], load_full_tables=load_full_tables, compute_ratios=compute_ratios, match_observed=match_observed)
     for i in run_numbers[1:]:
         print(i)
         sssp_per_sys_i, sssp_i = compute_summary_stats_from_cat_phys(file_name_path=file_name_path, run_number=i, load_full_tables=load_full_tables, compute_ratios=compute_ratios, match_observed=match_observed)
-        
+
         sssp_per_sys = combine_sss_or_sssp_per_sys(sssp_per_sys, sssp_per_sys_i)
         sssp = combine_sss_or_sssp_per_sys(sssp, sssp_i)
 

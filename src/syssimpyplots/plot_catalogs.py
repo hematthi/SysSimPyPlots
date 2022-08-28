@@ -10,9 +10,9 @@ from mpl_toolkits.axes_grid1.inset_locator import inset_axes #for inset axes
 import corner #corner.py package for corner plots
 import scipy.stats
 
-import src.functions_general as gen
-import src.functions_compare_kepler as ckep
-import src.functions_load_sims as lsims
+import syssimpyplots.general as gen
+import syssimpyplots.compare_kepler as ckep
+import syssimpyplots.load_sims as lsims
 
 
 
@@ -38,7 +38,7 @@ def plot_panel_counts_hist_simple(ax, x_sim, x_Kep, x_min=0, x_max=None, y_min=N
         x_llim = x_min # x_min is the minimum for the bins, while x_llim is the minimum of the x-axis for plotting
     if x_ulim == None:
         x_ulim = x_max+0.5 # x_max is the minimum for the bins, while x_ulim is the maximum of the x-axis for plotting
-    
+
     for i,x in enumerate(x_sim):
         counts = np.histogram(x, bins=bins)[0]/float(N_sim_Kep_factor)
         counts_normed = counts/float(np.sum(counts))
@@ -64,7 +64,7 @@ def plot_panel_counts_hist_simple(ax, x_sim, x_Kep, x_min=0, x_max=None, y_min=N
         if show_counts_Kep:
             for j,count in enumerate(counts):
                 plt.text(bins_mid[j], 2.*(4**(len(x_Kep)-i-1.))*counts_plot[j], str(count), ha='center', color=c_Kep[i], fontsize=lfs)
-    
+
     if log_y:
         plt.gca().set_yscale("log")
     ax.tick_params(axis='both', labelsize=afs)
@@ -79,12 +79,12 @@ def plot_panel_counts_hist_simple(ax, x_sim, x_Kep, x_min=0, x_max=None, y_min=N
         plt.legend(loc='upper right', bbox_to_anchor=(0.99,0.99), ncol=1, frameon=False, fontsize=lfs) #show the legend
 
 def plot_fig_counts_hist_simple(fig_size, x_sim, x_Kep, x_min=0, x_max=None, y_min=None, y_max=None, x_llim=None, x_ulim=None, normalize=False, N_sim_Kep_factor=1., log_y=False, c_sim=['k'], c_Kep=['k'], ls_sim=['-'], ms_Kep=['x'], lines_Kep=False, lw=1, labels_sim=['Simulated'], labels_Kep=['Kepler'], xticks_custom=None, xlabel_text='x', ylabel_text='Number', afs=20, tfs=20, lfs=16, legend=False, show_counts_sim=False, show_counts_Kep=False, fig_lbrt=[0.15, 0.2, 0.95, 0.925], save_name='no_name_fig.pdf', save_fig=False):
-    
+
     left, bottom, right, top = fig_lbrt
     ax = setup_fig_single(fig_size, left=left, bottom=bottom, right=right, top=top)
-    
+
     plot_panel_counts_hist_simple(ax, x_sim, x_Kep, x_min=x_min, x_max=x_max, y_min=y_min, y_max=y_max, x_llim=x_llim, x_ulim=x_ulim, normalize=normalize, N_sim_Kep_factor=N_sim_Kep_factor, log_y=log_y, c_sim=c_sim, c_Kep=c_Kep, ls_sim=ls_sim, ms_Kep=ms_Kep, lines_Kep=lines_Kep, lw=lw, labels_sim=labels_sim, labels_Kep=labels_Kep, xticks_custom=xticks_custom, xlabel_text=xlabel_text, ylabel_text=ylabel_text, afs=afs, tfs=tfs, lfs=lfs, legend=legend, show_counts_sim=show_counts_sim, show_counts_Kep=show_counts_Kep)
-    
+
     if save_fig:
         plt.savefig(save_name)
         plt.close()
@@ -96,7 +96,7 @@ def plot_panel_pdf_simple(ax, x_sim, x_Kep, x_min=None, x_max=None, y_min=None, 
         x_min = np.nanmin([np.min(x) if len(x) > 0 else np.nan for x in x_sim+x_Kep])
     if x_max == None:
         x_max = np.nanmax([np.max(x) if len(x) > 0 else np.nan for x in x_sim+x_Kep])
-    
+
     if log_x:
         bins = np.logspace(np.log10(x_min), np.log10(x_max), n_bins+1)
     else:
@@ -130,12 +130,12 @@ def plot_panel_pdf_simple(ax, x_sim, x_Kep, x_min=None, x_max=None, y_min=None, 
         plt.legend(loc='upper right', bbox_to_anchor=(0.99,0.99), ncol=1, frameon=False, fontsize=lfs) #show the legend
 
 def plot_fig_pdf_simple(fig_size, x_sim, x_Kep, x_min=None, x_max=None, y_min=None, y_max=None, n_bins=100, normalize=True, N_sim_Kep_factor=1., log_x=False, log_y=False, c_sim=['k'], c_Kep=['k'], ls_sim=['-'], ls_Kep=['-'], lw=1, alpha=0.2, labels_sim=['Simulated'], labels_Kep=['Kepler'], extra_text=None, xticks_custom=None, xlabel_text='x', ylabel_text='Fraction', afs=20, tfs=20, lfs=16, legend=False, fig_lbrt=[0.15, 0.2, 0.95, 0.925], save_name='no_name_fig.pdf', save_fig=False):
-    
+
     left, bottom, right, top = fig_lbrt
     ax = setup_fig_single(fig_size, left=left, bottom=bottom, right=right, top=top)
-    
+
     plot_panel_pdf_simple(ax, x_sim, x_Kep, x_min=x_min, x_max=x_max, y_min=y_min, y_max=y_max, n_bins=n_bins, normalize=normalize, N_sim_Kep_factor=N_sim_Kep_factor, log_x=log_x, log_y=log_y, c_sim=c_sim, c_Kep=c_Kep, ls_sim=ls_sim, ls_Kep=ls_Kep, lw=lw, alpha=alpha, labels_sim=labels_sim, labels_Kep=labels_Kep, extra_text=extra_text, xticks_custom=xticks_custom, xlabel_text=xlabel_text, ylabel_text=ylabel_text, afs=afs, tfs=tfs, lfs=lfs, legend=legend)
-    
+
     if save_fig:
         plt.savefig(save_name)
         plt.close()
@@ -148,7 +148,7 @@ def plot_panel_cdf_simple(ax, x_sim, x_Kep, x_min=None, x_max=None, y_min=0., y_
         x_min = np.nanmin([np.min(x) if len(x) > 0 else np.nan for x in x_sim+x_Kep])
     if x_max == None:
         x_max = np.nanmax([np.max(x) if len(x) > 0 else np.nan for x in x_sim+x_Kep])
-    
+
     for i,x in enumerate(x_sim):
         cdf = 1. - (np.arange(len(x))+1.)/float(len(x)) if one_minus else (np.arange(len(x))+1.)/float(len(x))
         x = np.sort(x)
@@ -170,7 +170,7 @@ def plot_panel_cdf_simple(ax, x_sim, x_Kep, x_min=None, x_max=None, y_min=0., y_
                 plt.text(0.98, 0.05+(len(x_sim)-(i+1.))*0.3, r'$\mathcal{D}_{\rm AD^\prime} = %s$' % np.round(dist_AD, 3), color=c_Kep[i], ha='right', fontsize=lfs, transform=ax.transAxes)
         else:
             print('Error: x_sim != x_Kep')
-    
+
     if log_x:
         plt.gca().set_xscale("log")
     ax.tick_params(axis='both', labelsize=afs)
@@ -189,10 +189,10 @@ def plot_panel_cdf_simple(ax, x_sim, x_Kep, x_min=None, x_max=None, y_min=0., y_
             plt.legend(loc='upper left', bbox_to_anchor=(0.01,0.99), ncol=1, frameon=False, fontsize=lfs) #show the legend
 
 def plot_fig_cdf_simple(fig_size, x_sim, x_Kep, x_min=None, x_max=None, y_min=0., y_max=1., log_x=False, c_sim=['k'], c_Kep=['k'], ls_sim=['-'], ls_Kep=['--'], lw=1, labels_sim=['Simulated'], labels_Kep=['Kepler'], extra_text=None, xticks_custom=None, xlabel_text='x', ylabel_text='CDF', one_minus=False, afs=20, tfs=20, lfs=16, legend=False, label_dist=False, fig_lbrt=[0.15, 0.2, 0.95, 0.925], save_name='no_name_fig.pdf', save_fig=False):
-    
+
     left, bottom, right, top = fig_lbrt
     ax = setup_fig_single(fig_size, left=left, bottom=bottom, right=right, top=top)
-    
+
     plot_panel_cdf_simple(ax, x_sim, x_Kep, x_min=x_min, x_max=x_max, y_min=y_min, y_max=y_max, log_x=log_x, c_sim=c_sim, c_Kep=c_Kep, ls_sim=ls_sim, ls_Kep=ls_Kep, lw=lw, labels_sim=labels_sim, labels_Kep=labels_Kep, extra_text=extra_text, xticks_custom=xticks_custom, xlabel_text=xlabel_text, ylabel_text=ylabel_text, one_minus=one_minus, afs=afs, tfs=tfs, lfs=lfs, legend=legend, label_dist=label_dist)
 
     if save_fig:
@@ -202,14 +202,14 @@ def plot_fig_cdf_simple(fig_size, x_sim, x_Kep, x_min=None, x_max=None, y_min=0.
         return ax
 
 def plot_fig_mult_cdf_simple(fig_size, x_sim, x_Kep, x_min=1, x_max=None, y_min=None, y_max=None, c_sim=['k'], c_Kep=['k'], ls_sim=['-'], ls_Kep=['--'], lw=1, labels_sim=['Simulated'], labels_Kep=['Kepler'], xticks_custom=None, xlabel_text='x', ylabel_text='CDF', afs=20, tfs=20, lfs=16, legend=False, fig_lbrt=[0.15, 0.2, 0.95, 0.925], save_name='no_name_fig.pdf', save_fig=False):
-    
+
     left, bottom, right, top = fig_lbrt
     ax = setup_fig_single(fig_size, left=left, bottom=bottom, right=right, top=top)
-    
+
     if x_max == None:
         #x_max = np.nanmax([np.max(x) if len(x) > 0 else np.nan for x in x_sim+x_Kep])
         x_max = max([np.max(x) for x in x_sim+x_Kep])
-    
+
     for i,x in enumerate(x_sim):
         counts_cumu = np.array([sum(x <= xi) for xi in range(x_min, np.max(x)+1)])
         plt.plot(range(x_min, np.max(x)+1), counts_cumu/float(len(x)), drawstyle='steps-post', color=c_sim[i], ls=ls_sim[i], lw=lw, label=labels_sim[i])
@@ -227,7 +227,7 @@ def plot_fig_mult_cdf_simple(fig_size, x_sim, x_Kep, x_min=1, x_max=None, y_min=
     plt.ylabel(ylabel_text, fontsize=tfs)
     if legend:
         plt.legend(loc='upper right', bbox_to_anchor=(0.99,0.99), ncol=1, frameon=False, fontsize=lfs) #show the legend
-        
+
     if save_fig:
         plt.savefig(save_name)
         plt.close()
@@ -283,28 +283,28 @@ def plot_fig_pdf_composite(x_sim_all, x_Kep_all, param_vals=None, x_mins=[None],
 def load_cat_obs_and_plot_fig_pdf_composite(loadfiles_directory, weights, run_number='', Rstar_min=0., Rstar_max=1e6, Mstar_min=0., Mstar_max=1e6, teff_min=0., teff_max=1e6, bp_rp_min=-1e6, bp_rp_max=1e6, label_dist=True, AD_mod=True, dists_include=[], n_bins=100, lw=1, alpha=0.2, afs=12, tfs=12, lfs=12, save_name='no_name_fig.pdf', save_fig=False):
 
     #To load and analyze the simulated and Kepler observed catalogs:
-    
+
     N_sim, cos_factor, P_min, P_max, radii_min, radii_max = lsims.read_targets_period_radius_bounds(loadfiles_directory + 'periods%s.out' % run_number)
     param_vals = lsims.read_sim_params(loadfiles_directory + 'periods%s.out' % run_number)
-    
+
     sss_per_sys, sss = lsims.compute_summary_stats_from_cat_obs(file_name_path=loadfiles_directory, run_number=run_number, Rstar_min=Rstar_min, Rstar_max=Rstar_max, Mstar_min=Mstar_min, Mstar_max=Mstar_max, teff_min=teff_min, teff_max=teff_max, bp_rp_min=bp_rp_min, bp_rp_max=bp_rp_max)
-    
+
     ssk_per_sys, ssk = ckep.compute_summary_stats_from_Kepler_catalog(P_min, P_max, radii_min, radii_max, Rstar_min=Rstar_min, Rstar_max=Rstar_max, Mstar_min=Mstar_min, Mstar_max=Mstar_max, teff_min=teff_min, teff_max=teff_max, bp_rp_min=bp_rp_min, bp_rp_max=bp_rp_max)
-    
+
     dists, dists_w = ckep.compute_distances_sim_Kepler(sss_per_sys, sss, ssk_per_sys, ssk, weights, dists_include, N_sim, cos_factor=cos_factor, AD_mod=AD_mod)
-    
-    
-    
+
+
+
     #To plot the 'observed' distributions with the actual observed Kepler distributions:
-    
+
     fig = plt.figure(figsize=(16,8))
     plot = GridSpec(4,3,left=0.075,bottom=0.075,right=0.975,top=0.975,wspace=0.15,hspace=0.5)
-    
+
     #To print the parameter values:
     nrows = 7
     for i,param in enumerate(param_vals):
         plt.figtext(x=0.02+0.12*int(i/float(nrows)), y=0.95-0.025*(i%nrows), s=r'%s = %s' % (lsims.param_symbols[param], np.round(param_vals[param],3)), fontsize=tfs)
-    
+
     ax = plt.subplot(plot[1,0])
     plt.title(r'$\mathcal{D}_W({\rm KS}) = %1.2f$; $\mathcal{D}_W({\rm AD}) = %1.2f$' % (dists_w['tot_dist_KS_default'], dists_w['tot_dist_AD_default']), fontsize=lfs)
     x = sss_per_sys['Mtot_obs'][sss_per_sys['Mtot_obs'] > 0]
@@ -325,38 +325,38 @@ def load_cat_obs_and_plot_fig_pdf_composite(loadfiles_directory, weights, run_nu
         plt.text(x=0.98, y=0.8, s=r'$|f_{\rm sim} - f_{\rm Kep}| = %1.4f$ ($%1.2f$)' % (dists['delta_f'], dists_w['delta_f']), ha='right', fontsize=lfs, transform = ax.transAxes)
         plt.text(x=0.98, y=0.6, s=r'${\rm CRPD} = %1.4f$ ($%1.2f$)' % (dists['mult_CRPD'], dists_w['mult_CRPD']), ha='right', fontsize=lfs, transform = ax.transAxes)
         plt.text(x=0.98, y=0.4, s=r'${\rm CRPD_r} = %1.4f$ ($%1.2f$)' % (dists['mult_CRPD_r'], dists_w['mult_CRPD_r']), ha='right', fontsize=lfs, transform = ax.transAxes)
-    
+
     ax = plt.subplot(plot[2,0])
     plot_panel_pdf_simple(ax, [sss['P_obs']], [ssk['P_obs']], x_min=P_min, x_max=P_max, y_min=1e-3, y_max=0.1, n_bins=n_bins, log_x=True, log_y=True, lw=lw, alpha=alpha, xticks_custom=[3,10,30,100,300], xlabel_text=r'$P$ (days)', afs=afs, tfs=tfs, lfs=lfs)
     if label_dist:
         plt.text(x=0.98, y=0.8, s=r'$\mathcal{D}_{\rm KS} = %1.4f$ ($%1.2f$)' % (dists['periods_KS'], dists_w['periods_KS']), ha='right', fontsize=12, transform = ax.transAxes)
         plt.text(x=0.98, y=0.6, s=r'$\mathcal{D}_{\rm AD} = %1.4f$ ($%1.2f$)' % (dists['periods_AD'], dists_w['periods_AD']), ha='right', fontsize=12, transform = ax.transAxes)
-    
+
     ax = plt.subplot(plot[3,0])
     R_max_cut = 30. #upper cut-off for plotting period ratios; np.max(sss['Rm_obs'])
     plot_panel_pdf_simple(ax, [sss['Rm_obs'][sss['Rm_obs'] < R_max_cut]], [ssk['Rm_obs'][ssk['Rm_obs'] < R_max_cut]], x_min=1., x_max=R_max_cut, n_bins=n_bins, log_x=True, lw=lw, alpha=alpha, xticks_custom=[1,2,3,4,5,10,20], xlabel_text=r'$P_{i+1}/P_i$', afs=afs, tfs=tfs, lfs=lfs)
     if label_dist:
         plt.text(x=0.98, y=0.8, s=r'$\mathcal{D}_{\rm KS} = %1.4f$ ($%1.2f$)' % (dists['period_ratios_KS'], dists_w['period_ratios_KS']), ha='right', fontsize=12, transform = ax.transAxes)
         plt.text(x=0.98, y=0.6, s=r'$\mathcal{D}_{\rm AD} = %1.4f$ ($%1.2f$)' % (dists['period_ratios_AD'], dists_w['period_ratios_AD']), ha='right', fontsize=12, transform = ax.transAxes)
-    
+
     ax = plt.subplot(plot[0,1])
     plot_panel_pdf_simple(ax, [sss['tdur_obs']], [ssk['tdur_obs']], x_max=15., n_bins=n_bins, lw=lw, alpha=alpha, xlabel_text=r'$t_{\rm dur}$ (hrs)', afs=afs, tfs=tfs, lfs=lfs)
     if label_dist:
         plt.text(x=0.98, y=0.8, s=r'$\mathcal{D}_{\rm KS} = %1.4f$ ($%1.2f$)' % (dists['durations_KS'], dists_w['durations_KS']), ha='right', fontsize=12, transform = ax.transAxes)
         plt.text(x=0.98, y=0.6, s=r'$\mathcal{D}_{\rm AD} = %1.4f$ ($%1.2f$)' % (dists['durations_AD'], dists_w['durations_AD']), ha='right', fontsize=12, transform = ax.transAxes)
-    
+
     ax = plt.subplot(plot[1,1])
     plot_panel_pdf_simple(ax, [np.log10(sss['xi_obs'])], [np.log10(ssk['xi_obs'])], x_min=-0.5, x_max=0.5, n_bins=n_bins, lw=lw, alpha=alpha, xlabel_text=r'$\log{\xi}$', ylabel_text='', afs=afs, tfs=tfs, lfs=lfs)
     if label_dist:
         plt.text(x=0.98, y=0.8, s=r'$\mathcal{D}_{\rm KS} = %1.4f$ ($%1.2f$)' % (dists['duration_ratios_KS'], dists_w['duration_ratios_KS']), ha='right', fontsize=12, transform = ax.transAxes)
         plt.text(x=0.98, y=0.6, s=r'$\mathcal{D}_{\rm AD} = %1.4f$ ($%1.2f$)' % (dists['duration_ratios_AD'], dists_w['duration_ratios_AD']), ha='right', fontsize=12, transform = ax.transAxes)
-    
+
     ax = plt.subplot(plot[2,1])
     plot_panel_pdf_simple(ax, [sss['D_obs']], [ssk['D_obs']], x_min=1e-5, x_max=1e-2, n_bins=n_bins, log_x=True, lw=lw, alpha=alpha, xlabel_text=r'$\delta$', ylabel_text='', afs=afs, tfs=tfs, lfs=lfs)
     if label_dist:
         plt.text(x=0.98, y=0.8, s=r'$\mathcal{D}_{\rm KS} = %1.4f$ ($%1.2f$)' % (dists['depths_KS'], dists_w['depths_KS']), ha='right', fontsize=12, transform = ax.transAxes)
         plt.text(x=0.98, y=0.6, s=r'$\mathcal{D}_{\rm AD} = %1.4f$ ($%1.2f$)' % (dists['depths_AD'], dists_w['depths_AD']), ha='right', fontsize=12, transform = ax.transAxes)
-    
+
     ax = plt.subplot(plot[3,1])
     plot_panel_pdf_simple(ax, [sss['D_above_obs'], sss['D_below_obs']], [ssk['D_above_obs'], ssk['D_below_obs']], x_min=1e-5, x_max=1e-2, n_bins=n_bins, log_x=True, c_sim=['b','r'], c_Kep=['b','r'], ls_sim=['-','-'], ls_Kep=['-','-'], lw=lw, alpha=alpha, labels_sim=['Above', 'Below'], labels_Kep=[None, None], xlabel_text=r'$\delta$', ylabel_text='', afs=afs, tfs=tfs, lfs=lfs)
     plt.legend(loc='upper left', bbox_to_anchor=(0.01,0.99), ncol=1, frameon=False, fontsize=12) #show the legend
@@ -365,13 +365,13 @@ def load_cat_obs_and_plot_fig_pdf_composite(loadfiles_directory, weights, run_nu
         plt.text(x=0.98, y=0.7, s=r'$\mathcal{D}_{\rm AD} = %1.4f$ ($%1.2f$)' % (dists['depths_above_AD'], dists_w['depths_above_AD']), ha='right', color='b', fontsize=12, transform = ax.transAxes)
         plt.text(x=0.98, y=0.55, s=r'$\mathcal{D}_{\rm KS} = %1.4f$ ($%1.2f$)' % (dists['depths_below_KS'], dists_w['depths_below_KS']), ha='right', color='r', fontsize=12, transform = ax.transAxes)
         plt.text(x=0.98, y=0.4, s=r'$\mathcal{D}_{\rm AD} = %1.4f$ ($%1.2f$)' % (dists['depths_below_AD'], dists_w['depths_below_AD']), ha='right', color='r', fontsize=12, transform = ax.transAxes)
-    
+
     ax = plt.subplot(plot[0,2])
     plot_panel_pdf_simple(ax, [sss['D_ratio_obs']], [ssk['D_ratio_obs']], x_min=0.1, x_max=10., n_bins=n_bins, log_x=True, lw=lw, alpha=alpha, xlabel_text=r'$\delta_{i+1}/\delta_i$', ylabel_text='', afs=afs, tfs=tfs, lfs=lfs)
     if label_dist:
         plt.text(x=0.98, y=0.8, s=r'$\mathcal{D}_{\rm KS} = %1.4f$ ($%1.2f$)' % (dists['radius_ratios_KS'], dists_w['radius_ratios_KS']), ha='right', fontsize=12, transform = ax.transAxes)
         plt.text(x=0.98, y=0.6, s=r'$\mathcal{D}_{\rm AD} = %1.4f$ ($%1.2f$)' % (dists['radius_ratios_AD'], dists_w['radius_ratios_AD']), ha='right', fontsize=12, transform = ax.transAxes)
-    
+
     ax = plt.subplot(plot[1,2])
     plot_panel_pdf_simple(ax, [sss['D_ratio_above_obs'], sss['D_ratio_below_obs'], sss['D_ratio_across_obs']], [ssk['D_ratio_above_obs'], ssk['D_ratio_below_obs'], ssk['D_ratio_across_obs']], x_min=0.1, x_max=10., n_bins=n_bins, log_x=True, c_sim=['b','r','k'], c_Kep=['b','r','k'], ls_sim=['-','-','-'], ls_Kep=['-','-','-'], lw=lw, alpha=alpha, labels_sim=['Above', 'Below', 'Across'], labels_Kep=[None, None, None], xlabel_text=r'$\delta_{i+1}/\delta_i$', ylabel_text='', afs=afs, tfs=tfs, lfs=lfs)
     plt.legend(loc='upper left', bbox_to_anchor=(0.01,0.99), ncol=1, frameon=False, fontsize=12) #show the legend
@@ -382,34 +382,34 @@ def load_cat_obs_and_plot_fig_pdf_composite(loadfiles_directory, weights, run_nu
         plt.text(x=0.98, y=0.4, s=r'$\mathcal{D}_{\rm AD} = %1.4f$ ($%1.2f$)' % (dists['radius_ratios_below_AD'], dists_w['radius_ratios_below_AD']), ha='right', color='r', fontsize=12, transform = ax.transAxes)
         plt.text(x=0.98, y=0.25, s=r'$\mathcal{D}_{\rm KS} = %1.4f$ ($%1.2f$)' % (dists['radius_ratios_across_KS'], dists_w['radius_ratios_across_KS']), ha='right', color='k', fontsize=12, transform = ax.transAxes)
         plt.text(x=0.98, y=0.1, s=r'$\mathcal{D}_{\rm AD} = %1.4f$ ($%1.2f$)' % (dists['radius_ratios_across_AD'], dists_w['radius_ratios_across_AD']), ha='right', color='k', fontsize=12, transform = ax.transAxes)
-    
+
     ax = plt.subplot(plot[2,2])
     plot_panel_pdf_simple(ax, [sss['radii_obs']], [ssk['radii_obs']], x_min=radii_min, x_max=radii_max, n_bins=n_bins, lw=lw, alpha=alpha, xlabel_text=r'$R_p (R_\oplus)$', ylabel_text='', afs=afs, tfs=tfs, lfs=lfs)
-    
+
     ax = plt.subplot(plot[3,2])
     plot_panel_pdf_simple(ax, [sss['Rstar_obs']], [ssk['Rstar_obs']], x_max=3., n_bins=n_bins, lw=lw, alpha=alpha, xlabel_text=r'$R_\star (R_\odot)$', ylabel_text='', afs=afs, tfs=tfs, lfs=lfs)
-    
+
     if save_fig:
         plt.savefig(save_name)
         plt.close()
 
 def load_cat_obs_and_plot_fig_pdf_composite_simple(loadfiles_directory, weights, run_number='', Rstar_min=0., Rstar_max=1e6, Mstar_min=0., Mstar_max=1e6, teff_min=0., teff_max=1e6, bp_rp_min=-1e6, bp_rp_max=1e6, label_dist=True, AD_mod=True, dists_include=[], n_bins=100, c_sim=['k'], lw=1, alpha=0.2, afs=12, tfs=12, lfs=12, fig_size=(16,8), save_name='no_name_fig.pdf', save_fig=False):
-    
+
     #To load and analyze the simulated and Kepler observed catalogs:
-    
+
     N_sim, cos_factor, P_min, P_max, radii_min, radii_max = lsims.read_targets_period_radius_bounds(loadfiles_directory + 'periods%s.out' % run_number)
     param_vals = lsims.read_sim_params(loadfiles_directory + 'periods%s.out' % run_number)
-    
+
     sss_per_sys, sss = lsims.compute_summary_stats_from_cat_obs(file_name_path=loadfiles_directory, run_number=run_number, Rstar_min=Rstar_min, Rstar_max=Rstar_max, Mstar_min=Mstar_min, Mstar_max=Mstar_max, teff_min=teff_min, teff_max=teff_max, bp_rp_min=bp_rp_min, bp_rp_max=bp_rp_max)
-    
+
     ssk_per_sys, ssk = ckep.compute_summary_stats_from_Kepler_catalog(P_min, P_max, radii_min, radii_max, Rstar_min=Rstar_min, Rstar_max=Rstar_max, Mstar_min=Mstar_min, Mstar_max=Mstar_max, teff_min=teff_min, teff_max=teff_max, bp_rp_min=bp_rp_min, bp_rp_max=bp_rp_max)
-    
+
     dists, dists_w = ckep.compute_distances_sim_Kepler(sss_per_sys, sss, ssk_per_sys, ssk, weights, dists_include, N_sim, cos_factor=cos_factor, AD_mod=AD_mod)
-    
-    
-    
+
+
+
     #To plot the 'observed' distributions with the actual observed Kepler distributions:
-    
+
     fig = plt.figure(figsize=fig_size)
     plot = GridSpec(4,3,left=0.075,bottom=0.1,right=0.975,top=0.95,wspace=0.2,hspace=0.5)
 
@@ -417,34 +417,34 @@ def load_cat_obs_and_plot_fig_pdf_composite_simple(loadfiles_directory, weights,
     nrows = 8
     for i,param in enumerate(param_vals):
         plt.figtext(x=0.02+0.13*int(i/float(nrows)), y=0.95-0.025*(i%nrows), s=r'%s = %s' % (lsims.param_symbols[param], np.round(param_vals[param],3)), fontsize=lfs-2)
-    
+
     ax = plt.subplot(plot[0,1])
     if label_dist:
         plt.title(r'$\mathcal{D}_W({\rm KS}) = %1.2f$; $\mathcal{D}_W({\rm AD}) = %1.2f$' % (dists_w['tot_dist_KS_default'], dists_w['tot_dist_AD_default']), fontsize=lfs)
-    plot_panel_counts_hist_simple(ax, [sss_per_sys['Mtot_obs']], [ssk_per_sys['Mtot_obs']], x_min=0, y_min=1e-1, y_max=1e4, x_llim=0.5, N_sim_Kep_factor=float(N_sim)/lsims.N_Kep, log_y=True, c_sim=c_sim, lw=lw, xlabel_text='Observed planets per system', ylabel_text='', afs=afs, tfs=tfs-2, lfs=lfs, legend=True, show_counts_Kep=True, show_counts_sim=True)
+    plot_panel_counts_hist_simple(ax, [sss_per_sys['Mtot_obs']], [ssk_per_sys['Mtot_obs']], x_min=0, y_min=1e-1, y_max=1e4, x_llim=0.5, N_sim_Kep_factor=float(N_sim)/ckep.N_Kep, log_y=True, c_sim=c_sim, lw=lw, xlabel_text='Observed planets per system', ylabel_text='', afs=afs, tfs=tfs-2, lfs=lfs, legend=True, show_counts_Kep=True, show_counts_sim=True)
     if label_dist:
         plt.text(x=0.02, y=0.45, s=r'$D_{f} = %1.4f$ ($%1.2f$)' % (dists['delta_f'], dists_w['delta_f']), ha='left', fontsize=lfs, transform = ax.transAxes)
         plt.text(x=0.02, y=0.25, s=r'$\rho_{\rm CRPD} = %1.4f$ ($%1.2f$)' % (dists['mult_CRPD_r'], dists_w['mult_CRPD_r']), ha='left', fontsize=lfs, transform = ax.transAxes)
-    
+
     ax = plt.subplot(plot[1,0])
     plot_panel_pdf_simple(ax, [sss['P_obs']], [ssk['P_obs']], x_min=P_min, x_max=P_max, y_min=1e-3, y_max=0.1, n_bins=n_bins, log_x=True, log_y=True, c_sim=c_sim, lw=lw, alpha=alpha, xticks_custom=[3,10,30,100,300], xlabel_text=r'$P$ (days)', afs=afs, tfs=tfs, lfs=lfs)
     if label_dist:
         plt.text(x=0.98, y=0.8, s=r'$\mathcal{D}_{\rm KS} = %1.4f$ ($%1.2f$)' % (dists['periods_KS'], dists_w['periods_KS']), ha='right', fontsize=lfs, transform = ax.transAxes)
         plt.text(x=0.98, y=0.6, s=r'$\mathcal{D}_{\rm AD} = %1.4f$ ($%1.2f$)' % (dists['periods_AD'], dists_w['periods_AD']), ha='right', fontsize=lfs, transform = ax.transAxes)
-    
+
     ax = plt.subplot(plot[1,1])
     R_max_cut = 30. #upper cut-off for plotting period ratios; np.max(sss['Rm_obs'])
     plot_panel_pdf_simple(ax, [sss['Rm_obs'][sss['Rm_obs'] < R_max_cut]], [ssk['Rm_obs'][ssk['Rm_obs'] < R_max_cut]], x_min=1., x_max=R_max_cut, y_max=0.075, n_bins=n_bins, log_x=True, c_sim=c_sim, lw=lw, alpha=alpha, xticks_custom=[1,2,3,4,5,10,20], xlabel_text=r'$P_{i+1}/P_i$', ylabel_text='', afs=afs, tfs=tfs, lfs=lfs)
     if label_dist:
         plt.text(x=0.98, y=0.8, s=r'$\mathcal{D}_{\rm KS} = %1.4f$ ($%1.2f$)' % (dists['period_ratios_KS'], dists_w['period_ratios_KS']), ha='right', fontsize=lfs, transform = ax.transAxes)
         plt.text(x=0.98, y=0.6, s=r'$\mathcal{D}_{\rm AD} = %1.4f$ ($%1.2f$)' % (dists['period_ratios_AD'], dists_w['period_ratios_AD']), ha='right', fontsize=lfs, transform = ax.transAxes)
-    
+
     ax = plt.subplot(plot[2,0])
     plot_panel_pdf_simple(ax, [sss['D_obs']], [ssk['D_obs']], x_min=1e-5, x_max=10.**(-2.), n_bins=n_bins, log_x=True, c_sim=c_sim, lw=lw, alpha=alpha, xlabel_text=r'$\delta$', afs=afs, tfs=tfs, lfs=lfs)
     if label_dist:
         plt.text(x=0.98, y=0.8, s=r'$\mathcal{D}_{\rm KS} = %1.4f$ ($%1.2f$)' % (dists['depths_KS'], dists_w['depths_KS']), ha='right', fontsize=lfs, transform = ax.transAxes)
         plt.text(x=0.98, y=0.6, s=r'$\mathcal{D}_{\rm AD} = %1.4f$ ($%1.2f$)' % (dists['depths_AD'], dists_w['depths_AD']), ha='right', fontsize=lfs, transform = ax.transAxes)
-    
+
     ax = plt.subplot(plot[2,1])
     plot_panel_pdf_simple(ax, [sss['D_ratio_obs']], [ssk['D_ratio_obs']], x_min=0.1, x_max=10., y_max=0.05, n_bins=n_bins, log_x=True, c_sim=c_sim, lw=lw, alpha=alpha, xlabel_text=r'$\delta_{i+1}/\delta_i$', ylabel_text='', afs=afs, tfs=tfs, lfs=lfs)
     if label_dist:
@@ -456,7 +456,7 @@ def load_cat_obs_and_plot_fig_pdf_composite_simple(loadfiles_directory, weights,
     if label_dist:
         plt.text(x=0.98, y=0.8, s=r'$\mathcal{D}_{\rm KS} = %1.4f$ ($%1.2f$)' % (dists['durations_KS'], dists_w['durations_KS']), ha='right', fontsize=lfs, transform = ax.transAxes)
         plt.text(x=0.98, y=0.6, s=r'$\mathcal{D}_{\rm AD} = %1.4f$ ($%1.2f$)' % (dists['durations_AD'], dists_w['durations_AD']), ha='right', fontsize=lfs, transform = ax.transAxes)
-    
+
     ax = plt.subplot(plot[3,1])
     plot_panel_pdf_simple(ax, [np.log10(sss['xi_res_obs'])], [np.log10(ssk['xi_res_obs'])], x_min=-0.5, x_max=0.5, y_max=0.1, n_bins=n_bins, c_sim=c_sim, lw=lw, labels_sim=['Near MMR'], labels_Kep=[None], alpha=alpha, xlabel_text=r'$\log{\xi}$', ylabel_text='', afs=afs, tfs=tfs, lfs=lfs)
     plt.legend(loc='upper left', bbox_to_anchor=(0.01,0.99), ncol=1, frameon=False, fontsize=lfs)
@@ -488,28 +488,28 @@ def load_cat_obs_and_plot_fig_pdf_composite_simple(loadfiles_directory, weights,
     if label_dist:
         plt.text(x=0.02, y=0.8, s=r'$\mathcal{D}_{\rm KS} = %1.4f$ ($%1.2f$)' % (dists['durations_norm_circ_multis_KS'], dists_w['durations_norm_circ_multis_KS']), ha='left', fontsize=lfs, transform = ax.transAxes)
         plt.text(x=0.02, y=0.6, s=r'$\mathcal{D}_{\rm AD} = %1.4f$ ($%1.2f$)' % (dists['durations_norm_circ_multis_AD'], dists_w['durations_norm_circ_multis_AD']), ha='left', fontsize=lfs, transform = ax.transAxes)
-    
+
     if save_fig:
         plt.savefig(save_name)
         plt.close()
 
 def load_cat_obs_and_plot_fig_pdf_split_bprp_GF2020_metrics(loadfiles_directory, weights_all, run_number='', label_dist=True, AD_mod=True, dists_include=[], n_bins=100, lw=1, alpha=0.2, afs=12, tfs=12, lfs=12, fig_size=(16,8), save_name='no_name_fig.pdf', save_fig=False):
-    
+
     #To load and analyze the simulated and Kepler observed catalogs:
-    
+
     N_sim, cos_factor, P_min, P_max, radii_min, radii_max = lsims.read_targets_period_radius_bounds(loadfiles_directory + 'periods%s.out' % run_number)
     param_vals = lsims.read_sim_params(loadfiles_directory + 'periods%s.out' % run_number)
-    
+
     #To plot the 'observed' distributions with the actual observed Kepler distributions:
-    
+
     fig = plt.figure(figsize=fig_size)
     plot = GridSpec(4,3,left=0.075,bottom=0.1,right=0.975,top=0.95,wspace=0.2,hspace=0.5)
-    
+
     #To print the parameter values:
     nrows = 8
     for i,param in enumerate(param_vals):
         plt.figtext(x=0.02+0.13*int(i/float(nrows)), y=0.95-0.025*(i%nrows), s=r'%s = %s' % (lsims.param_symbols[param], np.round(param_vals[param],3)), fontsize=lfs-2)
-    
+
     stars_cleaned = ckep.load_Kepler_stars_cleaned()
     #bp_rp_med = np.nanmedian(stars_cleaned['bp_rp'])
     bp_rp_corr_med = np.nanmedian(stars_cleaned['bp_rp'] - stars_cleaned['e_bp_rp_interp'])
@@ -544,26 +544,26 @@ def load_cat_obs_and_plot_fig_pdf_split_bprp_GF2020_metrics(loadfiles_directory,
 
 
 def load_cat_phys_and_plot_fig_pdf_composite_simple(loadfiles_directory, run_number='', n_bins=100, c_sim=['k'], lw=1, afs=12, tfs=12, lfs=12, fig_size=(16,8), save_name='no_name_fig.pdf', save_fig=False):
-    
+
     #To load and analyze the simulated physical catalogs:
-    
+
     N_sim, cos_factor, P_min, P_max, radii_min, radii_max = lsims.read_targets_period_radius_bounds(loadfiles_directory + 'periods%s.out' % run_number)
     param_vals = lsims.read_sim_params(loadfiles_directory + 'periods%s.out' % run_number)
-    
+
     sssp_per_sys, sssp = lsims.compute_summary_stats_from_cat_phys(file_name_path=loadfiles_directory, run_number=run_number)
-    
-    
-    
+
+
+
     #To plot the underlying distributions:
-    
+
     fig = plt.figure(figsize=fig_size)
     plot = GridSpec(4,3,left=0.075,bottom=0.075,right=0.975,top=0.975,wspace=0.15,hspace=0.5)
-    
+
     #To print the parameter values:
     nrows = 8
     for i,param in enumerate(param_vals):
         plt.figtext(x=0.02+0.13*int(i/float(nrows)), y=0.95-0.025*(i%nrows), s=r'%s = %s' % (lsims.param_symbols[param], np.round(param_vals[param],3)), fontsize=lfs-2)
-    
+
     ax = plt.subplot(plot[1,0])
     x = np.concatenate((sssp_per_sys['Mtot_all'], np.zeros(N_sim - len(sssp_per_sys['Mtot_all']), dtype='int')))
     plot_panel_counts_hist_simple(ax, [x], [], x_min=-1, x_llim=-0.5, x_ulim=10.5, normalize=True, c_sim=c_sim, lw=lw, xlabel_text='Intrinsic planet multiplicity', ylabel_text='Fraction', afs=afs, tfs=tfs, lfs=lfs)
@@ -576,7 +576,7 @@ def load_cat_phys_and_plot_fig_pdf_composite_simple(loadfiles_directory, run_num
 
     ax = plt.subplot(plot[0,1])
     plot_panel_pdf_simple(ax, [sssp['P_all']], [], x_min=P_min, x_max=P_max, n_bins=n_bins, log_x=True, log_y=True, c_sim=c_sim, lw=lw, xticks_custom=[3,10,30,100,300], xlabel_text=r'$P$ (days)', ylabel_text='', afs=afs, tfs=tfs, lfs=lfs)
-    
+
     ax = plt.subplot(plot[0,2])
     plot_panel_pdf_simple(ax, [sssp['Rm_all']], [], x_min=1., x_max=20., n_bins=n_bins, log_x=True, c_sim=c_sim, lw=lw, xticks_custom=[1,2,3,4,5,10,20], xlabel_text=r'$P_{i+1}/P_i$', ylabel_text='', afs=afs, tfs=tfs, lfs=lfs)
 
@@ -585,7 +585,7 @@ def load_cat_phys_and_plot_fig_pdf_composite_simple(loadfiles_directory, run_num
 
     ax = plt.subplot(plot[1,2])
     plot_panel_pdf_simple(ax, [sssp['radii_ratio_all']], [], x_min=1e-1, x_max=10., n_bins=n_bins, log_x=True, c_sim=c_sim, lw=lw, xlabel_text=r'$R_{p,i+1}/R_{p,i}$', ylabel_text='', afs=afs, tfs=tfs, lfs=lfs)
-    
+
     ax = plt.subplot(plot[2,1])
     plot_panel_pdf_simple(ax, [sssp['mass_all']], [], x_min=0.07, x_max=1e3, n_bins=n_bins, log_x=True, c_sim=c_sim, lw=lw, xlabel_text=r'$M_p$ ($M_\oplus$)', ylabel_text='', afs=afs, tfs=tfs, lfs=lfs)
 
@@ -613,12 +613,12 @@ def load_cat_phys_and_plot_fig_pdf_composite_simple(loadfiles_directory, run_num
 def load_cat_obs_and_plot_figs_multis_gallery(loadfiles_directory, run_number='', x_min=2., x_max=300., n_pl=3, plot_Kep=True, show_title=True, fig_size=(10,10), N_sys_per_plot=150, plot_line_per=10, afs=16, tfs=20, save_name_base='no_name_fig', save_fig=False):
 
     #To load and analyze the simulated and Kepler observed catalogs:
-    
+
     N_sim, cos_factor, P_min, P_max, radii_min, radii_max = lsims.read_targets_period_radius_bounds(loadfiles_directory + 'periods%s.out' % run_number)
     param_vals = lsims.read_sim_params(loadfiles_directory + 'periods%s.out' % run_number)
-    
+
     sss_per_sys, sss = lsims.compute_summary_stats_from_cat_obs(file_name_path=loadfiles_directory, run_number=run_number)
-    
+
     ssk_per_sys, ssk = ckep.compute_summary_stats_from_Kepler_catalog(P_min, P_max, radii_min, radii_max)
 
 
@@ -628,7 +628,7 @@ def load_cat_obs_and_plot_figs_multis_gallery(loadfiles_directory, run_number=''
     N_multi_confirmed = sum(ssk_per_sys['Mtot_obs'] >= n_pl)
 
     i_sorted_P0 = np.argsort(sss_per_sys['P_obs'][sss_per_sys['Mtot_obs'] >= n_pl,0]) #array of indices that would sort the arrays of multi-systems by the innermost period of each system
-    i_sorted_P0 = i_sorted_P0[np.sort(np.random.choice(np.arange(len(i_sorted_P0)), int(round(N_multi/(N_sim/lsims.N_Kep))), replace=False))]
+    i_sorted_P0 = i_sorted_P0[np.sort(np.random.choice(np.arange(len(i_sorted_P0)), int(round(N_multi/(N_sim/ckep.N_Kep))), replace=False))]
     P_obs_multi = sss_per_sys['P_obs'][sss_per_sys['Mtot_obs'] >= n_pl][i_sorted_P0]
     radii_obs_multi = sss_per_sys['radii_obs'][sss_per_sys['Mtot_obs'] >= n_pl][i_sorted_P0]
 
@@ -693,7 +693,7 @@ def load_cat_obs_and_plot_figs_multis_gallery(loadfiles_directory, run_number=''
             plt.close()
 
 def plot_figs_multis_underlying_gallery(sssp_per_sys, sssp, n_min=1, n_max=20, n_det_min=0, n_det_max=10, x_min=2., x_max=300., fig_size=(10,10), panels_per_fig=1, N_sys_sample=150, N_sys_per_plot=150, plot_line_per=10, colorby='size', mark_det=False, afs=16, tfs=20, save_name_base='no_name_fig', save_fig=False):
-    
+
     assert n_min <= n_max
     assert n_det_min <= n_det_max
 
@@ -705,7 +705,7 @@ def plot_figs_multis_underlying_gallery(sssp_per_sys, sssp, n_min=1, n_max=20, n
     bools_n_det_range = (n_det_per_sys >= n_det_min) & (n_det_per_sys <= n_det_max)
     i_keep = np.arange(len(n_per_sys))[bools_n_range & bools_n_det_range]
     print('Systems that satisfy requirements (%s <= n <= %s and %s <= n_det <= %s): %s' % (n_min, n_max, n_det_min, n_det_max, len(i_keep)))
-    
+
     i_keep_sample = np.random.choice(i_keep, N_sys_sample, replace=False) #array of indices of a sample of multi-systems with n_min or more planets
 
     i_sorted_P0 = np.argsort(sssp_per_sys['P_all'][i_keep_sample,0]) #array of indices that would sort the arrays of the sample of multi-systems by the innermost period of each system
@@ -713,7 +713,7 @@ def plot_figs_multis_underlying_gallery(sssp_per_sys, sssp, n_min=1, n_max=20, n
     radii_sample_multi = sssp_per_sys['radii_all'][i_keep_sample][i_sorted_P0]
     clusterids_sample_multi = sssp_per_sys['clusterids_all'][i_keep_sample][i_sorted_P0]
     det_sample_multi = sssp_per_sys['det_all'][i_keep_sample][i_sorted_P0]
-    
+
     n_panels = int(np.ceil(float(N_sys_sample)/N_sys_per_plot))
     n_figs = int(np.ceil(float(n_panels)/panels_per_fig))
     print('Generating %s figures...' % n_figs)
@@ -730,7 +730,7 @@ def plot_figs_multis_underlying_gallery(sssp_per_sys, sssp, n_min=1, n_max=20, n
                 radii_sys = radii_sample_multi[(h*panels_per_fig + i)*N_sys_per_plot + j]
                 clusterids_sys = clusterids_sample_multi[(h*panels_per_fig + i)*N_sys_per_plot + j]
                 det_sys = det_sample_multi[(h*panels_per_fig + i)*N_sys_per_plot + j]
-                
+
                 det_sys = det_sys[P_sys > 0]
                 P_sys = P_sys[P_sys > 0]
                 radii_sys = radii_sys[radii_sys > 0]
@@ -742,13 +742,13 @@ def plot_figs_multis_underlying_gallery(sssp_per_sys, sssp, n_min=1, n_max=20, n
                 else:
                     print('No match for colorby argument; defaulting to coloring by size ordering.')
                     colors = np.argsort(radii_sys)
-                
+
                 if mark_det:
                     plt.scatter(P_sys[det_sys == 1], np.ones(np.sum(det_sys == 1))+j, c=colors[det_sys == 1], s=2.*radii_sys[det_sys == 1]**2.)
                     plt.scatter(P_sys[det_sys == 0], np.ones(np.sum(det_sys == 0))+j, facecolors='none', edgecolors='k', s=2.*radii_sys[det_sys == 0]**2.)
                 else:
                     plt.scatter(P_sys, np.ones(len(P_sys))+j, c=colors, s=2.*radii_sys**2.)
-                
+
                 if (j+1)%plot_line_per == 0:
                     plt.axhline(y=j+1, lw=0.05, color='k')
             plt.gca().set_xscale("log")
@@ -759,7 +759,7 @@ def plot_figs_multis_underlying_gallery(sssp_per_sys, sssp, n_min=1, n_max=20, n
             plt.xlim([x_min, x_max])
             plt.ylim([0., N_sys_per_plot])
             plt.xlabel(r'Period $P$ (days)', fontsize=tfs)
-        
+
         save_name = save_name_base + '_%s.png' % i
         if save_fig:
             plt.savefig(save_name)
@@ -772,29 +772,29 @@ def plot_figs_multis_underlying_gallery(sssp_per_sys, sssp, n_min=1, n_max=20, n
 def load_cat_obs_and_plot_fig_period_radius(loadfiles_directory, run_number='', lw=1, save_name='no_name_fig.pdf', save_fig=False):
 
     #To load and analyze the simulated and Kepler observed catalogs:
-    
+
     N_sim, cos_factor, P_min, P_max, radii_min, radii_max = lsims.read_targets_period_radius_bounds(loadfiles_directory + 'periods%s.out' % run_number)
     param_vals = lsims.read_sim_params(loadfiles_directory + 'periods%s.out' % run_number)
-    
+
     sss_per_sys, sss = lsims.compute_summary_stats_from_cat_obs(file_name_path=loadfiles_directory, run_number=run_number)
-    
+
     ssk_per_sys, ssk = ckep.compute_summary_stats_from_Kepler_catalog(P_min, P_max, radii_min, radii_max)
-    
-    
-    
+
+
+
     #To plot a period vs radius scatter plot with binned statistics to compare the simulated and Kepler catalogs:
     fig = plt.figure(figsize=(16,8))
     plot = GridSpec(1,2,left=0.075,bottom=0.1,right=0.975,top=0.75,wspace=0.2,hspace=0)
-    
+
     #To print the parameter values:
     nrows = 7
     for i,param in enumerate(param_vals):
         plt.figtext(x=0.02+0.12*int(i/float(nrows)), y=0.95-0.025*(i%nrows), s=r'%s = %s' % (lsims.param_symbols[param], np.round(param_vals[param],3)), fontsize=12)
-    
+
     P_bins = 5
     P_lines, radii_lines = np.logspace(np.log10(P_min), np.log10(P_max), P_bins+1), np.array([0.5, 1., 2., 4., 6., 8., 10.])
     radii_bins = len(radii_lines)-1
-    
+
     ax = plt.subplot(plot[0,0])
     N_sample = int(np.round(len(sss_per_sys['P_obs'])*cos_factor)) #number of simulated planets we would expect if we assigned orbits isotropically
     i_sample = np.random.choice(np.arange(len(sss_per_sys['P_obs'])), N_sample, replace=False)
@@ -867,7 +867,7 @@ def plot_fig_period_radius_fraction_multis(sss_per_sys, sss, P_bins, R_bins, fig
             sys_cell = len(P_per_sys_cell)
             singles_cell = np.sum(P_per_sys_cell[:,1] < 0)
             #print('Systems in cell = %s; planets in cell = %s; observed singles in cell = %s' % (sys_cell, pl_cell, singles_cell))
-            
+
             counts_pl_grid[j,i] = pl_cell
             counts_sys_grid[j,i] = sys_cell
             counts_singles_grid[j,i] = singles_cell
@@ -899,9 +899,9 @@ def plot_fig_period_radius_fraction_multis(sss_per_sys, sss, P_bins, R_bins, fig
     return f_multis_sys4p_grid
 
 def plot_fig_period_radius_fraction_multis_higher(sss_per_sys, sss, P_bins, R_bins, fig_size=(10,8), fig_lbrt=[0.1, 0.1, 0.95, 0.95], afs=12, tfs=12, lfs=12, save_name='no_name_fig.pdf', save_fig=False):
-    
+
     n_P_bins, n_R_bins = len(P_bins)-1, len(R_bins)-1
-    
+
     counts_pl_grid = np.zeros((n_R_bins, n_P_bins))
     counts_sys_grid = np.zeros((n_R_bins, n_P_bins))
     counts_singles_grid = np.zeros((n_R_bins, n_P_bins))
@@ -918,7 +918,7 @@ def plot_fig_period_radius_fraction_multis_higher(sss_per_sys, sss, P_bins, R_bi
             doubles_or_less_cell = np.sum(P_per_sys_cell[:,2] < 0)
             triples_or_less_cell = np.sum(P_per_sys_cell[:,3] < 0)
             #print('Systems in cell = %s; planets in cell = %s; observed singles in cell = %s' % (sys_cell, pl_cell, singles_cell))
-            
+
             counts_pl_grid[j,i] = pl_cell
             counts_sys_grid[j,i] = sys_cell
             counts_singles_grid[j,i] = singles_cell
@@ -944,7 +944,7 @@ def plot_fig_period_radius_fraction_multis_higher(sss_per_sys, sss, P_bins, R_bi
     plt.yticks(np.log10(R_bins), ['{:.1f}'.format(x) for x in R_bins])
     plt.xlabel(r'Orbital Period $P$ (days)', fontsize=tfs)
     plt.ylabel(r'Planet radius $R_p$ ($R_\oplus$)', fontsize=tfs)
-    
+
     ax = plt.subplot(plot[0,1])
     plt.imshow(f_multis_sys4p_grid, cmap='coolwarm', norm=LogNorm(vmin=0.05, vmax=1.), aspect='auto', interpolation="nearest", origin='lower', extent=(np.log10(P_bins[0]),np.log10(P_bins[-1]),np.log10(R_bins[0]),np.log10(R_bins[-1]))) #cmap='coolwarm'
     cbar = plt.colorbar(ticks=np.linspace(0.1,1.,10), format=ticker.ScalarFormatter())
@@ -974,7 +974,7 @@ def plot_fig_period_radius_fraction_multis_higher(sss_per_sys, sss, P_bins, R_bi
     plt.yticks(np.log10(R_bins), ['{:.1f}'.format(x) for x in R_bins])
     plt.xlabel(r'Orbital Period $P$ (days)', fontsize=tfs)
     plt.ylabel(r'Planet radius $R_p$ ($R_\oplus$)', fontsize=tfs)
-    
+
     ax = plt.subplot(plot[1,1])
     plt.imshow(f_multis4p_sys4p_grid, cmap='coolwarm', norm=LogNorm(vmin=0.05, vmax=1.), aspect='auto', interpolation="nearest", origin='lower', extent=(np.log10(P_bins[0]),np.log10(P_bins[-1]),np.log10(R_bins[0]),np.log10(R_bins[-1]))) #cmap='coolwarm'
     cbar = plt.colorbar(ticks=np.linspace(0.1,1.,10), format=ticker.ScalarFormatter())
@@ -1001,7 +1001,7 @@ def plot_fig_period_radius_fraction_multis_higher(sss_per_sys, sss, P_bins, R_bi
 def compute_pratio_in_out_and_plot_fig(p_per_sys_all, colors=['k'], labels=['Input'], xymax=50., xyticks_custom=None, afs=12, tfs=12, lfs=12, save_name='no_name_fig.pdf', save_fig=False):
 
     ax = setup_fig_single((8,8), 0.12, 0.12, 0.95, 0.95)
-    
+
     for s in range(len(p_per_sys_all)):
         pr_in_out_3, pr_in_out_4, pr_in_out_5plus = [], [], []
         for i,p_sys in enumerate(p_per_sys_all[s]):
@@ -1049,7 +1049,7 @@ def compute_pratio_in_out_and_plot_fig(p_per_sys_all, colors=['k'], labels=['Inp
         plt.close()
 
 def compute_pratio_in_out_and_plot_fig_pdf(p_per_sys_all, last_is_Kep=False, fig_size=(10,6), fig_lbrt=[0.15, 0.15, 0.95, 0.95], n_bins=100, x_min=None, x_max=None, colors=['k'], ls=['-'], lw=1, labels=['Input'], afs=12, tfs=12, lfs=12, save_name='no_name_fig.pdf', save_fig=False):
-    
+
     pr_in_out_3_all, pr_in_out_4_all, pr_in_out_5plus_all = [], [], []
     for s in range(len(p_per_sys_all)):
         pr_in_out_3, pr_in_out_4, pr_in_out_5plus = [], [], []
@@ -1069,12 +1069,12 @@ def compute_pratio_in_out_and_plot_fig_pdf(p_per_sys_all, last_is_Kep=False, fig
         pr_in_out_3_all.append(pr_in_out_3)
         pr_in_out_4_all.append(pr_in_out_4)
         pr_in_out_5plus_all.append(pr_in_out_5plus)
-    
+
     prr_out_in_3_all = [pr_in_out_3_all[s][:,1]/pr_in_out_3_all[s][:,0] for s in range(len(p_per_sys_all))]
     prr_out_in_4_all = [pr_in_out_4_all[s][:,1]/pr_in_out_4_all[s][:,0] for s in range(len(p_per_sys_all))]
     prr_out_in_5plus_all = [pr_in_out_5plus_all[s][:,1]/pr_in_out_5plus_all[s][:,0] for s in range(len(p_per_sys_all))]
     prr_out_in_all_all = [np.concatenate((prr_out_in_3_all[s], prr_out_in_4_all[s], prr_out_in_5plus_all[s]), axis=0) for s in range(len(p_per_sys_all))]
-    
+
     ##### To plot the ratio of outer to inner period ratios of triplets (in 3+ systems):
 
     ax = setup_fig_single(fig_size, fig_lbrt[0], fig_lbrt[1], fig_lbrt[2], fig_lbrt[3])
@@ -1095,7 +1095,7 @@ def compute_pratio_in_out_and_plot_fig_pdf(p_per_sys_all, last_is_Kep=False, fig
 
 
 def plot_fig_underlying_mult_vs_amd_ecc_incl(sssp_per_sys, sssp, fig_size=(16,8), fig_lbrt=[0.075, 0.1, 0.975, 0.975], n_min_max=[0.5, 10.5], amd_min_max=[None, None], ecc_min_max=[None, None], incl_min_max=[None, None], afs=20, tfs=20, lfs=16, save_name='no_name_fig.pdf', save_fig=False):
-    
+
     # Planet multiplicity vs. AMD, eccentricity, and mutual inclination:
     fig = plt.figure(figsize=fig_size)
     plot = GridSpec(1, 3, left=fig_lbrt[0], bottom=fig_lbrt[1], right=fig_lbrt[2], top=fig_lbrt[3], wspace=0.2, hspace=0)
@@ -1168,7 +1168,7 @@ def convert_underlying_properties_per_planet_1d(sssp_per_sys, sssp, n_min=2, n_m
     if n_max is None:
         n_max = np.max(sssp_per_sys['Mtot_all'])
     assert(1 <= n_min <= n_max)
-    
+
     AMD_tot_n_all_once = [] # len = number of systems
     AMD_tot_n_all = [] # expanded to match number of planets, using np.kron()
     AMD_n_all = []
@@ -1190,7 +1190,7 @@ def convert_underlying_properties_per_planet_1d(sssp_per_sys, sssp, n_min=2, n_m
             else: # for singles, there are no period ratios
                 pratio_n = []
                 pratio_min_n = []
-            
+
             AMD_tot_n_all_once.append(AMD_tot_n)
             AMD_tot_n_all.append(np.kron(AMD_tot_n, np.ones(n))) # repeats each value of AMD to match number of planets
             AMD_n_all.append(AMD_n.flatten())
@@ -1218,7 +1218,7 @@ def convert_underlying_properties_per_planet_1d(sssp_per_sys, sssp, n_min=2, n_m
     return [persys_1d, perpl_1d]
 
 def plot_fig_underlying_amd_vs_ecc_incl(sssp_per_sys, sssp, n_min=2, n_max=None, show_singles=True, limit_singles=1000, fig_size=(16,8), fig_lbrt=[0.1, 0.1, 0.975, 0.975], amd_min_max=[None, None], ecc_min_max=[None, None], incl_min_max=[None, None], afs=20, tfs=20, lfs=16, save_name='no_name_fig.pdf', save_fig=False):
-    
+
     persys_1d, perpl_1d = convert_underlying_properties_per_planet_1d(sssp_per_sys, sssp, n_min=n_min, n_max=n_max)
 
     # AMD vs. eccentricity and mutual inclination:
@@ -1256,7 +1256,7 @@ def plot_fig_underlying_amd_vs_ecc_incl(sssp_per_sys, sssp, n_min=2, n_max=None,
         return ax1, ax2
 
 def plot_fig_underlying_ecc_vs_incl(sssp_per_sys, sssp, n_min=2, n_max=None, fig_size=(8,8), fig_lbrt=[0.15, 0.1, 0.95, 0.95], ecc_min_max=[None, None], incl_min_max=[None, None], afs=20, tfs=20, lfs=16, save_name='no_name_fig.pdf', save_fig=False):
-    
+
     persys_1d, perpl_1d = convert_underlying_properties_per_planet_1d(sssp_per_sys, sssp, n_min=n_min, n_max=n_max)
 
     # AMD vs. eccentricity and mutual inclination:
@@ -1282,13 +1282,13 @@ def plot_fig_underlying_ecc_vs_incl(sssp_per_sys, sssp, n_min=2, n_max=None, fig
         return ax
 
 def plot_fig_underlying_mass_vs_amd_ecc_incl(sssp_per_sys, sssp, n_min=2, n_max=None, show_singles=True, limit_singles=1000, fig_size=(16,8), fig_lbrt=[0.1, 0.1, 0.975, 0.975], mass_min_max=[None, None], amd_min_max=[None, None], ecc_min_max=[None, None], incl_min_max=[None, None], afs=20, tfs=20, lfs=16, save_name='no_name_fig.pdf', save_fig=False):
-    
+
     persys_1d, perpl_1d = convert_underlying_properties_per_planet_1d(sssp_per_sys, sssp, n_min=n_min, n_max=n_max)
 
     # Planet mass vs. AMD, eccentricity, and mutual inclination:
     fig = plt.figure(figsize=fig_size)
     plot = GridSpec(1, 3, left=fig_lbrt[0], bottom=fig_lbrt[1], right=fig_lbrt[2], top=fig_lbrt[3], wspace=0, hspace=0)
-    
+
     if show_singles:
         AMD_1 = sssp_per_sys['AMD_all'][sssp_per_sys['Mtot_all'] == 1,:1]
         e_1 = sssp_per_sys['e_all'][sssp_per_sys['Mtot_all'] == 1,:1]
@@ -1335,7 +1335,7 @@ def plot_fig_underlying_mass_vs_amd_ecc_incl(sssp_per_sys, sssp, n_min=2, n_max=
         return ax1, ax2, ax3
 
 def plot_fig_underlying_pratio_min_vs_amd_ecc_incl(sssp_per_sys, sssp, n_min=2, n_max=None, fig_size=(16,8), fig_lbrt=[0.1, 0.1, 0.975, 0.975], pratio_min_max=[None, None], amd_min_max=[None, None], ecc_min_max=[None, None], incl_min_max=[None, None], afs=20, tfs=20, lfs=16, save_name='no_name_fig.pdf', save_fig=False):
-    
+
     persys_1d, perpl_1d = convert_underlying_properties_per_planet_1d(sssp_per_sys, sssp, n_min=n_min, n_max=n_max)
 
     # Minimum period ratio vs. AMD, eccentricity, and mutual inclination:
@@ -1382,7 +1382,7 @@ def plot_fig_underlying_ecc_incl_per_mult(sssp_per_sys, sssp, n_min=1, n_max=Non
 
     assert n_max > n_min
     n_mults = range(n_min, n_max+1)
-    
+
     fig = plt.figure(figsize=fig_size)
     plot = GridSpec(len(n_mults), 2, left=fig_lbrt[0], bottom=fig_lbrt[1], right=fig_lbrt[2], top=fig_lbrt[3], wspace=0.1, hspace=0)
 
@@ -1393,7 +1393,7 @@ def plot_fig_underlying_ecc_incl_per_mult(sssp_per_sys, sssp, n_min=1, n_max=Non
         n = n_mults[::-1][i]
         e_n = sssp_per_sys['e_all'][sssp_per_sys['Mtot_all'] == n,:n]
         e_n = e_n.flatten()
-        
+
         if fit_dists:
             # Fit Rayleigh:
             loc_rl, scale_rl = scipy.stats.rayleigh.fit(e_n, floc=0)
@@ -1407,7 +1407,7 @@ def plot_fig_underlying_ecc_incl_per_mult(sssp_per_sys, sssp, n_min=1, n_max=Non
             #kappa_vMF, loc_vMF, scale_vMF = scipy.stats.vonmises.fit(e_n, fscale=1)
             #dist_vMF = scipy.stats.vonmises(kappa=kappa_vMF, loc=loc_vMF)
             #print('(n = %s) von Mises Fisher fit: kappa = %s, loc = %s' % (n, kappa_vMF, loc_vMF))
-        
+
         ax = plt.subplot(plot[i,0])
         if log_x:
             bins = np.logspace(np.log10(x_min), np.log10(x_max), n_bins+1)
@@ -1445,7 +1445,7 @@ def plot_fig_underlying_ecc_incl_per_mult(sssp_per_sys, sssp, n_min=1, n_max=Non
             break # can only plot mutual inclinations if n > 1
         im_n = sssp_per_sys['inclmut_all'][sssp_per_sys['Mtot_all'] == n,:n]
         im_n = im_n.flatten() * (180./np.pi)
-        
+
         if fit_dists:
             # Fit Rayleigh:
             loc_rl, scale_rl = scipy.stats.rayleigh.fit(im_n, floc=0)
@@ -1494,15 +1494,15 @@ def plot_fig_underlying_ecc_incl_per_mult(sssp_per_sys, sssp, n_min=1, n_max=Non
         plt.close()
 
 def plot_fig_underlying_amd_ecc_incl_per_mult(sssp_per_sys, sssp, n_min=1, n_max=None, n_bins=100, fit_dists=False, log_x=False, alpha=0.2, fig_size=(16,8), fig_lbrt=[0.03, 0.1, 0.97, 0.97], amd_min_max=[None, None], ecc_min_max=[None, None], incl_min_max=[None, None], afs=20, tfs=20, lfs=16, save_name='no_name_fig.pdf', save_fig=False):
-    
+
     assert n_max > n_min
     n_mults = range(n_min, n_max+1)
-    
+
     n_draws = 1000000 # number of samples for plotting from a fitted distribution
-    
+
     fig = plt.figure(figsize=fig_size)
     plot = GridSpec(len(n_mults), 3, left=fig_lbrt[0], bottom=fig_lbrt[1], right=fig_lbrt[2], top=fig_lbrt[3], wspace=0.1, hspace=0)
-    
+
     # AMD_tot distributions:
     x_min, x_max = amd_min_max
     x = np.logspace(np.log10(x_min), np.log10(x_max), 100) if log_x else np.linspace(x_min, x_max, 100)
@@ -1543,7 +1543,7 @@ def plot_fig_underlying_amd_ecc_incl_per_mult(sssp_per_sys, sssp, n_min=1, n_max
         e_n = sssp_per_sys['e_all'][sssp_per_sys['Mtot_all'] == n,:n]
         e_n = e_n.flatten()
         q16, q50, q84 = np.quantile(e_n, [0.16, 0.5, 0.84])
-        
+
         if fit_dists:
             # Fit Rayleigh:
             loc_rl, scale_rl = scipy.stats.rayleigh.fit(e_n, floc=0)
@@ -1558,7 +1558,7 @@ def plot_fig_underlying_amd_ecc_incl_per_mult(sssp_per_sys, sssp, n_min=1, n_max
             #dist_vMF = scipy.stats.vonmises(kappa=kappa_vMF, loc=loc_vMF)
             #print('(n = %s) von Mises Fisher fit: kappa = %s, loc = %s' % (n, kappa_vMF, loc_vMF))
             print('(Ecc: n = {:<2}) med+/- = {:0.3f}_{{-{:0.3f}}}^{{+{:0.3f}}}, mu = {:<8}, sigma = {:<8}, sigma_ray = {:<8}'.format(n, np.round(q50, 3), np.round(q50-q16, 3), np.round(q84-q50, 3), np.round(scale_ln, 3), np.round(shape_ln, 3), np.round(scale_rl, 3)))
-        
+
         ax = plt.subplot(plot[i,1])
         if log_x:
             bins = np.logspace(np.log10(x_min), np.log10(x_max), n_bins+1)
@@ -1604,7 +1604,7 @@ def plot_fig_underlying_amd_ecc_incl_per_mult(sssp_per_sys, sssp, n_min=1, n_max
         im_n = sssp_per_sys['inclmut_all'][sssp_per_sys['Mtot_all'] == n,:n]
         im_n = im_n.flatten() * (180./np.pi)
         q16, q50, q84 = np.quantile(im_n, [0.16, 0.5, 0.84])
-        
+
         if fit_dists:
             # Fit Rayleigh:
             loc_rl, scale_rl = scipy.stats.rayleigh.fit(im_n, floc=0)
@@ -1621,7 +1621,7 @@ def plot_fig_underlying_amd_ecc_incl_per_mult(sssp_per_sys, sssp, n_min=1, n_max
             #dist_vMF = scipy.stats.vonmises(kappa=kappa_vMF, loc=loc_vMF)
             #print('(n = %s) von Mises Fisher fit: kappa = %s, loc = %s' % (n, kappa_vMF, loc_vMF))
             print('(Incl: n = {:<2}) med+/- = {:0.3f}_{{-{:0.3f}}}^{{+{:0.3f}}}, mu = {:<8}, sigma = {:<8}, sigma_ray = {:<8}, Zhu = {:<8}'.format(n, np.round(q50, 2), np.round(q50-q16, 2), np.round(q84-q50, 2), np.round(scale_ln, 2), np.round(shape_ln, 2), np.round(scale_rl, 2), np.round(scale_rl_Zhu, 2)))
-        
+
         ax = plt.subplot(plot[i,2])
         if log_x:
             bins = np.logspace(np.log10(x_min), np.log10(x_max), n_bins+1)
