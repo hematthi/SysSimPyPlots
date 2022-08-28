@@ -33,7 +33,14 @@ autosummary_generate = True
 templates_path = ['_templates']
 exclude_patterns = []
 
-autodoc_mock_imports = ["numpy", "matplotlib", "scipy"]
+autodoc_mock_imports = [
+   "numpy",
+   "matplotlib",
+   "scipy",
+   "mpl_toolkits",
+   "pandas",
+   "corner",
+]
 
 
 
