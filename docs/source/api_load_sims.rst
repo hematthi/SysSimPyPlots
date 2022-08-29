@@ -1,5 +1,7 @@
-API for load_sims.py
-====================
+.. _api_load_sims:
+
+Documentation for load_sims.py
+==============================
 
 .. note::
 

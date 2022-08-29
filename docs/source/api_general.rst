@@ -1,5 +1,7 @@
-API for general.py
-==================
+.. _api_general:
+
+Documentation for general.py
+============================
 
 .. note::
 

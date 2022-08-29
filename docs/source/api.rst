@@ -3,11 +3,11 @@ Detailed API
 
 Here, we provide detailed documentation for *many* of the functions that you may find useful when using SysSimPyPlots. They are organized into the following modules:
 
-- `general.py`
+- :ref:`general.py <api_general>`
 
    Includes a collection of fundamental constants and functions, as well as some statistical and other miscellaneous functions.
 
-- `load_sims.py`
+- :ref:`load_sims.py <api_load_sims>`
 
    Contains the big functions for loading, processing, and manipulating the simulated catalogs.
 
@@ -34,6 +34,7 @@ Here, we provide detailed documentation for *many* of the functions that you may
 
 
 .. toctree::
+   :hidden:
 
    api_general
    api_load_sims
