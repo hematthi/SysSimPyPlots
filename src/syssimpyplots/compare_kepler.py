@@ -19,6 +19,7 @@ def load_Kepler_planets_cleaned():
     Load a table of Kepler objects of interest (KOIs) from a CSV file.
 
     The table has the following columns:
+
     - kepid: The Kepler ID.
     - KOI: The KOI number.
     - koi_disposition: The disposition of the KOI.
@@ -45,6 +46,7 @@ def load_Kepler_stars_cleaned():
     Load a table of Kepler target stars from a CSV file.
 
     The table has the following columns:
+
     - kepid: The Kepler ID.
     - mass: The stellar mass (solar masses).
     - radius: The stellar radius (solar radii).
@@ -54,7 +56,7 @@ def load_Kepler_stars_cleaned():
     - e_bp_rp_interp: The extinction in bp-rp color interpolated from a model/binning (mag).
     - e_bp_rp_true: The extinction in bp-rp color as given in the Gaia DR2 catalog (mag).
     - rrmscdpp04p5: The root-mean-square CDPP value for 4.5 hr durations (TODO: check units).
-    
+
     """
     # q1_q17_dr25_gaia_fgk_HFR2021a_cleaned.csv for Paper II
     # q1_q17_dr25_gaia_berger_fgk_H2020_cleaned.csv for Paper III

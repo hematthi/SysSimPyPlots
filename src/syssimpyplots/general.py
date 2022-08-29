@@ -531,7 +531,11 @@ def Pearson_correlation_coefficient(x, y):
     return r_xy
 
 def Spearman_correlation_coefficient(x, y):
-    """Compute the Spearman correlation coefficient of x and y, which is the Pearson correlation coefficient applied to the rank variables of x and y."""
+    """
+    Compute the Spearman correlation coefficient of two variables.
+
+    This is the Pearson correlation coefficient applied to the ranks of the variables.
+    """
     xsort, ysort = np.argsort(x), np.argsort(y)
     xranks, yranks = np.zeros(len(x)), np.zeros(len(y))
     xranks[xsort], yranks[ysort] = np.arange(len(x)), np.arange(len(y))
@@ -641,7 +645,7 @@ def Cmax_table_GF2020(n):
 
     Note
     ----
-    The table of 'C_max' only goes up to `n=9`; for greater numbers of gaps, use the approximation function syssimpyplots.general.Cmax_approx_GF2020.
+    The table of 'C_max' only goes up to `n=9`; for greater numbers of gaps, use the approximation function :py:func:`syssimpyplots.general.Cmax_approx_GF2020`.
     """
     Cmax_dict = {2: 0.106, 3: 0.212, 4: 0.291, 5: 0.350, 6: 0.398, 7: 0.437, 8: 0.469, 9: 0.497}
     return Cmax_dict[n]
