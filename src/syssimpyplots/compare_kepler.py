@@ -12,9 +12,28 @@ path_data = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path
 
 # Functions to load and analyze the Kepler observed catalog:
 
-N_Kep = 86760 #86760 (Paper III) #88912 (Paper II) #79935 (Paper I) # number of Kepler targets satisfying our cuts to give our observed catalog
+N_Kep = 86760 #86760 (Paper III) #88912 (Paper II) #79935 (Paper I) # number of Kepler targets satisfying our cuts to give our observed catalog # TODO: automate or read this from a file (stellar catalog?) instead of hardcoding
 
 def load_Kepler_planets_cleaned():
+    """
+    Load a table of Kepler objects of interest (KOIs) from a CSV file.
+
+    The table has the following columns:
+    - kepid: The Kepler ID.
+    - KOI: The KOI number.
+    - koi_disposition: The disposition of the KOI.
+    - koi_pdisposition: (TODO: TBD).
+    - koi_score: The disposition score (between 0 and 1).
+    - P: The orbital period (days).
+    - t_D: The transit duration (hrs).
+    - depth: The transit depth (ppm).
+    - Rp: The planet radius (Earth radii).
+    - teff: The stellar effective temperature (K).
+    - logg: The log surface gravity of the star.
+    - Rstar: The stellar radius (solar radii).
+    - Mstar: The stellar mass (solar masses).
+
+    """
     # q1_q17_dr25_gaia_fgk_HFR2021a_koi_cleaned.csv for Paper II
     # q1_q17_dr25_gaia_berger_fgk_H2020_koi_cleaned.csv for Paper III
     planets_cleaned = np.genfromtxt(os.path.join(path_data, 'q1_q17_dr25_gaia_berger_fgk_H2020_koi_cleaned.csv'), dtype={'names': ('kepid', 'KOI', 'koi_disposition', 'koi_pdisposition', 'koi_score', 'P', 't_D', 'depth', 'Rp', 'teff', 'logg', 'Rstar', 'Mstar'), 'formats': ('i8', 'S9', 'S15', 'S15', 'f8', 'f8', 'f8', 'f8', 'f8', 'f8', 'f8', 'f8', 'f8',)}, delimiter=',') #orbit periods 'P' are in days; transit durations 't_D' are in hrs; transit depths 'depth' are in ppm; planetary radii 'Rp' are in Rearth; stellar radii 'Rstar' are in Rsolar
@@ -22,6 +41,21 @@ def load_Kepler_planets_cleaned():
     return planets_cleaned
 
 def load_Kepler_stars_cleaned():
+    """
+    Load a table of Kepler target stars from a CSV file.
+
+    The table has the following columns:
+    - kepid: The Kepler ID.
+    - mass: The stellar mass (solar masses).
+    - radius: The stellar radius (solar radii).
+    - teff: The stellar effective temperature (K).
+    - bp_rp: The Gaia DR2 bp-rp color (mag).
+    - lum_val: The luminosity (solar luminosity; TODO: check units).
+    - e_bp_rp_interp: The extinction in bp-rp color interpolated from a model/binning (mag).
+    - e_bp_rp_true: The extinction in bp-rp color as given in the Gaia DR2 catalog (mag).
+    - rrmscdpp04p5: The root-mean-square CDPP value for 4.5 hr durations (TODO: check units).
+    
+    """
     # q1_q17_dr25_gaia_fgk_HFR2021a_cleaned.csv for Paper II
     # q1_q17_dr25_gaia_berger_fgk_H2020_cleaned.csv for Paper III
     #stars_cleaned = np.genfromtxt(os.path.join(path_data, 'q1_q17_dr25_gaia_fgk_HFR2021a_cleaned.csv'), dtype={'names': ('kepid', 'mass', 'radius', 'teff', 'bp_rp', 'e_bp_rp_interp', 'e_bp_rp_true', 'rrmscdpp04p5'), 'formats': ('i8', 'f8', 'f8', 'f8', 'f8', 'f8', 'f8', 'f8')}, delimiter=',')

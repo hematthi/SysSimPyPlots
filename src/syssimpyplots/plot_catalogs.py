@@ -20,9 +20,30 @@ import syssimpyplots.load_sims as lsims
 
 # Functions to make plots comparing the simulated and Kepler populations:
 
-def setup_fig_single(fig_size, left, bottom, right, top, wspace=0, hspace=0):
+def setup_fig_single(fig_size, left, bottom, right, top):
+    """
+    Set up a single-panel figure using GridSpec.
+
+    Parameters
+    ----------
+    fig_size : tuple
+        The figure size, e.g. (16,8).
+    left : float
+        The left margin of the panel (between 0 and 1).
+    bottom: float
+        The bottom margin of the panel (between 0 and 1).
+    right : float
+        The right margin of the panel (between 0 and 1).
+    top : float
+        The top margin of the panel (between 0 and 1).
+
+    Returns
+    -------
+    ax : matplotlib.axes._subplots.AxesSubplot
+        An axes subplot object.
+    """
     fig = plt.figure(figsize=fig_size)
-    plot = GridSpec(1,1, left=left, bottom=bottom, right=right, top=top, wspace=wspace, hspace=hspace)
+    plot = GridSpec(1,1, left=left, bottom=bottom, right=right, top=top, wspace=0, hspace=0)
     ax = plt.subplot(plot[0,0])
     return ax
 

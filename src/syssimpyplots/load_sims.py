@@ -43,7 +43,29 @@ param_symbols = {
 } # dictionary of the symbols and names for all the model parameters; NOTE: although the params are named log rate of clusters and planets per cluster, we use the symbols and values for the rates
 
 def read_targets_period_radius_bounds(file_name):
-    # Read the number of simulated targets and bounds for the periods and radii
+    """
+    Read the number of simulated targets and bounds for the planet periods and radii from a file.
+
+    Parameters
+    ----------
+    file_name : str
+        The path/name of the file containing a header with simulation parameters.
+
+    Returns
+    -------
+    N_sim : int
+        The number of simulated systems.
+    cos_factor : float
+        The cosine of the maximum inclination angle (relative to the sky plane) drawn for the reference planes of the simulated systems (between 0 and 1).
+    P_min : float
+        The minimum orbital period (days).
+    P_max : float
+        The maximum orbital period (days).
+    radii_min : float
+        The minimum planet radius (Earth radii).
+    radii_max : float
+        The maximum planet radius (Earth radii).
+    """
     with open(file_name, 'r') as file: #open(loadfiles_directory + 'observed_catalog_planets%s.txt' % run_number, 'r')
         for line in file:
             if line[:26] == '# num_targets_sim_pass_one':
@@ -63,7 +85,7 @@ def read_targets_period_radius_bounds(file_name):
     return N_sim, cos_factor, P_min, P_max, radii_min, radii_max
 
 def read_sim_params(file_name):
-    # Read the simulation parameters from the file
+    """Read the simulation parameters from a file and output them in a dictionary."""
     param_vals = {}
     with open(file_name, 'r') as file:
         for line in file:
