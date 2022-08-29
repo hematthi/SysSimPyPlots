@@ -456,7 +456,23 @@ def bin_Nmult(Nmult_obs, m_geq=5):
 # Information theory quantities and metrics from Gilbert & Fabrycky 2020 (GF2020):
 
 def Shannon_entropy(p):
-    # Assuming natural log, although any choice is valid
+    """
+    Compute the Shannon entropy.
+
+    Note
+    ----
+    Assumes base-natural log, although any choice is valid.
+
+    Parameters
+    ----------
+    p : array[floats]
+        An array of probabilities (values between 0 and 1).
+
+    Returns
+    -------
+    H : float
+        The Shannon entropy.
+    """
     assert all(p >= 0), 'Negative probabilities!'
     assert all(p <= 1), 'Probabilities greater than 1!'
 
@@ -464,6 +480,19 @@ def Shannon_entropy(p):
     return H
 
 def disequilibrium(p):
+    """
+    Compute the disequilibrium of a system.
+
+    Parameters
+    ----------
+    p : array[floats]
+        An array of probabilities (values between 0 and 1).
+
+    Returns
+    -------
+    D : float
+        The disequilibrium.
+    """
     assert all(p >= 0), 'Negative probabilities!'
     assert all(p <= 1), 'Probabilities greater than 1!'
 
@@ -471,7 +500,21 @@ def disequilibrium(p):
     return D
 
 def LMC_complexity(K, p):
-    # Lopez-Ruiz, Mancini, & Calbet (1995) complexity; product of Shannon entropy and disequilibrium
+    """
+    Compute the Lopez-Ruiz, Mancini, and Calbet (1995) complexity, which is the product of Shannon entropy and disequilibrium.
+
+    Parameters
+    ----------
+    K : float
+        The normalization constant.
+    p : array[floats]
+        An array of probabilities (values between 0 and 1).
+
+    Returns
+    -------
+    C : float
+        The LMC complexity.
+    """
     assert K > 0
 
     H = Shannon_entropy(p)
@@ -480,12 +523,15 @@ def LMC_complexity(K, p):
     return C
 
 def Pearson_correlation_coefficient(x, y):
+    """Compute the Pearson correlation coefficient of two variables."""
+    assert len(x) == len(y)
+
     xmean, ymean = np.mean(x), np.mean(y)
     r_xy = np.sum((x - xmean)*(y - ymean)) / np.sqrt(np.sum((x - xmean)**2.)*np.sum((y - ymean)**2.))
     return r_xy
 
 def Spearman_correlation_coefficient(x, y):
-    # Spearman correlation coefficient is the Pearson correlation coefficient applied to the rank variables of x and y
+    """Compute the Spearman correlation coefficient of x and y, which is the Pearson correlation coefficient applied to the rank variables of x and y."""
     xsort, ysort = np.argsort(x), np.argsort(y)
     xranks, yranks = np.zeros(len(x)), np.zeros(len(y))
     xranks[xsort], yranks[ysort] = np.arange(len(x)), np.arange(len(y))
@@ -495,8 +541,21 @@ def Spearman_correlation_coefficient(x, y):
 
 
 def radii_star_ratio(r, Rstar):
-    # Sum of planet to stellar radii ratios for a system
-    # Similar to "dynamical mass" mu as in GF2020
+    """
+    Compute the sum of planet/star radius ratios for a system.
+
+    Parameters
+    ----------
+    r : array[floats]
+        The planet radii.
+    Rstar : float
+        The stellar radius.
+
+    Returns
+    -------
+    mu : float
+        The sum of the planet/star radius ratios.
+    """
     assert all(r >= 0), 'Negative planet radii!'
     assert Rstar > 0, 'Negative stellar radii!'
 
@@ -504,24 +563,62 @@ def radii_star_ratio(r, Rstar):
     return mu
 
 def partitioning(x):
-    # Partitioning of quantity 'x' for a system
-    # E.g. "mass partitioning", Q if x=mass, as in GF2020
-    # Factor of (N/(N-1)) should normalize Q to (0,1)
+    """
+    Compute the 'partitioning' of a quantity `x` for the system.
+
+    For example, if `x` is an array of planet masses, this is the 'mass partitioning' quantity.
+
+    Parameters
+    ----------
+    x : array[floats]
+        The partitions of the quantity.
+
+    Returns
+    -------
+    Q : float
+        The partitioning metric for the quantity (between 0 and 1).
+    """
     assert all(x >= 0), 'Negative x values!'
 
     xnorm = x/np.sum(x)
-    Q = (len(x)/(len(x)-1.))*disequilibrium(xnorm)
+    Q = (len(x)/(len(x)-1.))*disequilibrium(xnorm) # factor of (N/(N-1)) should normalize Q to (0,1)
     return Q
 
 def monotonicity_GF2020(x):
-    # Monotonicity of quantity 'x' for a system
-    # E.g. ordering in mass, "monotonicity" M if x=mass, as in GF2020
+    """
+    Compute the 'monotonicity' (a measure of the degree of ordering) of a quantity `x` for the system, defined in Gilbert and Fabrycky (2020).
+
+    For example, if `x` is an array of planet radii, this is the 'radius monotonicity' quantity.
+
+    Parameters
+    ----------
+    x : array[floats]
+        The array of quantities.
+
+    Returns
+    -------
+    M : float
+        The monotonicity of the quantity.
+    """
     rho_S = Spearman_correlation_coefficient(np.arange(len(x)), x)
     Q = partitioning(x)
     M = rho_S*(Q**(1./len(x)))
     return M
 
 def gap_complexity_GF2020(P):
+    """
+    Compute the 'gap complexity' metric of a planetary system, as defined in Gilbert and Fabrycky (2020).
+
+    Parameters
+    ----------
+    P : array[floats]
+        The array of orbital periods (days). Does not have to be sorted.
+
+    Returns
+    -------
+    C : float
+        The gap complexity of the system.
+    """
     assert len(P) >= 3, 'Need at least 3 planets in system to compute.'
     n = len(P)-1
 
@@ -537,11 +634,20 @@ def gap_complexity_GF2020(P):
     return C
 
 def Cmax_table_GF2020(n):
-    # n is the number of gaps, i.e. the number of planets minus 1
+    """
+    Return the value of 'C_max', based on the number of gaps `n` (i.e. the number of planets minus 1) in the system.
+
+    This is a normalization used in the gap complexity metric, with the values computed by Gilbert and Fabrycky (2020).
+
+    Note
+    ----
+    The table of 'C_max' only goes up to `n=9`; for greater numbers of gaps, use the approximation function syssimpyplots.general.Cmax_approx_GF2020.
+    """
     Cmax_dict = {2: 0.106, 3: 0.212, 4: 0.291, 5: 0.350, 6: 0.398, 7: 0.437, 8: 0.469, 9: 0.497}
     return Cmax_dict[n]
 
 def Cmax_approx_GF2020(n):
+    """Compute an approximation for the value of 'C_max' based on the number of gaps, defined in Gilbert and Fabrycky (2020)."""
     Cmax = 0.262*np.log(0.766*n)
     return Cmax
 

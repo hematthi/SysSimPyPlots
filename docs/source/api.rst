@@ -11,11 +11,11 @@ Here, we provide detailed documentation for *many* of the functions that you may
 
    Contains the big functions for loading, processing, and manipulating the simulated catalogs.
 
-- `compare_kepler.py`
+- :ref:`compare_kepler.py <api_compare_kepler>`
 
    Contains the functions for loading and processing the Kepler catalogs, as well as functions for comparing catalogs (computing distances).
 
-- `plot_catalogs.py`
+- :ref:`plot_catalogs.py <api_plot_catalogs>`
 
    Includes many functions for plotting figures for visualizing the catalogs and their properties.
 
@@ -38,3 +38,5 @@ Here, we provide detailed documentation for *many* of the functions that you may
 
    api_general
    api_load_sims
+   api_compare_kepler
+   api_plot_catalogs
