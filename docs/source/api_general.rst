@@ -6,7 +6,7 @@ API for general.py
    Currently under construction!
 
 
-.. autofunction:: general.a_from_P
-.. autofunction:: general.P_from_a
-.. autofunction:: general.M_from_R_rho
-.. autofunction:: general.rho_from_M_R
+.. autofunction:: syssimpyplots.general.a_from_P
+.. autofunction:: syssimpyplots.general.P_from_a
+.. autofunction:: syssimpyplots.general.M_from_R_rho
+.. autofunction:: syssimpyplots.general.rho_from_M_R
