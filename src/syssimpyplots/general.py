@@ -43,41 +43,103 @@ def a_from_P(P, Mstar):
     Parameters
     ----------
     P : float or array[floats]
-        The orbital period(s) (days).
+        The orbital period (days).
     Mstar : float or array[floats]
-        The stellar mass(es) (solar masses).
+        The stellar mass (solar masses).
 
     Returns
     -------
     a : float or array[floats]
-        The semi-major axis/axes (AU).
+        The semi-major axis (AU).
     """
     a = (P/365.25)**(2./3.)*(Mstar/1.0)**(1./3.)
     return a
 
 def P_from_a(a, Mstar):
-    # Convert semi-major axis (AU) to period (days) assuming mass of planet m << Mstar (Msun)
-    y = 365.25*(a**(3./2.))*(Mstar/1.0)**(-1./2.)
-    return y
+    """
+    Compute the orbital period using Kepler's third law.
+
+    Note
+    ----
+    Assumes that the planet mass is negligible compared to the stellar mass.
+
+    Parameters
+    ----------
+    a : float or array[floats]
+        The semi-major axis (AU).
+    Mstar : float or array[floats]
+        The stellar mass (solar masses).
+
+    Returns
+    -------
+    P : float or array[floats]
+        The orbital period (days).
+    """
+    P = 365.25*(a**(3./2.))*(Mstar/1.0)**(-1./2.)
+    return P
 
 def M_from_R_rho(R, rho=5.51):
-    # Compute planet mass (M_earth) from radius (R_earth) given a constant mean density rho (g/cm^3)
+    """
+    Compute the planet mass from the radius and constant mean density.
+
+    Parameters
+    ----------
+    R : float or array[floats]
+        The planet radius (Earth radii).
+    rho=5.51 : float or array[floats]
+        The planet density (g/cm^3).
+
+    Returns
+    -------
+    M : float or array[floats]
+        The planet mass (Earth masses).
+    """
     M_in_g = rho * (4.*np.pi/3.)*(R*Rearth)**3.
     return M_in_g/(Mearth*1000.)
 
 def rho_from_M_R(M, R):
-    # Compute the mean density rho (g/cm^3) given a planet mass (M_earth) and radius (R_earth)
+    """
+    Compute the planet mean density from the mass and radius.
+
+    Parameters
+    ----------
+    M : float or array[floats]
+        The planet mass (Earth masses).
+    R : float or array[floats]
+        The planet radius (Earth radii).
+
+    Returns
+    -------
+    rho : float or array[floats]
+        The planet mean density (g/cm^3).
+    """
     rho = (M*Mearth*1000.) / ((4.*np.pi/3.)*(R*Rearth)**3.)
     return rho
 
 def tdur_circ(P, Mstar, Rstar):
-    # Calculate the transit duration (hrs) assuming a circular orbit with b=0, given a period (days), Mstar (Msun), and Rstar (Rsun)
-    y = 24.*(Rstar*Rsun*P)/(np.pi*a_from_P(P,Mstar)*AU)
-    return y
+    """
+    Compute the transit duration assuming a circular orbit with zero impact parameter.
+
+    Parameters
+    ----------
+    P : float or array[floats]
+        The orbital period (days).
+    Mstar : float or array[floats]
+        The stellar mass (solar masses).
+    Rstar : float or array[floats]
+        The stellar radius (solar radii).
+
+    Returns
+    -------
+    tdur : float or array[floats]
+        The transit duration (hrs).
+    """
+    tdur = 24.*(Rstar*Rsun*P)/(np.pi*a_from_P(P,Mstar)*AU)
+    return tdur
 
 def AMD(mu, a, e, im):
     """
-    Compute the AMD (angular momentum deficit) of a planet or planets.
+    Compute the AMD (angular momentum deficit) of a planet(s).
 
     Note
     ----
@@ -86,25 +148,38 @@ def AMD(mu, a, e, im):
     Parameters
     ----------
     mu : float or array[floats]
-        The planet/star mass ratio(s).
+        The planet/star mass ratio.
     a : float or array[floats]
-        The semi-major axis/axes (AU).
+        The semi-major axis (AU).
     e : float or array[floats]
-        The eccentricity/eccentricities.
+        The orbital eccentricity.
     im : float or array[floats]
-        The inclination(s) relative to the system invariable plane (radians).
+        The inclination relative to the system invariable plane (radians).
 
     Returns
     -------
     amd_pl : float or array[floats]
-        The AMD(s) of the planet(s).
+        The AMD of the planet(s).
     """
     amd_pl = mu*np.sqrt(a) * (1. - np.sqrt(1. - e**2.)*np.cos(im))
     return amd_pl
 
 def photoevap_boundary_Carrera2018(R, P):
-    # R is the planet radius in Earth radii, P is the period in days
-    # This function returns 1 if the planet is above the boundary, and 0 if the planet is below the boundary as defined by Eq. 5 in Carrera et al 2018
+    """
+    Evaluate whether a planet is above or below the 'photo-evaporation' valley defined by Eq. 5 in Carrera et al. (2018).
+
+    Parameters
+    ----------
+    R : float
+        The planet radius (Earth radii).
+    P : float
+        The orbital period (days).
+
+    Returns
+    -------
+    above_boundary : 1 or 0
+        Whether the planet is above (1) or below (0) the boundary.
+    """
     Rtrans = 2.6*P**(-0.1467)
     if R >= Rtrans:
         above_boundary = 1
@@ -113,18 +188,75 @@ def photoevap_boundary_Carrera2018(R, P):
     return above_boundary
 
 def incl_mult_power_law_Zhu2018(k, sigma_5=0.8, alpha=-3.5):
-    # Compute the mutual inclination Rayleigh scale as a function of planet multiplicity using the power-law relation from Zhu et al 2018
-    # Default parameters set to the best-fit values they found, sigma_5 = 0.8 (deg) and alpha = -3.5
-    return sigma_5*(k/5.)**alpha
+    """
+    Compute the Rayleigh scale of the mutual inclination distribution for a given planet multiplicity using the power-law relation.
+
+    Note
+    ----
+    Default values for the power-law parameters `sigma_5` and `alpha` are set to best-fit values from Zhu et al. (2018).
+
+    Parameters
+    ----------
+    k : float or array[floats]
+        The planet multiplicity.
+    sigma_5=0.8 : float or array[floats]
+        The normalization (Rayleigh scale of the mutual inclination distribution at `k=5`) (degrees).
+    alpha=-3.5 : float or array[floats]
+        The power-law index.
+
+    Returns
+    -------
+    sigma_k : float or array[floats]
+        The Rayleigh scale (degrees) of the mutual inclination distribution for multiplicity `k`.
+    """
+    sigma_k = sigma_5*(k/5.)**alpha
+    return sigma_k
 
 def cdf_normal(x, mu=0., std=1.):
-    # This function computes the CDF (i.e. the integral of the normal distribution between -inf and x) at x given mean 'mu' and standard deviation 'std'
-    # Note: this function can deal with array inputs for x, mu and std, as long as the array inputs are the same shape
-    return 0.5*(1. + erf((x - mu)/(std*np.sqrt(2))))
+    """
+    Compute the cumulative distribution function (CDF; i.e. the integral between `-inf` and `x` of) the normal distribution at `x` given a mean and standard deviation.
+
+    Note
+    ----
+    Can deal with array inputs for `x`, `mu`, and `std` as long as they are the same shape.
+
+    Parameters
+    ----------
+    x : float or array[floats]
+        The position to evaluate the CDF (between `-inf` and `inf`).
+    mu : float or array[floats]
+        The mean of the normal distribution.
+    std : float or array[floats]
+        The standard deviation of the normal distribution.
+
+    Returns
+    -------
+    cdf_x : float or array[floats]
+        The CDF at `x`.
+    """
+    cdf_x = 0.5*(1. + erf((x - mu)/(std*np.sqrt(2))))
+    return cdf_x
 
 def cdf_empirical(xdata, xeval):
-    # Compute the CDF at 'xeval' given a sample 'xdata'
-    # Note: this function is designed to deal with either scalar or array inputs of 'xeval'
+    """
+    Compute the empirical cumulative distribution function (CDF) at `xeval` given a sample.
+
+    Note
+    ----
+    Is designed to deal with either scalar or array inputs of `xeval`.
+
+    Parameters
+    ----------
+    xdata : array
+        The sample of data points.
+    xeval : float or array[floats]
+        The position to evaluate the CDF.
+
+    Returns
+    -------
+    cdf_at_xeval : float or array[floats]
+        The CDF at `xeval`.
+    """
     N = len(xdata)
     xeval = np.asarray(xeval)
     is_xeval_scalar = False
@@ -141,7 +273,29 @@ def cdf_empirical(xdata, xeval):
     return cdf_at_xeval
 
 def calc_f_near_pratios(sssp_per_sys, pratios=res_ratios, pratio_width=res_width):
-    # This function computes the intrinsic fraction of planets near a period ratio with another planet for any period ratio in the given list of period ratios, with 'near' defined as being between 'pratio' and 'pratio*(1+pratio_width)' for 'pratio' in 'pratios'; defaults to calculating the fraction of all planets near an MMR
+    """
+    Compute the intrinsic fraction of planets 'near' a period ratio with another planet for any period ratio in the given list of period ratios.
+
+    'Near' is defined as a period ratio between `pr` and `pratio*(1+pratio_width)` for `pratio` in `pratios`.
+
+    Note
+    ----
+    Defaults to calculating the fraction of all planets near a mean-motion resonance (MMR), defined by `res_ratios`.
+
+    Parameters
+    ----------
+    sssp_per_sys : dict
+        The dictionary of summary statistics for a physical catalog of planets.
+    pratios=res_ratios : list
+        The list of period ratios to consider.
+    pratio_width=res_width : float
+        The fractional width to be considered 'near' a period ratio.
+
+    Returns
+    -------
+    f_mmr : float
+        The fraction of planets being 'near' at least one of the period ratios.
+    """
     count_mmr = 0
     for p_sys in sssp_per_sys['P_all']:
         p_sys = p_sys[p_sys > 0]
@@ -160,14 +314,14 @@ def calc_f_near_pratios(sssp_per_sys, pratios=res_ratios, pratio_width=res_width
     return f_mmr
 
 def compute_ratios_adjacent(x):
-    # This function computes an array of the adjacent ratios (x[j+1]/x[j]) of the terms given in an input array
+    """Compute an array of the adjacent ratios (`x[j+1]/x[j]`) of the terms in the input array `x`."""
     if len(x) <= 1:
         return np.array([])
 
     return x[1:]/x[0:-1]
 
 def compute_ratios_all(x):
-    # This function computes an array of all the unique ratios (x[j]/x[i] for j > i) of the terms given in an input array
+    """Compute an array of all the unique ratios (`x[j]/x[i]` for all `j > i`) of the terms in the input array `x`."""
     if len(x) <= 1:
         return np.array([])
 
@@ -177,11 +331,34 @@ def compute_ratios_all(x):
     return np.array(ratios)
 
 def zeta1(pratios):
-    # This function computes the zeta statistic for first-order resonances as defined in Fabrycky et al 2014
+    """Compute the zeta statistic for each period ratio in `pratios` as defined in Fabrycky et al. (2014)."""
     return 3.*((1./(pratios - 1.)) - np.round(1./(pratios - 1.)))
 
 def split_colors_per_cdpp_bin(stars_cleaned, nbins=10):
-    # This function computes a histogram of CDPP values (log bins), then splits each bin by bp-rp color into a bluer half (small bp-rp) and redder half (large bp-rp)
+    # Compute a histogram of combined differential photometric precision (CDPP) values, and then split each bin by `bp-rp` color into a bluer half (smaller `bp-rp`) and a redder half (larger `bp-rp`).
+    """
+    Return the indices of the bluer and redder stars that split the stellar sample into two samples based on the histogram of combined differential photometric precision (CDPP) values.
+
+    Note
+    ----
+    Uses log-uniform bins for the histograms.
+
+    Parameters
+    ----------
+    stars_cleaned : structured array
+        A table of stars, including columns for 4.5hr CDPP (`rrmscdpp04p5`) and Gaia DR2 `bp-rp` color (`bp_rp`).
+    nbins=10 : int
+        The number of bins to use.
+
+    Returns
+    -------
+    bins : array[floats]
+        The bin edges.
+    i_blue_per_bin : array[floats]
+        The indices corresponding to the rows of bluer stars in each bin.
+    i_red_per_bin : array[floats]
+        The indices corresponding to the rows of redder stars in each bin.
+    """
     cdpp_min, cdpp_max = np.min(stars_cleaned['rrmscdpp04p5']), np.max(stars_cleaned['rrmscdpp04p5'])
     bp_rp_med = np.nanmedian(stars_cleaned['bp_rp'])
     counts, bins = np.histogram(stars_cleaned['rrmscdpp04p5'], bins=np.logspace(np.log10(cdpp_min), np.log10(cdpp_max), nbins+1))
@@ -199,6 +376,29 @@ def split_colors_per_cdpp_bin(stars_cleaned, nbins=10):
     return bins, i_blue_per_bin, i_red_per_bin
 
 def linear_fswp_bprp(bprp, bprp_med, fswp_med=0.5, slope=0.):
+    """
+    Evaluate the fraction of stars with planets (fswp) at a number of `bprp` colors using a linear relation.
+
+    Note
+    ----
+    The fswp cannot be negative or greater than one.
+
+    Parameters
+    ----------
+    bprp : array[floats]
+        The `bprp` colors at which to evaluate the fswp.
+    bprp_med : float
+        The median `bprp` color (or some normalization point).
+    fswp_med=0.5 : float
+        The fswp at `bprp_med` (normalization).
+    slope=0. : float
+        The slope of the linear relation.
+
+    Returns
+    -------
+    fswp_bprp : array[floats]
+        The fswp at each `bprp` color.
+    """
     bprp = np.array(bprp)
     fswp_bprp = slope*(bprp - bprp_med) + fswp_med
     fswp_bprp[fswp_bprp < 0] = 0.
@@ -206,12 +406,45 @@ def linear_fswp_bprp(bprp, bprp_med, fswp_med=0.5, slope=0.):
     return fswp_bprp
 
 def linear_alphaP_bprp(bprp, bprp_med, alphaP_med=0.5, slope=0.):
+    """
+    Evaluate the period power-law index at a number of `bprp` colors using a linear relation.
+
+    Parameters
+    ----------
+    bprp : array[floats]
+        The `bprp` colors at which to evaluate the fswp.
+    bprp_med : float
+        The median `bprp` color (or some normalization point).
+    alphaP_med=0.5 : float
+        The period power-law index at `bprp_med` (normalization).
+    slope=0. : float
+        The slope of the linear relation.
+
+    Returns
+    -------
+    alphaP_bprp : array[floats]
+        The period power-law index at each `bprp` color.
+    """
     bprp = np.array(bprp)
     alphaP_bprp = slope*(bprp - bprp_med) + alphaP_med
     return alphaP_bprp
 
 def bin_Nmult(Nmult_obs, m_geq=5):
-    # This function bins an observed multiplicity distribution at multiplicity orders greater than or equal to 'm_geq' (default to m_geq=5, so returns counts for m=1,2,3,4,5+)
+    """
+    Bins the higher orders of the input multiplicity distribution.
+
+    Parameters
+    ----------
+    Nmult_obs : array[ints]
+        The multiplicity distribution for consecutive multiplicity orders (i.e. number of systems with 1,2,3,... planets).
+    m_geq=5 : int
+        The multiplicity order at and above which to bin together.
+
+    Returns
+    -------
+    Nmult_obs : array[ints]
+        The multiplicity distribution with multiplicity orders greater than or equal to `m_geq` binned together. For the default `m_geq=5`, this is the number of systems with 1,2,3,4,5+ planets.
+    """
     Nmult_obs = list(Nmult_obs) + [0]*(m_geq-len(Nmult_obs)) # zero-pad first
     Nmult_obs[m_geq-1] = np.sum(Nmult_obs[m_geq-1:]) # bin everything greater than or equal to m_geq
     return np.array(Nmult_obs[:m_geq])
