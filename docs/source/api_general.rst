@@ -1,7 +1,7 @@
 .. _api_general:
 
-Documentation for general.py
-============================
+general.py
+==========
 
 .. autofunction:: syssimpyplots.general.a_from_P
 .. autofunction:: syssimpyplots.general.P_from_a

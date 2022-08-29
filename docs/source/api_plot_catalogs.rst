@@ -1,7 +1,7 @@
 .. _api_plot_catalogs:
 
-Documentation for plot_catalogs.py
-==================================
+plot_catalogs.py
+================
 
 .. note::
 

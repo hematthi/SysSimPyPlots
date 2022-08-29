@@ -1,7 +1,7 @@
 .. _api_compare_kepler:
 
-Documentation for compare_kepler.py
-===================================
+compare_kepler.py
+=================
 
 .. note::
 
