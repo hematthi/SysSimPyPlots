@@ -30,6 +30,7 @@ extensions = [
 ]
 autosummary_generate = True
 add_module_names = False # whether to prepend module names to functions/objects
+autodoc_member_order = 'bysource' # sort docs for members by the order in which they appear in the module; default is 'alphabetical'
 
 templates_path = ['_templates']
 exclude_patterns = []
