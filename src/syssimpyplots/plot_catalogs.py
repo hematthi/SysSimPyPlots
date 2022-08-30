@@ -40,7 +40,7 @@ def setup_fig_single(fig_size, left, bottom, right, top):
     Returns
     -------
     ax : matplotlib.axes._subplots.AxesSubplot
-        An axes subplot object.
+        The plotting axes for the figure.
     """
     fig = plt.figure(figsize=fig_size)
     plot = GridSpec(1,1, left=left, bottom=bottom, right=right, top=top, wspace=0, hspace=0)

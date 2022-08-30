@@ -87,7 +87,7 @@ def M_from_R_rho(R, rho=5.51):
     R : float or array[floats]
         The planet radius (Earth radii).
     rho=5.51 : float or array[floats]
-        The planet density (g/cm^3).
+        The planet density (g/cm^3). Default value is that of Earth.
 
     Returns
     -------
@@ -99,7 +99,7 @@ def M_from_R_rho(R, rho=5.51):
 
 def rho_from_M_R(M, R):
     """
-    Compute the planet mean density from the mass and radius.
+    Compute the planet mean density (total mass divided by volume).
 
     Parameters
     ----------
@@ -193,37 +193,37 @@ def incl_mult_power_law_Zhu2018(k, sigma_5=0.8, alpha=-3.5):
 
     Note
     ----
-    Default values for the power-law parameters `sigma_5` and `alpha` are set to best-fit values from Zhu et al. (2018).
+    Default values for the power-law parameters ``sigma_5`` and ``alpha`` are set to best-fit values from Zhu et al. (2018).
 
     Parameters
     ----------
     k : float or array[floats]
         The planet multiplicity.
     sigma_5=0.8 : float or array[floats]
-        The normalization (Rayleigh scale of the mutual inclination distribution at `k=5`) (degrees).
+        The normalization (Rayleigh scale of the mutual inclination distribution at ``k=5``) (degrees).
     alpha=-3.5 : float or array[floats]
         The power-law index.
 
     Returns
     -------
     sigma_k : float or array[floats]
-        The Rayleigh scale (degrees) of the mutual inclination distribution for multiplicity `k`.
+        The Rayleigh scale (degrees) of the mutual inclination distribution for multiplicity ``k``.
     """
     sigma_k = sigma_5*(k/5.)**alpha
     return sigma_k
 
 def cdf_normal(x, mu=0., std=1.):
     """
-    Compute the cumulative distribution function (CDF; i.e. the integral between `-inf` and `x` of) the normal distribution at `x` given a mean and standard deviation.
+    Compute the cumulative distribution function (CDF; i.e. the integral between ``-inf`` and ``x`` of) the normal distribution at ``x`` given a mean and standard deviation.
 
     Note
     ----
-    Can deal with array inputs for `x`, `mu`, and `std` as long as they are the same shape.
+    Can deal with array inputs for ``x``, ``mu``, and ``std`` as long as they are the same shape.
 
     Parameters
     ----------
     x : float or array[floats]
-        The position to evaluate the CDF (between `-inf` and `inf`).
+        The position to evaluate the CDF (between ``-inf`` and ``inf``).
     mu : float or array[floats]
         The mean of the normal distribution.
     std : float or array[floats]
@@ -232,18 +232,18 @@ def cdf_normal(x, mu=0., std=1.):
     Returns
     -------
     cdf_x : float or array[floats]
-        The CDF at `x`.
+        The CDF at ``x``.
     """
     cdf_x = 0.5*(1. + erf((x - mu)/(std*np.sqrt(2))))
     return cdf_x
 
 def cdf_empirical(xdata, xeval):
     """
-    Compute the empirical cumulative distribution function (CDF) at `xeval` given a sample.
+    Compute the empirical cumulative distribution function (CDF) at ``xeval`` given a sample.
 
     Note
     ----
-    Is designed to deal with either scalar or array inputs of `xeval`.
+    Is designed to deal with either scalar or array inputs of ``xeval``.
 
     Parameters
     ----------
@@ -255,7 +255,7 @@ def cdf_empirical(xdata, xeval):
     Returns
     -------
     cdf_at_xeval : float or array[floats]
-        The CDF at `xeval`.
+        The CDF at ``xeval``.
     """
     N = len(xdata)
     xeval = np.asarray(xeval)
@@ -276,11 +276,11 @@ def calc_f_near_pratios(sssp_per_sys, pratios=res_ratios, pratio_width=res_width
     """
     Compute the intrinsic fraction of planets 'near' a period ratio with another planet for any period ratio in the given list of period ratios.
 
-    'Near' is defined as a period ratio between `pr` and `pratio*(1+pratio_width)` for `pratio` in `pratios`.
+    'Near' is defined as a period ratio between ``pr`` and ``pratio*(1+pratio_width)`` for ``pratio`` in ``pratios``.
 
     Note
     ----
-    Defaults to calculating the fraction of all planets near a mean-motion resonance (MMR), defined by `res_ratios`.
+    Defaults to calculating the fraction of all planets near a mean-motion resonance (MMR), defined by ``res_ratios``.
 
     Parameters
     ----------
@@ -314,14 +314,14 @@ def calc_f_near_pratios(sssp_per_sys, pratios=res_ratios, pratio_width=res_width
     return f_mmr
 
 def compute_ratios_adjacent(x):
-    """Compute an array of the adjacent ratios (`x[j+1]/x[j]`) of the terms in the input array `x`."""
+    """Compute an array of the adjacent ratios (``x[j+1]/x[j]``) of the terms in the input array ``x``."""
     if len(x) <= 1:
         return np.array([])
 
     return x[1:]/x[0:-1]
 
 def compute_ratios_all(x):
-    """Compute an array of all the unique ratios (`x[j]/x[i]` for all `j > i`) of the terms in the input array `x`."""
+    """Compute an array of all the unique ratios (``x[j]/x[i]`` for all ``j > i``) of the terms in the input array ``x``."""
     if len(x) <= 1:
         return np.array([])
 
@@ -331,7 +331,7 @@ def compute_ratios_all(x):
     return np.array(ratios)
 
 def zeta1(pratios):
-    """Compute the zeta statistic for each period ratio in `pratios` as defined in Fabrycky et al. (2014)."""
+    """Compute the zeta statistic for each period ratio in ``pratios`` as defined in Fabrycky et al. (2014)."""
     return 3.*((1./(pratios - 1.)) - np.round(1./(pratios - 1.)))
 
 def split_colors_per_cdpp_bin(stars_cleaned, nbins=10):
@@ -346,7 +346,7 @@ def split_colors_per_cdpp_bin(stars_cleaned, nbins=10):
     Parameters
     ----------
     stars_cleaned : structured array
-        A table of stars, including columns for 4.5hr CDPP (`rrmscdpp04p5`) and Gaia DR2 `bp-rp` color (`bp_rp`).
+        A table of stars, including columns for 4.5hr CDPP (``rrmscdpp04p5``) and Gaia DR2 bp-rp color (``bp_rp``).
     nbins=10 : int
         The number of bins to use.
 
@@ -377,7 +377,7 @@ def split_colors_per_cdpp_bin(stars_cleaned, nbins=10):
 
 def linear_fswp_bprp(bprp, bprp_med, fswp_med=0.5, slope=0.):
     """
-    Evaluate the fraction of stars with planets (fswp) at a number of `bprp` colors using a linear relation.
+    Evaluate the fraction of stars with planets (fswp) at a number of bp-rp colors using a linear relation.
 
     Note
     ----
@@ -386,18 +386,18 @@ def linear_fswp_bprp(bprp, bprp_med, fswp_med=0.5, slope=0.):
     Parameters
     ----------
     bprp : array[floats]
-        The `bprp` colors at which to evaluate the fswp.
+        The bp-rp colors at which to evaluate the fswp.
     bprp_med : float
-        The median `bprp` color (or some normalization point).
+        The median bp-rp color (or some normalization point).
     fswp_med=0.5 : float
-        The fswp at `bprp_med` (normalization).
+        The fswp at ``bprp_med`` (normalization).
     slope=0. : float
         The slope of the linear relation.
 
     Returns
     -------
     fswp_bprp : array[floats]
-        The fswp at each `bprp` color.
+        The fswp at each bp-rp color.
     """
     bprp = np.array(bprp)
     fswp_bprp = slope*(bprp - bprp_med) + fswp_med
@@ -407,23 +407,23 @@ def linear_fswp_bprp(bprp, bprp_med, fswp_med=0.5, slope=0.):
 
 def linear_alphaP_bprp(bprp, bprp_med, alphaP_med=0.5, slope=0.):
     """
-    Evaluate the period power-law index at a number of `bprp` colors using a linear relation.
+    Evaluate the period power-law index at a number of bp-rp colors using a linear relation.
 
     Parameters
     ----------
     bprp : array[floats]
-        The `bprp` colors at which to evaluate the fswp.
+        The bp-rp colors at which to evaluate the fswp.
     bprp_med : float
-        The median `bprp` color (or some normalization point).
+        The median bp-rp color (or some normalization point).
     alphaP_med=0.5 : float
-        The period power-law index at `bprp_med` (normalization).
+        The period power-law index at ``bprp_med`` (normalization).
     slope=0. : float
         The slope of the linear relation.
 
     Returns
     -------
     alphaP_bprp : array[floats]
-        The period power-law index at each `bprp` color.
+        The period power-law index at each bp-rp color.
     """
     bprp = np.array(bprp)
     alphaP_bprp = slope*(bprp - bprp_med) + alphaP_med
@@ -443,7 +443,7 @@ def bin_Nmult(Nmult_obs, m_geq=5):
     Returns
     -------
     Nmult_obs : array[ints]
-        The multiplicity distribution with multiplicity orders greater than or equal to `m_geq` binned together. For the default `m_geq=5`, this is the number of systems with 1,2,3,4,5+ planets.
+        The multiplicity distribution with multiplicity orders greater than or equal to ``m_geq`` binned together. For the default ``m_geq=5``, this is the number of systems with 1,2,3,4,5+ planets.
     """
     Nmult_obs = list(Nmult_obs) + [0]*(m_geq-len(Nmult_obs)) # zero-pad first
     Nmult_obs[m_geq-1] = np.sum(Nmult_obs[m_geq-1:]) # bin everything greater than or equal to m_geq
@@ -568,9 +568,9 @@ def radii_star_ratio(r, Rstar):
 
 def partitioning(x):
     """
-    Compute the 'partitioning' of a quantity `x` for the system.
+    Compute the 'partitioning' of a quantity ``x`` for the system.
 
-    For example, if `x` is an array of planet masses, this is the 'mass partitioning' quantity.
+    For example, if ``x`` is an array of planet masses, this is the 'mass partitioning' quantity.
 
     Parameters
     ----------
@@ -590,9 +590,9 @@ def partitioning(x):
 
 def monotonicity_GF2020(x):
     """
-    Compute the 'monotonicity' (a measure of the degree of ordering) of a quantity `x` for the system, defined in Gilbert and Fabrycky (2020).
+    Compute the 'monotonicity' (a measure of the degree of ordering) of a quantity ``x`` for the system, defined in Gilbert and Fabrycky (2020).
 
-    For example, if `x` is an array of planet radii, this is the 'radius monotonicity' quantity.
+    For example, if ``x`` is an array of planet radii, this is the 'radius monotonicity' quantity.
 
     Parameters
     ----------
@@ -639,13 +639,13 @@ def gap_complexity_GF2020(P):
 
 def Cmax_table_GF2020(n):
     """
-    Return the value of 'C_max', based on the number of gaps `n` (i.e. the number of planets minus 1) in the system.
+    Return the value of 'C_max', based on the number of gaps ``n`` (i.e. the number of planets minus 1) in the system.
 
     This is a normalization used in the gap complexity metric, with the values computed by Gilbert and Fabrycky (2020).
 
     Note
     ----
-    The table of 'C_max' only goes up to `n=9`; for greater numbers of gaps, use the approximation function :py:func:`syssimpyplots.general.Cmax_approx_GF2020`.
+    The table of 'C_max' only goes up to ``n=9``; for greater numbers of gaps, use the approximation function :py:func:`syssimpyplots.general.Cmax_approx_GF2020`.
     """
     Cmax_dict = {2: 0.106, 3: 0.212, 4: 0.291, 5: 0.350, 6: 0.398, 7: 0.437, 8: 0.469, 9: 0.497}
     return Cmax_dict[n]
