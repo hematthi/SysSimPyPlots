@@ -8,5 +8,5 @@ compare_kepler.py
    Currently under construction!
 
 
-.. autofunction:: syssimpyplots.compare_kepler.load_Kepler_planets_cleaned
-.. autofunction:: syssimpyplots.compare_kepler.load_Kepler_stars_cleaned
+.. automodule:: compare_kepler
+   :members:
