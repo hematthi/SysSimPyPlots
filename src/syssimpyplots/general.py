@@ -164,6 +164,31 @@ def AMD(mu, a, e, im):
     amd_pl = mu*np.sqrt(a) * (1. - np.sqrt(1. - e**2.)*np.cos(im))
     return amd_pl
 
+def NAMD(m, a, e, im):
+    """
+    Compute the NAMD (normalized angular momentum deficit) of a planetary system (first defined in Chambers 2001).
+
+    Parameters
+    ----------
+    m : float or array[floats]
+        The planet masses (Earth masses).
+    a : float or array[floats]
+        The semi-major axes (AU).
+    e : float or array[floats]
+        The orbital eccentricities.
+    im : float or array[floats]
+        The inclinations relative to the system invariable plane (radians).
+
+    Returns
+    -------
+    amd_pl : float or array[floats]
+        The AMD of the planet(s).
+    """
+    num = np.sum(m*np.sqrt(a) * (1. - np.sqrt(1. - e**2.)*np.cos(im)))
+    den = np.sum(m*np.sqrt(a))
+    normed_AMD = num/den
+    return normed_AMD
+
 def photoevap_boundary_Carrera2018(R, P):
     """
     Evaluate whether a planet is above or below the 'photo-evaporation' valley defined by Eq. 5 in Carrera et al. (2018).
