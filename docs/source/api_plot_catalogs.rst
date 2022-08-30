@@ -8,4 +8,5 @@ plot_catalogs.py
    Currently under construction!
 
 
-.. autofunction:: syssimpyplots.plot_catalogs.setup_fig_single
+.. automodule:: syssimpyplots.plot_catalogs
+   :members:
