@@ -29,6 +29,7 @@ extensions = [
    'sphinx.ext.napoleon',
 ]
 autosummary_generate = True
+add_module_names = False # whether to prepend module names to functions/objects
 
 templates_path = ['_templates']
 exclude_patterns = []
