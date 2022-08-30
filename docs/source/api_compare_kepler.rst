@@ -8,5 +8,5 @@ compare_kepler.py
    Currently under construction!
 
 
-.. automodule:: compare_kepler
+.. automodule:: syssimpyplots.compare_kepler
    :members:
