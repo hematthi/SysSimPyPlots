@@ -166,7 +166,9 @@ def AMD(mu, a, e, im):
 
 def NAMD(m, a, e, im):
     """
-    Compute the NAMD (normalized angular momentum deficit) of a planetary system (first defined in Chambers 2001).
+    Compute the NAMD (normalized angular momentum deficit) of a planetary system.
+
+    First defined in Chambers 2001, the NAMD of a system is the AMD divided by the angular momentum of the same system with circular and coplanar orbits.
 
     Parameters
     ----------
@@ -181,8 +183,8 @@ def NAMD(m, a, e, im):
 
     Returns
     -------
-    amd_pl : float or array[floats]
-        The AMD of the planet(s).
+    normed_AMD : float
+        The NAMD of the system (unitless).
     """
     num = np.sum(m*np.sqrt(a) * (1. - np.sqrt(1. - e**2.)*np.cos(im)))
     den = np.sum(m*np.sqrt(a))
