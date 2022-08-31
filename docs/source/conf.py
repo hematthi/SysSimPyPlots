@@ -27,6 +27,7 @@ extensions = [
    'sphinx.ext.autosummary',
    'sphinx.ext.mathjax',
    'sphinx.ext.napoleon',
+   'sphinx_toolbox.collapse',
 ]
 autosummary_generate = True
 add_module_names = False # whether to prepend module names to functions/objects

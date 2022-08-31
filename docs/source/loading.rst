@@ -26,9 +26,21 @@ Then specify the path to where you saved your data and load it as follows, for e
 
    sssp_per_sys, sssp = compute_summary_stats_from_cat_phys(file_name_path=load_dir)
 
-The function outputs two objects, which we have stored in ``sssp_per_sys`` and ``sssp``. They contain mostly the same information but summarized in different ways.
+The function outputs two dictionary objects, which we have stored in ``sssp_per_sys`` and ``sssp``. They contain mostly the same information but summarized in different ways.
 
-*More details on what these two objects contain...*
+.. collapse:: What do they contain?
+
+   ``sssp_per_sys`` includes the detailed properties of each individual planetary system. Most of its data fields are two-dimensional arrays, with the first dimension (i.e. indexing rows) running through the different systems and the second dimension (i.e. indexing columns) running through the different planets in a system. For example, ``sssp_per_sys['P_all']`` gives a 2-d array of orbital periods.
+
+   .. warning::
+
+      Each row is padded with zeros, since different systems have different numbers of planets.
+
+   Some fields in ``sssp_per_sys`` are one-dimensional arrays, i.e. for system-level quantities such as the multiplicity of each system (``sssp_per_sys['Mtot_all']``).
+
+   On the other hand, ``sssp`` contains only one-dimensional arrays, such as ``sssp['P_all']`` for the orbital periods of all the planets in the catalog. This loses information about which planet(s) belong to which system, but is very convenient for plotting histograms, or performing simple calculations like computing the median period or the number of planets with periods less than 10 days.
+
+   For a complete list of all the data fields, see the documentation for the :py:func:`syssimpyplots.load_sims.compute_summary_stats_from_cat_phys` function.
 
 
 Loading observed catalogs
@@ -40,7 +52,15 @@ The process for loading simulated observed catalogs is similar; after importing 
 
    sss_per_sys, sss = compute_summary_stats_from_cat_obs(file_name_path=load_dir)
 
-*More details on what these two objects contain...*
+.. collapse:: What do they contain?
+
+   Analogous to the dictionaries for the physical catalogs, ``sss_per_sys`` includes the detailed properties of each individual planetary system (mostly two-dimensional arrays), while ``sss`` includes only one-dimensional arrays. For example, ``sss_per_sys['P_obs']`` gives a 2-d array of the observed orbital periods, while ``sss['P_obs']`` gives the same periods as a 1-d array.
+
+   .. warning::
+
+      Again, each row in a 2-d array is padded with either zeros or negative ones, since different systems have different numbers of observed planets!
+
+   For a complete list of all the data fields, see the documentation for the :py:func:`syssimpyplots.load_sims.compute_summary_stats_from_cat_phys` function.
 
 
 Reading simulation parameters
@@ -79,8 +99,3 @@ The outputs stored in ``ssk_per_sys`` and ``ssk`` contain the same summary stati
    The variable names ``sss`` and ``ssk`` were chosen to stand for "summary statistics simulated" and "summary statistics Kepler", respectively (and ``sssp`` for "summary statistics simulated physical"). Of course, you are free to choose whatever variable names you prefer.
 
 You are now ready to use the catalogs to explore the models!
-
-
-.. note::
-
-   Currently under construction!
