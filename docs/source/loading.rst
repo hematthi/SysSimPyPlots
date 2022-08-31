@@ -42,6 +42,8 @@ The function outputs two dictionary objects, which we have stored in ``sssp_per_
 
    For a complete list of all the data fields, see the documentation for the :py:func:`syssimpyplots.load_sims.compute_summary_stats_from_cat_phys` function.
 
+|
+
 
 Loading observed catalogs
 -------------------------
@@ -61,6 +63,8 @@ The process for loading simulated observed catalogs is similar; after importing 
       Again, each row in a 2-d array is padded with either zeros or negative ones, since different systems have different numbers of observed planets!
 
    For a complete list of all the data fields, see the documentation for the :py:func:`syssimpyplots.load_sims.compute_summary_stats_from_cat_phys` function.
+
+|
 
 
 Reading simulation parameters
