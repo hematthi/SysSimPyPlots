@@ -32,13 +32,12 @@ SysSimPyPlots has been tested on Python >3.7 and uses:
 - ``corner`` (for plotting multi-dimensional parameter spaces)
 
 
+.. _downloading_catalogs:
+
 Downloading simulated catalogs
 ------------------------------
 
-You can download many simulated catalogs from the `SysSimExClusters Simulated Catalog folder <https://pennstateoffice365-my.sharepoint.com/:f:/g/personal/myh7_psu_edu/Ei7QJqnmaCBGipPM4uMzrusBjw_hUwo0KfIDBe-0UTYyMw>`_. Each catalog pair consists of:
-
-- a "physical catalog": a set of intrinsic, physical planetary systems (before any observations; contains properties like the true orbital periods, planet radii, etc.)
-- an "observed catalog": a set of transiting and detected planet candidates derived from a *physical catalog* (after a Kepler-like mission; contains properties like the measured orbital periods, transit depths, etc.)
+You can download many simulated catalogs from the `SysSimExClusters Simulated Catalog folder <https://pennstateoffice365-my.sharepoint.com/:f:/g/personal/myh7_psu_edu/Ei7QJqnmaCBGipPM4uMzrusBjw_hUwo0KfIDBe-0UTYyMw>`_.
 
 More details are provided in the `SysSimExClusters repository <https://github.com/ExoJulia/SysSimExClusters>`_. Check the READMEs of the individual branches for each paper.
 
