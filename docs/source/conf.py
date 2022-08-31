@@ -27,6 +27,7 @@ extensions = [
    'sphinx.ext.autosummary',
    'sphinx.ext.mathjax',
    'sphinx.ext.napoleon',
+   'sphinx_toolbox.installation',
    'sphinx_toolbox.collapse',
 ]
 autosummary_generate = True
