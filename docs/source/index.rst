@@ -16,6 +16,19 @@ Welcome to SysSimPyPlots's documentation!
    The documentation for this project (this site!) is currently under development.
 
 
+Contents
+--------
+
+.. toctree::
+   :maxdepth: 2
+   :includehidden:
+
+   installation
+   loading
+   histograms
+   api
+
+
 Publications
 ------------
 
@@ -36,16 +49,3 @@ The scripts in this package have been used to produce the figures and results in
 - `Friends and Foes: Conditional Occurrence Rates of Exoplanet Companions and their Impact on Radial Velocity Follow-up Surveys <https://ui.adsabs.harvard.edu/abs/2021arXiv210504703H/abstract>`_
 
   **Matthias Y. He**, Eric B. Ford, Darin Ragozzine, 2021b, AJ, 162, 216-238
-
-
-Contents
---------
-
-.. toctree::
-   :maxdepth: 2
-   :includehidden:
-
-   installation
-   loading
-   histograms
-   api
