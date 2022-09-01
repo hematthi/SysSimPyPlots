@@ -6,7 +6,7 @@ Plotting histograms
    Currently under construction!
 
 
-On the previous page, you learned how to load a catalog (physical or observed) in the form of dictionaries containing various planetary (and stellar) properties (sometimes referred to as *summary statistics*). One of the most basic yet illuminating ways of visualizing a catalog is to plot histograms of the various properties. For example, you may want to look at the *marginal* distribution of orbital periods, planet radii, transit durations, etc. SysSimPyPlots provides several flexible functions for plotting histograms, as demonstrated below:
+On the previous page, you learned how to load a catalog (physical and observed). These catalogs are in the form of dictionaries containing various planetary (and stellar) properties (sometimes referred to as *summary statistics*). One of the most basic and yet illuminating ways of visualizing a catalog is to plot histograms of the various properties. SysSimPyPlots provides several flexible functions for plotting histograms:
 
 .. code-block:: python
 
@@ -18,9 +18,9 @@ On the previous page, you learned how to load a catalog (physical or observed) i
    # To plot a histogram of the observed orbital periods:
    ax = plot_fig_pdf_simple(fig_size, [sss['P_obs']], [], x_min=3., x_max=300., y_min=1e-3, y_max=0.1, log_x=True, xticks_custom=[3,10,30,100,300], xlabel_text=r'$P$ (days)')
 
-The :py:func:`syssimpyplots.plot_catalogs.plot_fig_counts_hist_simple` function should be used for quantities taking on discrete, integer values, as it is designed to center each bin on an integer. The multiplicity distribution is a perfect example of this case!
+As demonstrated above, the :py:func:`plot_fig_counts_hist_simple` function should be used for quantities taking on discrete, integer values, as it is designed to center each bin on an integer. The multiplicity distribution is a perfect example of this case!
 
-For continuous distributions, the :py:func:`syssimpyplots.plot_catalogs.plot_fig_pdf_simple` function should be used.
+For continuous distributions, the :py:func:`plot_fig_pdf_simple` function should be used.
 
 .. tip::
 
