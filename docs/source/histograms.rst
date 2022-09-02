@@ -33,12 +33,14 @@ On the previous page, you learned how to load a catalog (physical and observed).
 .. figure:: images/example_hist_mult.png
    :scale: 50 %
    :alt: Example of observed multiplicity distribution
+   :align: center
 
    The observed multiplicity distribution of a simulated catalog.
 
 .. figure:: images/example_hist_periods.png
    :scale: 50 %
    :alt: Example of observed period distribution
+   :align: center
 
    The observed period distribution of a simulated catalog.
 
