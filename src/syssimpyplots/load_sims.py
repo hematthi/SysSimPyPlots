@@ -85,7 +85,11 @@ def read_targets_period_radius_bounds(file_name):
     return N_sim, cos_factor, P_min, P_max, radii_min, radii_max
 
 def read_sim_params(file_name):
-    """Read the simulation parameters from a file and output them in a dictionary."""
+    """
+    Read the simulation parameters from a file and output them in a dictionary.
+
+    The full list of possible parameters is defined in ``param_symbols`` (also exported by this module).
+    """
     param_vals = {}
     with open(file_name, 'r') as file:
         for line in file:
@@ -108,7 +112,37 @@ def read_sim_params(file_name):
 # Functions to load and analyze simulated physical catalogs:
 
 def load_cat_phys(file_name):
-    # Load a simulated physical catalog of planets:
+    """
+    Load a table with all the planets in a simulated physical catalog.
+
+    The table has the following columns:
+
+    - `target_id`: The index of the star in the simulation (e.g. 1 for the first star) which the planet orbits.
+    - `star_id`: The index of the star based on where it is in the input stellar catalog.
+    - `planet_mass`: The planet mass (solar masses).
+    - `planet_radius`: The planet radius (solar radii).
+    - `clusterid`: A cluster identifier.
+    - `period`: The orbital period (days).
+    - `ecc`: The orbital eccentricity.
+    - `incl`: The orbital inclination relative to the sky plane (radians).
+    - `omega`: The argument of periapsis relative to the sky plane (radians).
+    - `asc_node`: The argument of ascending node relative to the sky plane (radians).
+    - `mean_anom`: The mean anomaly relative to the sky plane (radians).
+    - `incl_invariable`: The orbital inclination relative to the system invariable plane (radians).
+    - `asc_node_invariable`: The argument of ascending node relative to the system invariable plane (radians).
+    - `star_mass`: The stellar mass (solar masses).
+    - `star_radius`: The stellar radius (solar radii).
+
+    Parameters
+    ----------
+    file_name : str
+        The path/name of the file for the physical catalog (should end with 'physical_catalog.csv').
+
+    Returns
+    -------
+    cat_phys : structured array
+        A structured array with the physical properties of all the planets.
+    """
     start = time.time()
     #cat_phys = pd.read_csv(file_name, comment='#', dtype={'target_id': 'Int64', 'star_id': 'Int64', 'planet_mass': 'f8', 'planet_radius': 'f8', 'clusterid': 'Int64', 'period': 'f8', 'ecc': 'f8', 'incl_mut': 'f8', 'incl': 'f8', 'star_mass': 'f8', 'star_radius': 'f8'}) # faster than np.genfromtxt, BUT indexing the pandas DataFrame is much slower later!
     #'''
@@ -123,6 +157,27 @@ def load_cat_phys(file_name):
     return cat_phys
 
 def load_star_phys(file_name):
+    """
+    Load a table of only the stars with planets in a simulated physical catalog.
+
+    The table has the following columns:
+
+    - `target_id`: The index of the star in the simulation (e.g. 1 for the first star) which the planet orbits.
+    - `star_id`: The index of the star based on where it is in the input stellar catalog.
+    - `star_mass`: The stellar mass (solar masses).
+    - `star_radius`: The stellar radius (solar radii).
+    - `num_planets`: The number of planets in the system.
+
+    Parameters
+    ----------
+    file_name : str
+        The path/name of the file for the stellar physical catalog (should end with 'physical_catalog_stars.csv').
+
+    Returns
+    -------
+    star_phys : structured array
+        A structured array with basic properties of the planet-hosting stars.
+    """
     # Load a catalog of stars that have simulated planets:
     start = time.time()
     #star_phys = pd.read_csv(file_name, comment='#', dtype={'target_id': 'Int64', 'star_id': 'Int64', 'star_mass': 'f8', 'star_radius': 'f8', 'num_planets': 'Int64'}) # faster than np.genfromtxt, BUT indexing the pandas DataFrame is much slower later!
