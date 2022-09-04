@@ -115,6 +115,17 @@ def load_cat_phys(file_name):
     """
     Load a table with all the planets in a simulated physical catalog.
 
+    Parameters
+    ----------
+    file_name : str
+        The path/name of the file for the physical catalog (should end with 'physical_catalog.csv').
+
+    Returns
+    -------
+    cat_phys : structured array
+        A table with the physical properties of all the planets.
+
+
     The table has the following columns:
 
     - `target_id`: The index of the star in the simulation (e.g. 1 for the first star) which the planet orbits.
@@ -133,15 +144,6 @@ def load_cat_phys(file_name):
     - `star_mass`: The stellar mass (solar masses).
     - `star_radius`: The stellar radius (solar radii).
 
-    Parameters
-    ----------
-    file_name : str
-        The path/name of the file for the physical catalog (should end with 'physical_catalog.csv').
-
-    Returns
-    -------
-    cat_phys : structured array
-        A table with the physical properties of all the planets.
     """
     start = time.time()
     #cat_phys = pd.read_csv(file_name, comment='#', dtype={'target_id': 'Int64', 'star_id': 'Int64', 'planet_mass': 'f8', 'planet_radius': 'f8', 'clusterid': 'Int64', 'period': 'f8', 'ecc': 'f8', 'incl_mut': 'f8', 'incl': 'f8', 'star_mass': 'f8', 'star_radius': 'f8'}) # faster than np.genfromtxt, BUT indexing the pandas DataFrame is much slower later!
@@ -160,14 +162,6 @@ def load_star_phys(file_name):
     """
     Load a table of only the stars with planets in a simulated physical catalog.
 
-    The table has the following columns:
-
-    - `target_id`: The index of the star in the simulation (e.g. 1 for the first star) which the planet orbits.
-    - `star_id`: The index of the star based on where it is in the input stellar catalog.
-    - `star_mass`: The stellar mass (solar masses).
-    - `star_radius`: The stellar radius (solar radii).
-    - `num_planets`: The number of planets in the system.
-
     Parameters
     ----------
     file_name : str
@@ -177,6 +171,16 @@ def load_star_phys(file_name):
     -------
     star_phys : structured array
         A table with basic properties of the planet-hosting stars.
+
+
+    The table has the following columns:
+
+    - `target_id`: The index of the star in the simulation (e.g. 1 for the first star) which the planet orbits.
+    - `star_id`: The index of the star based on where it is in the input stellar catalog.
+    - `star_mass`: The stellar mass (solar masses).
+    - `star_radius`: The stellar radius (solar radii).
+    - `num_planets`: The number of planets in the system.
+
     """
     start = time.time()
     #star_phys = pd.read_csv(file_name, comment='#', dtype={'target_id': 'Int64', 'star_id': 'Int64', 'star_mass': 'f8', 'star_radius': 'f8', 'num_planets': 'Int64'}) # faster than np.genfromtxt, BUT indexing the pandas DataFrame is much slower later!
@@ -332,26 +336,6 @@ def compute_basic_summary_stats_per_sys_cat_phys(clusterids_per_sys, P_per_sys, 
     """
     Compute the basic summary statistics per system in a physical catalog.
 
-    The output is a dictionary containing the following fields:
-
-    - `Mmax`: The maximum planet multiplicity in any system.
-    - `Mtot_all`: A 1-d array with the planet multiplicity of each system.
-    - `clustertot_all`: A 1-d array with the number of planet clusters in each system.
-    - `pl_per_cluster_all`: A 1-d array with the number of planets in each cluster.
-    - `P_all`: A 2-d array with the orbital periods (days) of each system.
-    - `clusterids_all`: A 2-d array with the cluster id's of each system.
-    - `e_all`: A 2-d array with the orbital eccentricities of each system.
-    - `inclmut_all`: A 2-d array with the orbital inclinations (radians) relative to system invariable plane of each system.
-    - `incl_all`: A 2-d array with the orbital inclinations (radians) relative to the sky plane of each system.
-    - `radii_all`: A 2-d array with the planet radii (Earth radii) of each system.
-    - `mass_all`: A 2-d array with the planet masses (Earth masses) of each system.
-    - `Mstar_all`: A 1-d array with the stellar mass (solar masses) of each system.
-    - `Rstar_all`: A 1-d array with the stellar radius (solar radii) of each system.
-    - `mu_all`: A 2-d array with the planet/star mass ratios of each system.
-    - `a_all`: A 2-d array with the semi-major axes (AU) of each system.
-    - `AMD_all`: A 2-d array with the AMDs (units of G*Mstar=1) of each system.
-    - `AMD_tot_all`: A 1-d array with the total AMD (units of G*Mstar=1) of each system.
-
     Note
     ----
     The input parameters should be returned by the function :py:func:`syssimpyplots.load_sims.load_planets_stars_phys_separate` and requires the individual lists to be ordered in the same way.
@@ -381,6 +365,28 @@ def compute_basic_summary_stats_per_sys_cat_phys(clusterids_per_sys, P_per_sys, 
     -------
     sssp_per_sys_basic : dict
         A dictionary containing planetary and stellar properties for each system.
+
+
+    The output is a dictionary containing the following fields:
+
+    - `Mmax`: The maximum planet multiplicity in any system.
+    - `Mtot_all`: A 1-d array with the planet multiplicity of each system.
+    - `clustertot_all`: A 1-d array with the number of planet clusters in each system.
+    - `pl_per_cluster_all`: A 1-d array with the number of planets in each cluster.
+    - `P_all`: A 2-d array with the orbital periods (days) of each system.
+    - `clusterids_all`: A 2-d array with the cluster id's of each system.
+    - `e_all`: A 2-d array with the orbital eccentricities of each system.
+    - `inclmut_all`: A 2-d array with the orbital inclinations (radians) relative to system invariable plane of each system.
+    - `incl_all`: A 2-d array with the orbital inclinations (radians) relative to the sky plane of each system.
+    - `radii_all`: A 2-d array with the planet radii (Earth radii) of each system.
+    - `mass_all`: A 2-d array with the planet masses (Earth masses) of each system.
+    - `Mstar_all`: A 1-d array with the stellar mass (solar masses) of each system.
+    - `Rstar_all`: A 1-d array with the stellar radius (solar radii) of each system.
+    - `mu_all`: A 2-d array with the planet/star mass ratios of each system.
+    - `a_all`: A 2-d array with the semi-major axes (AU) of each system.
+    - `AMD_all`: A 2-d array with the AMDs (units of G*Mstar=1) of each system.
+    - `AMD_tot_all`: A 1-d array with the total AMD (units of G*Mstar=1) of each system.
+
     """
     assert len(clusterids_per_sys) != 0
 
@@ -526,6 +532,31 @@ def compute_summary_stats_from_cat_phys(cat_phys=None, star_phys=None, file_name
     """
     Compute detailed summary statistics per system in a simulated physical catalog.
 
+    Parameters
+    ----------
+    cat_phys=None : structured array
+        A table with the physical properties of all the planets.
+    star_phys=None : structured array
+        A table with basic properties of the planet-hosting stars.
+    file_name_path=None : str
+        The path to the physical catalog.
+    run_number='' : str
+        The run number appended to the file names for the physical catalog.
+    load_full_tables=False : bool
+        Whether to load full tables of the physical catalogs. Required to be True if also want to match the physical planets to the observed planets.
+    compute_ratios=compute_ratios_adjacent : func
+        The function to use for computing ratios; can be either :py:func:`syssimpyplots.general.compute_ratios_adjacent` or :py:func:`syssimpyplots.general.compute_ratios_all`.
+    match_observed=True : bool
+        Whether to match the physical planets to the observed planets. If True, the output will also contain a field `det_all`.
+
+    Returns
+    -------
+    sssp_per_sys : dict
+        A dictionary containing the planetary and stellar properties for each system (2-d and 1-d arrays).
+    sssp : dict
+        A dictionary containing the planetary and stellar properties of all planets (1-d arrays).
+
+
     The outputs are two dictionaries. ``sssp_per_sys`` contains the following fields:
 
     - `det_all`: A 2-d array with the detection flags (1=detected, 0=undetected) of the planets in each system. Only returned if ``match_observed=True``.
@@ -570,31 +601,10 @@ def compute_summary_stats_from_cat_phys(cat_phys=None, star_phys=None, file_name
     - `radii_ratio_below_all`: A 1-d array with all the planet radii ratios for planets below the photo-evaporation boundary\*.
     - `radii_ratio_across_all`: A 1-d array with all the planet radii ratios for planets across the photo-evaporation boundary\*.
 
+    Note
+    ----
     \*The photo-evaporation boundary defined by the function :py:func:`syssimpyplots.general.photoevap_boundary_Carrera2018`.
 
-    Parameters
-    ----------
-    cat_phys=``None`` : structured array
-        A table with the physical properties of all the planets.
-    star_phys=``None`` : structured array
-        A table with basic properties of the planet-hosting stars.
-    file_name_path=``None`` : str
-        The path to the physical catalog.
-    run_number=``''`` : str
-        The run number appended to the file names for the physical catalog.
-    load_full_tables=``False`` : bool
-        Whether to load full tables of the physical catalogs. Required to be True if also want to match the physical planets to the observed planets.
-    compute_ratios=``compute_ratios_adjacent`` : func
-        The function to use for computing ratios; can be either :py:func:`syssimpyplots.general.compute_ratios_adjacent` or :py:func:`syssimpyplots.general.compute_ratios_all`.
-    match_observed=``True`` : bool
-        Whether to match the physical planets to the observed planets. If True, the output will also contain a field `det_all`.
-
-    Returns
-    -------
-    sssp_per_sys : dict
-        A dictionary containing the planetary and stellar properties for each system (2-d and 1-d arrays).
-    sssp : dict
-        A dictionary containing the planetary and stellar properties of all planets (1-d arrays).
     """
     #This function takes in a simulated observed catalog of planets 'cat_phys' in table format and returns many arrays (1D and 2D) of the summary stats
 
@@ -851,6 +861,17 @@ def load_cat_obs(file_name):
     """
     Load a table with all the planets in a simulated observed catalog.
 
+    Parameters
+    ----------
+    file_name : str
+        The path/name of the file for the observed catalog (should end with ‘observed_catalog.csv’).
+
+    Returns
+    -------
+    cat_obs : structured array
+        A table with the physical properties of all the planets.
+
+
     The table has the following columns:
 
     - `target_id`: The index of the star in the simulation (e.g. 1 for the first star) which the planet orbits.
@@ -864,15 +885,6 @@ def load_cat_obs(file_name):
     - `star_mass`: The stellar mass (solar masses).
     - `star_radius`: The stellar radius (solar radii).
 
-    Parameters
-    ----------
-    file_name : str
-        The path/name of the file for the observed catalog (should end with ‘observed_catalog.csv’).
-
-    Returns
-    -------
-    cat_obs : structured array
-        A table with the physical properties of all the planets.
     """
     with open(file_name, 'r') as file:
         lines = (line for line in file if not line.startswith('#'))
@@ -884,8 +896,6 @@ def load_star_obs(file_name):
     """
     Load a table of only the stars with observed planets in a simulated observed catalog.
 
-    The table has the same columns as those returned by the function :py:func:`syssimpyplots.load_sims.load_star_phys`.
-
     Parameters
     ----------
     file_name : str
@@ -895,6 +905,9 @@ def load_star_obs(file_name):
     -------
     star_obs : structured array
         A table with the basic properties of the observed planet-hosting stars.
+
+
+    The table has the same columns as those returned by the function :py:func:`syssimpyplots.load_sims.load_star_phys`.
     """
     with open(file_name, 'r') as file: #open(loadfiles_directory + 'observed_catalog_stars%s.txt' % run_number, 'r')
         lines = (line for line in file if not line.startswith('#'))
@@ -998,25 +1011,25 @@ def count_planets_from_loading_cat_obs_stars_only(file_name_path=None, run_numbe
 
     Parameters
     ----------
-    file_name_path=``None`` : str
+    file_name_path=None : str
         The path to the observed catalog.
-    run_number=``''`` : str
+    run_number='' : str
         The run number appended to the file names for the observed catalog.
-    Rstar_min=``0.`` : float
+    Rstar_min=0. : float
         The minimum stellar radius (solar radii) to include in the sample.
-    Rstar_max=``1e6`` : float
+    Rstar_max=1e6 : float
         The maximum stellar radius (solar radii) to include in the sample.
-    Mstar_min=``0.`` : float
+    Mstar_min=0. : float
         The minimum stellar mass (solar masses) to include in the sample.
-    Mstar_max=``1e6`` : float
+    Mstar_max=1e6 : float
         The maximum stellar mass (solar masses) to include in the sample.
-    teff_min=``0.`` : float
+    teff_min=0. : float
         The minimum stellar effective temperature (K) to include in the sample.
-    teff_max=``1e6`` : float
+    teff_max=1e6 : float
         The maximum stellar effective temperature (K) to include in the sample.
-    bp_rp_min=``-1e6`` : float
+    bp_rp_min=-1e6 : float
         The minimum Gaia DR2 bp-rp color to include in the sample.
-    bp_rp_max=``1e6`` : float
+    bp_rp_max=1e6 : float
         The maximum Gaia DR2 bp-rp color to include in the sample.
 
     Returns
@@ -1051,37 +1064,37 @@ def compute_summary_stats_from_cat_obs(cat_obs=None, star_obs=None, file_name_pa
 
     Parameters
     ----------
-    cat_obs=``None`` : structured array
+    cat_obs=None : structured array
         A table with the observed properties of the planets.
-    star_obs=``None`` : structured array
+    star_obs=None : structured array
         A table with the basic properties of the observed planet-hosting stars.
-    file_name_path=``None`` : str
+    file_name_path=None : str
         The path to the observed catalog.
-    run_number=``''`` : str
+    run_number='' : str
         The run number appended to the file names for the observed catalog.
-    P_min=``0.`` : float
+    P_min=0. : float
         The minimum orbital period to include in the sample.
-    P_max=``300.`` : float
+    P_max=300. : float
         The maximum orbital period to include in the sample.
-    Rstar_min=``0.`` : float
+    Rstar_min=0. : float
         The minimum stellar radius (solar radii) to include in the sample.
-    Rstar_max=``1e6`` : float
+    Rstar_max=1e6 : float
         The maximum stellar radius (solar radii) to include in the sample.
-    Mstar_min=``0.`` : float
+    Mstar_min=0. : float
         The minimum stellar mass (solar masses) to include in the sample.
-    Mstar_max=``1e6`` : float
+    Mstar_max=1e6 : float
         The maximum stellar mass (solar masses) to include in the sample.
-    teff_min=``0.`` : float
+    teff_min=0. : float
         The minimum stellar effective temperature (K) to include in the sample.
-    teff_max=``1e6`` : float
+    teff_max=1e6 : float
         The maximum stellar effective temperature (K) to include in the sample.
-    bp_rp_min=``-1e6`` : float
+    bp_rp_min=-1e6 : float
         The minimum Gaia DR2 bp-rp color to include in the sample.
-    bp_rp_max=``1e6`` : float
+    bp_rp_max=1e6 : float
         The maximum Gaia DR2 bp-rp color to include in the sample.
-    i_stars_custom=``None`` : array[int]
+    i_stars_custom=None : array[int]
         An array of indices for the stars in the Kepler stellar catalog to be included in the sample.
-    compute_ratios=``compute_ratios_adjacent`` : func
+    compute_ratios=compute_ratios_adjacent : func
         The function to use for computing ratios; can be either :py:func:`syssimpyplots.general.compute_ratios_adjacent` or :py:func:`syssimpyplots.general.compute_ratios_all`.
 
     Returns
@@ -1149,7 +1162,7 @@ def compute_summary_stats_from_cat_obs(cat_obs=None, star_obs=None, file_name_pa
 
     Note
     -----
-    \*As defined by ``res_ratios`` and ``res_width`` in ``general.py``.
+    \*As defined by ``res_ratios`` and ``res_width`` in :ref:`general.py <api_general>`.
 
     \**The photo-evaporation boundary defined by the function :py:func:`syssimpyplots.general.photoevap_boundary_Carrera2018`.
 
@@ -1531,13 +1544,13 @@ def load_cat_phys_multiple_and_compute_combine_summary_stats(file_name_path, run
     ----------
     file_name_path : str
         The path to the physical catalogs.
-    run_number=``range(1,11)`` : range
+    run_number=range\(1,11\) : range
         The range of run numbers over which we want to load and combine.
-    load_full_tables=``False`` : bool
+    load_full_tables=False : bool
         Whether to load full tables of the physical catalogs. Required to be True if also want to match the physical planets to the observed planets.
-    compute_ratios=``compute_ratios_adjacent`` : func
+    compute_ratios=compute_ratios_adjacent : func
         The function to use for computing ratios; can be either :py:func:`syssimpyplots.general.compute_ratios_adjacent` or :py:func:`syssimpyplots.general.compute_ratios_all`.
-    match_observed=``True`` : bool
+    match_observed=True : bool
         Whether to match the physical planets to the observed planets. If True, the output will also contain a field `det_all`.
 
     Returns
