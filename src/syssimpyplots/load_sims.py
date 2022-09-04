@@ -1544,7 +1544,7 @@ def load_cat_phys_multiple_and_compute_combine_summary_stats(file_name_path, run
     ----------
     file_name_path : str
         The path to the physical catalogs.
-    run_number=range(1\,11) : range
+    run_number : range, default=range(1,11)
         The range of run numbers over which we want to load and combine.
     load_full_tables=False : bool
         Whether to load full tables of the physical catalogs. Required to be True if also want to match the physical planets to the observed planets.
