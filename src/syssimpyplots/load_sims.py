@@ -574,19 +574,19 @@ def compute_summary_stats_from_cat_phys(cat_phys=None, star_phys=None, file_name
 
     Parameters
     ----------
-    cat_phys=None : structured array
+    cat_phys=``None`` : structured array
         A table with the physical properties of all the planets.
-    star_phys=None : structured array
+    star_phys=``None`` : structured array
         A table with basic properties of the planet-hosting stars.
-    file_name_path=None : str
+    file_name_path=``None`` : str
         The path to the physical catalog.
-    run_number='' : str
+    run_number=``''`` : str
         The run number appended to the file names for the physical catalog.
-    load_full_tables=False : bool
+    load_full_tables=``False`` : bool
         Whether to load full tables of the physical catalogs. Required to be True if also want to match the physical planets to the observed planets.
-    compute_ratios=compute_ratios_adjacent : func
+    compute_ratios=``compute_ratios_adjacent`` : func
         The function to use for computing ratios; can be either :py:func:`syssimpyplots.general.compute_ratios_adjacent` or :py:func:`syssimpyplots.general.compute_ratios_all`.
-    match_observed=True : bool
+    match_observed=``True`` : bool
         Whether to match the physical planets to the observed planets. If True, the output will also contain a field `det_all`.
 
     Returns
@@ -998,25 +998,25 @@ def count_planets_from_loading_cat_obs_stars_only(file_name_path=None, run_numbe
 
     Parameters
     ----------
-    file_name_path=None : str
+    file_name_path=``None`` : str
         The path to the observed catalog.
-    run_number='' : str
+    run_number=``''`` : str
         The run number appended to the file names for the observed catalog.
-    Rstar_min=0. : float
+    Rstar_min=``0.`` : float
         The minimum stellar radius (solar radii) to include in the sample.
-    Rstar_max=1e6 : float
+    Rstar_max=``1e6`` : float
         The maximum stellar radius (solar radii) to include in the sample.
-    Mstar_min=0. : float
+    Mstar_min=``0.`` : float
         The minimum stellar mass (solar masses) to include in the sample.
-    Mstar_max=1e6 : float
+    Mstar_max=``1e6`` : float
         The maximum stellar mass (solar masses) to include in the sample.
-    teff_min=0. : float
+    teff_min=``0.`` : float
         The minimum stellar effective temperature (K) to include in the sample.
-    teff_max=1e6 : float
+    teff_max=``1e6`` : float
         The maximum stellar effective temperature (K) to include in the sample.
-    bp_rp_min=-1e6 : float
+    bp_rp_min=``-1e6`` : float
         The minimum Gaia DR2 bp-rp color to include in the sample.
-    bp_rp_max=1e6 : float
+    bp_rp_max=``1e6`` : float
         The maximum Gaia DR2 bp-rp color to include in the sample.
 
     Returns
@@ -1051,37 +1051,37 @@ def compute_summary_stats_from_cat_obs(cat_obs=None, star_obs=None, file_name_pa
 
     Parameters
     ----------
-    cat_obs=None : structured array
+    cat_obs=``None`` : structured array
         A table with the observed properties of the planets.
-    star_obs=None : structured array
+    star_obs=``None`` : structured array
         A table with the basic properties of the observed planet-hosting stars.
-    file_name_path=None : str
+    file_name_path=``None`` : str
         The path to the observed catalog.
-    run_number='' : str
+    run_number=``''`` : str
         The run number appended to the file names for the observed catalog.
-    P_min=0. : float
+    P_min=``0.`` : float
         The minimum orbital period to include in the sample.
-    P_max=300. : float
+    P_max=``300.`` : float
         The maximum orbital period to include in the sample.
-    Rstar_min=0. : float
+    Rstar_min=``0.`` : float
         The minimum stellar radius (solar radii) to include in the sample.
-    Rstar_max=1e6 : float
+    Rstar_max=``1e6`` : float
         The maximum stellar radius (solar radii) to include in the sample.
-    Mstar_min=0. : float
+    Mstar_min=``0.`` : float
         The minimum stellar mass (solar masses) to include in the sample.
-    Mstar_max=1e6 : float
+    Mstar_max=``1e6`` : float
         The maximum stellar mass (solar masses) to include in the sample.
-    teff_min=0. : float
+    teff_min=``0.`` : float
         The minimum stellar effective temperature (K) to include in the sample.
-    teff_max=1e6 : float
+    teff_max=``1e6`` : float
         The maximum stellar effective temperature (K) to include in the sample.
-    bp_rp_min=-1e6 : float
+    bp_rp_min=``-1e6`` : float
         The minimum Gaia DR2 bp-rp color to include in the sample.
-    bp_rp_max=1e6 : float
+    bp_rp_max=``1e6`` : float
         The maximum Gaia DR2 bp-rp color to include in the sample.
-    i_stars_custom=None : array[int]
+    i_stars_custom=``None`` : array[int]
         An array of indices for the stars in the Kepler stellar catalog to be included in the sample.
-    compute_ratios=compute_ratios_adjacent : func
+    compute_ratios=``compute_ratios_adjacent`` : func
         The function to use for computing ratios; can be either :py:func:`syssimpyplots.general.compute_ratios_adjacent` or :py:func:`syssimpyplots.general.compute_ratios_all`.
 
     Returns
@@ -1090,6 +1090,7 @@ def compute_summary_stats_from_cat_obs(cat_obs=None, star_obs=None, file_name_pa
         A dictionary containing the planetary and stellar properties for each observed system (2-d and 1-d arrays).
     sss : dict
         A dictionary containing the planetary and stellar properties of all observed planets (1-d arrays).
+
 
     The outputs are two dictionaries. ``sss_per_sys`` contains the following fields:
 
@@ -1146,16 +1147,17 @@ def compute_summary_stats_from_cat_obs(cat_obs=None, star_obs=None, file_name_pa
     - `D_ratio_below_obs`: The observed transit depth ratios of all planets below the photo-evaporation boundary\** (1-d array).
     - `D_ratio_across_obs`: The observed transit depth ratios of all planets across the photo-evaporation boundary\** (1-d array).
 
-    Notes
+    Note
     -----
     \*As defined by ``res_ratios`` and ``res_width`` in ``general.py``.
+
     \**The photo-evaporation boundary defined by the function :py:func:`syssimpyplots.general.photoevap_boundary_Carrera2018`.
 
     Warnings
     --------
-    For the 2-d arrays, each row is padded with zeros (or negative ones), since different systems have different numbers of observed planets.
+    1. For the 2-d arrays, each row is padded with zeros (or negative ones), since different systems have different numbers of observed planets.
 
-    The observed transit durations (`tdur_obs`, and thus also fields involving `tdur_tcirc_obs` and `xi_obs`) can be zero!
+    2. The observed transit durations (`tdur_obs`, and thus also fields involving `tdur_tcirc_obs` and `xi_obs`) can be zero!
     """
     if cat_obs is not None and star_obs is not None:
         i_sys = np.unique(cat_obs['target_id'])
@@ -1529,13 +1531,13 @@ def load_cat_phys_multiple_and_compute_combine_summary_stats(file_name_path, run
     ----------
     file_name_path : str
         The path to the physical catalogs.
-    run_number=range(1,11) : range
+    run_number=``range(1,11)`` : range
         The range of run numbers over which we want to load and combine.
-    load_full_tables=False : bool
+    load_full_tables=``False`` : bool
         Whether to load full tables of the physical catalogs. Required to be True if also want to match the physical planets to the observed planets.
-    compute_ratios=compute_ratios_adjacent : func
+    compute_ratios=``compute_ratios_adjacent`` : func
         The function to use for computing ratios; can be either :py:func:`syssimpyplots.general.compute_ratios_adjacent` or :py:func:`syssimpyplots.general.compute_ratios_all`.
-    match_observed=True : bool
+    match_observed=``True`` : bool
         Whether to match the physical planets to the observed planets. If True, the output will also contain a field `det_all`.
 
     Returns
@@ -1544,6 +1546,7 @@ def load_cat_phys_multiple_and_compute_combine_summary_stats(file_name_path, run
         A dictionary containing the planetary and stellar properties for each system (2-d and 1-d arrays).
     sssp : dict
         A dictionary containing the planetary and stellar properties of all planets (1-d arrays).
+
 
     The fields of ``sssp_per_sys`` and ``sssp`` are the same as those returned by :py:func:`syssimpyplots.load_sims.compute_summary_stats_from_cat_phys`.
     """
