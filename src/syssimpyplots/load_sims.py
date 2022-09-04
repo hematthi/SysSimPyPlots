@@ -141,7 +141,7 @@ def load_cat_phys(file_name):
     Returns
     -------
     cat_phys : structured array
-        A structured array with the physical properties of all the planets.
+        A table with the physical properties of all the planets.
     """
     start = time.time()
     #cat_phys = pd.read_csv(file_name, comment='#', dtype={'target_id': 'Int64', 'star_id': 'Int64', 'planet_mass': 'f8', 'planet_radius': 'f8', 'clusterid': 'Int64', 'period': 'f8', 'ecc': 'f8', 'incl_mut': 'f8', 'incl': 'f8', 'star_mass': 'f8', 'star_radius': 'f8'}) # faster than np.genfromtxt, BUT indexing the pandas DataFrame is much slower later!
@@ -176,7 +176,7 @@ def load_star_phys(file_name):
     Returns
     -------
     star_phys : structured array
-        A structured array with basic properties of the planet-hosting stars.
+        A table with basic properties of the planet-hosting stars.
     """
     start = time.time()
     #star_phys = pd.read_csv(file_name, comment='#', dtype={'target_id': 'Int64', 'star_id': 'Int64', 'star_mass': 'f8', 'star_radius': 'f8', 'num_planets': 'Int64'}) # faster than np.genfromtxt, BUT indexing the pandas DataFrame is much slower later!
@@ -208,23 +208,23 @@ def load_planets_stars_phys_separate(file_name_path, run_number):
     Returns
     -------
     clusterids_per_sys : list[list]
-        A list of lists with the cluster id's for each system.
+        The cluster id's of each system.
     P_per_sys : list[list]
-        A list of lists with the orbital periods (days) for each system.
+        The orbital periods (days) of each system.
     radii_per_sys : list[list]
-        A list of lists with the planet radii (solar radii) for each system.
+        The planet radii (solar radii) of each system.
     mass_per_sys : list[list]
-        A list of lists with the planet masses (solar masses) for each system.
+        The planet masses (solar masses) of each system.
     e_per_sys : list[list]
-        A list of lists with the orbital eccentricities for each system.
+        The orbital eccentricities of each system.
     inclmut_per_sys : list[list]
-        A list of lists with the orbital inclinations (radians) relative to the system invariable plane for each system.
+        The orbital inclinations (radians) relative to the system invariable plane of each system.
     incl_per_sys : list[list]
-        A list of lists with the orbital inclinations (radians) relative to the sky plane for each system.
+        The orbital inclinations (radians) relative to the sky plane of each system.
     Mstar_all : array[float]
-        The stellar mass (solar masses) for each system.
+        The stellar mass (solar masses) of each system.
     Rstar_all : array[float]
-        The stellar radius (solar radii) for each system.
+        The stellar radius (solar radii) of each system.
     """
     start = time.time()
 
@@ -584,8 +584,8 @@ def compute_summary_stats_from_cat_phys(cat_phys=None, star_phys=None, file_name
         The run number appended to the file names for the physical catalog.
     load_full_tables=False : bool
         Whether to load full tables of the physical catalogs. Required to be True if also want to match the physical planets to the observed planets.
-    compute_ratios=gen.compute_ratios_adjacent : func
-        The function to use for computing ratios; can be either :py:func:`syssimpyplots.general.compute_ratios_adjacent` (for adjacent planet pairs only) or :py:func:`syssimpyplots.general.compute_ratios_all` (for all planet pairs).
+    compute_ratios=compute_ratios_adjacent : func
+        The function to use for computing ratios; can be either :py:func:`syssimpyplots.general.compute_ratios_adjacent` or :py:func:`syssimpyplots.general.compute_ratios_all`.
     match_observed=True : bool
         Whether to match the physical planets to the observed planets. If True, the output will also contain a field `det_all`.
 
@@ -848,7 +848,32 @@ def compute_summary_stats_from_cat_phys(cat_phys=None, star_phys=None, file_name
 # Functions to load and analyze simulated observed catalogs:
 
 def load_cat_obs(file_name):
-    # Load a simulated observed catalog of planets
+    """
+    Load a table with all the planets in a simulated observed catalog.
+
+    The table has the following columns:
+
+    - `target_id`: The index of the star in the simulation (e.g. 1 for the first star) which the planet orbits.
+    - `star_id`: The index of the star based on where it is in the input stellar catalog.
+    - `period`: The observed orbital period (days).
+    - `period_err`: The uncertainty in observed orbital period (days).
+    - `depth`: The observed transit depth.
+    - `depth_err`: The uncertainty in observed transit depth.
+    - `duration`: The observed transit duration (days).
+    - `duration_err`: The uncertainty in observed transit duration (days).
+    - `star_mass`: The stellar mass (solar masses).
+    - `star_radius`: The stellar radius (solar radii).
+
+    Parameters
+    ----------
+    file_name : str
+        The path/name of the file for the observed catalog (should end with ‘observed_catalog.csv’).
+
+    Returns
+    -------
+    cat_obs : structured array
+        A table with the physical properties of all the planets.
+    """
     with open(file_name, 'r') as file:
         lines = (line for line in file if not line.startswith('#'))
         cat_obs = np.loadtxt(lines, skiprows=1, dtype={'names': ('target_id', 'star_id', 'period', 'period_err', 'depth', 'depth_err', 'duration', 'duration_err', 'star_mass', 'star_radius'), 'formats': ('i4', 'i4', 'f8', 'f8', 'f8', 'f8', 'f8', 'f8', 'f8', 'f8')}, delimiter=',')
@@ -856,7 +881,21 @@ def load_cat_obs(file_name):
     return cat_obs
 
 def load_star_obs(file_name):
-    # Load a catalog of stars with simulated observed planets
+    """
+    Load a table of only the stars with observed planets in a simulated observed catalog.
+
+    The table has the same columns as those returned by the function :py:func:`syssimpyplots.load_sims.load_star_phys`.
+
+    Parameters
+    ----------
+    file_name : str
+        The path/name of the file for the stellar physical catalog (should end with ‘observed_catalog_stars.csv’)
+
+    Returns
+    -------
+    star_obs : structured array
+        A table with the basic properties of the observed planet-hosting stars.
+    """
     with open(file_name, 'r') as file: #open(loadfiles_directory + 'observed_catalog_stars%s.txt' % run_number, 'r')
         lines = (line for line in file if not line.startswith('#'))
         star_obs = np.loadtxt(lines, skiprows=1, dtype={'names': ('target_id', 'star_id', 'star_mass', 'star_radius', 'num_obs_planets'), 'formats': ('i4', 'i4', 'f8', 'f8', 'i4')}, delimiter=',')
@@ -864,8 +903,33 @@ def load_star_obs(file_name):
     return star_obs
 
 def load_planets_stars_obs_separate(file_name_path, run_number):
-    # This function loads the simulated observed planets and stars from the individual files their properties were saved in
+    """
+    Load individual files with the properties of all the planets in an observed catalog.
 
+    Note
+    ----
+    Faster than :py:func:`syssimpyplots.load_sims.load_cat_obs` for large catalogs, but returns individual lists instead of a single table. Each list is ordered in the same way (low to high observed multiplicity) so the planet properties can be matched to each other.
+
+    Parameters
+    ----------
+    file_name_path : str
+        The path to the observed catalog.
+    run_number : str
+        The run number appended to the file names for the observed catalog.
+
+    Returns
+    -------
+    P_per_sys : list[list]
+        The observed orbital periods (days) of each system.
+    D_per_sys : list[list]
+        The observed transit depths of each system.
+    tdur_per_sys : list[list]
+        The observed transit durations (days) of each system.
+    Mstar_per_sys : array[float]
+        The stellar mass (solar masses) of each system.
+    Rstar_per_sys : array[float]
+        The stellar radius (solar radii) of each system.
+    """
     P_per_sys = [] #list to be filled with lists of the observed periods per system (days)
     with open(file_name_path + 'periods%s.out' % run_number, 'r') as file:
         for line in file:
@@ -925,8 +989,43 @@ def load_planets_stars_obs_separate(file_name_path, run_number):
     return P_per_sys, D_per_sys, tdur_per_sys, Mstar_per_sys, Rstar_per_sys
 
 def count_planets_from_loading_cat_obs_stars_only(file_name_path=None, run_number='', Rstar_min=0., Rstar_max=1e6, Mstar_min=0., Mstar_max=1e6, teff_min=0., teff_max=1e6, bp_rp_min=-1e6, bp_rp_max=1e6):
-    # This function loads an "observed_catalog_stars.csv" file (and the full stellar catalog using "ckep.load_Kepler_stars_cleaned"), which contains a column of the number of observed planets for each star, and applies cuts on the stellar sample to return the resulting multiplicity distribution
+    """
+    Count the number of observed planets in each system (and the resulting observed multiplicity distribution), given a set of stellar cuts.
 
+    Note
+    ----
+    Loads an 'observed_catalog_stars.csv' file (using :py:func:`syssimpyplots.load_sims.load_star_obs`) and a table of cleaned Kepler target stars (using :py:func:`syssimpyplots.compare_kepler.load_Kepler_stars_cleaned`).
+
+    Parameters
+    ----------
+    file_name_path=None : str
+        The path to the observed catalog.
+    run_number='' : str
+        The run number appended to the file names for the observed catalog.
+    Rstar_min=0. : float
+        The minimum stellar radius (solar radii) to include in the sample.
+    Rstar_max=1e6 : float
+        The maximum stellar radius (solar radii) to include in the sample.
+    Mstar_min=0. : float
+        The minimum stellar mass (solar masses) to include in the sample.
+    Mstar_max=1e6 : float
+        The maximum stellar mass (solar masses) to include in the sample.
+    teff_min=0. : float
+        The minimum stellar effective temperature (K) to include in the sample.
+    teff_max=1e6 : float
+        The maximum stellar effective temperature (K) to include in the sample.
+    bp_rp_min=-1e6 : float
+        The minimum Gaia DR2 bp-rp color to include in the sample.
+    bp_rp_max=1e6 : float
+        The maximum Gaia DR2 bp-rp color to include in the sample.
+
+    Returns
+    -------
+    Mtot_obs : array[int]
+        The number of observed planets in each system.
+    Nmult_obs : array[int]
+        The observed multiplicity distribution (number of observed systems at each multiplicity order).
+    """
     stars_cleaned = ckep.load_Kepler_stars_cleaned() # NOTE: make sure that this is loading the same stellar catalog used for the simulations!
 
     star_obs = load_star_obs(file_name_path + 'observed_catalog_stars%s.csv' % run_number)
