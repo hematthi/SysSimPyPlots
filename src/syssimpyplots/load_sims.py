@@ -124,12 +124,12 @@ def load_cat_phys(file_name):
     - `clusterid`: A cluster identifier.
     - `period`: The orbital period (days).
     - `ecc`: The orbital eccentricity.
-    - `incl`: The orbital inclination relative to the sky plane (radians).
-    - `omega`: The argument of periapsis relative to the sky plane (radians).
-    - `asc_node`: The argument of ascending node relative to the sky plane (radians).
-    - `mean_anom`: The mean anomaly relative to the sky plane (radians).
-    - `incl_invariable`: The orbital inclination relative to the system invariable plane (radians).
-    - `asc_node_invariable`: The argument of ascending node relative to the system invariable plane (radians).
+    - `incl`: The orbital inclination (radians) relative to the sky plane.
+    - `omega`: The argument of periapsis (radians) relative to the sky plane.
+    - `asc_node`: The argument of ascending node (radians) relative to the sky plane.
+    - `mean_anom`: The mean anomaly (radians) relative to the sky plane.
+    - `incl_invariable`: The orbital inclination (radians) relative to the system invariable plane.
+    - `asc_node_invariable`: The argument of ascending node (radians) relative to the system invariable plane.
     - `star_mass`: The stellar mass (solar masses).
     - `star_radius`: The stellar radius (solar radii).
 
@@ -178,7 +178,6 @@ def load_star_phys(file_name):
     star_phys : structured array
         A structured array with basic properties of the planet-hosting stars.
     """
-    # Load a catalog of stars that have simulated planets:
     start = time.time()
     #star_phys = pd.read_csv(file_name, comment='#', dtype={'target_id': 'Int64', 'star_id': 'Int64', 'star_mass': 'f8', 'star_radius': 'f8', 'num_planets': 'Int64'}) # faster than np.genfromtxt, BUT indexing the pandas DataFrame is much slower later!
     #'''
@@ -192,8 +191,41 @@ def load_star_phys(file_name):
     return star_phys
 
 def load_planets_stars_phys_separate(file_name_path, run_number):
-    # Load the simulated physical planets and stars from the individual files their properties were saved in
+    """
+    Load individual files with the properties of all the planets in a physical catalog.
 
+    Note
+    ----
+    Faster than :py:func:`syssimpyplots.load_sims.load_cat_phys` for large catalogs, but returns individual lists instead of a single table. Each list is ordered in the same way so the planet properties can be matched to each other.
+
+    Parameters
+    ----------
+    file_name_path : str
+        The path to the physical catalog.
+    run_number : str
+        The run number appended to the file names for the physical catalog.
+
+    Returns
+    -------
+    clusterids_per_sys : list[list]
+        A list of lists with the cluster id's for each system.
+    P_per_sys : list[list]
+        A list of lists with the orbital periods (days) for each system.
+    radii_per_sys : list[list]
+        A list of lists with the planet radii (solar radii) for each system.
+    mass_per_sys : list[list]
+        A list of lists with the planet masses (solar masses) for each system.
+    e_per_sys : list[list]
+        A list of lists with the orbital eccentricities for each system.
+    inclmut_per_sys : list[list]
+        A list of lists with the orbital inclinations (radians) relative to the system invariable plane for each system.
+    incl_per_sys : list[list]
+        A list of lists with the orbital inclinations (radians) relative to the sky plane for each system.
+    Mstar_all : array[float]
+        The stellar mass (solar masses) for each system.
+    Rstar_all : array[float]
+        The stellar radius (solar radii) for each system.
+    """
     start = time.time()
 
     clusterids_per_sys = [] # list to be filled with lists of all the cluster id's per system
@@ -297,7 +329,59 @@ def load_planets_stars_phys_separate(file_name_path, run_number):
     return clusterids_per_sys, P_per_sys, radii_per_sys, mass_per_sys, e_per_sys, inclmut_per_sys, incl_per_sys, Mstar_all, Rstar_all
 
 def compute_basic_summary_stats_per_sys_cat_phys(clusterids_per_sys, P_per_sys, radii_per_sys, mass_per_sys, e_per_sys, inclmut_per_sys, incl_per_sys, Mstar_all, Rstar_all):
+    """
+    Compute the basic summary statistics per system in a physical catalog.
 
+    The output is a dictionary containing the following fields:
+
+    - `Mmax`: The maximum planet multiplicity in any system.
+    - `Mtot_all`: A 1-d array with the planet multiplicity of each system.
+    - `clustertot_all`: A 1-d array with the number of planet clusters in each system.
+    - `pl_per_cluster_all`: A 1-d array with the number of planets in each cluster.
+    - `P_all`: A 2-d array with the orbital periods (days) of each system.
+    - `clusterids_all`: A 2-d array with the cluster id's of each system.
+    - `e_all`: A 2-d array with the orbital eccentricities of each system.
+    - `inclmut_all`: A 2-d array with the orbital inclinations (radians) relative to system invariable plane of each system.
+    - `incl_all`: A 2-d array with the orbital inclinations (radians) relative to the sky plane of each system.
+    - `radii_all`: A 2-d array with the planet radii (Earth radii) of each system.
+    - `mass_all`: A 2-d array with the planet masses (Earth masses) of each system.
+    - `Mstar_all`: A 1-d array with the stellar mass (solar masses) of each system.
+    - `Rstar_all`: A 1-d array with the stellar radius (solar radii) of each system.
+    - `mu_all`: A 2-d array with the planet/star mass ratios of each system.
+    - `a_all`: A 2-d array with the semi-major axes (AU) of each system.
+    - `AMD_all`: A 2-d array with the AMDs (units of G*Mstar=1) of each system.
+    - `AMD_tot_all`: A 1-d array with the total AMD (units of G*Mstar=1) of each system.
+
+    Note
+    ----
+    The input parameters should be returned by the function :py:func:`syssimpyplots.load_sims.load_planets_stars_phys_separate` and requires the individual lists to be ordered in the same way.
+
+    Parameters
+    ----------
+    clusterids_per_sys : list[list]
+        A list of lists with the cluster id's for each system.
+    P_per_sys : list[list]
+        A list of lists with the orbital periods (days) for each system.
+    radii_per_sys : list[list]
+        A list of lists with the planet radii (solar radii) for each system.
+    mass_per_sys : list[list]
+        A list of lists with the planet masses (solar masses) for each system.
+    e_per_sys : list[list]
+        A list of lists with the orbital eccentricities for each system.
+    inclmut_per_sys : list[list]
+        A list of lists with the orbital inclinations (radians) relative to the system invariable plane for each system.
+    incl_per_sys : list[list]
+        A list of lists with the orbital inclinations (radians) relative to the sky plane for each system.
+    Mstar_all : array[float]
+        The stellar mass (solar masses) for each system.
+    Rstar_all : array[float]
+        The stellar radius (solar radii) for each system.
+
+    Returns
+    -------
+    sssp_per_sys_basic : dict
+        A dictionary containing planetary and stellar properties for each system.
+    """
     assert len(clusterids_per_sys) != 0
 
     clusterids_all = []
@@ -416,13 +500,102 @@ def compute_basic_summary_stats_per_sys_cat_phys(clusterids_per_sys, P_per_sys, 
     return sssp_per_sys_basic
 
 def load_cat_phys_separate_and_compute_basic_summary_stats_per_sys(file_name_path, run_number):
+    """
+    Load a physical catalog and compute the basic summary statistics per system.
 
+    Wrapper for the functions :py:func:`syssimpyplots.load_sims.load_planets_stars_phys_separate` and :py:func:`syssimpyplots.load_sims.compute_basic_summary_stats_per_sys_cat_phys`.
+
+    Parameters
+    ----------
+    file_name_path : str
+        The path to the physical catalog.
+    run_number : str
+        The run number appended to the file names for the physical catalog.
+
+    Returns
+    -------
+    sssp_per_sys_basic : dict
+        A dictionary containing planetary and stellar properties for each system. See the documentation for :py:func:`syssimpyplots.load_sims.compute_basic_summary_stats_per_sys_cat_phys` for a description of the dictionary fields.
+    """
     clusterids_per_sys, P_per_sys, radii_per_sys, mass_per_sys, e_per_sys, inclmut_per_sys, incl_per_sys, Mstar_all, Rstar_all = load_planets_stars_phys_separate(file_name_path, run_number)
 
     sssp_per_sys_basic = compute_basic_summary_stats_per_sys_cat_phys(clusterids_per_sys, P_per_sys, radii_per_sys, mass_per_sys, e_per_sys, inclmut_per_sys, incl_per_sys, Mstar_all, Rstar_all)
     return sssp_per_sys_basic
 
 def compute_summary_stats_from_cat_phys(cat_phys=None, star_phys=None, file_name_path=None, run_number='', load_full_tables=False, compute_ratios=gen.compute_ratios_adjacent, match_observed=True):
+    """
+    Compute detailed summary statistics per system in a physical catalog.
+
+    The outputs are two dictionaries. ``sssp_per_sys`` contains the following fields:
+
+    - `det_all`: A 2-d array with the detection flags (1=detected, 0=undetected) of the planets in each system. Only returned if ``match_observed=True``.
+    - `Mtot_all`: A 1-d array with the planet multiplicity of each system.
+    - `clusterids_all`: A 2-d array with the cluster id's of each system.
+    - `P_all`: A 2-d array with the orbital periods (days) of each system.
+    - `a_all`: A 2-d array with the semi-major axes (AU) of each system.
+    - `radii_all`: A 2-d array with the planet radii (Earth radii) of each system.
+    - `mass_all`: A 2-d array with the planet masses (Earth masses) of each system.
+    - `mu_all`: A 2-d array with the planet/star mass ratios of each system.
+    - `e_all`: A 2-d array with the orbital eccentricities of each system.
+    - `inclmut_all`: A 2-d array with the orbital inclinations (radians) relative to system invariable plane of each system.
+    - `incl_all`: A 2-d array with the orbital inclinations (radians) relative to the sky plane of each system.
+    - `AMD_all`: A 2-d array with the AMDs (units of G*Mstar=1) of each system.
+    - `Rm_all`: A 2-d array with the period ratios of each system.
+    - `radii_ratio_all`: A 2-d array with the planet radius ratios of each system.
+    - `N_mH_all`: A 2-d array with the separations in mutual Hill radii of each system.
+    - `dynamical_mass`: A 1-d array with the 'dynamical mass' of each system.
+    - `radii_partitioning`: A 1-d array with the 'radius partitioning' of each multi-planet system.
+    - `radii_monotonicity`: A 1-d array with the 'radius monotonicity' of each multi-planet system.
+    - `gap_complexity`: A 1-d array with the 'gap complexity' of each system with 3+ planets.
+
+    ``sssp`` contains the following fields:
+
+    - `Mstar_all`: A 1-d array with the stellar mass (solar masses) of each system.
+    - `Rstar_all`: A 1-d array with the stellar radius (solar radii) of each system.
+    - `clustertot_all`: A 1-d array with the number of planet clusters in each system.
+    - `AMD_tot_all`: A 1-d array with the total AMD (units of G*Mstar=1) of each system.
+    - `pl_per_cluster_all`: A 1-d array with the number of planets in each cluster.
+    - `P_all`: A 1-d array with the all the orbital periods (days).
+    - `radii_all`: A 1-d array with all the planet radii (Earth radii).
+    - `mass_all`: A 1-d array with all the planet masses (Earth masses).
+    - `e_all`: A 1-d array with all the orbital eccentricities.
+    - `inclmut_all`: A 1-d array with all the orbital inclinations (radians) relative to the system invariable planes.
+    - `incl_all`: A 1-d array with all the orbital inclinations (radians) relative to the sky plane.
+    - `radii_above_all`: A 1-d array with the planet radii (Earth radii) of all planets above the photo-evaporation boundary\*.
+    - `radii_below_all`: A 1-d array with the planet radii (Earth radii) of all planets below the photo-evaporation boundary\*.
+    - `Rm_all`: A 1-d array with all the orbital period ratios.
+    - `radii_ratio_all`: A 1-d array with all the planet radii ratios.
+    - `N_mH_all`: A 1-d array with all the separations in mutual Hill radii.
+    - `radii_ratio_above_all`: A 1-d array with all the planet radii ratios for planets above the photo-evaporation boundary\*.
+    - `radii_ratio_below_all`: A 1-d array with all the planet radii ratios for planets below the photo-evaporation boundary\*.
+    - `radii_ratio_across_all`: A 1-d array with all the planet radii ratios for planets across the photo-evaporation boundary\*.
+
+    \*The photo-evaporation boundary defined by the function :py:func:`syssimpyplots.general.photoevap_boundary_Carrera2018`.
+
+    Parameters
+    ----------
+    cat_phys=None : structured array
+        A structured array with the physical properties of all the planets.
+    star_phys=None : structured array
+        A structured array with basic properties of the planet-hosting stars.
+    file_name_path=None : str
+        The path to the physical catalog.
+    run_number='' : str
+        The run number appended to the file names for the physical catalog.
+    load_full_tables=False : bool
+        Whether to load full tables of the physical catalogs. Required to be True if also want to match the physical planets to the observed planets.
+    compute_ratios=gen.compute_ratios_adjacent : func
+        The function to use for computing ratios; can be either :py:func:`syssimpyplots.general.compute_ratios_adjacent` (for adjacent planet pairs only) or :py:func:`syssimpyplots.general.compute_ratios_all` (for all planet pairs).
+    match_observed=True : bool
+        Whether to match the physical planets to the observed planets. If True, the output will also contain a field `det_all`.
+
+    Returns
+    -------
+    sssp_per_sys : dict
+        A dictionary containing the planetary and stellar properties for each system (2-d and 1-d arrays).
+    sssp : dict
+        A dictionary containing the planetary and stellar properties of all planets (1-d arrays).
+    """
     #This function takes in a simulated observed catalog of planets 'cat_phys' in table format and returns many arrays (1D and 2D) of the summary stats
 
     if load_full_tables or (cat_phys is not None and star_phys is not None):
