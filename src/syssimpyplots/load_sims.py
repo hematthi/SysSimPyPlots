@@ -370,22 +370,22 @@ def compute_basic_summary_stats_per_sys_cat_phys(clusterids_per_sys, P_per_sys, 
     The output is a dictionary containing the following fields:
 
     - `Mmax`: The maximum planet multiplicity in any system.
-    - `Mtot_all`: A 1-d array with the planet multiplicity of each system.
-    - `clustertot_all`: A 1-d array with the number of planet clusters in each system.
-    - `pl_per_cluster_all`: A 1-d array with the number of planets in each cluster.
-    - `P_all`: A 2-d array with the orbital periods (days) of each system.
-    - `clusterids_all`: A 2-d array with the cluster id's of each system.
-    - `e_all`: A 2-d array with the orbital eccentricities of each system.
-    - `inclmut_all`: A 2-d array with the orbital inclinations (radians) relative to system invariable plane of each system.
-    - `incl_all`: A 2-d array with the orbital inclinations (radians) relative to the sky plane of each system.
-    - `radii_all`: A 2-d array with the planet radii (Earth radii) of each system.
-    - `mass_all`: A 2-d array with the planet masses (Earth masses) of each system.
-    - `Mstar_all`: A 1-d array with the stellar mass (solar masses) of each system.
-    - `Rstar_all`: A 1-d array with the stellar radius (solar radii) of each system.
-    - `mu_all`: A 2-d array with the planet/star mass ratios of each system.
-    - `a_all`: A 2-d array with the semi-major axes (AU) of each system.
-    - `AMD_all`: A 2-d array with the AMDs (units of G*Mstar=1) of each system.
-    - `AMD_tot_all`: A 1-d array with the total AMD (units of G*Mstar=1) of each system.
+    - `Mtot_all`: The planet multiplicity of each system (1-d array).
+    - `clustertot_all`: The number of planet clusters in each system (1-d array).
+    - `pl_per_cluster_all`: The number of planets in each cluster (1-d array).
+    - `P_all`: The orbital periods (days) of each system (2-d array).
+    - `clusterids_all`: The cluster id's of each system (2-d array).
+    - `e_all`: The orbital eccentricities of each system (2-d array).
+    - `inclmut_all`: The orbital inclinations (radians) relative to system invariable plane of each system (2-d array).
+    - `incl_all`: The orbital inclinations (radians) relative to the sky plane of each system (2-d array).
+    - `radii_all`: The planet radii (Earth radii) of each system (2-d array).
+    - `mass_all`: The planet masses (Earth masses) of each system (2-d array).
+    - `Mstar_all`: The stellar mass (solar masses) of each system (1-d array).
+    - `Rstar_all`: The stellar radius (solar radii) of each system (1-d array).
+    - `mu_all`: The planet/star mass ratios of each system (2-d array).
+    - `a_all`: The semi-major axes (AU) of each system (2-d array).
+    - `AMD_all`: The AMDs (units of G*Mstar=1) of each system (2-d array).
+    - `AMD_tot_all`: The total AMD (units of G*Mstar=1) of each system (1-d array).
 
     """
     assert len(clusterids_per_sys) != 0
@@ -534,19 +534,19 @@ def compute_summary_stats_from_cat_phys(cat_phys=None, star_phys=None, file_name
 
     Parameters
     ----------
-    cat_phys=None : structured array
+    cat_phys : structured array, default=None
         A table with the physical properties of all the planets.
-    star_phys=None : structured array
+    star_phys : structured array, default=None
         A table with basic properties of the planet-hosting stars.
-    file_name_path=None : str
+    file_name_path : str, default=None
         The path to the physical catalog.
-    run_number='' : str
+    run_number : str, default=''
         The run number appended to the file names for the physical catalog.
-    load_full_tables=False : bool
+    load_full_tables : bool, default=False
         Whether to load full tables of the physical catalogs. Required to be True if also want to match the physical planets to the observed planets.
-    compute_ratios=compute_ratios_adjacent : func
+    compute_ratios : func, default=compute_ratios_adjacent
         The function to use for computing ratios; can be either :py:func:`syssimpyplots.general.compute_ratios_adjacent` or :py:func:`syssimpyplots.general.compute_ratios_all`.
-    match_observed=True : bool
+    match_observed : bool, default=True
         Whether to match the physical planets to the observed planets. If True, the output will also contain a field `det_all`.
 
     Returns
@@ -559,47 +559,47 @@ def compute_summary_stats_from_cat_phys(cat_phys=None, star_phys=None, file_name
 
     The outputs are two dictionaries. ``sssp_per_sys`` contains the following fields:
 
-    - `det_all`: A 2-d array with the detection flags (1=detected, 0=undetected) of the planets in each system. Only returned if ``match_observed=True``.
-    - `Mtot_all`: A 1-d array with the number of planets in each system.
-    - `clusterids_all`: A 2-d array with the cluster id's of each system.
-    - `P_all`: A 2-d array with the orbital periods (days) of each system.
-    - `a_all`: A 2-d array with the semi-major axes (AU) of each system.
-    - `radii_all`: A 2-d array with the planet radii (Earth radii) of each system.
-    - `mass_all`: A 2-d array with the planet masses (Earth masses) of each system.
-    - `mu_all`: A 2-d array with the planet/star mass ratios of each system.
-    - `e_all`: A 2-d array with the orbital eccentricities of each system.
-    - `inclmut_all`: A 2-d array with the orbital inclinations (radians) relative to system invariable plane of each system.
-    - `incl_all`: A 2-d array with the orbital inclinations (radians) relative to the sky plane of each system.
-    - `AMD_all`: A 2-d array with the AMDs (units of G*Mstar=1) of each system.
-    - `Rm_all`: A 2-d array with the period ratios of each system.
-    - `radii_ratio_all`: A 2-d array with the planet radius ratios of each system.
-    - `N_mH_all`: A 2-d array with the separations in mutual Hill radii of each system.
-    - `dynamical_mass`: A 1-d array with the 'dynamical mass' of each system.
-    - `radii_partitioning`: A 1-d array with the 'radius partitioning' of each multi-planet system.
-    - `radii_monotonicity`: A 1-d array with the 'radius monotonicity' of each multi-planet system.
-    - `gap_complexity`: A 1-d array with the 'gap complexity' of each system with 3+ planets.
+    - `det_all`: The detection flags (1=detected, 0=undetected) of the planets in each system (2-d array). Only returned if ``match_observed=True``.
+    - `Mtot_all`: The number of planets in each system (1-d array).
+    - `clusterids_all`: The cluster id's of each system (2-d array).
+    - `P_all`: The orbital periods (days) of each system (2-d array).
+    - `a_all`: The semi-major axes (AU) of each system (2-d array).
+    - `radii_all`: The planet radii (Earth radii) of each system (2-d array).
+    - `mass_all`: The planet masses (Earth masses) of each system (2-d array).
+    - `mu_all`: The planet/star mass ratios of each system (2-d array).
+    - `e_all`: The orbital eccentricities of each system (2-d array).
+    - `inclmut_all`: The orbital inclinations (radians) relative to system invariable plane of each system (2-d array).
+    - `incl_all`: The orbital inclinations (radians) relative to the sky plane of each system (2-d array).
+    - `AMD_all`: The AMDs (units of G*Mstar=1) of each system (2-d array).
+    - `Rm_all`: The period ratios of each system (2-d array).
+    - `radii_ratio_all`: The planet radius ratios of each system (2-d array).
+    - `N_mH_all`: The separations in mutual Hill radii of each system (2-d array).
+    - `dynamical_mass`: The 'dynamical mass' of each system (1-d array).
+    - `radii_partitioning`: The 'radius partitioning' of each multi-planet system (1-d array).
+    - `radii_monotonicity`: The 'radius monotonicity' of each multi-planet system (1-d array).
+    - `gap_complexity`: The 'gap complexity' of each system with 3+ planets (1-d array).
 
     ``sssp`` contains the following fields:
 
-    - `Mstar_all`: A 1-d array with the stellar mass (solar masses) of each system.
-    - `Rstar_all`: A 1-d array with the stellar radius (solar radii) of each system.
-    - `clustertot_all`: A 1-d array with the number of planet clusters in each system.
-    - `AMD_tot_all`: A 1-d array with the total AMD (units of G*Mstar=1) of each system.
-    - `pl_per_cluster_all`: A 1-d array with the number of planets in each cluster.
-    - `P_all`: A 1-d array with the all the orbital periods (days).
-    - `radii_all`: A 1-d array with all the planet radii (Earth radii).
-    - `mass_all`: A 1-d array with all the planet masses (Earth masses).
-    - `e_all`: A 1-d array with all the orbital eccentricities.
-    - `inclmut_all`: A 1-d array with all the orbital inclinations (radians) relative to the system invariable planes.
-    - `incl_all`: A 1-d array with all the orbital inclinations (radians) relative to the sky plane.
-    - `radii_above_all`: A 1-d array with the planet radii (Earth radii) of all planets above the photo-evaporation boundary\*.
-    - `radii_below_all`: A 1-d array with the planet radii (Earth radii) of all planets below the photo-evaporation boundary\*.
-    - `Rm_all`: A 1-d array with all the orbital period ratios.
-    - `radii_ratio_all`: A 1-d array with all the planet radii ratios.
-    - `N_mH_all`: A 1-d array with all the separations in mutual Hill radii.
-    - `radii_ratio_above_all`: A 1-d array with all the planet radii ratios for planets above the photo-evaporation boundary\*.
-    - `radii_ratio_below_all`: A 1-d array with all the planet radii ratios for planets below the photo-evaporation boundary\*.
-    - `radii_ratio_across_all`: A 1-d array with all the planet radii ratios for planets across the photo-evaporation boundary\*.
+    - `Mstar_all`: The stellar mass (solar masses) of each system (1-d array).
+    - `Rstar_all`: The stellar radius (solar radii) of each system (1-d array).
+    - `clustertot_all`: The number of planet clusters in each system (1-d array).
+    - `AMD_tot_all`: The total AMD (units of G*Mstar=1) of each system (1-d array).
+    - `pl_per_cluster_all`: The number of planets in each cluster (1-d array).
+    - `P_all`: The orbital periods (days) of all planets (1-d array).
+    - `radii_all`: The radii (Earth radii) of all planets (1-d array).
+    - `mass_all`: The masses (Earth masses) of all planets (1-d array).
+    - `e_all`: The orbital eccentricities of all planets (1-d array).
+    - `inclmut_all`: The orbital inclinations (radians) of all planets relative to the system invariable planes (1-d array).
+    - `incl_all`: The orbital inclinations (radians) of all planets relative to the sky plane (1-d array).
+    - `radii_above_all`: The radii (Earth radii) of all planets above the photo-evaporation boundary\* (1-d array).
+    - `radii_below_all`: The radii (Earth radii) of all planets below the photo-evaporation boundary\* (1-d array).
+    - `Rm_all`: The orbital period ratios (1-d array).
+    - `radii_ratio_all`: The planet radii ratios (1-d array).
+    - `N_mH_all`: The separations in mutual Hill radii (1-d array).
+    - `radii_ratio_above_all`: The planet radii ratios for all planets above the photo-evaporation boundary\* (1-d array).
+    - `radii_ratio_below_all`: The planet radii ratios for all planets below the photo-evaporation boundary\* (1-d array).
+    - `radii_ratio_across_all`: The planet radii ratios for all planets across the photo-evaporation boundary\* (1-d array).
 
     Note
     ----
@@ -1011,25 +1011,25 @@ def count_planets_from_loading_cat_obs_stars_only(file_name_path=None, run_numbe
 
     Parameters
     ----------
-    file_name_path=None : str
+    file_name_path : str, default=None
         The path to the observed catalog.
-    run_number='' : str
+    run_number : str, default=''
         The run number appended to the file names for the observed catalog.
-    Rstar_min=0. : float
+    Rstar_min : float, default=0.
         The minimum stellar radius (solar radii) to include in the sample.
-    Rstar_max=1e6 : float
+    Rstar_max= : float, default=1e6
         The maximum stellar radius (solar radii) to include in the sample.
-    Mstar_min=0. : float
+    Mstar_min : float, default=0.
         The minimum stellar mass (solar masses) to include in the sample.
-    Mstar_max=1e6 : float
+    Mstar_max : float, default=1e6
         The maximum stellar mass (solar masses) to include in the sample.
-    teff_min=0. : float
+    teff_min : float, default=0.
         The minimum stellar effective temperature (K) to include in the sample.
-    teff_max=1e6 : float
+    teff_max : float, default=1e6
         The maximum stellar effective temperature (K) to include in the sample.
-    bp_rp_min=-1e6 : float
+    bp_rp_min : float, default=-1e6
         The minimum Gaia DR2 bp-rp color to include in the sample.
-    bp_rp_max=1e6 : float
+    bp_rp_max : float, default=1e6
         The maximum Gaia DR2 bp-rp color to include in the sample.
 
     Returns
@@ -1064,37 +1064,37 @@ def compute_summary_stats_from_cat_obs(cat_obs=None, star_obs=None, file_name_pa
 
     Parameters
     ----------
-    cat_obs=None : structured array
+    cat_obs : structured array, default=None
         A table with the observed properties of the planets.
-    star_obs=None : structured array
+    star_obs : structured array, default=None
         A table with the basic properties of the observed planet-hosting stars.
-    file_name_path=None : str
+    file_name_path : str, default=None
         The path to the observed catalog.
-    run_number='' : str
+    run_number : str, default=''
         The run number appended to the file names for the observed catalog.
-    P_min=0. : float
+    P_min : float, default=0.
         The minimum orbital period to include in the sample.
-    P_max=300. : float
+    P_max : float, default=300.
         The maximum orbital period to include in the sample.
-    Rstar_min=0. : float
+    Rstar_min : float, default=0.
         The minimum stellar radius (solar radii) to include in the sample.
-    Rstar_max=1e6 : float
+    Rstar_max : float, default=1e6
         The maximum stellar radius (solar radii) to include in the sample.
-    Mstar_min=0. : float
+    Mstar_min : float, default=0.
         The minimum stellar mass (solar masses) to include in the sample.
-    Mstar_max=1e6 : float
+    Mstar_max : float, default=1e6
         The maximum stellar mass (solar masses) to include in the sample.
-    teff_min=0. : float
+    teff_min : float, default=0.
         The minimum stellar effective temperature (K) to include in the sample.
-    teff_max=1e6 : float
+    teff_max : float, default=1e6
         The maximum stellar effective temperature (K) to include in the sample.
-    bp_rp_min=-1e6 : float
+    bp_rp_min : float, default=-1e6
         The minimum Gaia DR2 bp-rp color to include in the sample.
-    bp_rp_max=1e6 : float
+    bp_rp_max : float, default=1e6
         The maximum Gaia DR2 bp-rp color to include in the sample.
-    i_stars_custom=None : array[int]
+    i_stars_custom : array[int], default=None
         An array of indices for the stars in the Kepler stellar catalog to be included in the sample.
-    compute_ratios=compute_ratios_adjacent : func
+    compute_ratios : func, default=compute_ratios_adjacent
         The function to use for computing ratios; can be either :py:func:`syssimpyplots.general.compute_ratios_adjacent` or :py:func:`syssimpyplots.general.compute_ratios_all`.
 
     Returns
@@ -1546,11 +1546,11 @@ def load_cat_phys_multiple_and_compute_combine_summary_stats(file_name_path, run
         The path to the physical catalogs.
     run_number : range, default=range(1,11)
         The range of run numbers over which we want to load and combine.
-    load_full_tables=False : bool
+    load_full_tables : bool, default=False
         Whether to load full tables of the physical catalogs. Required to be True if also want to match the physical planets to the observed planets.
-    compute_ratios=compute_ratios_adjacent : func
+    compute_ratios : func, default=compute_ratios_adjacent
         The function to use for computing ratios; can be either :py:func:`syssimpyplots.general.compute_ratios_adjacent` or :py:func:`syssimpyplots.general.compute_ratios_all`.
-    match_observed=True : bool
+    match_observed : bool, default=True
         Whether to match the physical planets to the observed planets. If True, the output will also contain a field `det_all`.
 
     Returns
