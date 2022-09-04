@@ -524,12 +524,12 @@ def load_cat_phys_separate_and_compute_basic_summary_stats_per_sys(file_name_pat
 
 def compute_summary_stats_from_cat_phys(cat_phys=None, star_phys=None, file_name_path=None, run_number='', load_full_tables=False, compute_ratios=gen.compute_ratios_adjacent, match_observed=True):
     """
-    Compute detailed summary statistics per system in a physical catalog.
+    Compute detailed summary statistics per system in a simulated physical catalog.
 
     The outputs are two dictionaries. ``sssp_per_sys`` contains the following fields:
 
     - `det_all`: A 2-d array with the detection flags (1=detected, 0=undetected) of the planets in each system. Only returned if ``match_observed=True``.
-    - `Mtot_all`: A 1-d array with the planet multiplicity of each system.
+    - `Mtot_all`: A 1-d array with the number of planets in each system.
     - `clusterids_all`: A 2-d array with the cluster id's of each system.
     - `P_all`: A 2-d array with the orbital periods (days) of each system.
     - `a_all`: A 2-d array with the semi-major axes (AU) of each system.
@@ -575,9 +575,9 @@ def compute_summary_stats_from_cat_phys(cat_phys=None, star_phys=None, file_name
     Parameters
     ----------
     cat_phys=None : structured array
-        A structured array with the physical properties of all the planets.
+        A table with the physical properties of all the planets.
     star_phys=None : structured array
-        A structured array with basic properties of the planet-hosting stars.
+        A table with basic properties of the planet-hosting stars.
     file_name_path=None : str
         The path to the physical catalog.
     run_number='' : str
@@ -1046,8 +1046,117 @@ def count_planets_from_loading_cat_obs_stars_only(file_name_path=None, run_numbe
     return Mtot_obs, Nmult_obs
 
 def compute_summary_stats_from_cat_obs(cat_obs=None, star_obs=None, file_name_path=None, run_number='', P_min=0., P_max=300., Rstar_min=0., Rstar_max=1e6, Mstar_min=0., Mstar_max=1e6, teff_min=0., teff_max=1e6, bp_rp_min=-1e6, bp_rp_max=1e6, i_stars_custom=None, compute_ratios=gen.compute_ratios_adjacent):
-    #This function takes in a simulated observed catalog of planets 'cat_obs' in table format and returns many arrays (1D and 2D) of the summary stats
+    """
+    Compute detailed summary statistics per system in a simulated observed catalog.
 
+    Parameters
+    ----------
+    cat_obs=None : structured array
+        A table with the observed properties of the planets.
+    star_obs=None : structured array
+        A table with the basic properties of the observed planet-hosting stars.
+    file_name_path=None : str
+        The path to the observed catalog.
+    run_number='' : str
+        The run number appended to the file names for the observed catalog.
+    P_min=0. : float
+        The minimum orbital period to include in the sample.
+    P_max=300. : float
+        The maximum orbital period to include in the sample.
+    Rstar_min=0. : float
+        The minimum stellar radius (solar radii) to include in the sample.
+    Rstar_max=1e6 : float
+        The maximum stellar radius (solar radii) to include in the sample.
+    Mstar_min=0. : float
+        The minimum stellar mass (solar masses) to include in the sample.
+    Mstar_max=1e6 : float
+        The maximum stellar mass (solar masses) to include in the sample.
+    teff_min=0. : float
+        The minimum stellar effective temperature (K) to include in the sample.
+    teff_max=1e6 : float
+        The maximum stellar effective temperature (K) to include in the sample.
+    bp_rp_min=-1e6 : float
+        The minimum Gaia DR2 bp-rp color to include in the sample.
+    bp_rp_max=1e6 : float
+        The maximum Gaia DR2 bp-rp color to include in the sample.
+    i_stars_custom=None : array[int]
+        An array of indices for the stars in the Kepler stellar catalog to be included in the sample.
+    compute_ratios=compute_ratios_adjacent : func
+        The function to use for computing ratios; can be either :py:func:`syssimpyplots.general.compute_ratios_adjacent` or :py:func:`syssimpyplots.general.compute_ratios_all`.
+
+    Returns
+    -------
+    sss_per_sys : dict
+        A dictionary containing the planetary and stellar properties for each observed system (2-d and 1-d arrays).
+    sss : dict
+        A dictionary containing the planetary and stellar properties of all observed planets (1-d arrays).
+
+    The outputs are two dictionaries. ``sss_per_sys`` contains the following fields:
+
+    - `Mstar_obs`: The stellar mass (solar masses) of each system (1-d array).
+    - `Rstar_obs`: The stellar radius (solar radii) of each system (1-d array).
+    - `teff_obs`: The stellar effective temperature (K) of each system (1-d array).
+    - `bp_rp_obs`: The Gaia DR2 bp-rp color (mag) of each system (1-d array).
+    - `e_bp_rp_obs`: The extinction in bp-rp color interpolated from a model, of each system (1-d array).
+    - `cdpp4p5_obs`: The 4.5 hr duration combined differential photometric precision of each system (1-d array).
+    - `Mtot_obs`: The observed number of planets in each system (1-d array).
+    - `P_obs`: The observed orbital periods (days) of each system (2-d array).
+    - `D_obs`: The observed transit depths of each system (2-d array).
+    - `tdur_obs`: The observed transit durations of each system (2-d array).
+    - `tdur_tcirc_obs`: The observed transit durations normalized by the durations of the circular orbits of each system (2-d array).
+    - `radii_obs`: The observed planet radii (Earth radii) of each system (2-d array).
+    - `Rm_obs`: The observed period ratios of each system (2-d array).
+    - `D_ratio_obs`: The observed transit depth ratios of each system (2-d array).
+    - `xi_obs`: The observed period-normalized transit duration ratios ('xi' values) of each system (2-d array).
+    - `xi_res_obs`: The observed 'xi' values of planet-pairs near a resonance\* (2-d array).
+    - `xi_res32_obs`: The observed 'xi' values of planet-pairs near the 3:2 resonance (2-d array).
+    - `xi_res21_obs`: The observed 'xi' values of planet-pairs near the 2:1 resonance (2-d array).
+    - `xi_nonres_obs`: The observed 'xi' values of planet-pairs not near any resonances\* (2-d array).
+    - `radii_star_ratio`: The observed sum of planet/star radius ratios of each system (1-d array).
+    - `radii_partitioning`: The observed 'radius partitioning' of each multi-planet system (1-d array).
+    - `radii_monotonicity`: The observed 'radius monotonicity' of each multi-planet system (1-d array).
+    - `gap_complexity`: The observed 'gap complexity' of each system with 3+ planets (1-d array).
+
+    ``sss`` contains the following fields:
+
+    - `Mstar_obs`: The stellar mass (solar masses) of each system, repeated for each planet in the system (1-d array).
+    - `Rstar_obs`: The stellar radius (solar radii) of each system, repeated for each planet in the system (1-d array).
+    - `teff_obs`: The stellar effective temperature (K) of each system, repeated for each planet in the system (1-d array).
+    - `bp_rp_obs`: The Gaia DR2 bp-rp color (mag) of each system, repeated for each planet in the system (1-d array).
+    - `e_bp_rp_obs`: The extinction in bp-rp color interpolated from a model, of each system, repeated for each planet in the system (1-d array).
+    - `cdpp4p5_obs`: The 4.5 hr duration combined differential photometric precision of each system, repeated for each planet in the system (1-d array).
+    - `Nmult_obs`: The observed multiplicity distribution (1-d array).
+    - `P_obs`: The observed periods (days) of all observed planets (1-d array).
+    - `D_obs`: The observed transit depths of all observed planets (1-d array).
+    - `tdur_obs`: The observed transit duration (hrs) of all observed planets (1-d array).
+    - `tdur_tcirc_obs`: The observed transit durations normalized by the durations of the circular orbits, of all observed planets (1-d array).
+    - `tdur_tcirc_1_obs`: The observed transit durations normalized by the durations of the circular orbits, of all observed single planets (1-d array).
+    - `tdur_tcirc_2p_obs`: The observed transit durations normalized by the durations of the circular orbits, of all observed multi-planets (1-d array).
+    - `radii_obs`: The observed radii (Earth radii) of all observed planets (1-d array).
+    - `D_above_obs`: The observed transit depths of all planets above the photo-evaporation boundary\** (1-d array).
+    - `D_below_obs`: The observed transit depths of all planets below the photo-evaporation boundary\** (1-d array).
+    - `Rm_obs`: The observed period ratios (1-d array).
+    - `D_ratio_obs`: The observed transit depth ratios (1-d array).
+    - `xi_obs`: The observed 'xi' values (1-d array).
+    - `xi_res_obs`: The observed 'xi' values of all planet-pairs near a resonance\* (1-d array).
+    - `xi_res32_obs`: The observed 'xi' values of all planet-pairs near the 3:2 resonance (1-d array).
+    - `xi_res21_obs`: The observed 'xi' values of all planet-pairs near the 2:1 resonance (1-d array).
+    - `xi_nonres_obs`: The observed 'xi' values of all planet-pairs not near any resonances\* (1-d array).
+    - `D_ratio_above_obs`: The observed transit depth ratios of all planets above the photo-evaporation boundary\** (1-d array).
+    - `D_ratio_below_obs`: The observed transit depth ratios of all planets below the photo-evaporation boundary\** (1-d array).
+    - `D_ratio_across_obs`: The observed transit depth ratios of all planets across the photo-evaporation boundary\** (1-d array).
+
+    Notes
+    -----
+    \*As defined by ``res_ratios`` and ``res_width`` in ``general.py``.
+    \**The photo-evaporation boundary defined by the function :py:func:`syssimpyplots.general.photoevap_boundary_Carrera2018`.
+
+    Warnings
+    --------
+    For the 2-d arrays, each row is padded with zeros (or negative ones), since different systems have different numbers of observed planets.
+
+    The observed transit durations (`tdur_obs`, and thus also fields involving `tdur_tcirc_obs` and `xi_obs`) can be zero!
+    """
     if cat_obs is not None and star_obs is not None:
         i_sys = np.unique(cat_obs['target_id'])
 
@@ -1367,6 +1476,25 @@ def compute_summary_stats_from_cat_obs(cat_obs=None, star_obs=None, file_name_pa
 # Functions to combine catalogs:
 
 def combine_sss_or_sssp_per_sys(s1, s2):
+    """
+    Combine two dictionaries of summary statistics (e.g., two simulated catalogs).
+
+    Note
+    ----
+    Requires both dictionaries to have the exact same fields.
+
+    Parameters
+    ----------
+    s1 : dict
+        The first dictionary of summary statistics.
+    s2 : dict
+        The second dictionary of summary statistics.
+
+    Returns
+    -------
+    scombined : dict
+        The combined dictionary of summary statistics.
+    """
     assert s1.keys() == s2.keys()
 
     scombined = {}
@@ -1394,7 +1522,31 @@ def combine_sss_or_sssp_per_sys(s1, s2):
     return scombined
 
 def load_cat_phys_multiple_and_compute_combine_summary_stats(file_name_path, run_numbers=range(1,11), load_full_tables=False, compute_ratios=gen.compute_ratios_adjacent, match_observed=True):
+    """
+    Load multiple simulated physical catalogs, compute detailed summary statistic for each one, and combine them.
 
+    Parameters
+    ----------
+    file_name_path : str
+        The path to the physical catalogs.
+    run_number=range(1,11) : range
+        The range of run numbers over which we want to load and combine.
+    load_full_tables=False : bool
+        Whether to load full tables of the physical catalogs. Required to be True if also want to match the physical planets to the observed planets.
+    compute_ratios=compute_ratios_adjacent : func
+        The function to use for computing ratios; can be either :py:func:`syssimpyplots.general.compute_ratios_adjacent` or :py:func:`syssimpyplots.general.compute_ratios_all`.
+    match_observed=True : bool
+        Whether to match the physical planets to the observed planets. If True, the output will also contain a field `det_all`.
+
+    Returns
+    -------
+    sssp_per_sys : dict
+        A dictionary containing the planetary and stellar properties for each system (2-d and 1-d arrays).
+    sssp : dict
+        A dictionary containing the planetary and stellar properties of all planets (1-d arrays).
+
+    The fields of ``sssp_per_sys`` and ``sssp`` are the same as those returned by :py:func:`syssimpyplots.load_sims.compute_summary_stats_from_cat_phys`.
+    """
     print('Attempting to load %s physical catalogs to compute and combine their summary statistics...' % len(run_numbers))
 
     sssp_per_sys, sssp = compute_summary_stats_from_cat_phys(file_name_path=file_name_path, run_number=run_numbers[0], load_full_tables=load_full_tables, compute_ratios=compute_ratios, match_observed=match_observed)
