@@ -16,23 +16,29 @@ N_Kep = 86760 #86760 (Paper III) #88912 (Paper II) #79935 (Paper I) # number of 
 
 def load_Kepler_planets_cleaned():
     """
-    Load a table of Kepler objects of interest (KOIs) from a CSV file.
+    Load a table of the Kepler objects of interest (KOIs) from a CSV file.
+
+    Returns
+    -------
+    planets_cleaned : structured array
+        A table with the properties of the KOIs.
+
 
     The table has the following columns:
 
-    - kepid: The Kepler ID.
-    - KOI: The KOI number.
-    - koi_disposition: The disposition of the KOI.
-    - koi_pdisposition: (TODO: TBD).
-    - koi_score: The disposition score (between 0 and 1).
-    - P: The orbital period (days).
-    - t_D: The transit duration (hrs).
-    - depth: The transit depth (ppm).
-    - Rp: The planet radius (Earth radii).
-    - teff: The stellar effective temperature (K).
-    - logg: The log surface gravity of the star.
-    - Rstar: The stellar radius (solar radii).
-    - Mstar: The stellar mass (solar masses).
+    - `kepid`: The Kepler ID.
+    - `KOI`: The KOI number.
+    - `koi_disposition`: The disposition of the KOI.
+    - `koi_pdisposition`: (TODO: TBD).
+    - `koi_score`: The disposition score (between 0 and 1).
+    - `P`: The orbital period (days).
+    - `t_D`: The transit duration (hrs).
+    - `depth`: The transit depth (ppm).
+    - `Rp`: The planet radius (Earth radii).
+    - `teff`: The stellar effective temperature (K).
+    - `logg`: The log surface gravity of the star.
+    - `Rstar`: The stellar radius (solar radii).
+    - `Mstar`: The stellar mass (solar masses).
 
     """
     # q1_q17_dr25_gaia_fgk_HFR2021a_koi_cleaned.csv for Paper II
@@ -45,17 +51,23 @@ def load_Kepler_stars_cleaned():
     """
     Load a table of Kepler target stars from a CSV file.
 
+    Returns
+    -------
+    stars_cleaned : structured array
+        A table with the properties of the Kepler target stars.
+
+
     The table has the following columns:
 
-    - kepid: The Kepler ID.
-    - mass: The stellar mass (solar masses).
-    - radius: The stellar radius (solar radii).
-    - teff: The stellar effective temperature (K).
-    - bp_rp: The Gaia DR2 bp-rp color (mag).
-    - lum_val: The luminosity (solar luminosity; TODO: check units).
-    - e_bp_rp_interp: The extinction in bp-rp color interpolated from a model/binning (mag).
-    - e_bp_rp_true: The extinction in bp-rp color as given in the Gaia DR2 catalog (mag).
-    - rrmscdpp04p5: The root-mean-square CDPP value for 4.5 hr durations (TODO: check units).
+    - `kepid`: The Kepler ID.
+    - `mass`: The stellar mass (solar masses).
+    - `radius`: The stellar radius (solar radii).
+    - `teff`: The stellar effective temperature (K).
+    - `bp_rp`: The Gaia DR2 bp-rp color (mag).
+    - `lum_val`: The luminosity (solar luminosities).
+    - `e_bp_rp_interp`: The extinction in bp-rp color (mag) interpolated from a model/binning.
+    - `e_bp_rp_true`: The extinction in bp-rp color (mag) as given in the Gaia DR2 catalog.
+    - `rrmscdpp04p5`: The root-mean-square combined differential photometric precision (CDPP) for 4.5 hr durations (ppm).
 
     """
     # q1_q17_dr25_gaia_fgk_HFR2021a_cleaned.csv for Paper II
@@ -65,8 +77,51 @@ def load_Kepler_stars_cleaned():
     stars_cleaned = stars_cleaned[1:]
     return stars_cleaned
 
-def compute_summary_stats_from_Kepler_catalog(P_min, P_max, radii_min, radii_max, Rstar_min=0., Rstar_max=1e6, Mstar_min=0., Mstar_max=1e6, teff_min=0., teff_max=1e6, bp_rp_min=-1e6, bp_rp_max=1e6, i_stars_custom=None, compute_ratios=gen.compute_ratios_adjacent):
+def compute_summary_stats_from_Kepler_catalog(P_min, P_max, radii_min, radii_max, Rstar_min=0., Rstar_max=10., Mstar_min=0., Mstar_max=10., teff_min=0., teff_max=1e4, bp_rp_min=-5., bp_rp_max=5., i_stars_custom=None, compute_ratios=gen.compute_ratios_adjacent):
+    """
+    Compute detailed summary statistics per system in the Kepler catalog.
 
+    Parameters
+    ----------
+    P_min : float
+        The minimum orbital period (days) to be included.
+    P_max : float
+        The maximum orbital period (days) to be included.
+    radii_min : float
+        The minimum planet radius (Earth radii) to be included.
+    radii_max : float
+        The maximum planet radius (Earth radii) to be included.
+    Rstar_min : float, default=0.
+        The minimum stellar radius (solar radii) to be included.
+    Rstar_max : float, default=10.
+        The maximum stellar radius (solar radii) to be included.
+    Mstar_min : float, default=0.
+        The minimum stellar mass (solar masses) to be included.
+    Mstar_max : float, default=10.
+        The maximum stellar mass (solar masses) to be included.
+    teff_min : float, default=0.
+        The minimum stellar effective temperature (K) to be included.
+    teff_max : float, default=0.
+        The maximum stellar effective temperature (K) to be included.
+    bp_rp_min : float, default=-5.
+        The minimum Gaia DR2 bp-rp color (mag) to be included.
+    bp_rp_max : float, default=5.
+        The maximum Gaia DR2 bp-rp color (mag) to be included.
+    i_stars_custom : array[int], default=None
+        An array of indices for the stars in the Kepler stellar catalog to be included.
+    compute_ratios : func, default=compute_ratios_adjacent
+        The function to use for computing ratios; can be either :py:func:`syssimpyplots.general.compute_ratios_adjacent` or :py:func:`syssimpyplots.general.compute_ratios_all`.
+
+    Returns
+    -------
+    ssk_per_sys : dict
+        A dictionary containing the planetary and stellar properties for each observed system (2-d and 1-d arrays).
+    ssk : dict
+        A dictionary containing the planetary and stellar properties of all observed planets (1-d arrays).
+
+
+    The fields of ``ssk_per_sys`` and ``ssk`` are the same as those returned by :py:func:`syssimpyplots.load_sims.compute_summary_stats_from_cat_obs`.
+    """
     planets_cleaned = load_Kepler_planets_cleaned()
     stars_cleaned = load_Kepler_stars_cleaned()
 
@@ -404,15 +459,32 @@ def compute_summary_stats_from_Kepler_catalog(P_min, P_max, radii_min, radii_max
 
 # Functions for computing distances between the simulated and Kepler observed catalogs:
 
-def CRPD_dist(En, On): #NOTE: this distance can potentially give negative values?!
-    #This function computes the Cressie Read Power Divergence statistic for observed planet multiplicities
-    #En and On must be arrays of the total numbers of systems with 1,2,3,... observed planets, in the simulated (i.e. expected) and the actual (i.e. observed Kepler) data, respectively
+def CRPD_dist(En, On):
+    """
+    Compute the Cressie-Read Power Divergence (CRPD) statistic for observed planet multiplicity distributions.
+
+    Warning
+    -------
+    Can potentially return negative values for extreme/edge cases!
+
+    Parameters
+    ----------
+    En : array[int]
+        The 'expected' (i.e. simulated) numbers of total systems with 1,2,3,... observed planets.
+    On : array[int]
+        The 'observed' (i.e. actual Kepler) numbers of total systems with 1,2,3,... observed planets.
+
+    Returns
+    -------
+    rho : float
+        The CRPD statistic.
+    """
     n_max = max(len(En), len(On))
     En = np.array(list(En) + [0]*(n_max - len(En)))
     On = np.array(list(On) + [0]*(n_max - len(On)))
 
-    E_array = En/float(np.sum(En)) #normalized numbers (fractions) of simulated systems with 1,2,3,... observed planets
-    O_array = On/float(np.sum(On)) #normalized numbers (fractions) of actual Kepler systems with 1,2,3,... observed planets
+    E_array = En/float(np.sum(En)) # normalized numbers (fractions) of simulated systems with 1,2,3,... observed planets
+    O_array = On/float(np.sum(On)) # normalized numbers (fractions) of actual Kepler systems with 1,2,3,... observed planets
     rho = 0.
     for i,E_i in enumerate(E_array):
         if En[i] != 0:
@@ -422,62 +494,124 @@ def CRPD_dist(En, On): #NOTE: this distance can potentially give negative values
     return rho
 
 def KS_dist_mult(x1, x2):
-    #This function computes the K-S distance for two discrete, integer distributions (for multiplicities)
-    #This function returns two values: the K-S distance and the x value corresponding to that distance
-    x12_max = np.max((np.max(x1), np.max(x2))) #maximum value of x1 and x2
+    """
+    Compute the two-sample Kolmogorov-Smirnov (KS) distance between two discrete distributions taking on integer values.
+
+    Parameters
+    ----------
+    x1, x2 : array[int]
+        A sample of integers.
+
+    Returns
+    -------
+    KS_dist : float
+        The KS distance between the two distributions (i.e. the greatest distance between the cumulative distributions).
+    KS_x : float
+        The x-value that corresponds to the greatest distance between the two cumulative distributions.
+    """
+    x12_max = np.max((np.max(x1), np.max(x2))) # maximum value of x1 and x2
     x1_counts, x1_bins = np.histogram(x1, bins=x12_max, range=(0.5, x12_max+0.5))
     x2_counts, x2_bins = np.histogram(x2, bins=x12_max, range=(0.5, x12_max+0.5))
     pdf_diffs = x1_counts/np.float(len(x1)) - x2_counts/np.float(len(x2))
     cdf_diffs = np.cumsum(pdf_diffs)
-    KS_dist = np.max(np.abs(cdf_diffs)) #K-S distance
-    KS_x = np.arange(1, x12_max+1)[np.where(np.abs(cdf_diffs) == KS_dist)[0][0]] #x value where the distance is the largest
+    KS_dist = np.max(np.abs(cdf_diffs)) # K-S distance
+    KS_x = np.arange(1, x12_max+1)[np.where(np.abs(cdf_diffs) == KS_dist)[0][0]] # x value where the CDF difference is the largest
 
     return KS_dist, KS_x
 
 def KS_dist(x1, x2):
-    #This function computes the K-S distance for two continuous distributions (no repeated values)
-    #This function returns two values: the K-S distance and the x value corresponding to that distance
-    x_all = np.concatenate((x1, x2)) #combined array
-    i_all_sorted = np.argsort(x_all) #array of indices that would sort the combined array
+    """
+    Compute the two-sample Kolmogorov-Smirnov (KS) distance between two continuous distributions (i.e. no repeat values).
+
+    Parameters
+    ----------
+    x1, x2 : array[float]
+        A sample of real values.
+
+    Returns
+    -------
+    KS_dist : float
+        The KS distance between the two distributions (i.e. the greatest distance between the cumulative distributions).
+    KS_x : float
+        The x-value that corresponds to the greatest distance between the two cumulative distributions.
+    """
+    x_all = np.concatenate((x1, x2)) # combined array
+    i_all_sorted = np.argsort(x_all) # array of indices that would sort the combined array
     pdf_diffs = np.concatenate((np.ones(len(x1))/np.float(len(x1)), -np.ones(len(x2))/np.float(len(x2))))[i_all_sorted]
     cdf_diffs = np.cumsum(pdf_diffs)
-    KS_dist = np.max(np.abs(cdf_diffs)) #K-S distance
-    KS_x = x_all[i_all_sorted][np.where(np.abs(cdf_diffs) == KS_dist)[0][0]] #x value (a value in either x1 or x2) where the distance is the largest
+    KS_dist = np.max(np.abs(cdf_diffs)) # K-S distance
+    KS_x = x_all[i_all_sorted][np.where(np.abs(cdf_diffs) == KS_dist)[0][0]] # x value (a value in either x1 or x2) where the CDF difference is the largest
 
     return KS_dist, KS_x
 
 def AD_dist(x1, x2):
-    #This function computes and returns the AD distance for two continuous distributions (no repeated values), according to A. N. Pettitt (1976) Eq. (1.2)
+    """
+    Compute the two-sample Anderson-Darling (AD) distance between two continuous distributions.
+
+    Implements Equation 1.2 of A. N. Pettitt (1976).
+
+    Note
+    ----
+    Returns ``np.inf`` if there are not enough points (less than two) in either ``x1`` or ``x2`` for computing the AD distance.
+
+    Parameters
+    ----------
+    x1, x2 : array[float]
+        A sample of real values.
+
+    Returns
+    -------
+    AD_dist : float
+        The AD distance between the two distributions.
+    """
     n, m = len(x1), len(x2)
     if n > 1 and m > 1:
         N = n + m
-        x_all = np.concatenate((x1, x2)) #combined array
-        i_all_sorted = np.argsort(x_all) #array of indices that would sort the combined array
+        x_all = np.concatenate((x1, x2)) # combined array
+        i_all_sorted = np.argsort(x_all) # array of indices that would sort the combined array
         M_i_diffs = np.concatenate((np.ones(n), np.zeros(m)))[i_all_sorted]
-        M_i_array = np.cumsum(M_i_diffs)[:-1] #array of M_i except for last element, i.e. from i=1 to i=N-1
-        i_array = 1. + np.arange(N-1) #array of i from i=1 to i=N-1
-        AD_dist = (1./(n*m))*np.sum(((M_i_array*N - n*i_array)**2.)/(i_array*(N - i_array))) #AD distance
+        M_i_array = np.cumsum(M_i_diffs)[:-1] # array of M_i except for last element, i.e. from i=1 to i=N-1
+        i_array = 1. + np.arange(N-1) # array of i from i=1 to i=N-1
+        AD_dist = (1./(n*m))*np.sum(((M_i_array*N - n*i_array)**2.)/(i_array*(N - i_array))) # AD distance
     else:
         print('Not enough points to compute AD distance; returning inf.')
         AD_dist = np.inf
 
     return AD_dist
 
-def AD_dist2(x1, x2): #I tested this and it returns the same results as AD_dist()
-    #This function computes and returns the AD distance for two continuous distributions (no repeated values), according to Scholz & Stephens (1987) Eq. (3)
+def AD_dist2(x1, x2):
+    """
+    Compute the two-sample Anderson-Darling (AD) distance between two continuous distributions.
+
+    Implements Equation 3 of Scholz \& Stephens (1987). Tested to be equivalent to :py:func:`syssimpyplots.compare_kepler.AD_dist`.
+
+    Note
+    ----
+    Returns ``np.inf`` if there are not enough points (less than two) in either ``x1`` or ``x2`` for computing the AD distance.
+
+    Parameters
+    ----------
+    x1, x2 : array[float]
+        A sample of real values.
+
+    Returns
+    -------
+    AD_dist : float
+        The AD distance between the two distributions.
+    """
     n1, n2 = len(x1), len(x2)
     if n1 > 1 and n2 > 1:
         N = n1 + n2
-        x_all = np.concatenate((x1, x2)) #combined array
-        i_all_sorted = np.argsort(x_all) #array of indices that would sort the combined array
+        x_all = np.concatenate((x1, x2)) # combined array
+        i_all_sorted = np.argsort(x_all) # array of indices that would sort the combined array
 
         M_1j_diffs = np.concatenate((np.ones(n1), np.zeros(n2)))[i_all_sorted]
-        M_1j_array = np.cumsum(M_1j_diffs)[:-1] #array of M_1j except for last element, i.e. from j=1 to j=N-1
+        M_1j_array = np.cumsum(M_1j_diffs)[:-1] # array of M_1j except for last element, i.e. from j=1 to j=N-1
         M_2j_diffs = np.concatenate((np.zeros(n1), np.ones(n2)))[i_all_sorted]
-        M_2j_array = np.cumsum(M_2j_diffs)[:-1] #array of M_2j except for last element, i.e. from j=1 to j=N-1
-        j_array = 1. + np.arange(N-1) #array of j from j=1 to j=N-1
+        M_2j_array = np.cumsum(M_2j_diffs)[:-1] # array of M_2j except for last element, i.e. from j=1 to j=N-1
+        j_array = 1. + np.arange(N-1) # array of j from j=1 to j=N-1
 
-        AD_dist = (1./N)*((1./n1)*np.sum(((N*M_1j_array - n1*j_array)**2.)/(j_array*(N - j_array))) + (1./n2)*np.sum(((N*M_2j_array - n2*j_array)**2.)/(j_array*(N - j_array)))) #AD distance
+        AD_dist = (1./N)*((1./n1)*np.sum(((N*M_1j_array - n1*j_array)**2.)/(j_array*(N - j_array))) + (1./n2)*np.sum(((N*M_2j_array - n2*j_array)**2.)/(j_array*(N - j_array)))) # AD distance
     else:
         print('Not enough points to compute AD distance; returning inf.')
         AD_dist = np.inf
@@ -485,16 +619,34 @@ def AD_dist2(x1, x2): #I tested this and it returns the same results as AD_dist(
     return AD_dist
 
 def AD_mod_dist(x1, x2):
-    #This function is the same as 'AD_dist' (or 'AD_dist2') except without the factor of 'nm/N' before the integral
+    """
+    Compute a modified version of the two-sample Anderson-Darling (AD) distance between two continuous distributions.
+
+    Equivalent to the AD distance (implemented by :py:func:`syssimpyplots.compare_kepler.AD_dist` and :py:func:`syssimpyplots.compare_kepler.AD_dist2`) without the factor of 'n*m/N' in front of the integral, where 'n' and 'm' are the sample sizes (and 'N=n+m' is the combined sample size).
+
+    Note
+    ----
+    Returns ``np.inf`` if there are not enough points (less than two) in either ``x1`` or ``x2`` for computing the AD distance.
+
+    Parameters
+    ----------
+    x1, x2 : array[float]
+        A sample of real values.
+
+    Returns
+    -------
+    AD_dist : float
+        The (modified) AD distance between the two distributions.
+    """
     n, m = len(x1), len(x2)
     if n > 1 and m > 1:
         N = n + m
-        x_all = np.concatenate((x1, x2)) #combined array
-        i_all_sorted = np.argsort(x_all) #array of indices that would sort the combined array
+        x_all = np.concatenate((x1, x2)) # combined array
+        i_all_sorted = np.argsort(x_all) # array of indices that would sort the combined array
         M_i_diffs = np.concatenate((np.ones(n), np.zeros(m)))[i_all_sorted]
-        M_i_array = np.cumsum(M_i_diffs)[:-1] #array of M_i except for last element, i.e. from i=1 to i=N-1
-        i_array = 1. + np.arange(N-1) #array of i from i=1 to i=N-1
-        AD_dist = (N/((n*m)**2.))*np.sum(((M_i_array*N - n*i_array)**2.)/(i_array*(N - i_array))) #AD distance
+        M_i_array = np.cumsum(M_i_diffs)[:-1] # array of M_i except for last element, i.e. from i=1 to i=N-1
+        i_array = 1. + np.arange(N-1) # array of i from i=1 to i=N-1
+        AD_dist = (N/((n*m)**2.))*np.sum(((M_i_array*N - n*i_array)**2.)/(i_array*(N - i_array))) # AD distance
     else:
         print('Not enough points to compute AD distance; returning inf.')
         AD_dist = np.inf
@@ -502,6 +654,34 @@ def AD_mod_dist(x1, x2):
     return AD_dist
 
 def load_split_stars_model_evaluations_and_weights(file_name):
+    """
+    Load a file containing the distances from many evaluations of the same model, and compute the weights for each distance term.
+
+    Parameters
+    ----------
+    file_name : str
+        The path/name of the file containing the distances of many model evaluations.
+
+    Returns
+    -------
+    Nmult_evals : dict
+        A dictionary containing an array of observed planet multiplicity distributions for each model evaluation, for each stellar sample (`all`, `bluer`, and `redder` fields).
+    d_all_keys_evals : dict
+        A dictionary containing an array of distance term names (strings) for each model evaluation, for each stellar sample.
+    d_all_vals_evals : dict
+        A dictionary containing an array of distances (corresponding to the distance term names) for each model evaluation, for each stellar sample.
+    weights_all : dict
+        A dictionary containing a dictionary for the weights corresponding to each distance term, for each stellar sample.
+
+
+    Note
+    ----
+    The `bluer` and `redder` samples split the stellar sample into two equal sized samples of stars below and above the median Gaia DR2 bp-rp color, respectively.
+
+    Warning
+    -------
+    Currently returns empty arrays in the `Nmult_evals` dictionary.
+    """
     sample_names = ['all', 'bluer', 'redder']
 
     Nmult_max = 8
@@ -543,11 +723,36 @@ def load_split_stars_model_evaluations_and_weights(file_name):
     return Nmult_evals, d_all_keys_evals, d_all_vals_evals, weights_all
 
 def load_split_stars_weights_only():
+    """
+    Compute the weights for each distance term.
+
+    Wrapper to return just the weights from the function :py:func:`syssimpyplots.compare_kepler.load_split_stars_model_evaluations_and_weights`.
+    """
     Nmult_evals, d_all_keys_evals, d_all_vals_evals, weights_all = load_split_stars_model_evaluations_and_weights(os.path.join(path_data, 'Clustered_P_R_split_stars_weights_ADmod_true_targs88912_evals100_all_pairs.txt'))
     return weights_all
 
 def compute_total_weighted_dist(weights, dists, dists_w, dists_include=[]):
+    """
+    Compute the total weighted distance including a number of distance terms.
 
+    Also prints out the individual distance terms, their weights, and their unweighted and weighted distances.
+
+    Parameters
+    ----------
+    weights : dict
+        The dictionary containing the weights for to each distance term.
+    dists : dict
+        The dictionary containing the individual distance terms.
+    dists_w : dict
+        The dictionary containing the individual weighted distance terms.
+    dists_include : list[str], default=[]
+        The list of distance terms (strings) to include in the sum.
+
+    Returns
+    -------
+    tot_dist_w : float
+        The total weighted distance of the included distance terms.
+    """
     if len(dists_include) == 0:
         print('No distance terms to include.')
 
@@ -562,6 +767,46 @@ def compute_total_weighted_dist(weights, dists, dists_w, dists_include=[]):
     return tot_dist_w
 
 def compute_distances_sim_Kepler(sss_per_sys, sss, ssk_per_sys, ssk, weights, dists_include, N_sim, cos_factor=1., AD_mod=True, print_dists=True, compute_ratios=gen.compute_ratios_adjacent):
+    """
+    Compute weighted and unweighted distances for a large collection of distance terms.
+
+    Parameters
+    ----------
+    sss_per_sys : dict
+        A dictionary of summary statistics per observed system in a simulated observed catalog.
+    sss : dict
+        A dictionary of summary statistics for all observed planets in a simulated observed catalog.
+    ssk_per_sys : dict
+        A dictionary of summary statistics per observed system in the Kepler catalog.
+    ssk : dict
+        A dictionary of summary statistics for observed all planets in the Kepler catalog.
+    weights : dict
+        A dictionary of the weights corresponding to each distance term.
+    dists_include : list[str]
+        A list of distance terms (strings) to be printed.
+    N_sim : int
+        The number of target stars (i.e. simulated systems) in the simulated catalog.
+    cos_factor : float, default=1.
+        The cosine of the maximum inclination angle (relative to the sky plane) drawn for the reference planes of the simulated systems (between 0 and 1).
+    AD_mod : bool, default=True
+        Whether to compute the modified AD distance (:py:func:`syssimpyplots.compare_kepler.AD_mod_dist`, if True) or the standard AD distance (:py:func:`syssimpyplots.compare_kepler.AD_dist`, if False).
+    print_dists : bool, default=True
+        Whether to print the distances corresponding to the terms in `dists_include`. If True, also prints the total numbers of observed planets and planet pairs in the simulated and Kepler catalogs.
+    compute_ratios : func, default=compute_ratios_adjacent
+        The function to use for computing ratios; can be either :py:func:`syssimpyplots.general.compute_ratios_adjacent` or :py:func:`syssimpyplots.general.compute_ratios_all`.
+
+    Returns
+    -------
+    dists : dict
+        A dictionary containing all the various (unweighted) distance terms.
+    dists_w : dict
+        A dictionary containing all the various (weighted) distance terms.
+
+
+    Note
+    ----
+    The distance terms computed and included in ``dists`` and ``dists_w`` are not limited to the terms in ``dists_include``.
+    """
     # This function computes the K-S (and their positions), A-D, and other distances as well as additional statistics:
 
     # To create a dict of all distance terms:

@@ -1526,7 +1526,7 @@ def combine_sss_or_sssp_per_sys(s1, s2):
     Parameters
     ----------
     s1, s2 : dict
-        The dictionaries of summary statistics.
+        A dictionary of summary statistics.
 
     Returns
     -------
