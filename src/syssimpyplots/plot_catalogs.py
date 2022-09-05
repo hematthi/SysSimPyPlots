@@ -22,7 +22,7 @@ import syssimpyplots.load_sims as lsims
 
 def setup_fig_single(fig_size, left, bottom, right, top):
     """
-    Set up a single-panel figure using GridSpec.
+    Set up a single-panel figure using `matplotlib.gridspec.GridSpec <https://matplotlib.org/stable/api/_as_gen/matplotlib.gridspec.GridSpec.html>`_.
 
     Parameters
     ----------
@@ -48,6 +48,70 @@ def setup_fig_single(fig_size, left, bottom, right, top):
     return ax
 
 def plot_panel_counts_hist_simple(ax, x_sim, x_Kep, x_min=0, x_max=None, y_min=None, y_max=None, x_llim=None, x_ulim=None, normalize=False, N_sim_Kep_factor=1., log_y=False, c_sim=['k'], c_Kep=['k'], ls_sim=['-'], ms_Kep=['x'], lines_Kep=False, lw=1, labels_sim=['Simulated'], labels_Kep=['Kepler'], xticks_custom=None, xlabel_text='x', ylabel_text='Number', afs=20, tfs=20, lfs=16, legend=False, show_counts_sim=False, show_counts_Kep=False):
+    """
+    Plot histogram(s) of discrete integer values on a given panel.
+
+    Parameters
+    ----------
+    ax : matplotlib.axes._subplots.AxesSubplot
+        The axes to plot on.
+    x_sim : list[array[int]]
+        A list with sample(s) of integers (e.g. simulated data).
+    x_Kep : list[array[int]]
+        A list with sample(s) of integers (e.g. Kepler data).
+    x_min : float, default=0
+        The minimum value to include.
+    x_max : float, optional
+        The maximum value to include.
+    y_min : float, optional
+        The lower y-axis limit.
+    y_max : float, optional
+        The upper y-axis limit.
+    x_llim : float, optional
+        The lower x-axis limit.
+    x_ulim : float, optional
+        The upper x-axis limit.
+    normalize : bool, default=False
+        Whether to normalize the histograms. If True, each histogram will sum to one.
+    N_sim_Kep_factor : float, default=1.
+        The number of simulated targets divided by the number of Kepler targets. If ``normalize=False``, will divide the bin counts for the simulated data (``x_sim``) by this value to provide an equivalent comparison to the Kepler counts.
+    log_y : bool, default=False
+        Whether to plot the y-axis on a log-scale.
+    c_sim : list[str], default=['k']
+        A list of plotting colors for the histograms of simulated data.
+    c_Kep : list[str], default=['k']
+        A list of plotting colors for the histograms of Kepler data.
+    ls_sim : list[str], default=['-']
+        A list of line styles for the histograms of simulated data.
+    ms_Kep : list[str], default=['x']
+        A list of marker shapes for the histograms of Kepler data.
+    lines_Kep : bool, default=False
+        Whether to also draw the histogram lines for the Kepler data. Default value (False) will just draw marker points (given by ``ms_Kep``) for the Kepler counts in each bin.
+    lw : float, default=1
+        The line width for the histograms.
+    labels_sim : list[str], default=['Simulated']
+        A list of legend labels for the histograms of simulated data.
+    labels_Kep : list[str], default=['Kepler']
+        A list of legend labels for the histograms of Kepler data.
+    xticks_custom : list or array[float], optional
+        The x-values at which to plot ticks.
+    xlabel_text : str, default='x'
+        The x-axis label.
+    ylabel_text : str, default='Number'
+        The y-axis label.
+    afs : int, default=20
+        The axes fontsize.
+    tfs : int, default=20
+        The text fontsize.
+    lfs : int, default=16
+        The legend fontsize.
+    legend : bool, default=False
+        Whether to show the legend.
+    show_counts_sim : bool, default=False
+        Whether to show the individual bin counts for the simulated data.
+    show_counts_Kep : bool, default=True
+        Whether to show the individual bin counts for the Kepler data.
+    """
     if y_min == None:
         y_min = 1e-4 if normalize==True else 1
     if x_max == None:
@@ -100,7 +164,27 @@ def plot_panel_counts_hist_simple(ax, x_sim, x_Kep, x_min=0, x_max=None, y_min=N
         plt.legend(loc='upper right', bbox_to_anchor=(0.99,0.99), ncol=1, frameon=False, fontsize=lfs) #show the legend
 
 def plot_fig_counts_hist_simple(fig_size, x_sim, x_Kep, x_min=0, x_max=None, y_min=None, y_max=None, x_llim=None, x_ulim=None, normalize=False, N_sim_Kep_factor=1., log_y=False, c_sim=['k'], c_Kep=['k'], ls_sim=['-'], ms_Kep=['x'], lines_Kep=False, lw=1, labels_sim=['Simulated'], labels_Kep=['Kepler'], xticks_custom=None, xlabel_text='x', ylabel_text='Number', afs=20, tfs=20, lfs=16, legend=False, show_counts_sim=False, show_counts_Kep=False, fig_lbrt=[0.15, 0.2, 0.95, 0.925], save_name='no_name_fig.pdf', save_fig=False):
+    """
+    Plot a figure with histogram(s) of discrete integer values.
 
+    Wrapper for the function :py:func:`syssimpyplots.plot_catalogs.plot_panel_counts_hist_simple`. Includes all of the parameters of that function, with the following additional parameters:
+
+    Parameters
+    ----------
+    fig_size : tuple
+        The figure size, e.g. '(16,8)'.
+    fig_lbrt : list[float], default=[0.15, 0.2, 0.95, 0.925]
+        The positions of the (left, bottom, right, and top) margins of the plotting panel (all values must be between 0 and 1).
+    save_name : str, default='no_name_fig.pdf'
+        The file name for saving the figure.
+    save_fig : bool, default=False
+        Whether to save the figure. If True, will save the figure in the working directory with the file name given by ``save_name``.
+
+    Returns
+    -------
+    ax : matplotlib.axes._subplots.AxesSubplot
+        The plotting axes, if ``save_fig=False``.
+    """
     left, bottom, right, top = fig_lbrt
     ax = setup_fig_single(fig_size, left=left, bottom=bottom, right=right, top=top)
 
@@ -113,6 +197,68 @@ def plot_fig_counts_hist_simple(fig_size, x_sim, x_Kep, x_min=0, x_max=None, y_m
         return ax
 
 def plot_panel_pdf_simple(ax, x_sim, x_Kep, x_min=None, x_max=None, y_min=None, y_max=None, n_bins=100, normalize=True, N_sim_Kep_factor=1., log_x=False, log_y=False, c_sim=['k'], c_Kep=['k'], ls_sim=['-'], ls_Kep=['-'], lw=1, alpha=0.2, labels_sim=['Simulated'], labels_Kep=['Kepler'], extra_text=None, xticks_custom=None, xlabel_text='x', ylabel_text='Fraction', afs=20, tfs=20, lfs=16, legend=False):
+    """
+    Plot histogram(s) of continuous distributions on a given panel.
+
+    Parameters
+    ----------
+    ax : matplotlib.axes._subplots.AxesSubplot
+        The axes to plot on.
+    x_sim : list[array[float]]
+        A list with sample(s) of values (e.g. simulated data).
+    x_Kep : list[array[float]]
+        A list with sample(s) of values (e.g. Kepler data).
+    x_min : float, optional
+        The minimum value to include.
+    x_max : float, optional
+        The maximum value to include.
+    y_min : float, optional
+        The lower y-axis limit.
+    y_max : float, optional
+        The upper y-axis limit.
+    n_bins : int, default=100
+        The number of bins.
+    normalize : bool, default=True
+        Whether to normalize the histograms. If True, each histogram will sum to one.
+    N_sim_Kep_factor : float, default=1.
+        The number of simulated targets divided by the number of Kepler targets. If ``normalize=False``, will divide the bin counts for the simulated data (``x_sim``) by this value to provide an equivalent comparison to the Kepler counts.
+    log_x : bool, default=False
+        Whether to plot the x-axis on a log-scale and use log-uniform bins.
+    log_y : bool, default=False
+        Whether to plot the y-axis on a log-scale.
+    c_sim : list[str], default=['k']
+        A list of plotting colors for the histograms of simulated data.
+    c_Kep : list[str], default=['k']
+        A list of plotting colors for the histograms of Kepler data.
+    ls_sim : list[str], default=['-']
+        A list of line styles for the histograms of simulated data.
+    ls_Kep : list[str], default=['-']
+        A list of line styles for the histograms of Kepler data.
+    lw : float, default=1
+        The line width for the histograms.
+    alpha : float, default=0.2
+        The transparency of the shading for the histograms of Kepler data (between 0 and 1).
+    labels_sim : list[str], default=['Simulated']
+        A list of legend labels for the histograms of simulated data.
+    labels_Kep : list[str], default=['Kepler']
+        A list of legend labels for the histograms of Kepler data.
+    extra_text : str, optional
+        Extra text to be displayed on the figure.
+    xticks_custom : list or array[float], optional
+        The x-values at which to plot ticks.
+    xlabel_text : str, default='x'
+        The x-axis label.
+    ylabel_text : str, default='Fraction'
+        The y-axis label.
+    afs : int, default=20
+        The axes fontsize.
+    tfs : int, default=20
+        The text fontsize.
+    lfs : int, default=16
+        The legend fontsize.
+    legend : bool, default=False
+        Whether to show the legend.
+    """
     if x_min == None:
         x_min = np.nanmin([np.min(x) if len(x) > 0 else np.nan for x in x_sim+x_Kep])
     if x_max == None:
@@ -151,7 +297,27 @@ def plot_panel_pdf_simple(ax, x_sim, x_Kep, x_min=None, x_max=None, y_min=None, 
         plt.legend(loc='upper right', bbox_to_anchor=(0.99,0.99), ncol=1, frameon=False, fontsize=lfs) #show the legend
 
 def plot_fig_pdf_simple(fig_size, x_sim, x_Kep, x_min=None, x_max=None, y_min=None, y_max=None, n_bins=100, normalize=True, N_sim_Kep_factor=1., log_x=False, log_y=False, c_sim=['k'], c_Kep=['k'], ls_sim=['-'], ls_Kep=['-'], lw=1, alpha=0.2, labels_sim=['Simulated'], labels_Kep=['Kepler'], extra_text=None, xticks_custom=None, xlabel_text='x', ylabel_text='Fraction', afs=20, tfs=20, lfs=16, legend=False, fig_lbrt=[0.15, 0.2, 0.95, 0.925], save_name='no_name_fig.pdf', save_fig=False):
+    """
+    Plot a figure with histogram(s) of continuous distributions.
 
+    Wrapper for the function :py:func:`syssimpyplots.plot_catalogs.plot_panel_pdf_simple`. Includes all of the parameters of that function, with the following additional parameters:
+
+    Parameters
+    ----------
+    fig_size : tuple
+        The figure size, e.g. '(16,8)'.
+    fig_lbrt : list[float], default=[0.15, 0.2, 0.95, 0.925]
+        The positions of the (left, bottom, right, and top) margins of the plotting panel (all values must be between 0 and 1).
+    save_name : str, default='no_name_fig.pdf'
+        The file name for saving the figure.
+    save_fig : bool, default=False
+        Whether to save the figure. If True, will save the figure in the working directory with the file name given by ``save_name``.
+
+    Returns
+    -------
+    ax : matplotlib.axes._subplots.AxesSubplot
+        The plotting axes, if ``save_fig=False``.
+    """
     left, bottom, right, top = fig_lbrt
     ax = setup_fig_single(fig_size, left=left, bottom=bottom, right=right, top=top)
 
@@ -164,7 +330,62 @@ def plot_fig_pdf_simple(fig_size, x_sim, x_Kep, x_min=None, x_max=None, y_min=No
         return ax
 
 def plot_panel_cdf_simple(ax, x_sim, x_Kep, x_min=None, x_max=None, y_min=0., y_max=1., log_x=False, c_sim=['k'], c_Kep=['k'], ls_sim=['-'], ls_Kep=['--'], lw=1, labels_sim=['Simulated'], labels_Kep=['Kepler'], extra_text=None, xticks_custom=None, xlabel_text='x', ylabel_text='CDF', one_minus=False, afs=20, tfs=20, lfs=16, legend=False, label_dist=False):
+    """
+    Plot cumulative distribution functions (CDFs) for continuous distributions on a given panel.
 
+    Parameters
+    ----------
+    ax : matplotlib.axes._subplots.AxesSubplot
+        The axes to plot on.
+    x_sim : list[array[float]]
+        A list with sample(s) of values (e.g. simulated data).
+    x_Kep : list[array[float]]
+        A list with sample(s) of values (e.g. Kepler data).
+    x_min : float, optional
+        The minimum value to include.
+    x_max : float, optional
+        The maximum value to include.
+    y_min : float, default=0.
+        The lower y-axis limit.
+    y_max : float, default=1.
+        The upper y-axis limit.
+    log_x : bool, default=False
+        Whether to plot the x-axis on a log-scale.
+    c_sim : list[str], default=['k']
+        A list of plotting colors for the CDFs of simulated data.
+    c_Kep : list[str], default=['k']
+        A list of plotting colors for the CDFs of Kepler data.
+    ls_sim : list[str], default=['-']
+        A list of line styles for the CDFs of simulated data.
+    ls_Kep : list[str], default=['--']
+        A list of line styles for the CDFs of Kepler data.
+    lw : float, default=1
+        The line width for the CDFs.
+    labels_sim : list[str], default=['Simulated']
+        A list of legend labels for the CDFs of simulated data.
+    labels_Kep : list[str], default=['Kepler']
+        A list of legend labels for the CDFs of Kepler data.
+    extra_text : str, optional
+        Extra text to be displayed on the figure.
+    xticks_custom : list or array[float], optional
+        The x-values at which to plot ticks.
+    xlabel_text : str, default='x'
+        The x-axis label.
+    ylabel_text : str, default='CDF'
+        The y-axis label.
+    one_minus : bool, default=False
+        Whether to plot one minus the CDF.
+    afs : int, default=20
+        The axes fontsize.
+    tfs : int, default=20
+        The text fontsize.
+    lfs : int, default=16
+        The legend fontsize.
+    legend : bool, default=False
+        Whether to show the legend.
+    label_dist : bool, default=False
+        Whether to compute and show the distances between the simulated and Kepler CDFs on the lower-right corner of the plot. If True, will compute the KS distance (using :py:func:`syssimpyplots.compare_kepler.KS_dist`) and the modified AD distance (using :py:func:`syssimpyplots.compare_kepler.AD_mod_dist`) between each pair of ``x_sim`` and ``x_Kep`` arrays.
+    """
     if x_min == None:
         x_min = np.nanmin([np.min(x) if len(x) > 0 else np.nan for x in x_sim+x_Kep])
     if x_max == None:
@@ -210,7 +431,27 @@ def plot_panel_cdf_simple(ax, x_sim, x_Kep, x_min=None, x_max=None, y_min=0., y_
             plt.legend(loc='upper left', bbox_to_anchor=(0.01,0.99), ncol=1, frameon=False, fontsize=lfs) #show the legend
 
 def plot_fig_cdf_simple(fig_size, x_sim, x_Kep, x_min=None, x_max=None, y_min=0., y_max=1., log_x=False, c_sim=['k'], c_Kep=['k'], ls_sim=['-'], ls_Kep=['--'], lw=1, labels_sim=['Simulated'], labels_Kep=['Kepler'], extra_text=None, xticks_custom=None, xlabel_text='x', ylabel_text='CDF', one_minus=False, afs=20, tfs=20, lfs=16, legend=False, label_dist=False, fig_lbrt=[0.15, 0.2, 0.95, 0.925], save_name='no_name_fig.pdf', save_fig=False):
+    """
+    Plot a figure with CDF(s) of continuous distributions.
 
+    Wrapper for the function :py:func:`syssimpyplots.plot_catalogs.plot_panel_cdf_simple`. Includes all of the parameters of that function, with the following additional parameters:
+
+    Parameters
+    ----------
+    fig_size : tuple
+        The figure size, e.g. '(16,8)'.
+    fig_lbrt : list[float], default=[0.15, 0.2, 0.95, 0.925]
+        The positions of the (left, bottom, right, and top) margins of the plotting panel (all values must be between 0 and 1).
+    save_name : str, default='no_name_fig.pdf'
+        The file name for saving the figure.
+    save_fig : bool, default=False
+        Whether to save the figure. If True, will save the figure in the working directory with the file name given by ``save_name``.
+
+    Returns
+    -------
+    ax : matplotlib.axes._subplots.AxesSubplot
+        The plotting axes, if ``save_fig=False``.
+    """
     left, bottom, right, top = fig_lbrt
     ax = setup_fig_single(fig_size, left=left, bottom=bottom, right=right, top=top)
 
@@ -222,8 +463,12 @@ def plot_fig_cdf_simple(fig_size, x_sim, x_Kep, x_min=None, x_max=None, y_min=0.
     else:
         return ax
 
-def plot_fig_mult_cdf_simple(fig_size, x_sim, x_Kep, x_min=1, x_max=None, y_min=None, y_max=None, c_sim=['k'], c_Kep=['k'], ls_sim=['-'], ls_Kep=['--'], lw=1, labels_sim=['Simulated'], labels_Kep=['Kepler'], xticks_custom=None, xlabel_text='x', ylabel_text='CDF', afs=20, tfs=20, lfs=16, legend=False, fig_lbrt=[0.15, 0.2, 0.95, 0.925], save_name='no_name_fig.pdf', save_fig=False):
+def plot_fig_mult_cdf_simple(fig_size, x_sim, x_Kep, x_min=1, x_max=None, y_min=0., y_max=1., c_sim=['k'], c_Kep=['k'], ls_sim=['-'], ls_Kep=['--'], lw=1, labels_sim=['Simulated'], labels_Kep=['Kepler'], xticks_custom=None, xlabel_text='x', ylabel_text='CDF', afs=20, tfs=20, lfs=16, legend=False, fig_lbrt=[0.15, 0.2, 0.95, 0.925], save_name='no_name_fig.pdf', save_fig=False):
+    """
+    Plot a figure with CDF(s) of discrete integer values.
 
+    Analogous to the function :py:func:`syssimpyplots.plot_catalogs.plot_fig_cdf_simple` but for integer values; uses almost all of the same parameters.
+    """
     left, bottom, right, top = fig_lbrt
     ax = setup_fig_single(fig_size, left=left, bottom=bottom, right=right, top=top)
 
