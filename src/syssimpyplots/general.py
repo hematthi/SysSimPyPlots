@@ -86,7 +86,7 @@ def M_from_R_rho(R, rho=5.51):
     ----------
     R : float or array[floats]
         The planet radius (Earth radii).
-    rho=5.51 : float or array[floats]
+    rho : float or array[floats], default=5.51
         The planet density (g/cm^3). Default value is that of Earth.
 
     Returns
@@ -226,9 +226,9 @@ def incl_mult_power_law_Zhu2018(k, sigma_5=0.8, alpha=-3.5):
     ----------
     k : float or array[floats]
         The planet multiplicity.
-    sigma_5=0.8 : float or array[floats]
+    sigma_5 : float or array[floats], default=0.8
         The normalization (Rayleigh scale of the mutual inclination distribution at ``k=5``) (degrees).
-    alpha=-3.5 : float or array[floats]
+    alpha : float or array[floats], default=-3.5
         The power-law index.
 
     Returns
@@ -251,9 +251,9 @@ def cdf_normal(x, mu=0., std=1.):
     ----------
     x : float or array[floats]
         The position to evaluate the CDF (between ``-inf`` and ``inf``).
-    mu : float or array[floats]
+    mu : float or array[floats], default=0.
         The mean of the normal distribution.
-    std : float or array[floats]
+    std : float or array[floats], default=1.
         The standard deviation of the normal distribution.
 
     Returns
@@ -313,9 +313,9 @@ def calc_f_near_pratios(sssp_per_sys, pratios=res_ratios, pratio_width=res_width
     ----------
     sssp_per_sys : dict
         The dictionary of summary statistics for a physical catalog of planets.
-    pratios=res_ratios : list
+    pratios : list, default=res_ratios
         The list of period ratios to consider.
-    pratio_width=res_width : float
+    pratio_width : float, default=res_width
         The fractional width to be considered 'near' a period ratio.
 
     Returns
@@ -374,7 +374,7 @@ def split_colors_per_cdpp_bin(stars_cleaned, nbins=10):
     ----------
     stars_cleaned : structured array
         A table of stars, including columns for 4.5hr CDPP (``rrmscdpp04p5``) and Gaia DR2 bp-rp color (``bp_rp``).
-    nbins=10 : int
+    nbins : int, default=10
         The number of bins to use.
 
     Returns
@@ -416,9 +416,9 @@ def linear_fswp_bprp(bprp, bprp_med, fswp_med=0.5, slope=0.):
         The bp-rp colors at which to evaluate the fswp.
     bprp_med : float
         The median bp-rp color (or some normalization point).
-    fswp_med=0.5 : float
+    fswp_med : float, default=0.5
         The fswp at ``bprp_med`` (normalization).
-    slope=0. : float
+    slope : float, default=0.
         The slope of the linear relation.
 
     Returns
@@ -442,9 +442,9 @@ def linear_alphaP_bprp(bprp, bprp_med, alphaP_med=0.5, slope=0.):
         The bp-rp colors at which to evaluate the fswp.
     bprp_med : float
         The median bp-rp color (or some normalization point).
-    alphaP_med=0.5 : float
+    alphaP_med : float, default=0.5
         The period power-law index at ``bprp_med`` (normalization).
-    slope=0. : float
+    slope : float, default=0.
         The slope of the linear relation.
 
     Returns
@@ -464,7 +464,7 @@ def bin_Nmult(Nmult_obs, m_geq=5):
     ----------
     Nmult_obs : array[ints]
         The multiplicity distribution for consecutive multiplicity orders (i.e. number of systems with 1,2,3,... planets).
-    m_geq=5 : int
+    m_geq : int, default=5
         The multiplicity order at and above which to bin together.
 
     Returns

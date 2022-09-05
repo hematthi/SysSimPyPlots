@@ -88,6 +88,17 @@ def read_sim_params(file_name):
     """
     Read the simulation parameters from a file and output them in a dictionary.
 
+    Parameters
+    ----------
+    file_name : str
+        The path/name of the file containing a header with simulation parameters.
+
+    Returns
+    -------
+    param_vals : dict
+        A dictionary containing the simulation parameters.
+
+
     The full list of possible parameters is defined in ``param_symbols`` (also exported by this module).
     """
     param_vals = {}
@@ -196,7 +207,7 @@ def load_star_phys(file_name):
 
 def load_planets_stars_phys_separate(file_name_path, run_number):
     """
-    Load individual files with the properties of all the planets in a physical catalog.
+    Load individual files with the properties of all the planets and stars in a simulated physical catalog.
 
     Note
     ----
@@ -369,7 +380,7 @@ def compute_basic_summary_stats_per_sys_cat_phys(clusterids_per_sys, P_per_sys, 
 
     The output is a dictionary containing the following fields:
 
-    - `Mmax`: The maximum planet multiplicity in any system.
+    - `Mmax`: The maximum planet multiplicity of any system.
     - `Mtot_all`: The planet multiplicity of each system (1-d array).
     - `clustertot_all`: The number of planet clusters in each system (1-d array).
     - `pl_per_cluster_all`: The number of planets in each cluster (1-d array).
@@ -387,6 +398,9 @@ def compute_basic_summary_stats_per_sys_cat_phys(clusterids_per_sys, P_per_sys, 
     - `AMD_all`: The AMDs (units of G*Mstar=1) of each system (2-d array).
     - `AMD_tot_all`: The total AMD (units of G*Mstar=1) of each system (1-d array).
 
+    Warning
+    -------
+    For the 2-d arrays, each row is padded with zeros (or negative ones), since different systems have different numbers of planets.
     """
     assert len(clusterids_per_sys) != 0
 
@@ -532,12 +546,16 @@ def compute_summary_stats_from_cat_phys(cat_phys=None, star_phys=None, file_name
     """
     Compute detailed summary statistics per system in a simulated physical catalog.
 
+    Note
+    ----
+    This function can be used by either passing a ``cat_phys`` and ``star_phys`` for the physical catalog, or by passing a ``file_name_path`` and ``run_number`` from which to load the physical catalog. If the latter, will load the individual files with the planet and star properties using :py:func:`syssimpyplots.load_sims.load_planets_stars_phys_separate`.
+
     Parameters
     ----------
     cat_phys : structured array, default=None
         A table with the physical properties of all the planets.
     star_phys : structured array, default=None
-        A table with basic properties of the planet-hosting stars.
+        A table with the basic properties of the planet-hosting stars.
     file_name_path : str, default=None
         The path to the physical catalog.
     run_number : str, default=''
@@ -568,12 +586,12 @@ def compute_summary_stats_from_cat_phys(cat_phys=None, star_phys=None, file_name
     - `mass_all`: The planet masses (Earth masses) of each system (2-d array).
     - `mu_all`: The planet/star mass ratios of each system (2-d array).
     - `e_all`: The orbital eccentricities of each system (2-d array).
-    - `inclmut_all`: The orbital inclinations (radians) relative to system invariable plane of each system (2-d array).
+    - `inclmut_all`: The orbital inclinations (radians) relative to the system invariable plane of each system (2-d array).
     - `incl_all`: The orbital inclinations (radians) relative to the sky plane of each system (2-d array).
     - `AMD_all`: The AMDs (units of G*Mstar=1) of each system (2-d array).
     - `Rm_all`: The period ratios of each system (2-d array).
     - `radii_ratio_all`: The planet radius ratios of each system (2-d array).
-    - `N_mH_all`: The separations in mutual Hill radii of each system (2-d array).
+    - `N_mH_all`: The planet spacings in mutual Hill radii of each system (2-d array).
     - `dynamical_mass`: The 'dynamical mass' of each system (1-d array).
     - `radii_partitioning`: The 'radius partitioning' of each multi-planet system (1-d array).
     - `radii_monotonicity`: The 'radius monotonicity' of each multi-planet system (1-d array).
@@ -596,15 +614,18 @@ def compute_summary_stats_from_cat_phys(cat_phys=None, star_phys=None, file_name
     - `radii_below_all`: The radii (Earth radii) of all planets below the photo-evaporation boundary\* (1-d array).
     - `Rm_all`: The orbital period ratios (1-d array).
     - `radii_ratio_all`: The planet radii ratios (1-d array).
-    - `N_mH_all`: The separations in mutual Hill radii (1-d array).
+    - `N_mH_all`: The planet spacings in mutual Hill radii (1-d array).
     - `radii_ratio_above_all`: The planet radii ratios for all planets above the photo-evaporation boundary\* (1-d array).
     - `radii_ratio_below_all`: The planet radii ratios for all planets below the photo-evaporation boundary\* (1-d array).
     - `radii_ratio_across_all`: The planet radii ratios for all planets across the photo-evaporation boundary\* (1-d array).
 
     Note
     ----
-    \*The photo-evaporation boundary defined by the function :py:func:`syssimpyplots.general.photoevap_boundary_Carrera2018`.
+    \*The photo-evaporation boundary is defined by the function :py:func:`syssimpyplots.general.photoevap_boundary_Carrera2018`.
 
+    Warning
+    -------
+    For the 2-d arrays, each row is padded with zeros (or negative ones), since different systems have different numbers of planets.
     """
     #This function takes in a simulated observed catalog of planets 'cat_phys' in table format and returns many arrays (1D and 2D) of the summary stats
 
@@ -869,7 +890,7 @@ def load_cat_obs(file_name):
     Returns
     -------
     cat_obs : structured array
-        A table with the physical properties of all the planets.
+        A table with the observed properties of all the planets.
 
 
     The table has the following columns:
@@ -917,7 +938,7 @@ def load_star_obs(file_name):
 
 def load_planets_stars_obs_separate(file_name_path, run_number):
     """
-    Load individual files with the properties of all the planets in an observed catalog.
+    Load individual files with the properties of all the planets and stars in a simulated observed catalog.
 
     Note
     ----
@@ -1001,7 +1022,7 @@ def load_planets_stars_obs_separate(file_name_path, run_number):
 
     return P_per_sys, D_per_sys, tdur_per_sys, Mstar_per_sys, Rstar_per_sys
 
-def count_planets_from_loading_cat_obs_stars_only(file_name_path=None, run_number='', Rstar_min=0., Rstar_max=1e6, Mstar_min=0., Mstar_max=1e6, teff_min=0., teff_max=1e6, bp_rp_min=-1e6, bp_rp_max=1e6):
+def count_planets_from_loading_cat_obs_stars_only(file_name_path=None, run_number='', Rstar_min=0., Rstar_max=10., Mstar_min=0., Mstar_max=10., teff_min=0., teff_max=1e4, bp_rp_min=-5., bp_rp_max=5.):
     """
     Count the number of observed planets in each system (and the resulting observed multiplicity distribution), given a set of stellar cuts.
 
@@ -1017,19 +1038,19 @@ def count_planets_from_loading_cat_obs_stars_only(file_name_path=None, run_numbe
         The run number appended to the file names for the observed catalog.
     Rstar_min : float, default=0.
         The minimum stellar radius (solar radii) to include in the sample.
-    Rstar_max= : float, default=1e6
+    Rstar_max= : float, default=10.
         The maximum stellar radius (solar radii) to include in the sample.
     Mstar_min : float, default=0.
         The minimum stellar mass (solar masses) to include in the sample.
-    Mstar_max : float, default=1e6
+    Mstar_max : float, default=10.
         The maximum stellar mass (solar masses) to include in the sample.
     teff_min : float, default=0.
         The minimum stellar effective temperature (K) to include in the sample.
-    teff_max : float, default=1e6
+    teff_max : float, default=1e4
         The maximum stellar effective temperature (K) to include in the sample.
-    bp_rp_min : float, default=-1e6
+    bp_rp_min : float, default=-5.
         The minimum Gaia DR2 bp-rp color to include in the sample.
-    bp_rp_max : float, default=1e6
+    bp_rp_max : float, default=5.
         The maximum Gaia DR2 bp-rp color to include in the sample.
 
     Returns
@@ -1058,9 +1079,13 @@ def count_planets_from_loading_cat_obs_stars_only(file_name_path=None, run_numbe
     Nmult_obs = np.array([np.sum(Mtot_obs == x) for x in range(1,np.max(Mtot_obs)+1)])
     return Mtot_obs, Nmult_obs
 
-def compute_summary_stats_from_cat_obs(cat_obs=None, star_obs=None, file_name_path=None, run_number='', P_min=0., P_max=300., Rstar_min=0., Rstar_max=1e6, Mstar_min=0., Mstar_max=1e6, teff_min=0., teff_max=1e6, bp_rp_min=-1e6, bp_rp_max=1e6, i_stars_custom=None, compute_ratios=gen.compute_ratios_adjacent):
+def compute_summary_stats_from_cat_obs(cat_obs=None, star_obs=None, file_name_path=None, run_number='', P_min=0., P_max=300., Rstar_min=0., Rstar_max=10., Mstar_min=0., Mstar_max=10., teff_min=0., teff_max=1e4, bp_rp_min=-5., bp_rp_max=5., i_stars_custom=None, compute_ratios=gen.compute_ratios_adjacent):
     """
     Compute detailed summary statistics per system in a simulated observed catalog.
+
+    Note
+    ----
+    This function can be used by either passing a ``cat_obs`` and ``star_obs`` for the observed catalog, or by passing a ``file_name_path`` and ``run_number`` from which to load the observed catalog. If the latter, will load the individual files with the planet and star properties using :py:func:`syssimpyplots.load_sims.load_planets_stars_obs_separate`.
 
     Parameters
     ----------
@@ -1078,19 +1103,19 @@ def compute_summary_stats_from_cat_obs(cat_obs=None, star_obs=None, file_name_pa
         The maximum orbital period to include in the sample.
     Rstar_min : float, default=0.
         The minimum stellar radius (solar radii) to include in the sample.
-    Rstar_max : float, default=1e6
+    Rstar_max : float, default=10.
         The maximum stellar radius (solar radii) to include in the sample.
     Mstar_min : float, default=0.
         The minimum stellar mass (solar masses) to include in the sample.
-    Mstar_max : float, default=1e6
+    Mstar_max : float, default=10.
         The maximum stellar mass (solar masses) to include in the sample.
     teff_min : float, default=0.
         The minimum stellar effective temperature (K) to include in the sample.
-    teff_max : float, default=1e6
+    teff_max : float, default=10.
         The maximum stellar effective temperature (K) to include in the sample.
-    bp_rp_min : float, default=-1e6
+    bp_rp_min : float, default=-5.
         The minimum Gaia DR2 bp-rp color to include in the sample.
-    bp_rp_max : float, default=1e6
+    bp_rp_max : float, default=5.
         The maximum Gaia DR2 bp-rp color to include in the sample.
     i_stars_custom : array[int], default=None
         An array of indices for the stars in the Kepler stellar catalog to be included in the sample.
@@ -1500,10 +1525,8 @@ def combine_sss_or_sssp_per_sys(s1, s2):
 
     Parameters
     ----------
-    s1 : dict
-        The first dictionary of summary statistics.
-    s2 : dict
-        The second dictionary of summary statistics.
+    s1, s2 : dict
+        The dictionaries of summary statistics.
 
     Returns
     -------
@@ -1538,14 +1561,14 @@ def combine_sss_or_sssp_per_sys(s1, s2):
 
 def load_cat_phys_multiple_and_compute_combine_summary_stats(file_name_path, run_numbers=range(1,11), load_full_tables=False, compute_ratios=gen.compute_ratios_adjacent, match_observed=True):
     """
-    Load multiple simulated physical catalogs, compute detailed summary statistic for each one, and combine them.
+    Load multiple simulated physical catalogs and compute detailed summary statistic for all the catalogs combined.
 
     Parameters
     ----------
     file_name_path : str
         The path to the physical catalogs.
     run_number : range, default=range(1,11)
-        The range of run numbers over which we want to load and combine.
+        The range of catalog run numbers over which we want to load and combine.
     load_full_tables : bool, default=False
         Whether to load full tables of the physical catalogs. Required to be True if also want to match the physical planets to the observed planets.
     compute_ratios : func, default=compute_ratios_adjacent
