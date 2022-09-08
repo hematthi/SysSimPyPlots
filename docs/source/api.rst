@@ -40,3 +40,4 @@ Here, we provide detailed documentation for *many* of the functions that you may
    api_load_sims
    api_compare_kepler
    api_plot_catalogs
+   api_plot_params
