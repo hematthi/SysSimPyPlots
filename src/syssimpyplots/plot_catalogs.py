@@ -74,7 +74,7 @@ def plot_panel_counts_hist_simple(ax, x_sim, x_Kep, x_min=0, x_max=None, y_min=N
     normalize : bool, default=False
         Whether to normalize the histograms. If True, each histogram will sum to one.
     N_sim_Kep_factor : float, default=1.
-        The number of simulated targets divided by the number of Kepler targets. If ``normalize=False``, will divide the bin counts for the simulated data (``x_sim``) by this value to provide an equivalent comparison to the Kepler counts.
+        The number of simulated targets divided by the number of Kepler targets. If `normalize=False`, will divide the bin counts for the simulated data (`x_sim`) by this value to provide an equivalent comparison to the Kepler counts.
     log_y : bool, default=False
         Whether to plot the y-axis on a log-scale.
     c_sim : list[str], default=['k']
@@ -86,7 +86,7 @@ def plot_panel_counts_hist_simple(ax, x_sim, x_Kep, x_min=0, x_max=None, y_min=N
     ms_Kep : list[str], default=['x']
         A list of marker shapes for the histograms of Kepler data.
     lines_Kep : bool, default=False
-        Whether to also draw the histogram lines for the Kepler data. Default value (False) will just draw marker points (given by ``ms_Kep``) for the Kepler counts in each bin.
+        Whether to also draw the histogram lines for the Kepler data. Default value (False) will just draw marker points (given by `ms_Kep`) for the Kepler counts in each bin.
     lw : float, default=1
         The line width for the histograms.
     labels_sim : list[str], default=['Simulated']
@@ -178,12 +178,12 @@ def plot_fig_counts_hist_simple(fig_size, x_sim, x_Kep, x_min=0, x_max=None, y_m
     save_name : str, default='no_name_fig.pdf'
         The file name for saving the figure.
     save_fig : bool, default=False
-        Whether to save the figure. If True, will save the figure in the working directory with the file name given by ``save_name``.
+        Whether to save the figure. If True, will save the figure in the working directory with the file name given by `save_name`.
 
     Returns
     -------
     ax : matplotlib.axes._subplots.AxesSubplot
-        The plotting axes, if ``save_fig=False``.
+        The plotting axes, if `save_fig=False`.
     """
     left, bottom, right, top = fig_lbrt
     ax = setup_fig_single(fig_size, left=left, bottom=bottom, right=right, top=top)
@@ -221,7 +221,7 @@ def plot_panel_pdf_simple(ax, x_sim, x_Kep, x_min=None, x_max=None, y_min=None, 
     normalize : bool, default=True
         Whether to normalize the histograms. If True, each histogram will sum to one.
     N_sim_Kep_factor : float, default=1.
-        The number of simulated targets divided by the number of Kepler targets. If ``normalize=False``, will divide the bin counts for the simulated data (``x_sim``) by this value to provide an equivalent comparison to the Kepler counts.
+        The number of simulated targets divided by the number of Kepler targets. If `normalize=False`, will divide the bin counts for the simulated data (`x_sim`) by this value to provide an equivalent comparison to the Kepler counts.
     log_x : bool, default=False
         Whether to plot the x-axis on a log-scale and use log-uniform bins.
     log_y : bool, default=False
@@ -311,12 +311,12 @@ def plot_fig_pdf_simple(fig_size, x_sim, x_Kep, x_min=None, x_max=None, y_min=No
     save_name : str, default='no_name_fig.pdf'
         The file name for saving the figure.
     save_fig : bool, default=False
-        Whether to save the figure. If True, will save the figure in the working directory with the file name given by ``save_name``.
+        Whether to save the figure. If True, will save the figure in the working directory with the file name given by `save_name`.
 
     Returns
     -------
     ax : matplotlib.axes._subplots.AxesSubplot
-        The plotting axes, if ``save_fig=False``.
+        The plotting axes, if `save_fig=False`.
     """
     left, bottom, right, top = fig_lbrt
     ax = setup_fig_single(fig_size, left=left, bottom=bottom, right=right, top=top)
@@ -384,7 +384,7 @@ def plot_panel_cdf_simple(ax, x_sim, x_Kep, x_min=None, x_max=None, y_min=0., y_
     legend : bool, default=False
         Whether to show the legend.
     label_dist : bool, default=False
-        Whether to compute and show the distances between the simulated and Kepler CDFs on the lower-right corner of the plot. If True, will compute the KS distance (using :py:func:`syssimpyplots.compare_kepler.KS_dist`) and the modified AD distance (using :py:func:`syssimpyplots.compare_kepler.AD_mod_dist`) between each pair of ``x_sim`` and ``x_Kep`` arrays.
+        Whether to compute and show the distances between the simulated and Kepler CDFs on the lower-right corner of the plot. If True, will compute the KS distance (using :py:func:`syssimpyplots.compare_kepler.KS_dist`) and the modified AD distance (using :py:func:`syssimpyplots.compare_kepler.AD_mod_dist`) between each pair of `x_sim` and `x_Kep` arrays.
     """
     if x_min == None:
         x_min = np.nanmin([np.min(x) if len(x) > 0 else np.nan for x in x_sim+x_Kep])
@@ -445,12 +445,12 @@ def plot_fig_cdf_simple(fig_size, x_sim, x_Kep, x_min=None, x_max=None, y_min=0.
     save_name : str, default='no_name_fig.pdf'
         The file name for saving the figure.
     save_fig : bool, default=False
-        Whether to save the figure. If True, will save the figure in the working directory with the file name given by ``save_name``.
+        Whether to save the figure. If True, will save the figure in the working directory with the file name given by `save_name`.
 
     Returns
     -------
     ax : matplotlib.axes._subplots.AxesSubplot
-        The plotting axes, if ``save_fig=False``.
+        The plotting axes, if `save_fig=False`.
     """
     left, bottom, right, top = fig_lbrt
     ax = setup_fig_single(fig_size, left=left, bottom=bottom, right=right, top=top)

@@ -577,7 +577,7 @@ def compute_summary_stats_from_cat_phys(cat_phys=None, star_phys=None, file_name
 
     The outputs are two dictionaries. ``sssp_per_sys`` contains the following fields:
 
-    - `det_all`: The detection flags (1=detected, 0=undetected) of the planets in each system (2-d array). Only returned if ``match_observed=True``.
+    - `det_all`: The detection flags (1=detected, 0=undetected) of the planets in each system (2-d array). Only returned if `match_observed=True`.
     - `Mtot_all`: The number of planets in each system (1-d array).
     - `clusterids_all`: The cluster id's of each system (2-d array).
     - `P_all`: The orbital periods (days) of each system (2-d array).

@@ -12,7 +12,7 @@ import corner #corner.py package for corner plots
 
 # Functions to analyze GP models/outputs and to make corner plots for visualizing the parameter space:
 
-def load_training_points(dims, file_name_path='', file_name='Active_params_recomputed_distances_table_best100000_every10.txt'):
+def load_training_points(dims, file_name_path='', file_name=''):
     """
     Load the table of model parameters and total weighted distances of the model iterations compared to the Kepler data, that was used for training the Gaussian process emulator.
 
@@ -22,8 +22,8 @@ def load_training_points(dims, file_name_path='', file_name='Active_params_recom
         The number of (free) model parameters.
     file_name_path : str, default=''
         The path to the file containing the results of the model iterations.
-    file_name : str, default='Active_params_recomputed_distances_table_best100000_every10.txt'
-        The name of the file containing the results of the model iterations.
+    file_name : str, default=''
+        The name of the file containing the results of the model iterations (e.g., 'Active_params_recomputed_distances_table_best100000_every10.txt').
 
     Returns
     -------
@@ -188,7 +188,7 @@ def plot_fig_hists_GP_draws(fig_size, xprior_table, bins=100, save_name='no_name
     save_name : str, default='no_name_fig.pdf'
         The file name for saving the figure.
     save_fig : bool, default=False
-        Whether to save the figure. If True, will save the figure in the working directory with the file name given by ``save_name``.
+        Whether to save the figure. If True, will save the figure in the working directory with the file name given by `save_name`.
     """
     fig = plt.figure(figsize=fig_size)
     plot = GridSpec(2,2,left=0.1,bottom=0.1,right=0.95,top=0.95,wspace=0.2,hspace=0.2)
@@ -226,7 +226,7 @@ def plot_cornerpy_wrapper(x_symbols, xpoints, xpoints_extra=None, c_extra='r', s
     Parameters
     ----------
     x_symbols : list or array[str]
-        A list of the parameter names/symbols.
+        The list of the parameter names/symbols.
     xpoints : array[float]
         The sample of parameter values (2-d array).
     xpoints_extra : array[float], optional
@@ -250,7 +250,7 @@ def plot_cornerpy_wrapper(x_symbols, xpoints, xpoints_extra=None, c_extra='r', s
     save_name : str, default='no_name_fig.pdf'
         The file name for saving the figure.
     save_fig : bool, default=False
-        Whether to save the figure. If True, will save the figure in the working directory with the file name given by ``save_name``.
+        Whether to save the figure. If True, will save the figure in the working directory with the file name given by `save_name`.
 
     Returns
     -------
@@ -275,8 +275,41 @@ def plot_cornerpy_wrapper(x_symbols, xpoints, xpoints_extra=None, c_extra='r', s
     else:
         return fig
 
-def plot_contours_and_points_corner(x_symbols, xlower, xupper, contour_2d_grids, xpoints=None, points_size=1., points_alpha=1., fig_size=(16,16), fig_lbrtwh=[0.05, 0.05, 0.98, 0.98, 0.05, 0.05], afs=10, tfs=12, lfs=10, save_name='no_name_fig.pdf', save_fig=False):
+def plot_contours_and_points_corner(x_symbols, xlower, xupper, contour_2d_grids, xpoints=None, points_size=1., points_alpha=1., afs=10, tfs=12, lfs=10, fig_size=(16,16), fig_lbrtwh=[0.05, 0.05, 0.98, 0.98, 0.05, 0.05], save_name='no_name_fig.pdf', save_fig=False):
+    """
+    Plot contours for the evaluations of a function over 2-d grids of an n-d parameter space.
 
+    Parameters
+    ----------
+    x_symbols : list or array[str]
+        The list of the parameter names/symbols.
+    xlower : list or array[float]
+        The lower bounds for each parameter.
+    xupper : list or array[float]
+        The upper bounds for each parameter.
+    contour_2d_grids : array[float]
+        The array of 2-d grids for the evaluations of a function (3-d array of dimensions '(N,gdim,gdim)' where 'N' is the number of unique pairs of parameters, and 'gdim' is the number of grid points along each grid dimension).
+    xpoints : array[float], optional
+        An additional sample of parameter values to plot (2-d array).
+    points_size : float, default=1.
+        The point size for plotting the additional sample of parameters.
+    points_alpha : float, default=1.
+        The transparency of the points for plotting the additional sample of parameters.
+    afs : int, default=10
+        The axes fontsize.
+    tfs : int, default=12
+        The text fontsize.
+    lfs : int, default=10
+        The legend fontsize.
+    fig_size : tuple, default=(16,16)
+        The figure size.
+    fig_lbrtwh : list, default=[0.05, 0.05, 0.98, 0.98, 0.05, 0.05]
+        The positions of the (left, bottom, right, and top) margins of all the plotting panels (between 0 and 1), followed by the width and height space between the panels.
+    save_name : str, default='no_name_fig.pdf'
+        The file name for saving the figure.
+    save_fig : bool, default=False
+        Whether to save the figure. If True, will save the figure in the working directory with the file name given by `save_name`.
+    """
     dims = len(x_symbols)
     grid_dims = np.shape(contour_2d_grids)[2]
 
@@ -324,8 +357,77 @@ def plot_contours_and_points_corner(x_symbols, xlower, xupper, contour_2d_grids,
         plt.close()
 
 def plot_2d_points_and_contours_with_histograms(x, y, x_min=None, x_max=None, y_min=None, y_max=None, log_x=False, log_y=False, bins_hist=50, bins_cont=50, points_only=False, xlabel_text='x', ylabel_text='y', extra_text=None, plot_qtls=True, log_x_qtls=False, log_y_qtls=False, x_str_format='{:0.2f}', y_str_format='{:0.2f}', x_symbol=r'$x$', y_symbol=r'$y$', afs=20, tfs=20, lfs=16, fig_size=(8,8), fig_lbrtwh=[0.15,0.15,0.95,0.95,0.,0.], save_name='no_name_fig.pdf', save_fig=False):
-    # NOTE: The 'log_x' and 'log_y' are options to take the log of the x and y inputs, NOT to mean that the x and y are already logged; user should always pass unlogged values for x and y (and their limits).
+    """
+    Plot a pair of parameters as a 2-d scatter plot with attached histograms of each parameter.
 
+    Parameters
+    ----------
+    x, y : array[float]
+        The values of the parameters (1-d array).
+    x_min : float, optional
+        The minimum value of `x` to include.
+    x_max : float, optional
+        The maximum value of `x` to include.
+    y_min : float, optional
+        The minimum value of `y` to include.
+    y_max : float, optional
+        The maximum value of `y` to include.
+    log_x : bool, default=False
+        Whether to plot the x-axis on a log-scale (and take the log of the values in `x` for the histograms and quantiles)\*.
+    log_y : bool, default=False
+        Whether to plot the y-axis on a log-scale (and take the log of the values in `y` for the histograms and quantiles)\*.
+    bins_hist : int, default=50
+        The number of bins to use for the histograms.
+    bins_cont : int, default=50
+        The number of bins to use for the contour maps (along each parameter).
+    points_only : bool, default=False
+        Whether to plot only the parameter points instead of their contour maps.
+    xlabel_text : str, default='x'
+        The x-axis label.
+    ylabel_text : str, default='y'
+        The y-axis label.
+    extra_text : str, optional
+        Extra text to be displayed on the figure.
+    plot_qtls : bool, default=True
+        Whether to compute, print, and plot the quantiles of each parameter on the histograms.
+    log_x_qtls : bool, default=False
+        Whether to use the log of the `x` values for computing their quantiles. Only used if `log_x=True`.
+    log_y_qtls : bool, default=False
+        Whether to use the log of the `y` values for computing their quantiles. Only used if `log_y=True`.
+    x_str_format : str, default='{:0.2f}'
+        The string formatter for the `x` quantiles (e.g. to control how many significant figures are shown).
+    y_str_format : str, default='{:0.2f}'
+        The string formatter for the `y` quantiles (e.g. to control how many significant figures are shown).
+    x_symbol : str, default=r'$x$'
+        The symbol for the `x` parameter for labeling the quantiles.
+    y_symbol : str, default=r'$y$'
+        The symbol for the `y` parameter for labeling the quantiles.
+    afs : int, default=20
+        The axes fontsize.
+    tfs : int, default=20
+        The text fontsize.
+    lfs : int, default=16
+        The legend fontsize.
+    fig_size : tuple, default=(8,8)
+        The figure size.
+    fig_lbrtwh : list, default=[0.15, 0.15, 0.95, 0.95, 0., 0.]
+        The positions of the (left, bottom, right, and top) margins of all the plotting panels (between 0 and 1), followed by the width and height space between the panels (main plot and top/side histograms).
+    save_name : str, default='no_name_fig.pdf'
+        The file name for saving the figure.
+    save_fig : bool, default=False
+        Whether to save the figure. If True, will save the figure in the working directory with the file name given by `save_name`.
+
+    Returns
+    -------
+    ax_main : matplotlib.axes._subplots.AxesSubplot
+        The plotting axes for the main panel (scatter plot/contour map).
+
+
+    Note
+    ----
+    \*The `log_x` and `log_y` parameters are options to take the log of the `x` and `y` inputs, NOT to mean that the input values are already logged! The user should always pass unlogged values for `x` and `y` (and their limits).
+    """
+    assert len(x) == len(y)
     if log_x:
         x = np.log10(x)
         x_min, x_max = np.log10(x_min), np.log10(x_max)
@@ -390,8 +492,43 @@ def plot_2d_points_and_contours_with_histograms(x, y, x_min=None, x_max=None, y_
         plt.close()
     return ax_main
 
-def plot_function_heatmap_contours_given_irregular_points_corner(x_symbols, xpoints, fpoints, xlower=None, xupper=None, show_points=True, points_size=1., points_alpha=1., fig_size=(16,16), fig_lbrtwh=[0.05, 0.05, 0.98, 0.98, 0.05, 0.05], afs=10, tfs=12, lfs=10, save_name='no_name_fig.pdf', save_fig=False):
+def plot_function_heatmap_contours_given_irregular_points_corner(x_symbols, xpoints, fpoints, xlower=None, xupper=None, show_points=True, points_size=1., points_alpha=1., afs=10, tfs=12, lfs=10, fig_size=(16,16), fig_lbrtwh=[0.05, 0.05, 0.98, 0.98, 0.05, 0.05], save_name='no_name_fig.pdf', save_fig=False):
+    """
+    Plot 2-d heat-maps and contours of a function evaluated on a set of irregularly spaced points in the n-d parameter space.
 
+    Parameters
+    ----------
+    x_symbols : list or array[str]
+        The list of the parameter names/symbols.
+    xpoints : array[float]
+        The sample of parameter values at which the function was evaluated (2-d array).
+    fpoints : array[float]
+        The function evaluations at the points given by `xpoints`.
+    xlower : list or array[float]
+        The lower bounds for each parameter.
+    xupper : list or array[float]
+        The upper bounds for each parameter.
+    show_points : bool, default=True
+        Whether to plot the individual parameter points.
+    points_size : float, default=1.
+        The point size for plotting the sample of parameters.
+    points_alpha : float, default=1.
+        The transparency of the points for plotting the sample of parameters.
+    afs : int, default=10
+        The axes fontsize.
+    tfs : int, default=12
+        The text fontsize.
+    lfs : int, default=10
+        The legend fontsize.
+    fig_size : tuple, default=(16,16)
+        The figure size.
+    fig_lbrtwh : list, default=[0.05, 0.05, 0.98, 0.98, 0.05, 0.05]
+        The positions of the (left, bottom, right, and top) margins of all the plotting panels (between 0 and 1), followed by the width and height space between the panels.
+    save_name : str, default='no_name_fig.pdf'
+        The file name for saving the figure.
+    save_fig : bool, default=False
+        Whether to save the figure. If True, will save the figure in the working directory with the file name given by `save_name`.
+    """
     dims = len(x_symbols)
     if xlower == None:
         xlower = np.min(xpoints, axis=0)
@@ -437,8 +574,51 @@ def plot_function_heatmap_contours_given_irregular_points_corner(x_symbols, xpoi
         plt.savefig(save_name)
         plt.close()
 
-def plot_function_heatmap_averaged_grid_given_irregular_points_corner(x_symbols, xpoints, fpoints, flabel='f', xlower=None, xupper=None, x_bins=20, show_cbar=True, show_points=True, points_size=1., points_alpha=1., fig_size=(16,16), fig_lbrtwh=[0.05, 0.05, 0.98, 0.98, 0.05, 0.05], afs=10, tfs=12, lfs=10, save_name='no_name_fig.pdf', save_fig=False):
+def plot_function_heatmap_averaged_grid_given_irregular_points_corner(x_symbols, xpoints, fpoints, flabel='f', xlower=None, xupper=None, x_bins=20, show_cbar=True, show_points=True, points_size=1., points_alpha=1., afs=10, tfs=12, lfs=10, fig_size=(16,16), fig_lbrtwh=[0.05, 0.05, 0.98, 0.98, 0.05, 0.05], save_name='no_name_fig.pdf', save_fig=False):
+    """
+    Plot 2-d heat-maps (using `matplotlib.pyplot.imshow <https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.imshow.html>`_) on grids based on the evaluations of a function on a set of irregularly spaced points in the n-d parameter space.
 
+    The value of each grid bin is computed as the mean of the function evaluated at all of the points inside the bin.
+
+    Parameters
+    ----------
+    x_symbols : list or array[str]
+        The list of the parameter names/symbols.
+    xpoints : array[float]
+        The sample of parameter values at which the function was evaluated (2-d array).
+    fpoints : array[float]
+        The function evaluations at the points given by `xpoints`.
+    flabel : str, default='f'
+        The text label for the function.
+    xlower : list or array[float]
+        The lower bounds for each parameter.
+    xupper : list or array[float]
+        The upper bounds for each parameter.
+    x_bins : int, default=20
+        The number of bins to use for each dimension of each grid.
+    show_cbar : bool, default=True
+        Whether to show the colorbar for the function.
+    show_points : bool, default=True
+        Whether to plot the individual parameter points.
+    points_size : float, default=1.
+        The point size for plotting the sample of parameters.
+    points_alpha : float, default=1.
+        The transparency of the points for plotting the sample of parameters.
+    afs : int, default=10
+        The axes fontsize.
+    tfs : int, default=12
+        The text fontsize.
+    lfs : int, default=10
+        The legend fontsize.
+    fig_size : tuple, default=(16,16)
+        The figure size.
+    fig_lbrtwh : list, default=[0.05, 0.05, 0.98, 0.98, 0.05, 0.05]
+        The positions of the (left, bottom, right, and top) margins of all the plotting panels (between 0 and 1), followed by the width and height space between the panels.
+    save_name : str, default='no_name_fig.pdf'
+        The file name for saving the figure.
+    save_fig : bool, default=False
+        Whether to save the figure. If True, will save the figure in the working directory with the file name given by `save_name`.
+    """
     if any(np.isinf(fpoints)):
         bools_inf = np.isinf(fpoints)
         xpoints = xpoints[~bools_inf]
