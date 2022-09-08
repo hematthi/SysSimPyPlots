@@ -13,8 +13,30 @@ import corner #corner.py package for corner plots
 # Functions to analyze GP models/outputs and to make corner plots for visualizing the parameter space:
 
 def load_training_points(dims, file_name_path='', file_name='Active_params_recomputed_distances_table_best100000_every10.txt'):
-    # 'dims' is the number of dimensions (model parameters)
+    """
+    Load the table of model parameters and total weighted distances of the model iterations compared to the Kepler data, that was used for training the Gaussian process emulator.
 
+    Parameters
+    ----------
+    dims : int
+        The number of (free) model parameters.
+    file_name_path : str, default=''
+        The path to the file containing the results of the model iterations.
+    file_name : str, default='Active_params_recomputed_distances_table_best100000_every10.txt'
+        The name of the file containing the results of the model iterations.
+
+    Returns
+    -------
+    data_train : dict
+        A dictionary of the model training points.
+
+
+    The dictionary contains the following fields:
+
+    - `active_params_names`: The names of the (free) model parameters.
+    - `xtrain`: The (free) model parameter values for each iteration (2-d array).
+    - `ytrain`: The total weighted distance of the model compared to the Kepler data for each iteration (1-d array).
+    """
     data_table = np.genfromtxt(file_name_path + file_name, delimiter=' ', names=True, dtype='f8')
     cols = len(data_table.dtype.names)
 
@@ -32,6 +54,9 @@ def load_training_points(dims, file_name_path='', file_name='Active_params_recom
     return data_train
 
 def load_GP_table_prior_draws(file_name, file_name_path=''):
+    """
+    Load a table of model parameter draws from the prior.
+    """
     #Example file_name: 'GP_emulator_points%s_meanf%s_small_hparams_prior_draws%s.csv' % (n_train, mean_f, n_draws)
     xprior_accepted_table = np.genfromtxt(file_name_path + file_name, skip_header=4, delimiter=',', names=True, dtype='f8')
     return xprior_accepted_table
@@ -64,18 +89,77 @@ def load_GP_2d_grids(dims, n_train, mean_f, sigma_f, lscales, file_name_path='',
     return GP_grids
 
 def transform_sum_diff_params(xpoints, i, j):
+    """
+    Transform two parameters into their sum and difference.
+
+    Parameters
+    ----------
+    xpoints : array[float]
+        An array of parameters for each iteration (2-d array).
+    i,j : int
+        The index of a parameter to transform.
+
+    Returns
+    -------
+    xpoints_transformed : array[float]
+        The array of parameters with the x_i and x_j parameters replaced by their sum (x_i+x_j) and difference (x_j-x_i). 2-d array with the same shape as `xpoints`.
+
+    See Also
+    --------
+    transform_sum_diff_params_inverse : Perform the inverse transformation (return the original parameters from their sum and difference).
+    """
     print('Transforming columns (i,j) to (i+j,j-i).')
     xpoints_transformed = np.copy(xpoints)
     xpoints_transformed[:,i], xpoints_transformed[:,j] = xpoints_transformed[:,i] + xpoints_transformed[:,j], xpoints_transformed[:,j] - xpoints_transformed[:,i]
     return xpoints_transformed
 
 def transform_sum_diff_params_inverse(xpoints, i, j):
+    """
+    Transform the sum and difference of two parameters back into the original parameters.
+
+    Parameters
+    ----------
+    xpoints : array[float]
+        An array of parameters for each iteration (2-d array), where the x_i and x_j parameters are the sum and difference of two original parameters.
+    i,j : int
+        The index of a transformed parameter.
+
+    Returns
+    -------
+    xpoints_transformed : array[float]
+        The array of original parameters (2-d array). Equivalent to the transformation of x_i and x_j to (x_i-x_j)/2 and (x_i+x_j)/2.
+
+    See Also
+    --------
+    transform_sum_diff_params : Perform the sum and difference of two parameters (the inverse of this transformation).
+    """
     print('Transforming columns (i,j) to ((i-j)/2,(i+j)/2).')
     xpoints_transformed = np.copy(xpoints)
     xpoints_transformed[:,i], xpoints_transformed[:,j] = (xpoints_transformed[:,i] - xpoints_transformed[:,j])/2., (xpoints_transformed[:,i] + xpoints_transformed[:,j])/2.
     return xpoints_transformed
 
 def make_cuts_GP_mean_std_post(x_names, xprior_table, max_mean=np.inf, max_std=np.inf, max_post=np.inf):
+    """
+    Return a restricted sample of parameters given cuts on the Gaussian process (GP) emulator predictions at those parameters.
+
+    Parameters
+    ----------
+    x_names : array[str]
+        The names of the parameters.
+    xprior_table : structured array
+        The table of parameter values and GP predictions at each iteration, with parameter/column names corresponding to `x_names`.
+    max_mean : float, default=inf
+        The maximum mean prediction to include.
+    max_std : float, default=inf
+        The maximum standard deviation to include.
+    max_post : float, default=inf
+        The maximum posterior draw value to include.
+
+    Returns
+    -------
+    xpoints_cut : structured array
+        The table of parameter values at the iterations surviving all of the cuts.
+    """
     dims = len(x_names)
 
     xpoints_all = xprior_table[np.array(x_names)]
@@ -88,6 +172,24 @@ def make_cuts_GP_mean_std_post(x_names, xprior_table, max_mean=np.inf, max_std=n
     return xpoints_cut
 
 def plot_fig_hists_GP_draws(fig_size, xprior_table, bins=100, save_name='no_name_fig.pdf', save_fig=False):
+    """
+    Plot figure for visualizing the Gaussian process emulator statistics.
+
+    Contains four panels for the histograms of the Gaussian process mean predictions, prediction draws, and standard deviations, along with a scatter plot of mean prediction vs. standard deviation.
+
+    Parameters
+    ----------
+    fig_size : tuple
+        The figure size, e.g. (16,8).
+    xprior_table : structured array
+        The table of parameter values and GP predictions at each iteration.
+    bins : int, default=100
+        The number of bins to use for the histograms.
+    save_name : str, default='no_name_fig.pdf'
+        The file name for saving the figure.
+    save_fig : bool, default=False
+        Whether to save the figure. If True, will save the figure in the working directory with the file name given by ``save_name``.
+    """
     fig = plt.figure(figsize=fig_size)
     plot = GridSpec(2,2,left=0.1,bottom=0.1,right=0.95,top=0.95,wspace=0.2,hspace=0.2)
 
@@ -116,7 +218,45 @@ def plot_fig_hists_GP_draws(fig_size, xprior_table, bins=100, save_name='no_name
         plt.close()
 
 def plot_cornerpy_wrapper(x_symbols, xpoints, xpoints_extra=None, c_extra='r', s_extra=1, quantiles=[0.16, 0.5, 0.84], verbose=False, fig=None, show_titles=True, label_kwargs={'fontsize': 20}, title_kwargs={'fontsize':20}, save_name='no_name_fig.pdf', save_fig=False):
+    """
+    Plot a parameter space as a corner plot.
 
+    Wrapper for the corner.corner function from the `corner.py package <https://corner.readthedocs.io/en/latest/>`_, with the option of over-plotting an additional set of points for comparison.
+
+    Parameters
+    ----------
+    x_symbols : list or array[str]
+        A list of the parameter names/symbols.
+    xpoints : array[float]
+        The sample of parameter values (2-d array).
+    xpoints_extra : array[float], optional
+        An additional sample of parameter values to plot (2-d array).
+    c_extra : str, default='r'
+        The color for plotting the additional sample of parameters.
+    s_extra : float, default=1
+        The marker size for plotting the additional sample of parameters.
+    quantiles : list, default=[0.16, 0.5, 0.84]
+        The quantiles to show on the histograms of the parameters as vertical lines.
+    verbose : bool, default=False
+        Whether to print the quantiles for the distribution of each parameter.
+    fig : matplotlib.figure.Figure, optional
+        An existing figure object to plot on.
+    show_titles : bool, default=True
+        Whether to show the quantiles for the distribution of each parameter above each histogram.
+    label_kwargs : dict, default={'fontsize': 20}
+        Extra parameters for setting the labels.
+    title_kwargs : dict, default={'fontsize': 20}
+        Extra parameters for setting the title.
+    save_name : str, default='no_name_fig.pdf'
+        The file name for saving the figure.
+    save_fig : bool, default=False
+        Whether to save the figure. If True, will save the figure in the working directory with the file name given by ``save_name``.
+
+    Returns
+    -------
+    fig : matplotlib.figure.Figure
+        The figure, if `save_fig=False`.
+    """
     dims = len(x_symbols)
 
     fig = corner.corner(xpoints, labels=x_symbols, quantiles=quantiles, verbose=verbose, fig=fig, show_titles=show_titles, label_kwargs=label_kwargs, title_kwargs=title_kwargs)

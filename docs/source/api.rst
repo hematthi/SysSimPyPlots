@@ -19,7 +19,7 @@ Here, we provide detailed documentation for *many* of the functions that you may
 
    Includes many functions for plotting figures for visualizing the catalogs and their properties.
 
-- `plot_params.py`
+- :ref:`plot_params.py <api_plot_params>`
 
    Includes some functions for plotting model parameter spaces. Also includes functions for loading files containing many evaluations of model parameters.
 
