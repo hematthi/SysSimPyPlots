@@ -1,6 +1,6 @@
 .. _api_compute_RVs:
 
-plot_params.py
+compute_RVs.py
 ================
 
 .. note::
