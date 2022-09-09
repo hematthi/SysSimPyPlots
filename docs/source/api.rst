@@ -23,7 +23,7 @@ Here, we provide detailed documentation for *many* of the functions that you may
 
    Includes some functions for plotting model parameter spaces. Also includes functions for loading files containing many evaluations of model parameters.
 
-- `compute_RVs.py`
+- :ref:`compute_RVs.py <api_compute_RVs>`
 
    Contains functions for computing, simulating, and fitting radial velocity observations of the simulated planetary systems.
 
@@ -41,3 +41,4 @@ Here, we provide detailed documentation for *many* of the functions that you may
    api_compare_kepler
    api_plot_catalogs
    api_plot_params
+   api_compute_RVs

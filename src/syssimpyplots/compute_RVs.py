@@ -20,18 +20,82 @@ import syssimpyplots.general as gen
 # Functions to compute the RV signals of planets:
 
 def M_anom(t, T0, P):
-    # Compute the mean anomaly M (radians) at a time t (yrs) given a reference epoch T0 (yrs) and period P (yrs)
+    """
+    Compute the mean anomaly of an orbit at a given time.
+
+    Note
+    ----
+    The parameters must have the same units (of time), but the actual units can be freely chosen (e.g., yrs).
+
+    Parameters
+    ----------
+    t : float
+        The time at which the mean anomaly is evaluated.
+    T0 : float
+        The reference epoch.
+    P : float
+        The orbital period.
+
+    Returns
+    -------
+    M : float
+        The mean anomaly (radians) at time `t`.
+    """
     M = (2.*np.pi*(t - T0))/P
     return M
 
 def fzero_E_anom(E, t, T0, P, e):
-    # Kepler's equation moved to one side (solve for zeros to get solutions)
+    """
+    Evaluate Kepler's equation moved to one side (solve for the zeros of this function to get solutions for the eccentric anomaly, `E`).
+
+    Note
+    ----
+    The parameters `t`, `T0`, and `P` must have the same units (of time), but the actual units can be freely chosen (e.g., yrs).
+
+    Parameters
+    ----------
+    E : float
+        The eccentric anomaly (radians).
+    t : float
+        The time at which the anomalies are evaluated.
+    T0 : float
+        The reference epoch.
+    P : float
+        The orbital period.
+    e : float
+        The orbital eccentricity.
+
+    Returns
+    -------
+    Kepler's equation moved to one side.
+    """
     M = M_anom(t, T0, P)
     return E - e*np.sin(E) - M
 
 def E_anom(t, T0, P, e):
-    # Compute the eccentric anomaly E (radians) numerically at a time t (yrs) given a reference epoch T0 (yrs), period P (yrs), and eccentricity e
+    """
+    Solve for the eccentric anomaly at a given time.
 
+    Note
+    ----
+    The parameters `t`, `T0`, and `P` must have the same units (of time), but the actual units can be freely chosen (e.g., yrs).
+
+    Parameters
+    ----------
+    t : float
+        The time at which the eccentric anomaly is evaluated.
+    T0 : float
+        The reference epoch.
+    P : float
+        The orbital period.
+    e : float
+        The orbital eccentricity.
+
+    Returns
+    -------
+    E : float
+        The eccentric anomaly (radians).
+    """
     #E = brentq(fzero_E_anom, 0., 2.*np.pi, args=(t, T0, P, e)) # doesn't always work!
 
     # Try to solve iteratively:
@@ -46,19 +110,83 @@ def E_anom(t, T0, P, e):
     return E
 
 def nu_anom(E, e):
-    # Compute the true anomaly nu (radians) given an eccentric anomaly E (radians) and eccentricity e
+    """
+    Compute the true anomaly from the eccentric anomaly and orbital eccentricity.
+
+    Parameters
+    ----------
+    E : float
+        The eccentric anomaly (radians).
+    e : float
+        The orbital eccentricity.
+
+    Returns
+    -------
+    nu : float
+        The true anomaly (radians).
+    """
     nu = 2.*np.arctan(np.sqrt((1.+e)/(1.-e))*np.tan(E/2.))
     return nu
 
 def RV_true(t, K, P, T0=0., e=0., w=0., gamma=0.):
-    # Compute the true radial velocity (m/s) at a time t (yrs) given the semi-amplitude K (m/s), period P (yrs), reference epoch T0 (yrs), eccentricity e, argument of pericenter w (radians), and reference zero-point gamma (m/s)
+    """
+    Compute the true radial velocity of an orbit at a given time.
+
+    Parameters
+    ----------
+    t : float
+        The time (yrs) at which to compute the radial velocity.
+    K : float
+        The radial velocity semi-amplitude (m/s).
+    P : float
+        The orbital period (yrs).
+    T0 : float, default=0.
+        The reference epoch (yrs).
+    e : float, default=0.
+        The orbital eccentricity.
+    w : float, default=0.
+        The argument of pericenter (radians).
+    gamma : float, default=0.
+        The radial velocity reference zero-point/offset (m/s).
+
+    Returns
+    -------
+    V_r : float
+        The radial velocity (m/s) at time `t`.
+    """
     E = E_anom(t, T0, P, e)
     nu = nu_anom(E, e)
     V_r = K*(np.cos(nu + w) + e*np.cos(w)) + gamma
     return V_r
 
 def RV_true_sys(t, K_sys, P_sys, T0_sys, e_sys, w_sys, gamma=0.):
-    # Compute the true radial velocity (m/s) at a time t (yrs) given all the planets in the system
+    """
+    Compute the true radial velocity of a planetary system at a given time.
+
+    This is the sum of the radial velocities of the individual planets in the system, each computed using :py:func:`syssimpyplots.compute_RVs.RV_true`.
+
+    Parameters
+    ----------
+    t : float
+        The time (yrs) at which to compute the radial velocity.
+    K_sys : array[float]
+        The radial velocity semi-amplitudes (m/s) of the planets.
+    P_sys : array[float]
+        The orbital periods (yrs).
+    T0_sys : array[float]
+        The reference epochs (yrs).
+    e_sys : array[float]
+        The orbital eccentricities.
+    w_sys : array[float]
+        The arguments of pericenter (radians).
+    gamma : float, default=0.
+        The radial velocity reference zero-point/offset (m/s).
+
+    Returns
+    -------
+    V_r : float
+        The radial velocity (m/s) at time `t`.
+    """
     n_pl = len(K_sys)
     assert n_pl == len(P_sys) == len(T0_sys) == len(e_sys) == len(w_sys)
     V_r_per_pl = np.zeros(n_pl)
@@ -68,7 +196,27 @@ def RV_true_sys(t, K_sys, P_sys, T0_sys, e_sys, w_sys, gamma=0.):
     return V_r
 
 def rv_K(m, P, e=None, i=None, Mstar=1.0):
-    # Compute the radial velocity semi-amplitude K of a system given arrays of the planet masses m (M_earth) and periods (days), and optionally eccentricities, sky-inclinations (rad), and stellar mass (Msun)
+    """
+    Compute the radial velocity semi-amplitude of each planet in a system.
+
+    Parameters
+    ----------
+    m : array[float]
+        The planet masses (Earth masses).
+    P : array[float]
+        The orbital periods (days).
+    e : array[float], optional
+        The orbital eccentricities (assumed all zero if not provided).
+    i : array[float], optional
+        The orbital inclinations (radians) relative to the sky plane (assumed to be all 90 degrees, i.e. edge-on, if not provided).
+    Mstar : float, default=1.
+        The stellar mass (solar masses).
+
+    Returns
+    -------
+    K : array[float]
+        The radial velocity semi-amplitudes (m/s).
+    """
     n_pl = len(m)
     e = np.zeros(n_pl) if e is None else e
     i = (np.pi/2.)*np.ones(n_pl) if i is None else i
@@ -86,8 +234,35 @@ def rv_K(m, P, e=None, i=None, Mstar=1.0):
 # Functions to fit RV time series using generalized least squares (GLS):
 
 def fit_rv_K_single_planet_model_GLS(t_obs, RV_obs, covarsc, P, T0=0., e=0., w=0.):
-    # Fit a radial velocity series RV_obs (m/s) using generalized least squares assuming a single planet model with known period P (days), epoch T0 (days), eccentricity e, and argument of pericenter w (radians), for the semi-amplitude K (m/s)
-    # The array of observation times t_obs (days) must correspond to the array of RV observations RV_obs, and to the covariance matrix of observation uncertainties covarsc
+    """
+    Fit the radial velocity (RV) semi-amplitude (K) of a single planet model given an RV time series.
+
+    Assumes fixed/known values for all other parameters of the planetary orbit, and uses generalized least squares (GLS) to solve for K.
+
+    Parameters
+    ----------
+    t_obs : array[float]
+        The observation times (days) corresponding to the RV observations.
+    RV_obs : array[float]
+        The RV observations (m/s).
+    covarsc : array[float]
+        The covariance matrix of measurement uncertainties (2-d array).
+    P : float
+        The orbital period (days) of the planet.
+    T0 : float, default=0.
+        The reference epoch (days).
+    e : float, default=0.
+        The orbital eccentricity.
+    w : float, default=0.
+        The argument of pericenter (radians).
+
+    Returns
+    -------
+    K_hat : float
+        The estimator for the RV semi-amplitude (m/s).
+    sigma_K : float
+        The estimated uncertainty in the RV semi-amplitude (m/s).
+    """
     E_obs = np.array([E_anom(t, T0, P, e) for t in t_obs])
     nu_obs = nu_anom(E_obs, e)
 
@@ -102,8 +277,35 @@ def fit_rv_K_single_planet_model_GLS(t_obs, RV_obs, covarsc, P, T0=0., e=0., w=0
     return K_hat, sigma_K
 
 def fit_rv_Ks_multi_planet_model_GLS(t_obs, RV_obs, covarsc, P_all, T0_all, e_all, w_all):
-    # Fit a radial velocity series RV_obs (m/s) using generalized least squares assuming a multi-planet model with known periods P_all (days), epochs T0_all (days), eccentricities e_all, and argument of pericenter w_all (radians), for the semi-amplitudes K (m/s) of each planet
-    # The array of observation times t_obs (days) must correspond to the array of RV observations RV_obs, and to the covariance matrix of observation uncertainties covarsc
+    """
+    Fit the radial velocity (RV) semi-amplitudes (K's) of a multi-planet model given an RV time series.
+
+    Assumes fixed/known values for all other parameters of the planetary orbits, and uses generalized least squares (GLS) to solve for K.
+
+    Parameters
+    ----------
+    t_obs : array[float]
+        The observation times (days) corresponding to the RV observations.
+    RV_obs : array[float]
+        The RV observations (m/s).
+    covarsc : array[float]
+        The covariance matrix of measurement uncertainties (2-d array).
+    P_all : array[float]
+        The orbital periods (days).
+    T0_all : array[float]
+        The reference epochs (days).
+    e_all : array[float]
+        The orbital eccentricities.
+    w_all : array[float]
+        The arguments of pericenter (radians).
+
+    Returns
+    -------
+    K_hat_all : array[float]
+        The estimators for the RV semi-amplitudes (m/s).
+    sigma_K_all : array[float]
+        The estimated uncertainties in the RV semi-amplitudes (m/s).
+    """
     n_pl = len(P_all)
     assert n_pl == len(T0_all) == len(e_all) == len(w_all)
     sincosphase = []
