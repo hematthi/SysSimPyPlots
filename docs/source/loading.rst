@@ -50,6 +50,7 @@ The function above outputs two dictionary objects, which we have stored in ``sss
 
    For a complete list of all the data fields, see the documentation for the :py:func:`compute_summary_stats_from_cat_phys <syssimpyplots.load_sims.compute_summary_stats_from_cat_phys>` function.
 
+
 Notice that we only passed the path to the simulated catalog, ``load_dir``, to the function ``compute_summary_stats_from_cat_phys()``. This tells it to load several ancillary files containing the same information as what's in "physical_catalog.csv", which is actually faster than loading the catalog itself using ``load_cat_phys()``. The function :py:func:`compute_summary_stats_from_cat_phys <syssimpyplots.load_sims.compute_summary_stats_from_cat_phys>` also accepts a physical catalog table (i.e. the ``cat_phys`` object) as input, but we recommend using the load directory path.
 
 
@@ -79,6 +80,7 @@ for computing the summary statistics from the observed catalog.
       Again, each row in a 2-d array is padded with either zeros or negative ones, since different systems have different numbers of observed planets!
 
    For a complete list of all the data fields, see the documentation for the :py:func:`compute_summary_stats_from_cat_obs <syssimpyplots.load_sims.compute_summary_stats_from_cat_obs>` function.
+
 
 As before, we only passed the path to the simulated catalog to the function ``compute_summary_stats_from_cat_obs()``, which loads several ancillary files containing the same information instead of "observed_catalog.csv". You can also pass the ``cat_obs`` object into the function but we recommend the load directory path approach.
 
