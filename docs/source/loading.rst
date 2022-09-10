@@ -48,9 +48,7 @@ The function above outputs two dictionary objects, which we have stored in ``sss
 
    On the other hand, ``sssp`` contains only one-dimensional arrays, such as ``sssp['P_all']`` for the orbital periods of all the planets in the catalog. This loses information about which planet(s) belong to which system, but is very convenient for plotting histograms, or performing simple calculations like computing the median period or the number of planets with periods less than 10 days.
 
-   For a complete list of all the data fields, see the documentation for the :py:func:`syssimpyplots.load_sims.compute_summary_stats_from_cat_phys` function.
-
-|
+   For a complete list of all the data fields, see the documentation for the :py:func:`compute_summary_stats_from_cat_phys <syssimpyplots.load_sims.compute_summary_stats_from_cat_phys>` function.
 
 Notice that we only passed the path to the simulated catalog, ``load_dir``, to the function ``compute_summary_stats_from_cat_phys()``. This tells it to load several ancillary files containing the same information as what's in "physical_catalog.csv", which is actually faster than loading the catalog itself using ``load_cat_phys()``. The function :py:func:`compute_summary_stats_from_cat_phys <syssimpyplots.load_sims.compute_summary_stats_from_cat_phys>` also accepts a physical catalog table (i.e. the ``cat_phys`` object) as input, but we recommend using the load directory path.
 
@@ -80,9 +78,7 @@ for computing the summary statistics from the observed catalog.
 
       Again, each row in a 2-d array is padded with either zeros or negative ones, since different systems have different numbers of observed planets!
 
-   For a complete list of all the data fields, see the documentation for the :py:func:`syssimpyplots.load_sims.compute_summary_stats_from_cat_phys` function.
-
-|
+   For a complete list of all the data fields, see the documentation for the :py:func:`compute_summary_stats_from_cat_obs <syssimpyplots.load_sims.compute_summary_stats_from_cat_obs>` function.
 
 As before, we only passed the path to the simulated catalog to the function ``compute_summary_stats_from_cat_obs()``, which loads several ancillary files containing the same information instead of "observed_catalog.csv". You can also pass the ``cat_obs`` object into the function but we recommend the load directory path approach.
 
@@ -108,17 +104,19 @@ In these examples, you can replace the ``periods.out`` file with any of the othe
 Loading the Kepler catalog
 --------------------------
 
-Analogous to the function for summarizing an observed catalog, there is also a function for loading and processing the real Kepler data:
+Analogous to the functions for loading and summarizing an observed catalog, there are also functions for loading and processing the real Kepler data:
 
 .. code-block:: python
 
+   koi_table = load_Kepler_planets_cleaned()
+
    ssk_per_sys, ssk = compute_summary_stats_from_Kepler_catalog(P_min, P_max, radii_min, radii_max)
 
-This function requires the arguments ``P_min``, ``P_max``, ``radii_min``, and ``radii_max`` for selecting a sample of exoplanets that is restricted to a given orbital period and planet radius range, in order to be comparable to the simulated planets -- parameters which are conveniently provided by the :py:func:`syssimpyplots.load_sims.read_targets_period_radius_bounds` function shown earlier.
+The function :py:func:`compute_summary_stats_from_Kepler_catalog <syssimpyplots.compare_kepler.compute_summary_stats_from_Kepler_catalog>` requires the arguments ``P_min``, ``P_max``, ``radii_min``, and ``radii_max`` for selecting a sample of exoplanets that is restricted to a given orbital period and planet radius range, in order to be comparable to the simulated planets -- parameters which are conveniently provided by the :py:func:`read_targets_period_radius_bounds <syssimpyplots.load_sims.read_targets_period_radius_bounds>` function shown earlier.
 
 The outputs stored in ``ssk_per_sys`` and ``ssk`` contain the same summary statistics as those in ``sss_per_sys`` and ``sss``, respectively.
 
-.. hint::
+.. tip::
 
    The variable names ``sss`` and ``ssk`` were chosen to stand for "summary statistics simulated" and "summary statistics Kepler", respectively (and ``sssp`` for "summary statistics simulated physical"). Of course, you are free to choose whatever variable names you prefer.
 
