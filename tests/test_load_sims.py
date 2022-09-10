@@ -4,8 +4,6 @@ import os
 import sys
 from itertools import chain # for rapid flattening of lists of lists
 
-#sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
-
 from syssimpyplots.general import *
 from syssimpyplots.compare_kepler import *
 from syssimpyplots.load_sims import *

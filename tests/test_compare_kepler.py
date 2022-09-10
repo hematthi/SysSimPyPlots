@@ -3,8 +3,6 @@ import numpy as np
 import os
 import sys
 
-#sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
-
 from syssimpyplots.general import *
 from syssimpyplots.compare_kepler import *
 from syssimpyplots.load_sims import *
