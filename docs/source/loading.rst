@@ -24,9 +24,17 @@ Then specify the path to where you saved your data and load it as follows, for e
 
    load_dir = '/path/to/a/simulated/catalog/' # replace with your path!
 
+   cat_phys = load_cat_phys(load_dir + 'physical_catalog.csv')
+
+This returns a table (which we stored in ``cat_phys``) with the properties of all the planets in the physical catalog, where each row corresponds to one planet. See the documentation for :py:func:`load_cat_phys <syssimpyplots.load_sims.load_cat_phys>` for a detailed description of the table columns.
+
+While you could directly work with the ``cat_phys`` table, it would be convenient if the data was processed in some more useful ways. For example, you may want to know which planets belong to the same system, their period ratios, etc. You don't have to compute these yourself -- we've defined functions for computing these and *many* other summary statistics from the catalogs!
+
+.. code-block:: python
+
    sssp_per_sys, sssp = compute_summary_stats_from_cat_phys(file_name_path=load_dir)
 
-The function outputs two dictionary objects, which we have stored in ``sssp_per_sys`` and ``sssp``. They contain mostly the same information but summarized in different ways.
+The function above outputs two dictionary objects, which we have stored in ``sssp_per_sys`` and ``sssp``. They contain mostly the same information but summarized in different ways.
 
 .. collapse:: What do they contain?
 
@@ -44,6 +52,8 @@ The function outputs two dictionary objects, which we have stored in ``sssp_per_
 
 |
 
+Notice that we only passed the path to the simulated catalog, ``load_dir``, to the function ``compute_summary_stats_from_cat_phys()``. This tells it to load several ancillary files containing the same information as what's in "physical_catalog.csv", which is actually faster than loading the catalog itself using ``load_cat_phys()``. The function :py:func:`compute_summary_stats_from_cat_phys <syssimpyplots.load_sims.compute_summary_stats_from_cat_phys>` also accepts a physical catalog table (i.e. the ``cat_phys`` object) as input, but we recommend using the load directory path.
+
 
 Loading observed catalogs
 -------------------------
@@ -52,7 +62,15 @@ The process for loading simulated observed catalogs is similar; after importing 
 
 .. code-block:: python
 
+   cat_obs = load_cat_obs(load_dir + 'observed_catalog.csv')
+
+for loading a table with all of the observed planets, or
+
+.. code-block:: python
+
    sss_per_sys, sss = compute_summary_stats_from_cat_obs(file_name_path=load_dir)
+
+for computing the summary statistics from the observed catalog.
 
 .. collapse:: What do they contain?
 
@@ -65,6 +83,8 @@ The process for loading simulated observed catalogs is similar; after importing 
    For a complete list of all the data fields, see the documentation for the :py:func:`syssimpyplots.load_sims.compute_summary_stats_from_cat_phys` function.
 
 |
+
+As before, we only passed the path to the simulated catalog to the function ``compute_summary_stats_from_cat_obs()``, which loads several ancillary files containing the same information instead of "observed_catalog.csv". You can also pass the ``cat_obs`` object into the function but we recommend the load directory path approach.
 
 
 Reading simulation parameters
