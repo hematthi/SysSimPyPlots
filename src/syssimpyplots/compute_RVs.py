@@ -331,10 +331,38 @@ def fit_rv_Ks_multi_planet_model_GLS(t_obs, RV_obs, covarsc, P_all, T0_all, e_al
 # Functions to condition catalogs on a set of planet properties and simulate RV observations (fitting RVs to measure the amplitude of the transiting planet):
 
 def conditionals_dict(P_cond_bounds=None, Rp_cond_bounds=None, Mp_cond_bounds=None, det=True):
+    """
+    Create a dictionary with conditionals for planetary systems.
 
-    # P_cond_bounds = [P_lower, P_upper] for period of planet conditioned on
-    # Rp_cond_bounds = [Rp_lower, Rp_upper] for radius of planet conditioned on
-    # Mp_cond_bounds = [Mp_lower, Mp_upper] for mass of planet conditioned on
+    Allows for setting bounds on orbital period, planet radius, planet mass, and transit detectability.
+
+    Parameters
+    ----------
+    P_cond_bounds : list, optional
+        The [lower, upper] bounds on orbital period (days).
+    Rp_cond_bounds : list, optional
+        The [lower, upper] bounds on planet radius (Earth radii).
+    Mp_cond_bounds : list, optional
+        The [lower, upper] bounds on planet mass (Earth masses).
+    det : bool, default=True
+        Whether to require the planets to be detected in transits.
+
+    Returns
+    -------
+    conds : dict
+        A dictionary of conditionals.
+
+
+    The dictionary contains the following fields:
+
+    - `P_lower`: The lower bound on orbital period (days).
+    - `P_upper`: The upper bound on orbital period (days).
+    - `Rp_lower`: The lower bound on planet radius (Earth radii).
+    - `Rp_upper`: The upper bound on planet radius (Earth radii).
+    - `Mp_lower`: The lower bound on planet mass (Earth masses).
+    - `Mp_upper`: The upper bound on planet mass (Earth masses).
+    - `det`: Whether to require the planets to be detected in transits (True/False).
+    """
     P_lower, P_upper = [0., np.inf] if P_cond_bounds==None else P_cond_bounds
     Rp_lower, Rp_upper = [0., np.inf] if Rp_cond_bounds==None else Rp_cond_bounds
     Mp_lower, Mp_upper = [0., np.inf] if Mp_cond_bounds==None else Mp_cond_bounds
@@ -353,14 +381,49 @@ def conditionals_dict(P_cond_bounds=None, Rp_cond_bounds=None, Mp_cond_bounds=No
     return conds
 
 def condition_planets_bools_per_sys(sssp_per_sys, conds):
-    # Compute a 2d array of booleans where the conditioned planets are indicated by True values
-    # Note: includes systems without any conditioned planets (i.e. rows with all False values)
-    bools_cond_per_sys = (sssp_per_sys['P_all'] > conds['P_lower']) & (sssp_per_sys['P_all'] < conds['P_upper']) & (sssp_per_sys['radii_all'] > conds['Rp_lower']) & (sssp_per_sys['radii_all'] < conds['Rp_upper']) & (sssp_per_sys['mass_all'] > conds['Mp_lower']) & (sssp_per_sys['mass_all'] < conds['Mp_upper']) # 2d array with True for each conditioned planet (should be at least one True per row/system)
+    """
+    Compute a 2-d array of booleans indicating the planets passing the conditionals in a simulated physical catalog.
+
+    The 2-d array will match the shape of the 2-d arrays of planet properties in ``sssp_per_sys``.
+
+    Parameters
+    ----------
+    sssp_per_sys : dict
+        The dictionary containing the planetary and stellar properties for each system in a physical catalog (2-d and 1-d arrays), e.g. returned by the function  :py:func:`syssimpyplots.load_sims.compute_summary_stats_from_cat_phys`.
+    conds : dict
+        The dictionary of conditionals, e.g. returned by the function :py:func:`syssimpyplots.compute_RVs.conditionals_dict`.
+
+    Returns
+    -------
+    bools_cond_per_sys : array[bool]
+        The 2-d array of booleans indicating which planets pass all the conditionals in `conds`.
+
+
+    Note
+    ----
+    The output includes rows without any conditioned planets (i.e. rows with all False values), since it must have the same shape as the 2-d arrays of planet properties in ``sssp_per_sys`` in order to be able to index them.
+    """
+    bools_cond_per_sys = (sssp_per_sys['P_all'] > conds['P_lower']) & (sssp_per_sys['P_all'] < conds['P_upper']) & (sssp_per_sys['radii_all'] > conds['Rp_lower']) & (sssp_per_sys['radii_all'] < conds['Rp_upper']) & (sssp_per_sys['mass_all'] > conds['Mp_lower']) & (sssp_per_sys['mass_all'] < conds['Mp_upper']) # 2d array with True for each conditioned planet
     if conds['det']:
         bools_cond_per_sys = bools_cond_per_sys & (sssp_per_sys['det_all'] == 1)
     return bools_cond_per_sys
 
 def condition_systems_indices(sssp_per_sys, conds):
+    """
+    Compute an array of indices indicating which systems in a simulated physical catalog contain at least one conditioned planet.
+
+    Parameters
+    ----------
+    sssp_per_sys : dict
+        The dictionary containing the planetary and stellar properties for each system in a physical catalog (2-d and 1-d arrays), e.g. returned by the function  :py:func:`syssimpyplots.load_sims.compute_summary_stats_from_cat_phys`.
+    conds : dict
+        The dictionary of conditionals, e.g. returned by the function :py:func:`syssimpyplots.compute_RVs.conditionals_dict`.
+
+    Returns
+    -------
+    i_cond : array[int]
+        The array of indices indicating which systems contain at least one conditioned planet.
+    """
     bools_cond_per_sys = condition_planets_bools_per_sys(sssp_per_sys, conds)
     bools_in_bounds = np.any(bools_cond_per_sys, axis=1)
     n_per_sys = sssp_per_sys['Mtot_all']
@@ -369,7 +432,48 @@ def condition_systems_indices(sssp_per_sys, conds):
     return i_cond
 
 def plot_systems_gallery_with_RVseries_conditional(sssp_per_sys, sssp, conds, outputs_RVs=None, mark_undet=True, fit_RVs=False, N_obs_all=None, repeat=1000, σ_1obs=1., t_obs_σ=0.2, fig_size=(9,10), seed=None, N_sample=20, N_per_plot=20, afs=12, tfs=12, save_name_base='no_name_fig', save_fig=False):
+    """
+    Plot a gallery of systems conditioned on a given planet, along with their radial velocity (RV) time series.
 
+    Parameters
+    ----------
+    sssp_per_sys : dict
+        The dictionary containing the planetary and stellar properties for each system in a physical catalog (2-d and 1-d arrays), e.g. returned by the function  :py:func:`syssimpyplots.load_sims.compute_summary_stats_from_cat_phys`.
+    sssp : dict
+        A dictionary containing the planetary and stellar properties of all planets in a physical catalog (1-d arrays), e.g. returned by the function :py:func:`syssimpyplots.load_sims.compute_summary_stats_from_cat_phys`.
+    conds : dict
+        The dictionary of conditionals, e.g. returned by the function :py:func:`syssimpyplots.compute_RVs.conditionals_dict`.
+    outputs_RVs : structured array, optional
+        A table of RV simulation results (TODO: need more details).
+    mark_undet : bool, default=True
+        Whether to outline the undetected planets with red.
+    fit_RVs : bool, default=False
+        Whether to simulate how many RV observations are required to measure the RV semi-amplitude of the conditioned planet in each system.
+    N_obs_all : list[int], optional
+        The numbers of RV observations to test, if `fit_RVs=True`.
+    repeat : int, default=1000
+        The number of times to repeat the RV simulations for each system, if `fit_RVs=True`.
+    σ_1obs : float, default=1.
+        The single-measurement RV precision (m/s), if `fit_RVs=True`.
+    t_obs_σ : float, default=0.2
+        The standard deviation (days) in nightly RV observation times, if `fit_RVs=True`.
+    fig_size : tuple, default=(9,10)
+        The figure size.
+    seed : int, optional
+        A random seed, for reproducible results.
+    N_sample : int, default=20
+        The number of systems with a conditioned planet to sample and plot.
+    N_per_plot : int, default=20
+        The number of systems to plot per figure.
+    afs : int, default=12
+        The axes fontsize.
+    tfs : int, default=12
+        The text fontsize.
+    save_name_base : str, default='no_name_fig'
+        The start of the file names for saving the figures.
+    save_fig : bool, default=False
+        Whether to save the figures. If True, will save each figure in the working directory with the file name given by `save_name_base` with an index appended.
+    """
     # outputs_RVs = None: if provided (a table of RV simulations of conditioned systems), will draw systems from these (must have system ids and match the catalog that is provided)
 
     if outputs_RVs is not None:
@@ -611,13 +715,70 @@ def plot_systems_gallery_with_RVseries_conditional(sssp_per_sys, sssp, conds, ou
             plt.close()
 
 def fit_RVobs_systems_conditional(sssp_per_sys, sssp, conds, N_obs_all, cond_only=False, fit_sys_cond=True, fit_all_planets=False, N_sample=20, repeat=1000, σ_1obs=1., obs_mode='daily'):
+    """
+    Simulate the fitting of radial velocity (RV) observations to a sample of systems with a conditioned planet from a simulated physical catalog, to measure the RV semi-amplitudes of the conditioned planets.
 
-    # cond_only = False: set True to simulate ideal case (RV signal without any other planets)
-    # fit_sys_cond = True: set True to simulate real case (fitting conditioned planet only)
-    # fit_all_planets = False: set True to simulate optimistic case (fitting all planets)
+    Parameters
+    ----------
+    sssp_per_sys : dict
+        The dictionary containing the planetary and stellar properties for each system in a physical catalog (2-d and 1-d arrays), e.g. returned by the function  :py:func:`syssimpyplots.load_sims.compute_summary_stats_from_cat_phys`.
+    sssp : dict
+        A dictionary containing the planetary and stellar properties of all planets in a physical catalog (1-d arrays), e.g. returned by the function :py:func:`syssimpyplots.load_sims.compute_summary_stats_from_cat_phys`.
+    conds : dict
+        The dictionary of conditionals, e.g. returned by the function :py:func:`syssimpyplots.compute_RVs.conditionals_dict`.
+    N_obs_all : list[int]
+        The numbers of RV observations to test.
+    cond_only : bool, default=False
+        Whether to simulate an idealized case in which there are no planets other than the conditioned planet in each system.
+    fit_sys_cond : bool, default=True
+        Whether to simulate the realistic case in which we fit the RV semi-amplitude of the conditioned planet only.
+    fit_all_planets : bool, default=False
+        Whether to simulate an optimistic case in which we fit the RV semi-amplitudes of all the planets in each system.
+    N_sample : int, default=20
+        The number of systems with a conditioned planet to sample.
+    repeat : int, default=1000
+        The number of times to repeat the RV simulations for each system.
+    σ_1obs : float, default=1.
+        The single-measurement RV precision (m/s).
+    obs_mode : {'daily', 'random'}
+        How the RV observation times are drawn. `daily` will draw times spaced by a day with some added variation to avoid aliasing; `random` will draw completely random times over a set baseline (150 days).
 
-    # σ_1obs = 1. # single-measurement uncertainity in RVs (m/s)
-    # obs_mode = 'daily' or 'random' # how the observation times are drawn
+    Returns
+    -------
+    outputs : structured array
+        A table with the averaged results of the RV simulations for each conditioned system.
+
+
+    The table has the following default columns:
+
+    - `id_sys`: The index of the system.
+    - `n_pl`: The total number of planets in the system.
+    - `P_cond`: The period (days) of the conditioned planet.
+    - `Rp_cond`: The radius (Earth radii) of the conditioned planet.
+    - `Mp_cond`: The mass (Earth masses) of the conditioned planet.
+    - `K_cond`: The RV semi-amplitude (m/s) of the conditioned planet.
+    - `K_max`: The maximum RV semi-amplitude (m/s) of the planets in the system.
+    - `K_sum`: The sum of the RV semi-amplitudes (m/s) of the planets in the system.
+
+    If `cond_only=True`, will also have the following columns:
+
+    - `N_obs_min_{XX}p_ideal`: The minimum number of RV observations required to measure `K_cond` to within {XX} percent error in the ideal case, where {XX} = 30, 20, 10, and 5.
+    - `rms_sigma_K_{XX}p_ideal`: The root mean square of the uncertainties in the measured `K_cond` when `K_cond` is measured to within {XX} percent error in the ideal case, where {XX} = 30, 20, 10, and 5.
+    - `rmsd_best_ideal`: The best (fractional) root mean square deviation of the measured `K_cond` from the true `K_cond` in the ideal case, from the number of RV observations tested.
+
+    If `fit_sys_cond=True`, will also have the following columns:
+
+    - `N_obs_min_{XX}p`: The minimum number of RV observations required to measure `K_cond` to within {XX} percent error in the realistic case, where {XX} = 30, 20, 10, and 5.
+    - `rms_sigma_K_{XX}p`: The root mean square of the uncertainties in the measured `K_cond` when `K_cond` is measured to within {XX} percent error in the realistic case, where {XX} = 30, 20, 10, and 5.
+    - `rmsd_best`: The best (fractional) root mean square deviation of the measured `K_cond` from the true `K_cond` in the realistic case, from the number of RV observations tested.
+
+    If `fit_all_planets=True`, will also have the following columns:
+
+    - `N_obs_min_{XX}p_fitall`: The minimum number of RV observations required to measure `K_cond` to within {XX} percent error in the optimistic case, where {XX} = 30, 20, 10, and 5.
+    - `rms_sigma_K_{XX}p_fitall`: The root mean square of the uncertainties in the measured `K_cond` when `K_cond` is measured to within {XX} percent error in the optimistic case, where {XX} = 30, 20, 10, and 5.
+    - `rmsd_best_fitall`: The best (fractional) root mean square deviation of the measured `K_cond` from the true `K_cond` in the optimistic case, from the number of RV observations tested.
+
+    """
     t_obs_σ = 0.2 # variation in exact 'daily' observing time (days) to avoid aliasing
 
     i_cond = condition_systems_indices(sssp_per_sys, conds)
@@ -819,9 +980,48 @@ def fit_RVobs_systems_conditional(sssp_per_sys, sssp, conds, N_obs_all, cond_onl
     return outputs
 
 def fit_RVobs_single_planets_vs_K(K_array, N_obs_all, P_bounds, alpha_P=0., sigma_ecc=0.25, repeat=1000, σ_1obs=1., t_obs_σ=0.2):
+    """
+    Simulate the fitting of radial velocity (RV) observations of single planets as a function of their RV semi-amplitude (K).
 
-    # σ_1obs = 1. # single-measurement uncertainity in RVs (m/s)
-    # t_obs_σ = 0.2 # variation in exact 'daily' observing time (days) to avoid aliasing
+    Note
+    ----
+    Draws single planets with periods from a power-law distribution and eccentricities from a Rayleigh distribution, while assuming a fixed array of K (thus, the mass of the planet will change).
+
+    Parameters
+    ----------
+    K_array : list or array[float]
+        The RV semi-amplitudes (m/s) to simulate.
+    N_obs_all : array[int]
+        The numbers of RV observations to test.
+    P_bounds : list or tuple
+        The (lower, upper) bounds on the orbital periods (days).
+    alpha_P : float, default=0.
+        The power-law index for the period distribution.
+    sigma_ecc : float, default=0.25
+        The Rayleigh scale for the eccentricity distribution.
+    repeat : int, default=1000
+        The number of times to repeat the RV simulations for each system.
+    σ_1obs : float, default=1.
+        The single-measurement RV precision (m/s).
+    t_obs_σ : float, default=0.2
+        The standard deviation (days) in nightly RV observation times.
+
+    Returns
+    -------
+    outputs : structured array
+        A table with the averaged results of the RV simulations for each single planet.
+
+
+    The table has the following columns:
+
+    - `K`: The RV semi-amplitude (m/s) of the planet.
+    - `N_obs_min_20p`: The minimum number of RV observations required to measure `K` to within 20 percent error.
+    - `rmsd_best`: The best (fractional) root mean square deviation of the measured `K` from the true `K`, from the number of RV observations tested.
+
+    Warning
+    -------
+    The results (each row) averages over the periods and eccentricities drawn for each planet, which are not independent from `K` and may have large effects on the minimum number of observations required!
+    """
     P_lower, P_upper = P_bounds
     assert P_lower < P_upper
 
@@ -880,8 +1080,35 @@ def fit_RVobs_single_planets_vs_K(K_array, N_obs_all, P_bounds, alpha_P=0., sigm
     outputs = np.array(outputs, dtype=[('K','f8'), ('N_obs_min_20p','f8'), ('rmsd_best','f8')])
     return outputs
 
-def plot_scatter_K_vs_P_conditional(sssp_per_sys, sssp, conds, log_y=False, fig_size=(8,5), afs=20, tfs=20, lfs=16, save_name='no_name_fig.pdf', save_fig=False):
+def plot_scatter_K_vs_P_conditional(sssp_per_sys, sssp, conds, log_y=False, fig_size=(8,5), afs=20, tfs=20, lfs=16, save_name_base='no_name_fig', save_fig=False):
+    """
+    Plot the radial velocity semi-amplitude (`K`) versus orbital period (`P`) for all planets in systems with a conditioned planet.
 
+    Makes two figures: (1) a scatter plot of `K/K_max` versus `P`, where `K_max` is the maximum RV semi-amplitude of the planets in each system, and (2) a scatter plot of `K` versus `P`.
+
+    Parameters
+    ----------
+    sssp_per_sys : dict
+        The dictionary containing the planetary and stellar properties for each system in a physical catalog (2-d and 1-d arrays), e.g. returned by the function  :py:func:`syssimpyplots.load_sims.compute_summary_stats_from_cat_phys`.
+    sssp : dict
+        A dictionary containing the planetary and stellar properties of all planets in a physical catalog (1-d arrays), e.g. returned by the function :py:func:`syssimpyplots.load_sims.compute_summary_stats_from_cat_phys`.
+    conds : dict
+        The dictionary of conditionals, e.g. returned by the function :py:func:`syssimpyplots.compute_RVs.conditionals_dict`.
+    log_y : bool, default=False
+        Whether to plot the y-axis (`K/K_max` or `K`) on a log-scale.
+    fig_size : tuple, default=(8,5)
+        The figure size.
+    afs : int, default=20
+        The axes fontsize.
+    tfs : int, default=20
+        The text fontsize.
+    lfs : int, default=16
+        The legend fontsize.
+    save_name_base : str, default='no_name_fig'
+        The start of the file names for saving the figures.
+    save_fig : bool, default=False
+        Whether to save the figures. If True, will save each figure in the working directory with the file name given by `save_name_base` with either 'v1' (for `K/K_max` vs. `P`) or 'v2' (for `K` vs. `P`) appended.
+    """
     i_cond = condition_systems_indices(sssp_per_sys, conds)
 
     Mstar_sample = sssp['Mstar_all'][i_cond]
@@ -941,7 +1168,7 @@ def plot_scatter_K_vs_P_conditional(sssp_per_sys, sssp, conds, log_y=False, fig_
     cbar.set_label(r'$K$', fontsize=lfs)
 
     if save_fig:
-        plt.savefig(save_name + 'v1.pdf')
+        plt.savefig(save_name_base + '_v1.pdf')
         plt.close()
 
     # To make a scatter plot of K vs P:
@@ -972,12 +1199,29 @@ def plot_scatter_K_vs_P_conditional(sssp_per_sys, sssp, conds, log_y=False, fig_
     cbar.set_label(r'$K/K_{\rm max}$', fontsize=lfs)
 
     if save_fig:
-        plt.savefig(save_name + 'v2.pdf')
+        plt.savefig(save_name_base + '_v2.pdf')
         plt.close()
 
 
 
 def generate_latex_table_RVobs_systems_conditional(outputs_RVs, nan_str=r'$>1000$', N_sample=40):
+    """
+    Make a LaTeX syntax-formatted table with the results of a simulation fitting radial velocity (RV) observations.
+
+    Parameters
+    ----------
+    outputs_RVs : structured array
+        A table of RV simulation results (TODO: need more details).
+    nan_str : str, default=r'$>1000$'
+        The string to replace NaN values.
+    N_sample : int, default=40
+        The number of rows/systems from `outputs_RVs` to include in the table.
+
+    Returns
+    -------
+    table_array : array[str]
+        An array of strings that will produce the rows of the LaTeX table.
+    """
     table_array = []
     for i in range(N_sample):
         osys = outputs_RVs[i]
@@ -996,10 +1240,27 @@ def generate_latex_table_RVobs_systems_conditional(outputs_RVs, nan_str=r'$>1000
 # Functions to fit and use a line for a set of simulations for log(N_obs) vs. log(K_cond) (ideal single-planet case):
 
 def fit_line_loglog_Nobs_K_single_planets(outputs_ideal, σ_1obs, p0):
-    # outputs_ideal: dictionary with simulated RV observations ('K' and 'N_obs_min_20p' fields)
-    # σ_1obs: single measurement precision, to serve as normalization point K_norm
-    # p0: initial guesses for line parameters N_obs(K_norm) and slope
+    """
+    Fit a line to a number of points of log(N_obs) versus log(K), where 'N_obs' is the minimum number of radial velocity (RV) observations required to measure the RV semi-amplitude ('K') to within 20 percent error.
 
+    Equivalent to fitting N_obs as a power-law function of K.
+
+    Parameters
+    ----------
+    outputs_ideal : dict
+        The dictionary containing the results of the RV simulations of the ideal case, including the fields `K` for the RV semi-amplitudes (m/s) and `N_obs_min_20p` for the minimum number of RV observations required to measure `K` to within 20 percent error.
+    σ_1obs : float
+        The single measurement RV precision (m/s) to serve as the normalization point (also represented by 'K_norm').
+    p0 : list
+        The initial guesses for the parameters of the line, [normalization, slope] where 'normalization' is the 'N_obs' at 'K_norm'.
+
+    Returns
+    -------
+    logN : float
+        The log of the normalization of the fitted line, log10(N_obs) at 'K_norm'.
+    slope : float
+        The slope of the fitted line.
+    """
     K_norm = σ_1obs # single measurement precision serves as normalization point
     f_linear = lambda p, x: p[0] + p[1]*x - p[1]*np.log10(K_norm)
     f_err = lambda p, x, y: y - f_linear(p,x)
@@ -1013,10 +1274,33 @@ def fit_line_loglog_Nobs_K_single_planets(outputs_ideal, σ_1obs, p0):
     return logN, slope
 
 def linear_logNobs_logK(K, K_norm, Nobs_norm, slope, Nobs_min=5, round_to_ints=True):
+    """
+    Return the required number of radial velocity (RV) observations ('N_obs') as a function of the RV semi-amplitude ('K') given a linear relation for log(N_obs) versus log(K).
+
+    Parameters
+    ----------
+    K : list or array[float]
+        The RV semi-amplitudes (m/s) at which to predict 'N_obs'.
+    K_norm : float
+        The normalization point (m/s) corresponding to `Nobs_norm`.
+    Nobs_norm : int
+        The required number of RV observations at the normalization point `K_norm`.
+    slope : float
+        The slope of the linear relation.
+    Nobs_min : int, default=5
+        The minimum number of RV observations possible. All predicted values less than this value will be set to this value.
+    round_to_ints : bool, default=True
+        Whether to round each resulting value of 'N_obs' to the nearest integer.
+
+    Returns
+    -------
+    Nobs_K : array[int] or array[float]
+        The required number of RV observations at each RV semi-amplitude in `K`.
+    """
     logK = np.log10(np.array(K))
     logNobs_K = slope*(logK - np.log10(K_norm)) + np.log10(Nobs_norm) # log(N_obs) at K
     Nobs_K = 10.**logNobs_K # N_obs at K
-    Nobs_K[Nobs_K < 5] = 5
+    Nobs_K[Nobs_K < Nobs_min] = Nobs_min
     if round_to_ints:
         Nobs_K = np.round(Nobs_K).astype(int)
     return Nobs_K
