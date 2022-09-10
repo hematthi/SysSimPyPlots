@@ -26,6 +26,7 @@ Contents
    installation
    loading
    histograms
+   distances
    api
 
 
