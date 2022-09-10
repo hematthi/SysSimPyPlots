@@ -4,9 +4,9 @@ import os
 import sys
 from scipy.special import comb
 
-sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
+#sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
 
-from src.functions_general import *
+from syssimpyplots.general import *
 
 
 
@@ -62,7 +62,7 @@ def test_cdf_empirical(seed=42):
     x_unif = np.random.rand(10_000_000) # Unif(0,1)
     x_ptls = np.random.rand(10) # randomly generated percentiles
     assert np.allclose(cdf_empirical(x_unif, x_ptls), x_ptls, atol=1e-3)
-    
+
     x_norm = np.random.randn(10_000_000) # Normal(0,1)
     x_evals = 2.*np.random.rand(10) - 1. # Unif(-1,1)
     assert np.allclose(cdf_empirical(x_norm, x_evals), cdf_normal(x_evals), atol=1e-3)
@@ -71,14 +71,14 @@ def test_compute_ratios():
     x1 = np.array([0.5, 1., 2., 4.])
     x2 = np.array([88.0, 224.7, 365.2, 687.0, 4331., 10747., 30589., 59800.]) # periods (days) of Solar System planets
     x3 = np.array([-2., 1.4, 5.3, -0.33, np.pi])
-    
+
     # Testing 'compute_ratios_adjacent()':
     assert np.allclose(compute_ratios_adjacent(x1), 2*np.ones(len(x1)-1))
     assert np.allclose(compute_ratios_adjacent(x1)*compute_ratios_adjacent(x1[::-1]), np.ones(len(x1)-1))
     assert np.allclose(compute_ratios_adjacent(x2), [2.553409, 1.625278, 1.881161, 6.304221, 2.481413, 2.846283, 1.954951], atol=1e-5)
     assert np.allclose(compute_ratios_adjacent(x3), [-0.7, 3.785714, -0.062264, -9.519978], atol=1e-5)
     assert len(compute_ratios_adjacent([5.])) == len(compute_ratios_adjacent([])) == 0
-    
+
     # Testing 'compute_ratios_all()':
     assert np.allclose(compute_ratios_all(x1), [2, 4, 8, 2, 4, 2])
     assert len(compute_ratios_all(x2)) == comb(len(x2),2)

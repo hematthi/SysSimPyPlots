@@ -3,11 +3,11 @@ import numpy as np
 import os
 import sys
 
-sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
+#sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
 
-from src.functions_general import *
-from src.functions_compare_kepler import *
-from src.functions_load_sims import *
+from syssimpyplots.general import *
+from syssimpyplots.compare_kepler import *
+from syssimpyplots.load_sims import *
 
 
 
@@ -38,28 +38,28 @@ def test_compute_summary_stats_from_Kepler_catalog():
     N_pl = np.sum(ssk_per_sys['Mtot_obs']) # total number of planets
     assert N_pl == np.sum(ssk['Nmult_obs'] * np.arange(1,len(ssk['Nmult_obs'])+1))
     N_pl_pairs = np.sum(ssk['Nmult_obs'] * np.arange(len(ssk['Nmult_obs']))) # total number of adjacent planet pairs
-    
+
     # Check that all the fields in 'ssk_per_sys' have the same number of systems:
     keys = ['Rstar_obs', 'Mstar_obs', 'teff_obs', 'bp_rp_obs', 'e_bp_rp_obs', 'cdpp4p5_obs', 'P_obs', 'D_obs', 'tdur_obs', 'tdur_tcirc_obs', 'radii_obs', 'Rm_obs', 'D_ratio_obs', 'xi_obs', 'radii_star_ratio']
     for key in keys:
         assert N_sys == len(ssk_per_sys[key])
-    
+
     assert N_multis == len(ssk_per_sys['radii_partitioning'])
     assert N_multis == len(ssk_per_sys['radii_monotonicity'])
     assert np.sum(ssk['Nmult_obs'][2:]) == len(ssk_per_sys['gap_complexity'])
-    
+
     # Check that all the fields in 'ssk_per_sys' have the same number of planets:
     assert N_pl == np.sum(ssk_per_sys['P_obs'] > 0) == np.sum(ssk_per_sys['D_obs'] > 0) == np.sum(ssk_per_sys['radii_obs'] > 0)
     assert N_pl == np.sum(ssk_per_sys['tdur_obs'] >= 0) == np.sum(ssk_per_sys['tdur_tcirc_obs'] >= 0)
     assert N_pl_pairs == np.sum(ssk_per_sys['Rm_obs'] > 0) == np.sum(ssk_per_sys['D_ratio_obs'] > 0) == np.sum(ssk_per_sys['xi_obs'] >= 0)
-    
+
     # Check that all the fields in 'ssk' have the right number of planets:
     keys = ['Rstar_obs', 'Mstar_obs', 'teff_obs', 'bp_rp_obs', 'e_bp_rp_obs', 'cdpp4p5_obs', 'P_obs', 'D_obs', 'tdur_obs', 'tdur_tcirc_obs', 'radii_obs']
     for key in keys:
         assert N_pl == len(ssk[key])
     assert N_pl == len(ssk['tdur_tcirc_obs']) == len(ssk['tdur_tcirc_1_obs']) + len(ssk['tdur_tcirc_2p_obs'])
     assert N_pl == len(ssk['D_obs']) == len(ssk['D_above_obs']) + len(ssk['D_below_obs'])
-    
+
     assert N_pl_pairs == len(ssk['Rm_obs'])
     assert N_pl_pairs == len(ssk['D_ratio_obs']) == len(ssk['D_ratio_above_obs']) + len(ssk['D_ratio_below_obs']) + len(ssk['D_ratio_across_obs'])
     assert N_pl_pairs == len(ssk['xi_obs']) == len(ssk['xi_res_obs']) + len(ssk['xi_nonres_obs'])
@@ -95,17 +95,17 @@ def test_AD_dist(seed=42):
     x1, x2 = np.random.rand(1000), np.random.randn(500)
     x1b = np.random.rand(1000)
     x3 = np.random.uniform(10., 100., 300)
-    
+
     # Test 'AD_dist()':
     assert 0 <= AD_dist(x1, x2)
     assert np.isclose(AD_dist(x1, x2), AD_dist(x2, x1))
     assert AD_dist(x1, x1b) < AD_dist(x1, x2) < AD_dist(x1, x3)
-    
+
     # Test that 'AD_dist2()' returns the same results as 'AD_dist()':
     assert np.isclose(AD_dist(x1, x2), AD_dist2(x1, x2))
     assert np.isclose(AD_dist(x1, x1b), AD_dist2(x1, x1b))
     assert np.isclose(AD_dist(x1, x3), AD_dist2(x1, x3))
-    
+
     # Test 'AD_mod_dist()':
     assert 0 <= AD_mod_dist(x1, x2)
     assert np.isclose(AD_mod_dist(x1, x2), AD_mod_dist(x2, x1))
@@ -132,21 +132,21 @@ def test_compute_distances_sim_Kepler():
                      'radii_monotonicity_KS',
                      'gap_complexity_KS',
                      ]
-    
+
     N_sim, cos_factor, P_min, P_max, radii_min, radii_max = read_targets_period_radius_bounds(loadfiles_directory + 'periods.out')
-    
+
     sss_per_sys, sss = compute_summary_stats_from_cat_obs(file_name_path=loadfiles_directory, compute_ratios=compute_ratios)
     ssk_per_sys, ssk = compute_summary_stats_from_Kepler_catalog(P_min, P_max, radii_min, radii_max, compute_ratios=compute_ratios)
 
     dists, dists_w = compute_distances_sim_Kepler(sss_per_sys, sss, ssk_per_sys, ssk, weights_all['all'], dists_include, N_sim, cos_factor=cos_factor, AD_mod=AD_mod, compute_ratios=compute_ratios)
-    
+
     for key in dists.keys():
         assert dists[key] >= 0 # check that all distance terms are non-negative
         if key[-2:] == 'KS':
             assert dists[key] <= 1
     for key in dists_w.keys():
         assert dists_w[key] >= 0 # check that all weighted distance terms are non-negative
-    
+
     # Also implicitly tests 'compute_total_weighted_dist()':
     tot_dist_w = 0.
     for key in dists_include:
