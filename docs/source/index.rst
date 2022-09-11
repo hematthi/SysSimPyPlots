@@ -30,6 +30,8 @@ Contents
    api
 
 
+.. _publications:
+
 Publications
 ------------
 
