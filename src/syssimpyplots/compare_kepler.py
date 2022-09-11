@@ -766,7 +766,7 @@ def compute_total_weighted_dist(weights, dists, dists_w, dists_include=[]):
 
     return tot_dist_w
 
-def compute_distances_sim_Kepler(sss_per_sys, sss, ssk_per_sys, ssk, weights, dists_include, N_sim, cos_factor=1., AD_mod=True, print_dists=True, compute_ratios=gen.compute_ratios_adjacent):
+def compute_distances_sim_Kepler(sss_per_sys, sss, ssk_per_sys, ssk, weights, dists_include, N_sim, cos_factor=1., AD_mod=True, print_dists=True):
     """
     Compute weighted and unweighted distances for a large collection of distance terms.
 
@@ -792,8 +792,6 @@ def compute_distances_sim_Kepler(sss_per_sys, sss, ssk_per_sys, ssk, weights, di
         Whether to compute the modified AD distance (:py:func:`syssimpyplots.compare_kepler.AD_mod_dist`, if True) or the standard AD distance (:py:func:`syssimpyplots.compare_kepler.AD_dist`, if False).
     print_dists : bool, default=True
         Whether to print the distances corresponding to the terms in `dists_include`. If True, also prints the total numbers of observed planets and planet pairs in the simulated and Kepler catalogs.
-    compute_ratios : func, default=compute_ratios_adjacent
-        The function to use for computing ratios; can be either :py:func:`syssimpyplots.general.compute_ratios_adjacent` or :py:func:`syssimpyplots.general.compute_ratios_all`.
 
     Returns
     -------
@@ -807,9 +805,7 @@ def compute_distances_sim_Kepler(sss_per_sys, sss, ssk_per_sys, ssk, weights, di
     ----
     The distance terms computed and included in ``dists`` and ``dists_w`` are not limited to the terms in ``dists_include``.
     """
-    # This function computes the K-S (and their positions), A-D, and other distances as well as additional statistics:
-
-    # To create a dict of all distance terms:
+    # Create a dict to hold all distance terms:
     dists = {}
 
     dists['delta_f'] = np.abs(len(sss['P_obs'])/(float(N_sim)/cos_factor) - len(ssk['P_obs'])/float(N_Kep)) # absolute difference in the rates of observed planets per star
