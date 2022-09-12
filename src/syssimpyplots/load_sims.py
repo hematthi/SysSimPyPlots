@@ -1320,7 +1320,7 @@ def compute_summary_stats_from_cat_obs(cat_obs=None, star_obs=None, file_name_pa
     # To split 'tdur_tcirc_obs' into arrays for observed singles and multis:
     tdur_tcirc_1_obs = tdur_tcirc_obs[Mtot_obs == 1, 0] # observed singles, 1d
     tdur_tcirc_2p_obs = tdur_tcirc_obs[Mtot_obs > 1] # observed multis, but 2d
-    tdur_tcirc_2p_obs = tdur_tcirc_2p_obs[~np.isnan(tdur_tcirc_2p_obs)] # observed multis, 1d
+    tdur_tcirc_2p_obs = tdur_tcirc_2p_obs[~np.isnan(tdur_tcirc_2p_obs) & (tdur_tcirc_2p_obs >= 0)] # observed multis, 1d
 
 
 
