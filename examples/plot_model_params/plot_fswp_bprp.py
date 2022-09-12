@@ -15,13 +15,11 @@ import scipy.interpolate #for interpolation functions
 import corner #corner.py package for corner plots
 #matplotlib.rc('text', usetex=True)
 
-sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(__file__)))))
-
-from src.functions_general import *
-from src.functions_compare_kepler import *
-from src.functions_load_sims import *
-from src.functions_plot_catalogs import *
-from src.functions_plot_params import *
+from syssimpyplots.general import *
+from syssimpyplots.compare_kepler import *
+from syssimpyplots.load_sims import *
+from syssimpyplots.plot_catalogs import *
+from syssimpyplots.plot_params import *
 
 
 
@@ -76,7 +74,7 @@ param_vals_all_KS_2 = []
 #param_vals_all_AD_2 = []
 for i in range(1,runs+1): #range(1,runs+1)
     run_number = i
-    
+
     param_vals_i = read_sim_params(loadfiles_directory1_KS+'observed_catalog_stars%s.csv' % run_number)
     param_vals_all_KS_1.append(param_vals_i)
 
@@ -85,7 +83,7 @@ for i in range(1,runs+1): #range(1,runs+1)
 
     param_vals_i = read_sim_params(loadfiles_directory2_KS+'observed_catalog_stars%s.csv' % run_number)
     param_vals_all_KS_2.append(param_vals_i)
-    
+
     #param_vals_i = read_sim_params(loadfiles_directory2_AD+'periods%s.out' % run_number)
     #param_vals_all_AD_2.append(param_vals_i)
 

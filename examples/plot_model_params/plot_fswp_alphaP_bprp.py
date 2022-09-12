@@ -15,13 +15,11 @@ import scipy.interpolate #for interpolation functions
 import corner #corner.py package for corner plots
 #matplotlib.rc('text', usetex=True)
 
-sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(__file__)))))
-
-from src.functions_general import *
-from src.functions_compare_kepler import *
-from src.functions_load_sims import *
-from src.functions_plot_catalogs import *
-from src.functions_plot_params import *
+from syssimpyplots.general import *
+from syssimpyplots.compare_kepler import *
+from syssimpyplots.load_sims import *
+from syssimpyplots.plot_catalogs import *
+from syssimpyplots.plot_params import *
 
 
 
@@ -60,23 +58,23 @@ Mstar_interp = scipy.interpolate.interp1d(EEM_table['BpRp'], EEM_table['Msun'])
 
 def load_split_stars_model_evaluations_weighted(file_name, dtot_max_keep=np.inf, max_keep=np.inf):
     sample_names = ['all', 'bluer', 'redder']
-    
+
     Nmult_max = 8
     params_evals = []
     Nmult_evals = {key: [] for key in sample_names}
     d_used_keys_evals = {key: [] for key in sample_names}
     d_used_vals_w_evals = {key: [] for key in sample_names}
     d_used_vals_tot_w_evals = []
-    
+
     with open(file_name, 'r') as file:
         for line in file:
             if line[0:20] == '# Active parameters:':
                 param_names = np.array(line[23:-2].split('", "'))
-                
+
             if line[0:14] == 'Active_params:':
                 params = [float(x) for x in line[16:-2].split(', ')]
                 params_evals.append(params)
-        
+
             for key in sample_names:
                 n = len(key)
                 if line[0:n+2] == '[%s]' % key:
@@ -84,16 +82,16 @@ def load_split_stars_model_evaluations_weighted(file_name, dtot_max_keep=np.inf,
                         Nmult_str, counts_str = line[n+3+9:-2].split('][')
                         Nmult = tuple([int(x) for x in Nmult_str.split(', ')])
                         Nmult_evals[key].append(Nmult)
-                    
+
                     if line[n+3:n+3+12] == 'd_used_keys:':
                         d_used_keys = line[n+3+15:-3].split('", "')
                         d_used_keys_evals[key].append(d_used_keys)
-                    
+
                     if line[n+3:n+3+12] == 'd_used_vals:':
                         d_used_vals_str, d_used_vals_tot_str = line[n+3+14:-2].split('][')
                         d_used_vals = tuple([float(x) for x in d_used_vals_str.split(', ')])
                         #d_used_vals_evals[key].append(d_used_vals)
-                    
+
                     elif line[n+3:n+3+13] == 'd_used_vals_w':
                         d_used_vals_w_str, d_used_vals_tot_w_str = line[n+3+16:-2].split('][')
                         d_used_vals_w = tuple([float(x) for x in d_used_vals_w_str.split(', ')])
@@ -124,11 +122,11 @@ def load_split_stars_model_evaluations_weighted(file_name, dtot_max_keep=np.inf,
         Nmult_evals[key] = np.array(Nmult_evals[key], dtype=[(str(n), 'i8') for n in range(1,Nmult_max+1)])
         d_used_keys_evals[key] = np.array(d_used_keys_evals[key])
         d_used_vals_w_evals[key] = np.array(d_used_vals_w_evals[key], dtype=[(dist_key, 'f8') for dist_key in d_used_keys_evals[key][0]])
-        
+
         Nmult_keep[key] = np.array(Nmult_keep[key], dtype=[(str(n), 'i8') for n in range(1,Nmult_max+1)])
         d_used_keys_keep[key] = np.array(d_used_keys_keep[key])
         d_used_vals_w_keep[key] = np.array(d_used_vals_w_keep[key], dtype=[(dist_key, 'f8') for dist_key in d_used_keys_keep[key][0]])
-    
+
     return param_names, params_keep, Nmult_keep, d_used_keys_keep, d_used_vals_w_keep
 
 def compute_fswp_bprp_quantiles(bp_rp_axis, bp_rp_corr_med, param_names, params_evals, qtl=[0.16, 0.5, 0.84]):
@@ -176,7 +174,7 @@ param_vals_all_KS_2 = []
 param_vals_all_AD_2 = []
 for i in range(1,runs+1): #range(1,runs+1)
     run_number = i
-    
+
     param_vals_i = read_sim_params(loadfiles_directory1_KS+'periods%s.out' % run_number)
     param_vals_all_KS_1.append(param_vals_i)
 
@@ -185,7 +183,7 @@ for i in range(1,runs+1): #range(1,runs+1)
 
     param_vals_i = read_sim_params(loadfiles_directory2_KS+'periods%s.out' % run_number)
     param_vals_all_KS_2.append(param_vals_i)
-    
+
     param_vals_i = read_sim_params(loadfiles_directory2_AD+'clusterids_all%s.out' % run_number)
     param_vals_all_AD_2.append(param_vals_i)
 

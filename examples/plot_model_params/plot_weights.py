@@ -5,9 +5,7 @@ import sys
 import matplotlib.pyplot as plt
 from matplotlib.gridspec import GridSpec #for specifying plot attributes
 
-sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(__file__)))))
-
-from src.functions_compare_kepler import *
+from syssimpyplots.compare_kepler import *
 
 
 
@@ -97,7 +95,7 @@ for i,dist_key in enumerate(dists_keys_plot):
     for j in range(jobs):
         d_all_vals_evals_job = d_all_vals_evals_jobs[j]
         weights_all_job = weights_all_jobs[j]
-        
+
         plt.hist([d_all_vals_evals_job[key][dist_key] for key in sample_names], bins=50, histtype='step', color=sample_colors, label=sample_names)
         for s,key in enumerate(sample_names):
             plt.axvline(x=1./weights_all_job[key][dist_key], color=sample_colors[s])
@@ -111,11 +109,11 @@ plot = GridSpec(rows,cols,left=0.05,bottom=0.1,right=0.975,top=0.975,wspace=0.3,
 for i,dist_key in enumerate(dists_keys_plot):
     i_row, i_col = i//cols, i%cols
     ax = plt.subplot(plot[i_row,i_col])
-    
+
     for j in range(jobs):
         d_all_vals_evals_job = d_all_vals_evals_jobs[j]
         weights_all_job = weights_all_jobs[j]
-    
+
         plt.hist([d_all_vals_evals_job[key][dist_key]*weights_all_job[key][dist_key] for key in sample_names], bins=50, histtype='step', color=sample_colors, label=sample_names)
     plt.xlabel(dist_key, fontsize=12)
     plt.ylabel('')
@@ -139,7 +137,7 @@ for i in range(Nmult_max_plot):
 
     for j in range(jobs):
         Nmult_evals_job = Nmult_evals_jobs[j]
-    
+
         for s,key in enumerate(sample_names):
             x = Nmult_evals_job[key][str(i+1)]
             if np.min(x) > 0:

@@ -15,13 +15,11 @@ import scipy.interpolate #for interpolation functions
 import corner #corner.py package for corner plots
 #matplotlib.rc('text', usetex=True)
 
-sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(__file__)))))
-
-from src.functions_general import *
-from src.functions_compare_kepler import *
-from src.functions_load_sims import *
-from src.functions_plot_catalogs import *
-from src.functions_plot_params import *
+from syssimpyplots.general import *
+from syssimpyplots.compare_kepler import *
+from syssimpyplots.load_sims import *
+from syssimpyplots.plot_catalogs import *
+from syssimpyplots.plot_params import *
 
 
 
@@ -46,7 +44,7 @@ samples = len(sample_names)
 ##### To iterate through each of the optimization runs (files), and extract the results:
 
 def analyze_bboptimize_runs(loadfiles_directory, run_numbers):
-    
+
     sample_names = ['all', 'bluer', 'redder']
 
     active_params_names_all = [] # list to be filled with arrays of the names of the active parameters for each run (should be the same for all runs)
@@ -68,15 +66,15 @@ def analyze_bboptimize_runs(loadfiles_directory, run_numbers):
     runs_finished = 0
     for i in run_numbers:
         with open(loadfiles_directory + 'Clustered_P_R_optimization_random%s_targs86760_evals5000.txt' % i, 'r') as file:
-            
+
             optim_lines = False # set to true once we start reading lines in the file that are the outputs of the optimization
             active_params_start = [] # will be replaced by the actual active parameter values if the file is not empty
-            
+
             active_params_run = [] # will be filled with all the active params at each step of the optimization in this run
             d_used_keys_run = {key: [] for key in sample_names}
             d_used_vals_run = {key: [] for key in sample_names} # will be filled with all the distances at each step of the optimization in this run
             d_used_vals_w_run = {key: [] for key in sample_names} # will be filled with all the weighted distances at each step of the optimization in this run
-            
+
             best_fitness = np.inf # will be replaced with the best total weighted distance if the optimization progressed
             steps = 0 # will be a running count of the number of model iterations
             steps_best_weighted = steps # will be replaced by the number of the model iteration at which the best total weighted distance was found
@@ -103,24 +101,24 @@ def analyze_bboptimize_runs(loadfiles_directory, run_numbers):
                     if total_dist_w < best_fitness:
                         best_fitness = total_dist_w
                         steps_best_weighted = steps
-                
+
                 for sample in sample_names:
                     n = len(sample)
                     if line[0:n+2] == '[%s]' % sample and optim_lines:
                         if line[n+3:n+3+6] == 'Counts':
                             Nmult_str, counts_str = line[n+3+9:-2].split('][')
                             Nmult = [int(x) for x in Nmult_str.split(', ')]
-                        
+
                         elif line[n+3:n+3+12] == 'd_used_keys:':
                             d_used_keys = line[n+3+15:-3].split('", "')
                             d_used_keys_run[sample].append(d_used_keys)
-                        
+
                         elif line[n+3:n+3+12] == 'd_used_vals:':
                             d_used_vals_str, d_used_vals_tot_str = line[n+3+14:-2].split('][')
                             d_used_vals = [float(x) for x in d_used_vals_str.split(', ')]
                             d_used_vals_run[sample].append(d_used_vals)
                             d_used_vals_all[sample].append(tuple(d_used_vals))
-                        
+
                         elif line[n+3:n+3+13] == 'd_used_vals_w':
                             d_used_vals_w_str, d_used_vals_tot_w_str = line[n+3+16:-2].split('][')
                             d_used_vals_w = [float(x) for x in d_used_vals_w_str.split(', ')]
@@ -133,12 +131,12 @@ def analyze_bboptimize_runs(loadfiles_directory, run_numbers):
                     best_fitness_end = float(line[16:-1])
                 elif line[0:9] == '# elapsed' and optim_lines:
                     time_optimization_all.append(float(line[16:-8]))
-        
+
             print(i, best_fitness, len(active_params_all), [len(d_used_vals_w_all[key]) for key in d_used_vals_w_all])
 
             active_params_bounds_all.append(active_params_bounds)
             active_params_start_all.append(active_params_start)
-            
+
             active_params_runs.append(active_params_run)
             for sample in sample_names:
                 d_used_keys_runs[sample].append(d_used_keys_run[sample])
@@ -252,7 +250,7 @@ for j in range(len(model_results)):
 for i,d_key in enumerate(results1['d_used_vals_w_all']['all'].dtype.names):
     i_row, i_col = i//cols, i%cols
     ax = plt.subplot(plot[i_row,i_col])
-    
+
     dw = []
     for j,results in enumerate(model_results):
         for sample in sample_names:
@@ -309,7 +307,7 @@ for j in range(len(model_results)):
 for i,d_key in enumerate(results1['d_used_vals_w_all']['all'].dtype.names):
     i_row, i_col = i//cols, i%cols
     ax = plt.subplot(plot[i_row,i_col])
-    
+
     dw = []
     for j,results in enumerate(model_results):
         for sample in sample_names:
@@ -370,6 +368,6 @@ active_params_symbols = [#r'$f_{\rm crit}$', #####
 for j,results in enumerate(model_results):
     N_best_save, keep_every = model_N_best[j], model_keep_every[j]
     i_best_N = np.argsort(results['dtot_w_all'])[0:N_best_save:keep_every]
-    
+
     plot_cornerpy_wrapper(active_params_symbols, results['active_params_all'][i_best_N], title_kwargs={'fontsize':20}, save_name=savefigures_directory + model_savenames[j] + '_best%s_every%s_corner.pdf' % (N_best_save, keep_every), save_fig=savefigures)
 #'''

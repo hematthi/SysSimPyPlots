@@ -15,14 +15,12 @@ import scipy.interpolate #for interpolation functions
 import corner #corner.py package for corner plots
 #matplotlib.rc('text', usetex=True)
 
-sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(__file__)))))
-
-from src.functions_general import *
-from src.functions_compare_kepler import *
-from src.functions_load_sims import *
-from src.functions_plot_catalogs import *
-from src.functions_plot_params import *
-from src.functions_compute_RVs import *
+from syssimpyplots.general import *
+from syssimpyplots.compare_kepler import *
+from syssimpyplots.load_sims import *
+from syssimpyplots.plot_catalogs import *
+from syssimpyplots.plot_params import *
+from syssimpyplots.compute_RVs import *
 
 
 
@@ -73,7 +71,7 @@ active_params_symbols = [#r'$f_{\sigma_{i,\rm high}}$',
 
 def load_split_stars_recomputed_distances_file(file_name):
     sample_names = ['all', 'bluer', 'redder']
-    
+
     active_params_evals = []
     d_used_keys_evals = {key: [] for key in sample_names}
     d_used_vals_evals = {key: [] for key in sample_names}
@@ -90,20 +88,20 @@ def load_split_stars_recomputed_distances_file(file_name):
             elif line[0:12] == 'Total_dist_w':
                 total_dist_w = float(line[15:-2])
                 total_dist_w_evals.append(total_dist_w)
-            
+
             for key in sample_names:
                 n = len(key)
                 if line[0:n+2] == '[%s]' % key:
-                    
+
                     if line[n+3:n+3+12] == 'd_used_keys:':
                         d_used_keys = line[n+3+15:-3].split('", "')
                         d_used_keys_evals[key].append(d_used_keys)
-                    
+
                     elif line[n+3:n+3+12] == 'd_used_vals:':
                         d_used_vals_str, d_used_vals_tot_str = line[n+3+14:-2].split('][')
                         d_used_vals = [float(x) for x in d_used_vals_str.split(', ')]
                         d_used_vals_evals[key].append(tuple(d_used_vals))
-                    
+
                     elif line[n+3:n+3+13] == 'd_used_vals_w':
                         d_used_vals_w_str, d_used_vals_tot_w_str = line[n+3+16:-2].split('][')
                         d_used_vals_w = [float(x) for x in d_used_vals_w_str.split(', ')]

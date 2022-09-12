@@ -12,13 +12,11 @@ from matplotlib import ticker #for setting contour plots to log scale
 from matplotlib.colors import LogNorm #for log color scales
 from scipy.stats import ks_2samp
 
-sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(__file__)))))
-
-from src.functions_general import *
-from src.functions_compare_kepler import *
-from src.functions_load_sims import *
-from src.functions_plot_catalogs import *
-from src.functions_plot_params import *
+from syssimpyplots.general import *
+from syssimpyplots.compare_kepler import *
+from syssimpyplots.load_sims import *
+from syssimpyplots.plot_catalogs import *
+from syssimpyplots.plot_params import *
 
 
 
@@ -52,12 +50,12 @@ def load_snrs_singles_multis(snr_file):
         else:
             ratios_adj = compute_ratios_adjacent(np.array(x))
             ratios_all = compute_ratios_all(np.array(x))
-            
+
             snr_multis += x
             snr_multis_weakest.append(np.min(x))
             snr_ratios_adj += list(ratios_adj)
             snr_ratios_all += list(ratios_all)
-            
+
             # To also save snr ratios as a function of multiplicity:
             if len(x) == 2:
                 snr_multis_2 += x
@@ -143,7 +141,7 @@ for snr_dict in snr_sims_all:
     snr_singles_all = np.concatenate((snr_singles_all, snr_dict['singles']))
     snr_multis_all = np.concatenate((snr_multis_all, snr_dict['multis']))
     snr_multis_weakest_all = np.concatenate((snr_multis_weakest_all, snr_dict['multis_weakest']))
-    
+
     counts, bins = np.histogram(snr_dict['singles'], bins=snr_bins)
     snr_counts_singles_all_normfield.append(counts/float(np.sum(counts)))
     snr_counts_singles_all.append(counts/float(n_pl))
@@ -168,11 +166,11 @@ for snr_dict in snr_sims_all:
     snr_counts_multis_weakest_all_normfield.append(counts/float(np.sum(counts)))
     snr_counts_multis_weakest_all.append(counts/float(n_pl))
     #snr_counts_multis_weakest_all.append(counts)
-    
+
     pvals_ks_singles_all.append(ks_2samp(snr_dict['singles'], snr_kep['singles']).pvalue)
     pvals_ks_multis_all.append(ks_2samp(snr_dict['multis'], snr_kep['multis']).pvalue)
     pvals_ks_multis_weakest_all.append(ks_2samp(snr_dict['multis_weakest'], snr_kep['multis_weakest']).pvalue)
-    
+
     counts, bins = np.histogram(snr_dict['ratios_adj'], bins=snr_ratios_bins)
     snr_ratios_adj_counts_all.append(counts/float(np.sum(counts)))
     counts, bins = np.histogram(snr_dict['ratios_all'], bins=snr_ratios_bins)

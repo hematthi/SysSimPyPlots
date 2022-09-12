@@ -15,13 +15,11 @@ import scipy.interpolate #for interpolation functions
 import corner #corner.py package for corner plots
 #matplotlib.rc('text', usetex=True)
 
-sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(__file__)))))
-
-from src.functions_general import *
-from src.functions_compare_kepler import *
-from src.functions_load_sims import *
-from src.functions_plot_catalogs import *
-from src.functions_plot_params import *
+from syssimpyplots.general import *
+from syssimpyplots.compare_kepler import *
+from syssimpyplots.load_sims import *
+from syssimpyplots.plot_catalogs import *
+from syssimpyplots.plot_params import *
 
 
 
@@ -92,15 +90,15 @@ runs_started = 0
 runs_finished = 0
 for i in run_numbers:
     with open(loadfiles_directory + 'Clustered_P_R_optimization_random%s_targs86760_evals5000.txt' % i, 'r') as file:
-        
+
         optim_lines = False # set to true once we start reading lines in the file that are the outputs of the optimization
         active_params_start = [] # will be replaced by the actual active parameter values if the file is not empty
-        
+
         active_params_run = [] # will be filled with all the active params at each step of the optimization in this run
         d_used_keys_run = {key: [] for key in sample_names}
         d_used_vals_run = {key: [] for key in sample_names} # will be filled with all the distances at each step of the optimization in this run
         d_used_vals_w_run = {key: [] for key in sample_names} # will be filled with all the weighted distances at each step of the optimization in this run
-        
+
         best_fitness = np.inf # will be replaced with the best total weighted distance if the optimization progressed
         steps = 0 # will be a running count of the number of model iterations
         steps_best_weighted = steps # will be replaced by the number of the model iteration at which the best total weighted distance was found
@@ -127,24 +125,24 @@ for i in run_numbers:
                 if total_dist_w < best_fitness:
                     best_fitness = total_dist_w
                     steps_best_weighted = steps
-            
+
             for sample in sample_names:
                 n = len(sample)
                 if line[0:n+2] == '[%s]' % sample and optim_lines:
                     if line[n+3:n+3+6] == 'Counts':
                         Nmult_str, counts_str = line[n+3+9:-2].split('][')
                         Nmult = [int(x) for x in Nmult_str.split(', ')]
-                    
+
                     elif line[n+3:n+3+12] == 'd_used_keys:':
                         d_used_keys = line[n+3+15:-3].split('", "')
                         d_used_keys_run[sample].append(d_used_keys)
-                    
+
                     elif line[n+3:n+3+12] == 'd_used_vals:':
                         d_used_vals_str, d_used_vals_tot_str = line[n+3+14:-2].split('][')
                         d_used_vals = [float(x) for x in d_used_vals_str.split(', ')]
                         d_used_vals_run[sample].append(d_used_vals)
                         d_used_vals_all[sample].append(tuple(d_used_vals))
-                    
+
                     elif line[n+3:n+3+13] == 'd_used_vals_w':
                         d_used_vals_w_str, d_used_vals_tot_w_str = line[n+3+16:-2].split('][')
                         d_used_vals_w = [float(x) for x in d_used_vals_w_str.split(', ')]
@@ -157,12 +155,12 @@ for i in run_numbers:
                 best_fitness_end = float(line[16:-1])
             elif line[0:9] == '# elapsed' and optim_lines:
                 time_optimization_all.append(float(line[16:-8]))
-    
+
         print(i, best_fitness, len(active_params_all), [len(d_used_vals_w_all[key]) for key in d_used_vals_w_all])
 
         active_params_bounds_all.append(active_params_bounds)
         active_params_start_all.append(active_params_start)
-        
+
         active_params_runs.append(active_params_run)
         for sample in sample_names:
             d_used_keys_runs[sample].append(d_used_keys_run[sample])
@@ -413,15 +411,15 @@ plot = GridSpec(rows,cols,left=0.075,bottom=0.115,right=0.95,top=0.925,wspace=0.
 for i,pair in enumerate(active_params_pairs):
     i_row, i_col = i//cols, i%cols
     ax = plt.subplot(plot[i_row,i_col])
-    
+
     i_x, i_y = np.where(np.array(active_params_names) == pair[1])[0][0], np.where(np.array(active_params_names) == pair[0])[0][0]
     #print(pair, ': (ix,iy) = (%s,%s) ; x=%s, y=%s' % (i_x, i_y, active_params_symbols[i_x], active_params_symbols[i_y]))
-    
+
     active_params_plot = active_params_best_all
     colors = dtot_best_all
     best_scatter = plt.scatter(active_params_plot[:,i_x], active_params_plot[:,i_y], marker='.', c=colors, s=200, alpha=1) #best values for each run
     plt.colorbar(best_scatter)
-    
+
     plt.xlim(active_params_bounds_all[0][i_x])
     plt.ylim(active_params_bounds_all[0][i_y])
     ax.tick_params(axis='both', labelsize=12)
@@ -443,9 +441,9 @@ plot = GridSpec(rows,cols,left=0.075,bottom=0.115,right=0.95,top=0.925,wspace=0.
 for i,pair in enumerate(active_params_pairs):
     i_row, i_col = i//cols, i%cols
     ax = plt.subplot(plot[i_row,i_col])
-    
+
     i_x, i_y = np.where(np.array(active_params_names) == pair[1])[0][0], np.where(np.array(active_params_names) == pair[0])[0][0]
-    
+
     i_best_N = np.argsort(dtot_w_all)[:N_best]
     active_params_plot = active_params_all[i_best_N]
     colors = dtot_w_all[i_best_N]
@@ -495,7 +493,7 @@ plot = GridSpec(rows,cols,left=0.05,bottom=0.1,right=0.975,top=0.975,wspace=0.3,
 for i,d_key in enumerate(d_used_vals_all[sample].dtype.names):
     i_row, i_col = i//cols, i%cols
     ax = plt.subplot(plot[i_row,i_col])
-    
+
     plt.hist([d_used_vals_all[sample][d_key][i_best_N] for sample in sample_names], bins=50, histtype='step', color=sample_colors)
     plt.xlabel(d_key, fontsize=12)
     plt.ylabel('')
@@ -523,7 +521,7 @@ plot = GridSpec(rows,cols,left=0.05,bottom=0.1,right=0.975,top=0.975,wspace=0.3,
 for i,d_key in enumerate(d_used_vals_w_all[sample].dtype.names):
     i_row, i_col = i//cols, i%cols
     ax = plt.subplot(plot[i_row,i_col])
-    
+
     plt.hist([d_used_vals_w_all[sample][d_key][i_best_N] for sample in sample_names], bins=50, histtype='step', color=sample_colors)
     plt.xlabel(d_key, fontsize=12)
     plt.ylabel('')
