@@ -16,13 +16,11 @@ import scipy.interpolate #for interpolation functions
 import corner #corner.py package for corner plots
 #matplotlib.rc('text', usetex=True)
 
-sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(__file__)))))
-
-from src.functions_general import *
-from src.functions_compare_kepler import *
-from src.functions_load_sims import *
-from src.functions_plot_catalogs import *
-from src.functions_plot_params import *
+from syssimpyplots.general import *
+from syssimpyplots.compare_kepler import *
+from syssimpyplots.load_sims import *
+from syssimpyplots.plot_catalogs import *
+from syssimpyplots.plot_params import *
 
 
 
@@ -34,7 +32,7 @@ savefigures_directory = '/Users/hematthi/Documents/GradSchool/Research/Exoplanet
 run_number = ''
 model_name = 'Maximum_AMD_Model' + run_number
 
-compute_ratios = compute_ratios_all #compute_ratios_adjacent
+compute_ratios = compute_ratios_adjacent
 AD_mod = True
 weights_all = load_split_stars_weights_only()
 dists_include = ['delta_f',
@@ -72,7 +70,7 @@ sss_per_sys, sss = compute_summary_stats_from_cat_obs(file_name_path=loadfiles_d
 # To load and process the observed Kepler catalog and compare with our simulated catalog:
 ssk_per_sys, ssk = compute_summary_stats_from_Kepler_catalog(P_min, P_max, radii_min, radii_max, compute_ratios=compute_ratios)
 
-dists, dists_w = compute_distances_sim_Kepler(sss_per_sys, sss, ssk_per_sys, ssk, weights_all['all'], dists_include, N_sim, cos_factor=cos_factor, AD_mod=AD_mod, compute_ratios=compute_ratios)
+dists, dists_w = compute_distances_sim_Kepler(sss_per_sys, sss, ssk_per_sys, ssk, weights_all['all'], dists_include, N_sim, cos_factor=cos_factor, AD_mod=AD_mod)
 
 
 
@@ -108,8 +106,8 @@ sss_all = []
 for i in range(1,runs+1):
     run_number = i
     sss_per_sys_i, sss_i = compute_summary_stats_from_cat_obs(file_name_path=loadfiles_directory, run_number=run_number, compute_ratios=compute_ratios)
-    dists_i, dists_w_i = compute_distances_sim_Kepler(sss_per_sys_i, sss_i, ssk_per_sys, ssk, weights_all['all'], dists_include, N_Kep, cos_factor=cos_factor, AD_mod=AD_mod, compute_ratios=compute_ratios)
-    
+    dists_i, dists_w_i = compute_distances_sim_Kepler(sss_per_sys_i, sss_i, ssk_per_sys, ssk, weights_all['all'], dists_include, N_Kep, cos_factor=cos_factor, AD_mod=AD_mod)
+
     sss_per_sys_all.append(sss_per_sys_i)
     sss_all.append(sss_i)
 
@@ -135,7 +133,7 @@ Pratio_out_cdf_evals_4p_all = np.zeros((runs, len(Pratio_cdf_evals)))
 for i in range(runs):
     sss_per_sys_i = sss_per_sys_all[i]
     N_sys = len(sss_per_sys_i['P_obs'])
-    
+
     # Calculate CDFs of outermost period at P_cdf_evals:
     P_out_per_sys = sss_per_sys_i['P_obs'][np.arange(N_sys), sss_per_sys_i['Mtot_obs']-1]
     P_out_2 = P_out_per_sys[sss_per_sys_i['Mtot_obs'] == 2]
@@ -144,7 +142,7 @@ for i in range(runs):
     P_out_cdf_evals_2_all[i] = cdf_empirical(P_out_2, P_cdf_evals)
     P_out_cdf_evals_3_all[i] = cdf_empirical(P_out_3, P_cdf_evals)
     P_out_cdf_evals_4p_all[i] = cdf_empirical(P_out_4p, P_cdf_evals)
-    
+
     # Calculate CDFs of outermost period ratio at Pratio_cdf_evals:
     Pratio_out_per_sys = sss_per_sys_i['Rm_obs'][np.arange(N_sys), sss_per_sys_i['Mtot_obs']-2]
     Pratio_out_2 = Pratio_out_per_sys[sss_per_sys_i['Mtot_obs'] == 2]
@@ -171,7 +169,7 @@ plt.title(r'$N = 2$', fontsize=tfs)
 if savefigures:
     plt.savefig(savefigures_directory + subdirectory + model_name + '_periods_outermost_N2_CDFs.pdf')
     plt.close()
-    
+
 plot_fig_cdf_simple(fig_size, [], [P_out_per_sys_Kep[ssk_per_sys['Mtot_obs'] == 3]], x_min=P_min, x_max=P_max, log_x=True, lw=lw, labels_Kep=['Kepler'], xticks_custom=[3,10,30,100,300], xlabel_text=r'$P_{\rm out}$ (days)', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt)
 plt.fill_between(P_cdf_evals, P_out_cdf_evals_3_qtls[0], P_out_cdf_evals_3_qtls[2], alpha=alpha, color='b', label=r'SysSim (central 68%)')
 plt.plot(P_cdf_evals, P_out_cdf_evals_3_qtls[1], lw=lw, color='b', label=r'SysSim (median)')
@@ -235,19 +233,19 @@ P_i_cdf_evals_4_all = [np.zeros((runs, len(P_cdf_evals))) for i in range(4)]
 for i in range(runs):
     sss_per_sys_i = sss_per_sys_all[i]
     N_sys = len(sss_per_sys_i['P_obs'])
-    
+
     # Calculate CDFs of periods for planets at each position, at P_cdf_evals:
     P_per_sys_1 = sss_per_sys_i['P_obs'][sss_per_sys_i['Mtot_obs'] == 1, 0]
     P_i_cdf_evals_1_all[i] = cdf_empirical(P_per_sys_1, P_cdf_evals)
-    
+
     P_per_sys_2 = sss_per_sys_i['P_obs'][sss_per_sys_i['Mtot_obs'] == 2]
     for j in range(2): # loop through first and second planet
         P_i_cdf_evals_2_all[j][i] = cdf_empirical(P_per_sys_2[:,j], P_cdf_evals) # j-th planet
-    
+
     P_per_sys_3 = sss_per_sys_i['P_obs'][sss_per_sys_i['Mtot_obs'] == 3]
     for j in range(3): # loop through first, second, and third planet
         P_i_cdf_evals_3_all[j][i] = cdf_empirical(P_per_sys_3[:,j], P_cdf_evals) # j-th planet
-    
+
     P_per_sys_4 = sss_per_sys_i['P_obs'][sss_per_sys_i['Mtot_obs'] == 4]
     for j in range(4): # loop through first, second, third, and fourth planet
         P_i_cdf_evals_4_all[j][i] = cdf_empirical(P_per_sys_4[:,j], P_cdf_evals) # j-th planet

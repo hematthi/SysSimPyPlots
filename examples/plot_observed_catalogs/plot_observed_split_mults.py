@@ -15,13 +15,11 @@ import scipy.interpolate #for interpolation functions
 import corner #corner.py package for corner plots
 #matplotlib.rc('text', usetex=True)
 
-sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(__file__)))))
-
-from src.functions_general import *
-from src.functions_compare_kepler import *
-from src.functions_load_sims import *
-from src.functions_plot_catalogs import *
-from src.functions_plot_params import *
+from syssimpyplots.general import *
+from syssimpyplots.compare_kepler import *
+from syssimpyplots.load_sims import *
+from syssimpyplots.plot_catalogs import *
+from syssimpyplots.plot_params import *
 
 
 
@@ -129,13 +127,13 @@ for j in range(samples):
 for i in range(1,runs+1): #range(1,runs+1)
     run_number = i
     print('#=====#')
-    
+
     # Combined sample first:
     Mtot_obs, Nmult_obs = count_planets_from_loading_cat_obs_stars_only(file_name_path=loadfiles_directory, run_number=run_number)
     print('Sim %s (all): ' % i, Nmult_obs)
     Nmult_runs['all'].append(tuple(bin_Nmult(Nmult_obs)))
     N_pl_runs['all'].append(np.sum(Mtot_obs))
-    
+
     # For each of the subsamples:
     for j in range(samples):
         Mtot_obs, Nmult_obs = count_planets_from_loading_cat_obs_stars_only(file_name_path=loadfiles_directory, run_number=run_number, bp_rp_min=sample_bprp_bounds[j], bp_rp_max=sample_bprp_bounds[j+1])
@@ -165,14 +163,14 @@ for i,sample in enumerate(sample_names):
     Nmult_errhigh = pad_zero_beg_and_end([qtl[2]-qtl[1] for qtl in Nmult_qtls])
     Nmult_err = np.array([Nmult_errlow, Nmult_errhigh])
     print(sample, ' --- ', Nmult_med)
-    
+
     plt.errorbar(range(0,6+1), Nmult_med, yerr=Nmult_err, drawstyle='steps-mid', ls='--', color=sample_colors[i])
     #plt.scatter(range(1,6), Nmult_Kep[sample], marker='x', color=sample_colors[i])
-    
+
     N_pl_qtls = np.quantile(N_pl_runs[sample], q=[0.16,0.5,0.84])
     plt.text(0.05, 0.1, r'${:0.0f}_{{-{:0.0f} }}^{{+{:0.0f} }}$ planets'.format(N_pl_qtls[1], N_pl_qtls[1]-N_pl_qtls[0], N_pl_qtls[2]-N_pl_qtls[1]), ha='left', va='bottom', color=sample_colors[i], fontsize=lfs, transform=ax.transAxes)
     plt.text(0.98, 0.95, sample_labels[i], ha='right', va='top', color=sample_colors[i], fontsize=lfs, transform=ax.transAxes)
-    
+
     plt.gca().set_yscale("log")
     ax.tick_params(axis='both', labelsize=16)
     #plt.yticks([0.5,1,1.5])
@@ -195,12 +193,12 @@ fig = plt.figure(figsize=(6,8))
 plot = GridSpec(samples+1,1,left=0.2,bottom=0.1,right=0.95,top=0.95,wspace=0,hspace=0)
 for i,sample in enumerate(sample_names):
     ax = plt.subplot(plot[i,0])
-    
+
     plt.plot(range(0,6+1), pad_zero_beg_and_end(Nmult_Kep[sample]), drawstyle='steps-mid', ls='-', color=sample_colors[i])
     plt.scatter(range(1,6), Nmult_Kep[sample], marker='x', color=sample_colors[i])
     plt.text(0.05, 0.1, r'${:0.0f}$ planets'.format(N_pl_Kep[sample]), ha='left', va='bottom', color=sample_colors[i], fontsize=lfs, transform=ax.transAxes)
     plt.text(0.98, 0.95, sample_labels[i], ha='right', va='top', color=sample_colors[i], fontsize=lfs, transform=ax.transAxes)
-    
+
     plt.gca().set_yscale("log")
     ax.tick_params(axis='both', labelsize=16)
     #plt.yticks([0.5,1,1.5])
@@ -248,10 +246,10 @@ for i,sample in enumerate(sample_names):
         #ratio_q84 = (Nmult_med_const_table4[sample][j] + Nmult_errhigh_const_table4[sample][j])/Nmult_Kep[sample][j]
         plt.plot((j+0.5, j+1.5), (ratio_med, ratio_med), color=sample_colors[i], ls='--', lw=2, label='Constant model' if j==0 else None)
         plt.plot((j+1.05,j+1.05), (ratio_q16, ratio_q84), color=sample_colors[i], ls='--', lw=1)
-        
+
         #plt.text(j+1, 1.3, r'${:0.0f}_{{-{:0.0f} }}^{{+{:0.0f} }}$'.format(nsim_med, nsim_med-nsim_q16, nsim_q84-nsim_med), ha='center')
         #plt.text(j+1, 0.7, str(Nmult_Kep[sample][j]), ha='center')
-        
+
         # To also plot another model:
         ratio_q16 = (Nmult_med_linf_table4[sample][j] - Nmult_errlow_linf_table4[sample][j])/Nmult_Kep[sample][j]
         ratio_med = Nmult_med_linf_table4[sample][j]/Nmult_Kep[sample][j]

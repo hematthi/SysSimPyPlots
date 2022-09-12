@@ -16,13 +16,11 @@ import scipy.interpolate #for interpolation functions
 import corner #corner.py package for corner plots
 #matplotlib.rc('text', usetex=True)
 
-sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(__file__)))))
-
-from src.functions_general import *
-from src.functions_compare_kepler import *
-from src.functions_load_sims import *
-from src.functions_plot_catalogs import *
-from src.functions_plot_params import *
+from syssimpyplots.general import *
+from syssimpyplots.compare_kepler import *
+from syssimpyplots.load_sims import *
+from syssimpyplots.plot_catalogs import *
+from syssimpyplots.plot_params import *
 
 
 
@@ -35,7 +33,7 @@ savefigures_directory = '/Users/hematthi/Documents/GradSchool/Research/Exoplanet
 run_number = ''
 model_name = 'Maximum_AMD_Model' + run_number #'Non_Clustered_Model', 'Clustered_P_Model', 'Clustered_P_R_Model'
 
-compute_ratios = compute_ratios_all #compute_ratios_adjacent
+compute_ratios = compute_ratios_adjacent
 AD_mod = True
 weights_all = load_split_stars_weights_only()
 dists_include = ['delta_f',
@@ -73,7 +71,7 @@ sss_per_sys, sss = compute_summary_stats_from_cat_obs(file_name_path=loadfiles_d
 # To load and process the observed Kepler catalog and compare with our simulated catalog:
 ssk_per_sys, ssk = compute_summary_stats_from_Kepler_catalog(P_min, P_max, radii_min, radii_max, compute_ratios=compute_ratios)
 
-dists, dists_w = compute_distances_sim_Kepler(sss_per_sys, sss, ssk_per_sys, ssk, weights_all['all'], dists_include, N_sim, cos_factor=cos_factor, AD_mod=AD_mod, compute_ratios=compute_ratios)
+dists, dists_w = compute_distances_sim_Kepler(sss_per_sys, sss, ssk_per_sys, ssk, weights_all['all'], dists_include, N_sim, cos_factor=cos_factor, AD_mod=AD_mod)
 
 
 
@@ -171,12 +169,12 @@ f_low_gap_complexity = [] # fractions of systems with observed gap complexity < 
 for i in range(1,runs+1):
     run_number = i
     sss_per_sys_i, sss_i = compute_summary_stats_from_cat_obs(file_name_path=loadfiles_directory, run_number=run_number, compute_ratios=compute_ratios)
-    dists_i, dists_w_i = compute_distances_sim_Kepler(sss_per_sys_i, sss_i, ssk_per_sys, ssk, weights_all['all'], dists_include, N_Kep, cos_factor=cos_factor, AD_mod=AD_mod, compute_ratios=compute_ratios)
+    dists_i, dists_w_i = compute_distances_sim_Kepler(sss_per_sys_i, sss_i, ssk_per_sys, ssk, weights_all['all'], dists_include, N_Kep, cos_factor=cos_factor, AD_mod=AD_mod)
 
     # Multiplicities:
     counts, bins = np.histogram(sss_per_sys_i['Mtot_obs'], bins=Mtot_bins)
     Mtot_counts_all.append(counts/float(np.sum(counts)))
-    
+
     # Periods:
     counts, bins = np.histogram(sss_i['P_obs'], bins=P_bins)
     P_counts_all.append(counts/float(np.sum(counts)))
@@ -188,7 +186,7 @@ for i in range(1,runs+1):
     # Durations:
     counts, bins = np.histogram(sss_i['tdur_obs'], bins=tdur_bins)
     tdur_counts_all.append(counts/float(np.sum(counts)))
-    
+
     # Circular normalized durations (singles and multis):
     counts, bins = np.histogram(sss_i['tdur_tcirc_1_obs'], bins=tdur_tcirc_bins)
     tdur_tcirc_1_counts_all.append(counts/float(np.sum(counts)))
@@ -235,7 +233,7 @@ for i in range(1,runs+1):
     xi_3_counts_all.append(counts/float(np.sum(counts)))
     counts, bins = np.histogram(logxi_4p, bins=xi_bins)
     xi_4p_counts_all.append(counts/float(np.sum(counts)))
-    
+
     # Radii partitioning:
     counts, bins = np.histogram(sss_per_sys_i['radii_partitioning'], bins=radii_partitioning_bins)
     radii_partitioning_counts_all.append(counts/float(np.sum(counts)))
@@ -247,7 +245,7 @@ for i in range(1,runs+1):
     # Gap complexity:
     counts, bins = np.histogram(sss_per_sys_i['gap_complexity'], bins=gap_complexity_bins)
     gap_complexity_counts_all.append(counts/float(np.sum(counts)))
-    
+
     # Extra stats:
     f_pos_M = np.sum(sss_per_sys_i['radii_monotonicity'] > 0) / float(len(sss_per_sys_i['radii_monotonicity']))
     f_low_C = np.sum(sss_per_sys_i['gap_complexity'] < 0.1) / float(len(sss_per_sys_i['gap_complexity']))
@@ -319,23 +317,23 @@ for b in range(n_bins):
 
     # Durations:
     tdur_counts_qtls[b] = np.quantile(tdur_counts_all[:,b], [0.16, 0.5, 0.84])
-    
+
     # Circular normalized durations (singles and multis):
     tdur_tcirc_1_counts_qtls[b] = np.quantile(tdur_tcirc_1_counts_all[:,b], [0.16, 0.5, 0.84])
     tdur_tcirc_2p_counts_qtls[b] = np.quantile(tdur_tcirc_2p_counts_all[:,b], [0.16, 0.5, 0.84])
 
     # Depths:
     D_counts_qtls[b] = np.quantile(D_counts_all[:,b], [0.16, 0.5, 0.84])
-    
+
     # Planet radii:
     radii_counts_qtls[b] = np.quantile(radii_counts_all[:,b], [0.16, 0.5, 0.84])
-    
+
     # Stellar radii:
     Rstar_counts_qtls[b] = np.quantile(Rstar_counts_all[:,b], [0.16, 0.5, 0.84])
-    
+
     # Depth ratios:
     D_ratio_counts_qtls[b] = np.quantile(D_ratio_counts_all[:,b], [0.16, 0.5, 0.84])
-    
+
     # Log(xi):
     xi_counts_qtls[b] = np.quantile(xi_counts_all[:,b], [0.16, 0.5, 0.84])
     xi_res_counts_qtls[b] = np.quantile(xi_res_counts_all[:,b], [0.16, 0.5, 0.84])
@@ -604,14 +602,14 @@ plt.fill_between(xi_bins_mid, xi_counts_qtls[:,0], xi_counts_qtls[:,2], step='mi
 if savefigures:
     plt.savefig(directory + model_name + '_logxi_all_compare.pdf')
     plt.close()
-    
+
 # Radius partitioning:
 plot_fig_pdf_simple(fig_size, [ssk_per_sys['radii_partitioning']], [], x_min=np.min(radii_partitioning_bins), x_max=np.max(radii_partitioning_bins), n_bins=n_bins_sys, log_x=True, lw=lw, xlabel_text=r'Radius partitioning, $\mathcal{Q}_R$', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt)
 plt.fill_between(radii_partitioning_bins_mid, radii_partitioning_counts_qtls[:,0], radii_partitioning_counts_qtls[:,2], step='mid', color='k', alpha=alpha)
 if savefigures:
     plt.savefig(directory + model_name + '_radii_partitioning_compare.pdf')
     plt.close()
-    
+
 # Radius monotonicity:
 plot_fig_pdf_simple(fig_size, [ssk_per_sys['radii_monotonicity']], [], x_min=np.min(radii_monotonicity_bins), x_max=np.max(radii_monotonicity_bins), n_bins=n_bins_sys, log_x=False, lw=lw, xlabel_text=r'Radius monotonicity, $\mathcal{M}_R$', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt)
 plt.fill_between(radii_monotonicity_bins_mid, radii_monotonicity_counts_qtls[:,0], radii_monotonicity_counts_qtls[:,2], step='mid', color='k', alpha=alpha)

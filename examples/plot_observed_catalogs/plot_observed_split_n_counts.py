@@ -15,13 +15,11 @@ import scipy.interpolate #for interpolation functions
 import corner #corner.py package for corner plots
 #matplotlib.rc('text', usetex=True)
 
-sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(__file__)))))
-
-from src.functions_general import *
-from src.functions_compare_kepler import *
-from src.functions_load_sims import *
-from src.functions_plot_catalogs import *
-from src.functions_plot_params import *
+from syssimpyplots.general import *
+from syssimpyplots.compare_kepler import *
+from syssimpyplots.load_sims import *
+from syssimpyplots.plot_catalogs import *
+from syssimpyplots.plot_params import *
 
 
 
@@ -130,15 +128,15 @@ for j in range(samples):
 param_vals_all = []
 for i in range(1,runs+1): #range(1,runs+1)
     run_number = i
-    
+
     param_vals_i = read_sim_params(loadfiles_directory + 'periods%s.out' % run_number)
     param_vals_all.append(param_vals_i)
-    
+
     # Combined sample first:
     sss_per_sys_i, sss_i = compute_summary_stats_from_cat_obs(file_name_path=loadfiles_directory, run_number=run_number, compute_ratios=compute_ratios)
-    dists_i, dists_w_i = compute_distances_sim_Kepler(sss_per_sys_i, sss_i, ssk_per_sys, ssk, weights_all['all'], dists_include, N_Kep, cos_factor=cos_factor, AD_mod=AD_mod, compute_ratios=compute_ratios)
+    dists_i, dists_w_i = compute_distances_sim_Kepler(sss_per_sys_i, sss_i, ssk_per_sys, ssk, weights_all['all'], dists_include, N_Kep, cos_factor=cos_factor, AD_mod=AD_mod)
     Nmult_runs['all'].append(tuple(bin_Nmult(sss_i['Nmult_obs'])))
-    
+
     # For each of the subsamples:
     for j in range(samples):
         sss_per_sys_i_j, sss_i_j = compute_summary_stats_from_cat_obs(file_name_path=loadfiles_directory, run_number=run_number, bp_rp_min=sample_bprp_bounds[j], bp_rp_max=sample_bprp_bounds[j+1], compute_ratios=compute_ratios)

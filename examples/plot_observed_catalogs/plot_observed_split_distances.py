@@ -15,13 +15,11 @@ import scipy.interpolate #for interpolation functions
 import corner #corner.py package for corner plots
 #matplotlib.rc('text', usetex=True)
 
-sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(__file__)))))
-
-from src.functions_general import *
-from src.functions_compare_kepler import *
-from src.functions_load_sims import *
-from src.functions_plot_catalogs import *
-from src.functions_plot_params import *
+from syssimpyplots.general import *
+from syssimpyplots.compare_kepler import *
+from syssimpyplots.load_sims import *
+from syssimpyplots.plot_catalogs import *
+from syssimpyplots.plot_params import *
 
 
 
@@ -46,7 +44,7 @@ def load_split_stars_model_evaluations_weighted(file_name, dtot_max_keep=np.inf,
     d_used_keys_evals = {key: [] for key in sample_names}
     d_used_vals_w_evals = {key: [] for key in sample_names}
     d_used_vals_tot_w_evals = []
-    
+
     with open(file_name, 'r') as file:
         for line in file:
             for key in sample_names:
@@ -56,11 +54,11 @@ def load_split_stars_model_evaluations_weighted(file_name, dtot_max_keep=np.inf,
                         Nmult_str, counts_str = line[n+3+9:-2].split('][')
                         Nmult = tuple([int(x) for x in Nmult_str.split(', ')])
                         Nmult_evals[key].append(Nmult)
-                    
+
                     if line[n+3:n+3+12] == 'd_used_keys:':
                         d_used_keys = line[n+3+15:-3].split('", "')
                         d_used_keys_evals[key].append(d_used_keys)
-                    
+
                     if line[n+3:n+3+12] == 'd_used_vals:':
                         d_used_vals_str, d_used_vals_tot_str = line[n+3+14:-2].split('][')
                         d_used_vals = tuple([float(x) for x in d_used_vals_str.split(', ')])
@@ -290,7 +288,7 @@ plt.show()
 def compute_and_print_quantiles_Nmult_split_stars(Nmult_evals):
     sample_names = ['all', 'bluer', 'redder']
     sample_stars = {'all': N_Kep, 'bluer': 43380, 'redder': 43380}
-    
+
     Nmult_quantiles = {key: {'q16': [], 'qmed': [], 'q84': []} for key in sample_names}
     total_planets = {key: np.zeros(len(Nmult_evals[key])) for key in sample_names}
     for sample in sample_names:
@@ -304,7 +302,7 @@ def compute_and_print_quantiles_Nmult_split_stars(Nmult_evals):
             #print('%s : %s, %s, %s' % (key, int(np.round(q16)), int(np.round(qmed)), int(np.round(q84))))
             print('%s : %s_{%s}^{+%s}' % (key, int(np.round(qmed)), int(np.round(q16-qmed)), int(np.round(q84-qmed))))
             total_planets[sample] += Nmults_i*int(key)
-        
+
         # Compute the total numbers of planets:
         q16, qmed, q84 = np.quantile(total_planets[sample], [0.16, 0.5, 0.84])
         print('Total planets: %s_{%s}^{+%s}' % (int(np.round(qmed)), int(np.round(q16-qmed)), int(np.round(q84-qmed))))
@@ -315,7 +313,7 @@ def compute_and_print_quantiles_Nmult_split_stars(Nmult_evals):
             num_0pl[i] = sample_stars[sample] - sum(x)
         q16, qmed, q84 = np.quantile(num_0pl, [0.16, 0.5, 0.84])
         print('Total 0-planet systems: %s_{%s}^{+%s}' % (int(np.round(qmed)), int(np.round(q16-qmed)), int(np.round(q84-qmed))))
-        
+
     return Nmult_quantiles
 
 Nmult_quantiles_1_KS = compute_and_print_quantiles_Nmult_split_stars(Nmult_keep_1_KS)
@@ -393,7 +391,7 @@ for i,sample in enumerate(sample_names):
     ax = plt.subplot(plot[i,0])
     plt.axhline(y=1., ls=':', c=sample_colors[i], label='Exact match')
     #plt.plot(range(1,7), np.ones(6), '-x', color=sample_colors[i], label='Exact match')
-    
+
     Nmults = [Nmult_keep_1_KS, Nmult_keep_2_KS, Nmult_keep_3_KS]
     for j,Nmult_q in enumerate([Nmult_quantiles_1_KS, Nmult_quantiles_2_KS, Nmult_quantiles_3_KS]):
         for n in range(4): # for bins 1,2,3,4
@@ -404,7 +402,7 @@ for i,sample in enumerate(sample_names):
                 plt.plot((n+0.5, n+1.5), (ratio_med, ratio_med), color=sample_colors[i], ls=model_linestyles[j], lw=2, label=model_names[j])
             else:
                 plt.plot((n+0.5, n+1.5), (ratio_med, ratio_med), color=sample_colors[i], ls=model_linestyles[j], lw=2)
-            
+
             # For the credible regions:
             #plt.plot((n+0.5, n+1.5), (ratio_q16, ratio_q16), color=sample_colors[i], ls=model_linestyles[j])
             #plt.plot((n+0.5, n+1.5), (ratio_q84, ratio_q84), color=sample_colors[i], ls=model_linestyles[j])

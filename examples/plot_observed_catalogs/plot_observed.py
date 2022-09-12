@@ -16,13 +16,11 @@ import scipy.interpolate #for interpolation functions
 import corner #corner.py package for corner plots
 #matplotlib.rc('text', usetex=True)
 
-sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(__file__)))))
-
-from src.functions_general import *
-from src.functions_compare_kepler import *
-from src.functions_load_sims import *
-from src.functions_plot_catalogs import *
-from src.functions_plot_params import *
+from syssimpyplots.general import *
+from syssimpyplots.compare_kepler import *
+from syssimpyplots.load_sims import *
+from syssimpyplots.plot_catalogs import *
+from syssimpyplots.plot_params import *
 
 
 
@@ -73,7 +71,7 @@ sss_per_sys, sss = compute_summary_stats_from_cat_obs(file_name_path=loadfiles_d
 # To load and process the observed Kepler catalog and compare with our simulated catalog:
 ssk_per_sys, ssk = compute_summary_stats_from_Kepler_catalog(P_min, P_max, radii_min, radii_max, compute_ratios=compute_ratios)
 
-dists, dists_w = compute_distances_sim_Kepler(sss_per_sys, sss, ssk_per_sys, ssk, weights_all['all'], dists_include, N_sim, cos_factor=cos_factor, AD_mod=AD_mod, compute_ratios=compute_ratios)
+dists, dists_w = compute_distances_sim_Kepler(sss_per_sys, sss, ssk_per_sys, ssk, weights_all['all'], dists_include, N_sim, cos_factor=cos_factor, AD_mod=AD_mod)
 
 
 
@@ -406,7 +404,7 @@ for m in [1,2,3,4]:
         tdur_tcirc_m = sss_per_sys['tdur_tcirc_obs'][sss_per_sys['Mtot_obs'] == m, :m]
         tdur_tcirc_Kep_m = ssk_per_sys['tdur_tcirc_obs'][ssk_per_sys['Mtot_obs'] == m, :m]
         label = r'$m = %s$' % m
-    
+
     plot_fig_pdf_simple(fig_size, [tdur_tcirc_m.flatten()], [tdur_tcirc_Kep_m.flatten()], x_min=0., x_max=1.5, n_bins=n_bins, lw=lw, labels_sim=[label], labels_Kep=[''], xlabel_text=r'$t_{\rm dur}/t_{\rm circ}$', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_tdur_tcirc_m%s_compare.pdf' % m, save_fig=savefigures)
 
     tdur_tcirc_Kep_per_m.append(tdur_tcirc_Kep_m.flatten())

@@ -16,13 +16,11 @@ from scipy.stats import gaussian_kde as KDE #for gaussian_kde functions
 import corner #corner.py package for corner plots
 #matplotlib.rc('text', usetex=True)
 
-sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(__file__)))))
-
-from src.functions_general import *
-from src.functions_compare_kepler import *
-from src.functions_load_sims import *
-from src.functions_plot_catalogs import *
-from src.functions_plot_params import *
+from syssimpyplots.general import *
+from syssimpyplots.compare_kepler import *
+from syssimpyplots.load_sims import *
+from syssimpyplots.plot_catalogs import *
+from syssimpyplots.plot_params import *
 
 
 
@@ -98,9 +96,9 @@ split_colors = ['b', 'r']
 
 
 
-dists0, dists_w0 = compute_distances_sim_Kepler(sss_per_sys0, sss0, ssk_per_sys0, ssk0, weights_all['all'], dists_include, N_sim, cos_factor=cos_factor, AD_mod=AD_mod, compute_ratios=compute_ratios)
-dists1, dists_w1 = compute_distances_sim_Kepler(sss_per_sys1, sss1, ssk_per_sys1, ssk1, weights_all['bluer'], dists_include, N_sim, cos_factor=cos_factor, AD_mod=AD_mod, compute_ratios=compute_ratios)
-dists2, dists_w2 = compute_distances_sim_Kepler(sss_per_sys2, sss2, ssk_per_sys2, ssk2, weights_all['redder'], dists_include, N_sim, cos_factor=cos_factor, AD_mod=AD_mod, compute_ratios=compute_ratios)
+dists0, dists_w0 = compute_distances_sim_Kepler(sss_per_sys0, sss0, ssk_per_sys0, ssk0, weights_all['all'], dists_include, N_sim, cos_factor=cos_factor, AD_mod=AD_mod)
+dists1, dists_w1 = compute_distances_sim_Kepler(sss_per_sys1, sss1, ssk_per_sys1, ssk1, weights_all['bluer'], dists_include, N_sim, cos_factor=cos_factor, AD_mod=AD_mod)
+dists2, dists_w2 = compute_distances_sim_Kepler(sss_per_sys2, sss2, ssk_per_sys2, ssk2, weights_all['redder'], dists_include, N_sim, cos_factor=cos_factor, AD_mod=AD_mod)
 
 
 
@@ -167,18 +165,18 @@ gap_complexity_kde_all = {sample: [] for sample in sample_names}
 for i in range(1,runs+1): #range(1,runs+1)
     run_number = i
     print(i)
-    
+
     param_vals_i = read_sim_params(loadfiles_directory + 'periods%s.out' % run_number)
     param_vals_all.append(param_vals_i)
-    
+
     sss_per_sys0_i, sss0_i = compute_summary_stats_from_cat_obs(file_name_path=loadfiles_directory, run_number=run_number, compute_ratios=compute_ratios) # combined sample
     sss_per_sys1_i, sss1_i = compute_summary_stats_from_cat_obs(file_name_path=loadfiles_directory, run_number=run_number, bp_rp_max=bp_rp_corr_med, compute_ratios=compute_ratios)
     sss_per_sys2_i, sss2_i = compute_summary_stats_from_cat_obs(file_name_path=loadfiles_directory, run_number=run_number, bp_rp_min=bp_rp_corr_med, compute_ratios=compute_ratios)
-    
-    dists0_i, dists_w0_i = compute_distances_sim_Kepler(sss_per_sys0_i, sss0_i, ssk_per_sys0, ssk0, weights_all['all'], dists_include, N_Kep, cos_factor=cos_factor, AD_mod=AD_mod, compute_ratios=compute_ratios)
-    dists1_i, dists_w1_i = compute_distances_sim_Kepler(sss_per_sys1_i, sss1_i, ssk_per_sys1, ssk1, weights_all['bluer'], dists_include, N_Kep, cos_factor=cos_factor, AD_mod=AD_mod, compute_ratios=compute_ratios)
-    dists2_i, dists_w2_i = compute_distances_sim_Kepler(sss_per_sys2_i, sss2_i, ssk_per_sys2, ssk2, weights_all['redder'], dists_include, N_Kep, cos_factor=cos_factor, AD_mod=AD_mod, compute_ratios=compute_ratios)
-    
+
+    dists0_i, dists_w0_i = compute_distances_sim_Kepler(sss_per_sys0_i, sss0_i, ssk_per_sys0, ssk0, weights_all['all'], dists_include, N_Kep, cos_factor=cos_factor, AD_mod=AD_mod)
+    dists1_i, dists_w1_i = compute_distances_sim_Kepler(sss_per_sys1_i, sss1_i, ssk_per_sys1, ssk1, weights_all['bluer'], dists_include, N_Kep, cos_factor=cos_factor, AD_mod=AD_mod)
+    dists2_i, dists_w2_i = compute_distances_sim_Kepler(sss_per_sys2_i, sss2_i, ssk_per_sys2, ssk2, weights_all['redder'], dists_include, N_Kep, cos_factor=cos_factor, AD_mod=AD_mod)
+
     samples_sss_per_sys_i = {'all': sss_per_sys0_i, 'bluer': sss_per_sys1_i, 'redder': sss_per_sys2_i}
     samples_sss_i = {'all': sss0_i, 'bluer': sss1_i, 'redder': sss2_i}
 
@@ -187,7 +185,7 @@ for i in range(1,runs+1): #range(1,runs+1)
         counts, bins = np.histogram(samples_sss_per_sys_i[sample]['Mtot_obs'], bins=Mtot_bins)
         Mtot_counts_all[sample].append(counts)
         Mtot_normed_counts_all[sample].append(counts/float(np.sum(counts)))
-    
+
         # Periods:
         P_kde = KDE(np.log10(samples_sss_i[sample]['P_obs']))
         P_kde_all[sample].append(P_kde)
@@ -288,7 +286,7 @@ def kde_kNN_bw(kde, x_axis, kNN_factor=5):
         idx_kNN = np.argsort(np.abs(x_data - x))[:kNN] # indices of kNN
         x_kNN = x_data[idx_kNN] # kNN points
         bw = np.max(x_kNN) - np.min(x_kNN) # bandwidth as range of kNN points
-        
+
         kde.set_bandwidth(bw_method=bw)
         kde_pts[p] = kde(x)[0] # evaluate KDE at point
         bw_pts[p] = bw
@@ -324,7 +322,7 @@ for i,sample in enumerate(split_names):
     #kde_pts_Kep = Rm_kde_Kep[sample](np.log10(Rm_axis))
     kde_pts_Kep, bw_pts_Kep = kde_kNN_bw(P_kde_Kep[sample], np.log10(P_axis), kNN_factor=kNN_factor)
     plt.plot(P_axis, kde_pts_Kep, ls='--', lw=lw_Kep, color=split_colors[i], label='Kepler' if i==0 else '')
-    
+
     kde_pts_all = np.zeros((runs, pts))
     for n in range(runs):
         #kde_pts = P_kde_all[sample][n](np.log10(P_axis))
@@ -367,7 +365,7 @@ for i,sample in enumerate(split_names):
     #kde_pts_Kep = tdur_kde_Kep[sample](tdur_axis)
     kde_pts_Kep, bw_pts_Kep = kde_kNN_bw(tdur_kde_Kep[sample], tdur_axis, kNN_factor=kNN_factor)
     plt.plot(tdur_axis, kde_pts_Kep, ls='--', lw=lw_Kep, color=split_colors[i])
-    
+
     kde_pts_all = np.zeros((runs, pts))
     for n in range(runs):
         #kde_pts = tdur_kde_all[sample][n](tdur_axis)
@@ -387,7 +385,7 @@ for i,sample in enumerate(split_names):
     #kde_pts_Kep = tdur_tcirc_1_kde_Kep[sample](tdur_tcirc_axis)
     kde_pts_Kep, bw_pts_Kep = kde_kNN_bw(tdur_tcirc_1_kde_Kep[sample], tdur_tcirc_axis, kNN_factor=kNN_factor)
     plt.plot(tdur_tcirc_axis, kde_pts_Kep, ls='--', lw=lw_Kep, color=split_colors[i])
-    
+
     kde_pts_all = np.zeros((runs, pts))
     for n in range(runs):
         #kde_pts = tdur_tcirc_1_kde_all[sample][n](tdur_tcirc_axis)
@@ -405,7 +403,7 @@ for i,sample in enumerate(split_names):
     #kde_pts_Kep = tdur_tcirc_2p_kde_Kep[sample](tdur_tcirc_axis)
     kde_pts_Kep, bw_pts_Kep = kde_kNN_bw(tdur_tcirc_2p_kde_Kep[sample], tdur_tcirc_axis, kNN_factor=kNN_factor)
     plt.plot(tdur_tcirc_axis, kde_pts_Kep, ls='--', lw=lw_Kep, color=split_colors[i])
-    
+
     kde_pts_all = np.zeros((runs, pts))
     for n in range(runs):
         #kde_pts = tdur_tcirc_2p_kde_all[sample][n](tdur_tcirc_axis)
@@ -425,7 +423,7 @@ for i,sample in enumerate(split_names):
     #kde_pts_Kep = D_kde_Kep[sample](np.log10(D_axis))
     kde_pts_Kep, bw_pts_Kep = kde_kNN_bw(D_kde_Kep[sample], np.log10(D_axis), kNN_factor=kNN_factor)
     plt.plot(D_axis, kde_pts_Kep, ls='--', lw=lw_Kep, color=split_colors[i])
-    
+
     kde_pts_all = np.zeros((runs, pts))
     for n in range(runs):
         #kde_pts = D_kde_all[sample][n](np.log10(D_axis))
@@ -445,7 +443,7 @@ for i,sample in enumerate(split_names):
     #kde_pts_Kep = radii_kde_Kep[sample](radii_axis)
     kde_pts_Kep, bw_pts_Kep = kde_kNN_bw(radii_kde_Kep[sample], radii_axis, kNN_factor=kNN_factor)
     plt.plot(radii_axis, kde_pts_Kep, ls='--', lw=lw_Kep, color=split_colors[i])
-    
+
     kde_pts_all = np.zeros((runs, pts))
     for n in range(runs):
         #kde_pts = radii_kde_all[sample][n](radii_axis)
@@ -465,7 +463,7 @@ for i,sample in enumerate(split_names):
     #kde_pts_Kep = Rstar_kde_Kep[sample](Rstar_axis)
     kde_pts_Kep, bw_pts_Kep = kde_kNN_bw(Rstar_kde_Kep[sample], Rstar_axis, kNN_factor=kNN_factor)
     plt.plot(Rstar_axis, kde_pts_Kep, ls='--', lw=lw_Kep, color=split_colors[i])
-    
+
     kde_pts_all = np.zeros((runs, pts))
     for n in range(runs):
         #kde_pts = Rstar_kde_all[sample][n](Rstar_axis)
@@ -485,7 +483,7 @@ for i,sample in enumerate(split_names):
     #kde_pts_Kep = D_ratio_kde_Kep[sample](np.log10(D_ratio_axis))
     kde_pts_Kep, bw_pts_Kep = kde_kNN_bw(D_ratio_kde_Kep[sample], np.log10(D_ratio_axis), kNN_factor=kNN_factor)
     plt.plot(D_ratio_axis, kde_pts_Kep, ls='--', lw=lw_Kep, color=split_colors[i])
-    
+
     kde_pts_all = np.zeros((runs, pts))
     for n in range(runs):
         #kde_pts = D_ratio_kde_all[sample][n](np.log10(D_ratio_axis))
@@ -505,7 +503,7 @@ for i,sample in enumerate(split_names):
     #kde_pts_Kep = xi_kde_Kep[sample](xi_axis)
     kde_pts_Kep, bw_pts_Kep = kde_kNN_bw(xi_kde_Kep[sample], xi_axis, kNN_factor=kNN_factor)
     plt.plot(xi_axis, kde_pts_Kep, ls='--', lw=lw_Kep, color=split_colors[i])
-    
+
     kde_pts_all = np.zeros((runs, pts))
     for n in range(runs):
         #kde_pts = xi_kde_all[sample][n](xi_axis)
@@ -524,7 +522,7 @@ for i,sample in enumerate(split_names):
     #kde_pts_Kep = xi_nonres_kde_Kep[sample](xi_axis)
     kde_pts_Kep, bw_pts_Kep = kde_kNN_bw(xi_nonres_kde_Kep[sample], xi_axis, kNN_factor=kNN_factor)
     plt.plot(xi_axis, kde_pts_Kep, ls='--', lw=lw_Kep, color=split_colors[i])
-    
+
     kde_pts_all = np.zeros((runs, pts))
     for n in range(runs):
         #kde_pts = xi_nonres_kde_all[sample][n](xi_axis)
@@ -543,7 +541,7 @@ for i,sample in enumerate(split_names):
     #kde_pts_Kep = xi_res_kde_Kep[sample](xi_axis)
     kde_pts_Kep, bw_pts_Kep = kde_kNN_bw(xi_res_kde_Kep[sample], xi_axis, kNN_factor=kNN_factor)
     plt.plot(xi_axis, kde_pts_Kep, ls='--', lw=lw_Kep, color=split_colors[i])
-    
+
     kde_pts_all = np.zeros((runs, pts))
     for n in range(runs):
         #kde_pts = xi_res_kde_all[sample][n](xi_axis)
@@ -564,7 +562,7 @@ for i,sample in enumerate(split_names):
     #kde_pts_Kep = radii_partitioning_kde_Kep[sample](np.log10(radii_partitioning_axis))
     kde_pts_Kep, bw_pts_Kep = kde_kNN_bw(radii_partitioning_kde_Kep[sample], np.log10(radii_partitioning_axis), kNN_factor=kNN_factor)
     plt.plot(radii_partitioning_axis, kde_pts_Kep, ls='--', lw=lw_Kep, color=split_colors[i])
-    
+
     kde_pts_all = np.zeros((runs, pts))
     for n in range(runs):
         #kde_pts = radii_partitioning_kde_all[sample][n](np.log10(radii_partitioning_axis))
@@ -584,7 +582,7 @@ for i,sample in enumerate(split_names):
     #kde_pts_Kep = radii_monotonicity_kde_Kep[sample](radii_monotonicity_axis)
     kde_pts_Kep, bw_pts_Kep = kde_kNN_bw(radii_monotonicity_kde_Kep[sample], radii_monotonicity_axis, kNN_factor=kNN_factor)
     plt.plot(radii_monotonicity_axis, kde_pts_Kep, ls='--', lw=lw_Kep, color=split_colors[i])
-    
+
     kde_pts_all = np.zeros((runs, pts))
     for n in range(runs):
         #kde_pts = radii_monotonicity_kde_all[sample][n](radii_monotonicity_axis)
@@ -604,7 +602,7 @@ for i,sample in enumerate(split_names):
     #kde_pts_Kep = gap_complexity_kde_Kep[sample](gap_complexity_axis)
     kde_pts_Kep, bw_pts_Kep = kde_kNN_bw(gap_complexity_kde_Kep[sample], gap_complexity_axis, kNN_factor=kNN_factor)
     plt.plot(gap_complexity_axis, kde_pts_Kep, ls='--', lw=lw_Kep, color=split_colors[i])
-    
+
     kde_pts_all = np.zeros((runs, pts))
     for n in range(runs):
         #kde_pts = gap_complexity_kde_all[sample][n](gap_complexity_axis)
@@ -638,7 +636,7 @@ for i,sample in enumerate(split_names):
     #kde_pts_Kep = tdur_tcirc_1_kde_Kep[sample](tdur_tcirc_axis)
     kde_pts_Kep, bw_pts_Kep = kde_kNN_bw(tdur_tcirc_1_kde_Kep[sample], tdur_tcirc_axis, kNN_factor=kNN_factor)
     plt.plot(tdur_tcirc_axis, kde_pts_Kep, ls='--', lw=lw_Kep, color=split_colors[i])
-    
+
     kde_pts_all = np.zeros((runs, pts))
     for n in range(runs):
         #kde_pts = tdur_tcirc_1_kde_all[sample][n](tdur_tcirc_axis)
@@ -664,7 +662,7 @@ for i,sample in enumerate(split_names):
     #kde_pts_Kep = tdur_tcirc_2p_kde_Kep[sample](tdur_tcirc_axis)
     kde_pts_Kep, bw_pts_Kep = kde_kNN_bw(tdur_tcirc_2p_kde_Kep[sample], tdur_tcirc_axis, kNN_factor=kNN_factor)
     plt.plot(tdur_tcirc_axis, kde_pts_Kep, ls='--', lw=lw_Kep, color=split_colors[i])
-    
+
     kde_pts_all = np.zeros((runs, pts))
     for n in range(runs):
         #kde_pts = tdur_tcirc_2p_kde_all[sample][n](tdur_tcirc_axis)
@@ -678,4 +676,3 @@ if savefigures:
     plt.close()
 plt.show()
 #'''
-

@@ -16,13 +16,11 @@ from scipy.stats import ks_2samp
 import corner #corner.py package for corner plots
 #matplotlib.rc('text', usetex=True)
 
-sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(__file__)))))
-
-from src.functions_general import *
-from src.functions_compare_kepler import *
-from src.functions_load_sims import *
-from src.functions_plot_catalogs import *
-from src.functions_plot_params import *
+from syssimpyplots.general import *
+from syssimpyplots.compare_kepler import *
+from syssimpyplots.load_sims import *
+from syssimpyplots.plot_catalogs import *
+from syssimpyplots.plot_params import *
 
 
 
@@ -94,9 +92,9 @@ logxi_Kep_4p = np.log10(xi_Kep_4p[xi_Kep_4p != -1])
 xi_Kep_5p = ssk_per_sys['xi_obs'][ssk_per_sys['Mtot_obs'] >= 5]
 logxi_Kep_5p = np.log10(xi_Kep_5p[xi_Kep_5p != -1])
 
-dists1, dists_w1 = compute_distances_sim_Kepler(sss_per_sys1, sss1, ssk_per_sys, ssk, weights_all['all'], dists_include, N_sim, cos_factor=cos_factor, AD_mod=AD_mod, compute_ratios=compute_ratios)
+dists1, dists_w1 = compute_distances_sim_Kepler(sss_per_sys1, sss1, ssk_per_sys, ssk, weights_all['all'], dists_include, N_sim, cos_factor=cos_factor, AD_mod=AD_mod)
 
-dists2, dists_w2 = compute_distances_sim_Kepler(sss_per_sys2, sss2, ssk_per_sys, ssk, weights_all['all'], dists_include, N_sim, cos_factor=cos_factor, AD_mod=AD_mod, compute_ratios=compute_ratios)
+dists2, dists_w2 = compute_distances_sim_Kepler(sss_per_sys2, sss2, ssk_per_sys, ssk, weights_all['all'], dists_include, N_sim, cos_factor=cos_factor, AD_mod=AD_mod)
 
 
 
@@ -205,7 +203,7 @@ for loadfiles_dir in model_loadfiles_dirs:
     xi_4_counts = []
     xi_4p_counts = []
     xi_5p_counts = []
-    
+
     xi_2_pvals = []
     xi_3_pvals = []
     xi_4_pvals = []
@@ -215,12 +213,12 @@ for loadfiles_dir in model_loadfiles_dirs:
     for i in range(1,runs+1): #range(1,runs+1)
         run_number = i
         sss_per_sys_i, sss_i = compute_summary_stats_from_cat_obs(file_name_path=loadfiles_dir, run_number=run_number, compute_ratios=compute_ratios)
-        dists_i, dists_w_i = compute_distances_sim_Kepler(sss_per_sys_i, sss_i, ssk_per_sys, ssk, weights_all['all'], dists_include, N_Kep, cos_factor=cos_factor, AD_mod=AD_mod, compute_ratios=compute_ratios)
+        dists_i, dists_w_i = compute_distances_sim_Kepler(sss_per_sys_i, sss_i, ssk_per_sys, ssk, weights_all['all'], dists_include, N_Kep, cos_factor=cos_factor, AD_mod=AD_mod)
 
         # Multiplicities:
         counts, bins = np.histogram(sss_per_sys_i['Mtot_obs'], bins=Mtot_bins)
         Mtot_counts.append(counts/float(np.sum(counts)))
-        
+
         # Periods:
         counts, bins = np.histogram(sss_i['P_obs'], bins=P_bins)
         P_counts.append(counts/float(np.sum(counts)))
@@ -232,7 +230,7 @@ for loadfiles_dir in model_loadfiles_dirs:
         # Durations:
         counts, bins = np.histogram(sss_i['tdur_obs'], bins=tdur_bins)
         tdur_counts.append(counts/float(np.sum(counts)))
-        
+
         # Circular normalized durations (singles and multis):
         counts, bins = np.histogram(sss_i['tdur_tcirc_1_obs'], bins=tdur_tcirc_bins)
         tdur_tcirc_1_counts.append(counts/float(np.sum(counts)))
@@ -286,7 +284,7 @@ for loadfiles_dir in model_loadfiles_dirs:
         xi_4p_counts.append(counts/float(np.sum(counts)))
         counts, bins = np.histogram(logxi_5p, bins=xi_bins)
         xi_5p_counts.append(counts/float(np.sum(counts)))
-        
+
         xi_2_pvals.append(ks_2samp(logxi_2, logxi_Kep_2).pvalue)
         xi_3_pvals.append(ks_2samp(logxi_3, logxi_Kep_3).pvalue)
         xi_4_pvals.append(ks_2samp(logxi_4, logxi_Kep_4).pvalue)
@@ -378,23 +376,23 @@ for m in range(models):
 
         # Durations:
         tdur_counts_qtls[m][b] = np.quantile(tdur_counts_all[m][:,b], [0.16, 0.5, 0.84])
-        
+
         # Circular normalized durations (singles and multis):
         tdur_tcirc_1_counts_qtls[m][b] = np.quantile(tdur_tcirc_1_counts_all[m][:,b], [0.16, 0.5, 0.84])
         tdur_tcirc_2p_counts_qtls[m][b] = np.quantile(tdur_tcirc_2p_counts_all[m][:,b], [0.16, 0.5, 0.84])
 
         # Depths:
         D_counts_qtls[m][b] = np.quantile(D_counts_all[m][:,b], [0.16, 0.5, 0.84])
-        
+
         # Planet radii:
         radii_counts_qtls[m][b] = np.quantile(radii_counts_all[m][:,b], [0.16, 0.5, 0.84])
-        
+
         # Stellar radii:
         Rstar_counts_qtls[m][b] = np.quantile(Rstar_counts_all[m][:,b], [0.16, 0.5, 0.84])
-        
+
         # Depth ratios:
         D_ratio_counts_qtls[m][b] = np.quantile(D_ratio_counts_all[m][:,b], [0.16, 0.5, 0.84])
-        
+
         # Log(xi):
         xi_counts_qtls[m][b] = np.quantile(xi_counts_all[m][:,b], [0.16, 0.5, 0.84])
         xi_res_counts_qtls[m][b] = np.quantile(xi_res_counts_all[m][:,b], [0.16, 0.5, 0.84])

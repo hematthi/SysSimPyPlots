@@ -16,13 +16,11 @@ import scipy.stats #for gaussian_kde functions
 import corner #corner.py package for corner plots
 #matplotlib.rc('text', usetex=True)
 
-sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(__file__)))))
-
-from src.functions_general import *
-from src.functions_compare_kepler import *
-from src.functions_load_sims import *
-from src.functions_plot_catalogs import *
-from src.functions_plot_params import *
+from syssimpyplots.general import *
+from syssimpyplots.compare_kepler import *
+from syssimpyplots.load_sims import *
+from syssimpyplots.plot_catalogs import *
+from syssimpyplots.plot_params import *
 
 
 
@@ -98,9 +96,9 @@ split_colors = ['b', 'r']
 
 
 
-dists0, dists_w0 = compute_distances_sim_Kepler(sss_per_sys0, sss0, ssk_per_sys0, ssk0, weights_all['all'], dists_include, N_sim, cos_factor=cos_factor, AD_mod=AD_mod, compute_ratios=compute_ratios)
-dists1, dists_w1 = compute_distances_sim_Kepler(sss_per_sys1, sss1, ssk_per_sys1, ssk1, weights_all['bluer'], dists_include, N_sim, cos_factor=cos_factor, AD_mod=AD_mod, compute_ratios=compute_ratios)
-dists2, dists_w2 = compute_distances_sim_Kepler(sss_per_sys2, sss2, ssk_per_sys2, ssk2, weights_all['redder'], dists_include, N_sim, cos_factor=cos_factor, AD_mod=AD_mod, compute_ratios=compute_ratios)
+dists0, dists_w0 = compute_distances_sim_Kepler(sss_per_sys0, sss0, ssk_per_sys0, ssk0, weights_all['all'], dists_include, N_sim, cos_factor=cos_factor, AD_mod=AD_mod)
+dists1, dists_w1 = compute_distances_sim_Kepler(sss_per_sys1, sss1, ssk_per_sys1, ssk1, weights_all['bluer'], dists_include, N_sim, cos_factor=cos_factor, AD_mod=AD_mod)
+dists2, dists_w2 = compute_distances_sim_Kepler(sss_per_sys2, sss2, ssk_per_sys2, ssk2, weights_all['redder'], dists_include, N_sim, cos_factor=cos_factor, AD_mod=AD_mod)
 
 
 
@@ -204,18 +202,18 @@ f_monotonicity_pos = [] # fraction of systems with monotonicity > 0
 for i in range(1,runs+1): #range(1,runs+1)
     run_number = i
     print(i)
-    
+
     param_vals_i = read_sim_params(loadfiles_directory + 'periods%s.out' % run_number)
     param_vals_all.append(param_vals_i)
-    
+
     sss_per_sys0_i, sss0_i = compute_summary_stats_from_cat_obs(file_name_path=loadfiles_directory, run_number=run_number, compute_ratios=compute_ratios) # combined sample
     sss_per_sys1_i, sss1_i = compute_summary_stats_from_cat_obs(file_name_path=loadfiles_directory, run_number=run_number, bp_rp_max=bp_rp_corr_med, compute_ratios=compute_ratios)
     sss_per_sys2_i, sss2_i = compute_summary_stats_from_cat_obs(file_name_path=loadfiles_directory, run_number=run_number, bp_rp_min=bp_rp_corr_med, compute_ratios=compute_ratios)
-    
-    dists0_i, dists_w0_i = compute_distances_sim_Kepler(sss_per_sys0_i, sss0_i, ssk_per_sys0, ssk0, weights_all['all'], dists_include, N_Kep, cos_factor=cos_factor, AD_mod=AD_mod, compute_ratios=compute_ratios)
-    dists1_i, dists_w1_i = compute_distances_sim_Kepler(sss_per_sys1_i, sss1_i, ssk_per_sys1, ssk1, weights_all['bluer'], dists_include, N_Kep, cos_factor=cos_factor, AD_mod=AD_mod, compute_ratios=compute_ratios)
-    dists2_i, dists_w2_i = compute_distances_sim_Kepler(sss_per_sys2_i, sss2_i, ssk_per_sys2, ssk2, weights_all['redder'], dists_include, N_Kep, cos_factor=cos_factor, AD_mod=AD_mod, compute_ratios=compute_ratios)
-    
+
+    dists0_i, dists_w0_i = compute_distances_sim_Kepler(sss_per_sys0_i, sss0_i, ssk_per_sys0, ssk0, weights_all['all'], dists_include, N_Kep, cos_factor=cos_factor, AD_mod=AD_mod)
+    dists1_i, dists_w1_i = compute_distances_sim_Kepler(sss_per_sys1_i, sss1_i, ssk_per_sys1, ssk1, weights_all['bluer'], dists_include, N_Kep, cos_factor=cos_factor, AD_mod=AD_mod)
+    dists2_i, dists_w2_i = compute_distances_sim_Kepler(sss_per_sys2_i, sss2_i, ssk_per_sys2, ssk2, weights_all['redder'], dists_include, N_Kep, cos_factor=cos_factor, AD_mod=AD_mod)
+
     samples_sss_per_sys_i = {'all': sss_per_sys0_i, 'bluer': sss_per_sys1_i, 'redder': sss_per_sys2_i}
     samples_sss_i = {'all': sss0_i, 'bluer': sss1_i, 'redder': sss2_i}
 
@@ -224,7 +222,7 @@ for i in range(1,runs+1): #range(1,runs+1)
         counts, bins = np.histogram(samples_sss_per_sys_i[sample]['Mtot_obs'], bins=Mtot_bins)
         Mtot_counts_all[sample].append(counts)
         Mtot_normed_counts_all[sample].append(counts/float(np.sum(counts)))
-    
+
         # Periods:
         counts, bins = np.histogram(samples_sss_i[sample]['P_obs'], bins=P_bins)
         P_counts_all[sample].append(counts/float(np.sum(counts)))
@@ -338,38 +336,38 @@ for b in range(n_bins):
 
         # Durations:
         tdur_counts_16[sample][b], tdur_counts_84[sample][b] = np.quantile(tdur_counts_all[sample][:,b], [0.16, 0.84])
-        
+
         # Circular normalized durations:
         tdur_tcirc_1_counts_16[sample][b], tdur_tcirc_1_counts_84[sample][b] = np.quantile(tdur_tcirc_1_counts_all[sample][:,b], [0.16, 0.84])
         tdur_tcirc_2p_counts_16[sample][b], tdur_tcirc_2p_counts_84[sample][b] = np.quantile(tdur_tcirc_2p_counts_all[sample][:,b], [0.16, 0.84])
-        
+
         # Depths:
         D_counts_16[sample][b], D_counts_84[sample][b] = np.quantile(D_counts_all[sample][:,b], [0.16, 0.84])
-    
+
         # Planet radii:
         radii_counts_16[sample][b], radii_counts_84[sample][b] = np.quantile(radii_counts_all[sample][:,b], [0.16, 0.84])
-    
+
         # Stellar radii:
         Rstar_counts_16[sample][b], Rstar_counts_84[sample][b] = np.quantile(Rstar_counts_all[sample][:,b], [0.16, 0.84])
-    
+
         # Depth ratios:
         D_ratio_counts_16[sample][b], D_ratio_counts_84[sample][b] = np.quantile(D_ratio_counts_all[sample][:,b], [0.16, 0.84])
-    
+
         # Log(xi):
         xi_counts_16[sample][b], xi_counts_84[sample][b] = np.quantile(xi_counts_all[sample][:,b], [0.16, 0.84])
-    
+
         # Log(xi) (res):
         xi_res_counts_16[sample][b], xi_res_counts_84[sample][b] = np.quantile(xi_res_counts_all[sample][:,b], [0.16, 0.84])
-    
+
         # Log(xi) (non-res):
         xi_nonres_counts_16[sample][b], xi_nonres_counts_84[sample][b] = np.quantile(xi_nonres_counts_all[sample][:,b], [0.16, 0.84])
 
         # Radii partitioning:
         radii_partitioning_counts_16[sample][b], radii_partitioning_counts_84[sample][b] = np.quantile(radii_partitioning_counts_all[sample][:,b], [0.16, 0.84])
-        
+
         # Radii monotonicity:
         radii_monotonicity_counts_16[sample][b], radii_monotonicity_counts_84[sample][b] = np.quantile(radii_monotonicity_counts_all[sample][:,b], [0.16, 0.84])
-        
+
         # Gap complexity:
         gap_complexity_counts_16[sample][b], gap_complexity_counts_84[sample][b] = np.quantile(gap_complexity_counts_all[sample][:,b], [0.16, 0.84])
 
@@ -556,7 +554,7 @@ sample_ssk = [ssk0, ssk1, ssk2]
 sample_ssk_per_sys = [ssk_per_sys0, ssk_per_sys1, ssk_per_sys2]
 sample_linestyles = ['-', '-', '-']
 sample_colors = ['k', 'b', 'r']
-    
+
 # Multiplicities:
 fig = plt.figure(figsize=fig_size)
 plot = GridSpec(1,3, left=fig_lbrt[0], bottom=fig_lbrt[1], right=fig_lbrt[2], top=fig_lbrt[3], wspace=wspace, hspace=0)
@@ -983,4 +981,3 @@ if savefigures:
     plt.close()
 plt.show()
 #'''
-

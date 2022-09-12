@@ -15,13 +15,11 @@ import scipy.interpolate #for interpolation functions
 import corner #corner.py package for corner plots
 #matplotlib.rc('text', usetex=True)
 
-sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(__file__)))))
-
-from src.functions_general import *
-from src.functions_compare_kepler import *
-from src.functions_load_sims import *
-from src.functions_plot_catalogs import *
-from src.functions_plot_params import *
+from syssimpyplots.general import *
+from syssimpyplots.compare_kepler import *
+from syssimpyplots.load_sims import *
+from syssimpyplots.plot_catalogs import *
+from syssimpyplots.plot_params import *
 
 
 
@@ -119,12 +117,12 @@ fig = plt.figure(figsize=(6,8))
 plot = GridSpec(samples+1,1,left=0.2,bottom=0.1,right=0.95,top=0.95,wspace=0,hspace=0)
 for i,sample in enumerate(sample_names):
     ax = plt.subplot(plot[i,0])
-    
+
     plt.plot(range(0,6+1), pad_zero_beg_and_end(Nmult_Kep[sample]), drawstyle='steps-mid', ls='-', color=sample_colors[i])
     plt.scatter(range(1,6), Nmult_Kep[sample], marker='x', color=sample_colors[i])
     plt.text(0.05, 0.1, r'${:0.0f}$ planets'.format(N_pl_Kep[sample]), ha='left', va='bottom', color=sample_colors[i], fontsize=lfs, transform=ax.transAxes)
     plt.text(0.98, 0.95, sample_labels[i], ha='right', va='top', color=sample_colors[i], fontsize=lfs, transform=ax.transAxes)
-    
+
     plt.gca().set_yscale("log")
     ax.tick_params(axis='both', labelsize=16)
     #plt.yticks([0.5,1,1.5])
@@ -170,4 +168,3 @@ if savefigures:
     plt.savefig(savefigures_directory + 'Nmult_KeplerDichotomy.pdf')
     plt.close()
 plt.show()
-
