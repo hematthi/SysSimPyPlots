@@ -340,22 +340,78 @@ def calc_f_near_pratios(sssp_per_sys, pratios=res_ratios, pratio_width=res_width
     f_mmr = float(count_mmr)/np.sum(sssp_per_sys['P_all'] > 0)
     return f_mmr
 
-def compute_ratios_adjacent(x):
-    """Compute an array of the adjacent ratios (``x[j+1]/x[j]``) of the terms in the input array ``x``."""
+def compute_ratios_adjacent(x, inverse=False, avoid_div_zeros=False):
+    """
+    Compute an array of the adjacent ratios (e.g. ``x[j+1]/x[j]``) of the terms in the input array ``x``.
+
+    Parameters
+    ----------
+    x : array[float]
+        The input values.
+    inverse : bool, default=False
+        Whether to take the inverse ratios (i.e. ``x[j]/x[j+1]`` instead of ``x[j+1]/x[j]``).
+    avoid_div_zeros : bool, default=False
+        Whether to avoid dividing by zeros. If True, will avoid computing ratios where the denominator is zero, and insert either 'inf' (when the numerator is non-zero) or 'nan' (when the numerator is also zero). If False, the computed ratios will still have the same results, but will produce ``RuntimeWarning`` messages.
+
+    Returns
+    -------
+    ratios_adj : array[float]
+        The ratios of adjacent pairs in ``x``.
+
+
+    Note
+    ----
+    Will return an empty array if there are fewer than two elements in the input array.
+    """
     if len(x) <= 1:
         return np.array([])
 
-    return x[1:]/x[0:-1]
+    if avoid_div_zeros and any(x==0):
+        ratios_adj = np.zeros(len(x)-1)
+        numers = x[0:-1] if inverse else x[1:] # the numerators
+        denoms = x[1:] if inverse else x[0:-1] # the denominators
+        bools_denoms_nonzero = denoms != 0 # booleans indicating the denominators that are non-zero
+        bools_denoms_zero = ~bools_denoms_nonzero
+        bools_numers_zero = numers == 0 # booleans indicating the numerators that are zero (for finding where we have 0/0)
+        ratios_adj[bools_denoms_nonzero] = numers[bools_denoms_nonzero] / denoms[bools_denoms_nonzero]
+        ratios_adj[bools_denoms_zero & ~bools_numers_zero] = np.sign(numers[bools_denoms_zero & ~bools_numers_zero])*np.inf # put +/-inf (depending on the sign of the numerator) when only denominator is zero
+        ratios_adj[bools_denoms_zero & bools_numers_zero] = np.nan # put nans when both denominator and numerator are zero
+        return ratios_adj
 
-def compute_ratios_all(x):
-    """Compute an array of all the unique ratios (``x[j]/x[i]`` for all ``j > i``) of the terms in the input array ``x``."""
+    # If get to this point, 'x' has at least two elements and none are zero
+    ratios_adj = x[0:-1]/x[1:] if inverse else x[1:]/x[0:-1]
+    return ratios_adj
+
+def compute_ratios_all(x, inverse=False, avoid_div_zeros=False):
+    """
+    Compute an array of all the unique ratios (``x[j]/x[i]`` for all ``j > i``) of the terms in the input array ``x``.
+
+    Parameters
+    ----------
+    x : array[float]
+        The input values.
+    inverse : bool, default=False
+        Whether to take the inverse ratios (i.e. ``x[j]/x[i]`` for all ``j < i`` instead of for all ``j > i``).
+    avoid_div_zeros : bool, default=False
+        Whether to avoid dividing by zeros (WARNING: not implemented yet!).
+
+    Returns
+    -------
+    ratios_all : array[float]
+        The ratios of all pairs in ``x``.
+
+
+    Note
+    ----
+    Will return an empty array if there are fewer than two elements in the input array.
+    """
     if len(x) <= 1:
         return np.array([])
 
-    ratios = list(x[1:]/x[0])
+    ratios_all = list(x[0]/x[1:]) if inverse else list(x[1:]/x[0])
     for i in range(len(x)-2):
-        ratios += list(x[i+2:]/x[i+1])
-    return np.array(ratios)
+        ratios_all += list(x[i+1]/x[i+2:]) if inverse else list(x[i+2:]/x[i+1])
+    return np.array(ratios_all)
 
 def zeta1(pratios):
     """Compute the zeta statistic for each period ratio in ``pratios`` as defined in Fabrycky et al. (2014)."""

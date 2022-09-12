@@ -1358,7 +1358,7 @@ def compute_summary_stats_from_cat_obs(cat_obs=None, star_obs=None, file_name_pa
         D_ratio_obs.append(D_ratio_obs_system)
 
         #To calculate all the period-normalized transit duration ratios:
-        xi_obs_system = list((1./compute_ratios(tdur_obs_system))*(compute_ratios(P_obs_system)**(1./3.))) #list of period-normalized transit duration ratios in this system
+        xi_obs_system = list(compute_ratios(tdur_obs_system, inverse=True, avoid_div_zeros=True)*(compute_ratios(P_obs_system)**(1./3.))) #list of period-normalized transit duration ratios in this system
         xi_obs_system = np.array(xi_obs_system + [-1]*(pad_extra - 1 - len(xi_obs_system))) #to add filler 0's to xi_obs_system to pad it to Mmax - 1 elements
         xi_obs.append(xi_obs_system)
 

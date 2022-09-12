@@ -251,7 +251,7 @@ def compute_summary_stats_from_Kepler_catalog(P_min, P_max, radii_min, radii_max
 
             system_Rm = compute_ratios(system_P) #period ratios of all the adjacent planet pairs in this system
             system_D_ratio = compute_ratios(system_D) #transit depth ratios of all the adjacent planet pairs in this system
-            system_xi = (1./compute_ratios(system_tdur))*compute_ratios(system_P)**(1./3.) #period-normalized transit duration ratios of all the adjacent planet pairs in this system
+            system_xi = compute_ratios(system_tdur, inverse=True, avoid_div_zeros=True)*compute_ratios(system_P)**(1./3.) #period-normalized transit duration ratios of all the adjacent planet pairs in this system
 
             # To append the stellar properties counting the star only once:
             Rstar_sys_cand.append(system_Rstar)
