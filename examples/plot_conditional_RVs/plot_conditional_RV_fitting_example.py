@@ -16,14 +16,12 @@ import scipy.interpolate #for interpolation functions
 import corner #corner.py package for corner plots
 #matplotlib.rc('text', usetex=True)
 
-sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(__file__)))))
-
-from src.functions_general import *
-from src.functions_compare_kepler import *
-from src.functions_load_sims import *
-from src.functions_plot_catalogs import *
-from src.functions_plot_params import *
-from src.functions_compute_RVs import *
+from syssimpyplots.general import *
+from syssimpyplots.compare_kepler import *
+from syssimpyplots.load_sims import *
+from syssimpyplots.plot_catalogs import *
+from syssimpyplots.plot_params import *
+from syssimpyplots.compute_RVs import *
 
 
 
@@ -116,14 +114,14 @@ for n in range(repeat):
         t_obs_random = np.sort(t_end*np.random.random(N_obs))
         N_obs_add = N_obs - len(t_obs_daily) # number of observations to add
         t_obs_daily = t_obs_daily + list(len(t_obs_daily) + np.arange(N_obs_add) + t_obs_σ*np.random.random(N_obs_add))
-        
+
         if cond_only:
             #RV_obs_random = np.array([RV_true(t, K_cond, P_cond, T0=T0_sys[id_pl_cond], e=e_sys[id_pl_cond], w=omega_sys[id_pl_cond]) for t in t_obs_random]) + σ_1obs*np.random.randn(N_obs)
             RV_obs_daily = np.array([RV_true(t, K_cond, P_cond, T0=T0_sys[id_pl_cond], e=e_sys[id_pl_cond], w=omega_sys[id_pl_cond]) for t in t_obs_daily]) + σ_1obs*np.random.randn(N_obs)
         else:
             #RV_obs_random = np.array([RV_true_sys(t, K_sys, P_sys, T0_sys, e_sys, omega_sys) for t in t_obs_random]) + σ_1obs*np.random.randn(N_obs)
             RV_obs_daily = np.array([RV_true_sys(t, K_sys, P_sys, T0_sys, e_sys, omega_sys) for t in t_obs_daily]) + σ_1obs*np.random.randn(N_obs)
-        
+
         if fit_all_planets:
             bools_fit = K_sys > σ_1obs/2.
             id_pl_cond_of_fits = np.where(np.arange(len(K_sys))[bools_fit] == id_pl_cond)[0][0] # index of conditioned planet counting only fitted planets
@@ -152,10 +150,10 @@ for n in range(repeat):
             pass
         else:
             continue
-        
+
         fig = plt.figure(figsize=(16,8))
         plot = GridSpec(10,1,left=0.1,bottom=0.1,right=0.95,top=0.95,hspace=5)
-        
+
         ax = plt.subplot(plot[1:3,0]) # gallery
         sc = plt.scatter(P_sys[det_sys == 1], np.ones(np.sum(det_sys == 1)), c=K_sys[det_sys == 1], s=50.*Rp_sys[det_sys == 1]**2., vmin=0., vmax=1.)
         plt.scatter(P_sys[det_sys == 0], np.ones(np.sum(det_sys == 0)), c=K_sys[det_sys == 0], edgecolors='r', s=50.*Rp_sys[det_sys == 0]**2., vmin=0., vmax=1.) #facecolors='none'
@@ -186,7 +184,7 @@ for n in range(repeat):
         plt.xlabel(r'Time $t$ (days)', fontsize=16)
         plt.ylabel(r'Radial velocity $v$ (m/s)', fontsize=16)
         plt.legend(loc='upper right', bbox_to_anchor=(1,1), ncol=1, frameon=False, fontsize=20)
-        
+
         #plt.savefig(savefigures_directory + model_name + '_example_RV_fitting%s.png' % i)
         plt.show()
 plt.close()
@@ -287,6 +285,5 @@ rms_sigma_K_30p = rms_sigma_K_daily_all[i_N_obs_30p][0] if np.sum(i_N_obs_30p) >
 rms_sigma_K_20p = rms_sigma_K_daily_all[i_N_obs_20p][0] if np.sum(i_N_obs_20p) > 0 else np.nan
 rms_sigma_K_10p = rms_sigma_K_daily_all[i_N_obs_10p][0] if np.sum(i_N_obs_10p) > 0 else np.nan
 rms_sigma_K_5p = rms_sigma_K_daily_all[i_N_obs_5p][0] if np.sum(i_N_obs_5p) > 0 else np.nan
-                                
-print('{:d} ({:0.1f}s): K_cond = {:0.3f} m/s --- K_max = {:0.3f} m/s --- K_cond/sum(K) = {:0.3f} --- N_obs for RMSD(K_cond)/K_cond <50%, <30%, <20%, <10%, <5%: {:.0f}, {:.0f}, {:.0f}, {:.0f}, {:.0f} --- best error = {:0.3f}'.format(id_sys, stop-start, K_cond, K_max, K_cond/np.sum(K_sys), N_obs_min_50p, N_obs_min_30p, N_obs_min_20p, N_obs_min_10p, N_obs_min_5p, np.min(rmsd_K_daily_all/K_cond)))
 
+print('{:d} ({:0.1f}s): K_cond = {:0.3f} m/s --- K_max = {:0.3f} m/s --- K_cond/sum(K) = {:0.3f} --- N_obs for RMSD(K_cond)/K_cond <50%, <30%, <20%, <10%, <5%: {:.0f}, {:.0f}, {:.0f}, {:.0f}, {:.0f} --- best error = {:0.3f}'.format(id_sys, stop-start, K_cond, K_max, K_cond/np.sum(K_sys), N_obs_min_50p, N_obs_min_30p, N_obs_min_20p, N_obs_min_10p, N_obs_min_5p, np.min(rmsd_K_daily_all/K_cond)))

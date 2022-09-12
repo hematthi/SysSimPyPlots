@@ -17,14 +17,12 @@ import scipy.interpolate #for interpolation functions
 import corner #corner.py package for corner plots
 #matplotlib.rc('text', usetex=True)
 
-sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(__file__)))))
-
-from src.functions_general import *
-from src.functions_compare_kepler import *
-from src.functions_load_sims import *
-from src.functions_plot_catalogs import *
-from src.functions_plot_params import *
-from src.functions_compute_RVs import *
+from syssimpyplots.general import *
+from syssimpyplots.compare_kepler import *
+from syssimpyplots.load_sims import *
+from syssimpyplots.plot_catalogs import *
+from syssimpyplots.plot_params import *
+from syssimpyplots.compute_RVs import *
 
 
 
@@ -192,12 +190,12 @@ for j in range(n_R_bins):
         sys_cell_bools_full = np.any(pl_cell_bools_full, axis=1)
         sys_tot_cell_full = np.sum(sys_cell_bools_full)
         print('(i=%s,j=%s): n_pl (all) = %s/%s' % (i,j,pl_tot_cell_full,n_sys_full))
-        
+
         mpps_cell_full = pl_tot_cell_full/n_sys_full # mean number of planets in bin per star, for all systems
         mpps_dlnPR_cell_full = mpps_cell_full/(dlnP*dlnR)
         mpps_grid[j,i] = mpps_cell_full
         mpps_dlnPR_grid[j,i] = mpps_dlnPR_cell_full
-        
+
         plt.text(x=(i+0.95)*(1./n_P_bins), y=(j+0.95)*(1./n_R_bins), s=r'${:.3f}$'.format(np.round(mpps_cell_full, 3)), ha='right', va='top', color='b', fontsize=sfs, transform=ax.transAxes)
         plt.text(x=(i+0.05)*(1./n_P_bins), y=(j+0.5)*(1./n_R_bins), s=r'${:.2f}$'.format(np.round(mpps_dlnPR_cell_full, 2)), ha='left', va='center', color='k', fontsize=mfs, fontweight='bold', transform=ax.transAxes)
 img = plt.imshow(mpps_dlnPR_grid, cmap='coolwarm', aspect='auto', interpolation="nearest", origin='lower', extent=np.log10((P_bins[0], P_bins[-1], R_bins[0], R_bins[-1]))) #cmap='coolwarm'
@@ -245,12 +243,12 @@ for j in range(n_R_bins):
         sys_cell_bools_full = np.any(pl_cell_bools_full, axis=1)
         sys_tot_cell_full = np.sum(sys_cell_bools_full)
         print('(i=%s,j=%s): n_pl (all) = %s/%s' % (i,j,pl_tot_cell_full,n_sys_full))
-        
+
         mpps_cell_full = pl_tot_cell_full/n_sys_full # mean number of planets in bin per star, for all systems
         mpps_dlnPR_cell_full = mpps_cell_full/(dlnP*dlnR)
         mpps_grid[j,i] = mpps_cell_full
         mpps_dlnPR_grid[j,i] = mpps_dlnPR_cell_full
-        
+
         plt.text(x=(i+0.5)*(1./n_P_bins), y=(j+0.5)*(1./n_R_bins), s=r'${:.3f}$'.format(np.round(mpps_cell_full, 3)), ha='center', va='center', color='k', fontsize=16, fontweight='bold', transform=ax.transAxes)
 img = plt.imshow(mpps_grid, cmap='coolwarm', aspect='auto', interpolation="nearest", vmax=0.072, origin='lower', extent=np.log10((P_bins[0], P_bins[-1], R_bins[0], R_bins[-1]))) #cmap='coolwarm'
 ax.tick_params(axis='both', labelsize=afs)
@@ -290,14 +288,14 @@ for j in range(n_R_bins):
         pl_tot_cell = np.sum(pl_cell_bools)
         sys_cell_bools = np.any(pl_cell_bools, axis=1)
         sys_tot_cell = np.sum(sys_cell_bools)
-        
+
         mpps_cell = pl_tot_cell/n_sys_cond # mean number of planets in bin per star, for conditioned systems
         mpps_dlnPR_cell = mpps_cell/(dlnP*dlnR)
         fswp_cell = sys_tot_cell/n_sys_cond # fraction of stars with planets in bin, for conditioned systems
         mpps_grid[j,i] = mpps_cell
         mpps_dlnPR_grid[j,i] = mpps_dlnPR_cell
         fswp_grid[j,i] = fswp_cell
-        
+
         plt.text(x=(i+0.95)*(1./n_P_bins), y=(j+0.95)*(1./n_R_bins), s=r'${:.3f}$'.format(np.round(mpps_cell, 3)), ha='right', va='top', color='b', fontsize=sfs, transform=ax.transAxes)
         plt.text(x=(i+0.05)*(1./n_P_bins), y=(j+0.5)*(1./n_R_bins), s=r'${:.2f}$'.format(np.round(mpps_dlnPR_cell, 2)), ha='left', va='center', color='k', fontsize=mfs, fontweight='bold', transform=ax.transAxes)
 img = plt.imshow(mpps_dlnPR_grid, cmap='coolwarm', aspect='auto', interpolation="nearest", origin='lower', extent=np.log10((P_bins[0], P_bins[-1], R_bins[0], R_bins[-1]))) #cmap='coolwarm'
@@ -348,14 +346,14 @@ for j in range(n_R_bins):
         pl_tot_cell = np.sum(pl_cell_bools)
         sys_cell_bools = np.any(pl_cell_bools, axis=1)
         sys_tot_cell = np.sum(sys_cell_bools)
-        
+
         mpps_cell = pl_tot_cell/n_sys_cond # mean number of planets in bin per star, for conditioned systems
         mpps_dlnPR_cell = mpps_cell/(dlnP*dlnR)
         fswp_cell = sys_tot_cell/n_sys_cond # fraction of stars with planets in bin, for conditioned systems
         mpps_grid[j,i] = mpps_cell
         mpps_dlnPR_grid[j,i] = mpps_dlnPR_cell
         fswp_grid[j,i] = fswp_cell
-        
+
         plt.text(x=(i+0.5)*(1./n_P_bins), y=(j+0.5)*(1./n_R_bins), s=r'${:.3f}$'.format(np.round(mpps_cell, 3)), ha='center', va='center', color='k', fontsize=16, fontweight='bold', transform=ax.transAxes)
 img = plt.imshow(mpps_grid, cmap='coolwarm', aspect='auto', interpolation="nearest", vmax=0.072, origin='lower', extent=np.log10((P_bins[0], P_bins[-1], R_bins[0], R_bins[-1]))) #cmap='coolwarm'
 box_cond = patches.Rectangle(np.log10((conds['P_lower'], conds['Rp_lower'])), np.log10(conds['P_upper']/conds['P_lower']), np.log10(conds['Rp_upper']/conds['Rp_lower']), linewidth=2, edgecolor='g', facecolor='none')
@@ -397,19 +395,19 @@ for j in range(n_R_bins):
         pl_tot_cell = np.sum(pl_cell_bools)
         sys_cell_bools = np.any(pl_cell_bools, axis=1)
         sys_tot_cell = np.sum(sys_cell_bools)
-        
+
         pl_cell_bools_full = (P_all_full > P_bins[i]) & (P_all_full < P_bins[i+1]) & (Rp_all_full > R_bins[j]) & (Rp_all_full < R_bins[j+1])
         pl_tot_cell_full = np.sum(pl_cell_bools_full)
         sys_cell_bools_full = np.any(pl_cell_bools_full, axis=1)
         sys_tot_cell_full = np.sum(sys_cell_bools_full)
         print('(i=%s,j=%s): n_pl (cond) = %s/%s, n_pl (all) = %s/%s' % (i,j,pl_tot_cell,n_sys_cond,pl_tot_cell_full,n_sys_full))
-        
+
         mpps_cell = pl_tot_cell/n_sys_cond # mean number of planets in bin per star, for conditioned systems
         mpps_dlnPR_cell = mpps_cell/(dlnP*dlnR)
         mpps_cell_full = pl_tot_cell_full/n_sys_full # mean number of planets in bin per star, for all systems
         mpps_dlnPR_cell_full = mpps_cell_full/(dlnP*dlnR)
         rel_mpps_grid[j,i] = mpps_cell/mpps_cell_full
-        
+
         plt.text(x=(i+0.95)*(1./n_P_bins), y=(j+0.7)*(1./n_R_bins), s=r'${:.2f}$'.format(np.round(mpps_dlnPR_cell, 2)), ha='right', va='center', color='b', fontsize=sfs, transform=ax.transAxes)
         plt.text(x=(i+0.95)*(1./n_P_bins), y=(j+0.3)*(1./n_R_bins), s=r'${:.2f}$'.format(np.round(mpps_dlnPR_cell_full, 2)), ha='right', va='center', color='r', fontsize=sfs, transform=ax.transAxes)
         plt.text(x=(i+0.05)*(1./n_P_bins), y=(j+0.5)*(1./n_R_bins), s=r'${:.2f}$'.format(np.round(mpps_cell/mpps_cell_full, 2)), ha='left', va='center', color='k', fontsize=mfs, fontweight='bold', transform=ax.transAxes)
@@ -465,19 +463,19 @@ for j in range(n_R_bins):
         pl_tot_cell = np.sum(pl_cell_bools)
         sys_cell_bools = np.any(pl_cell_bools, axis=1)
         sys_tot_cell = np.sum(sys_cell_bools)
-        
+
         pl_cell_bools_full = (P_all_full > P_bins[i]) & (P_all_full < P_bins[i+1]) & (Rp_all_full > R_bins[j]) & (Rp_all_full < R_bins[j+1])
         pl_tot_cell_full = np.sum(pl_cell_bools_full)
         sys_cell_bools_full = np.any(pl_cell_bools_full, axis=1)
         sys_tot_cell_full = np.sum(sys_cell_bools_full)
         print('(i=%s,j=%s): n_pl (cond) = %s/%s, n_pl (all) = %s/%s' % (i,j,pl_tot_cell,n_sys_cond,pl_tot_cell_full,n_sys_full))
-        
+
         mpps_cell = pl_tot_cell/n_sys_cond # mean number of planets in bin per star, for conditioned systems
         mpps_dlnPR_cell = mpps_cell/(dlnP*dlnR)
         mpps_cell_full = pl_tot_cell_full/n_sys_full # mean number of planets in bin per star, for all systems
         mpps_dlnPR_cell_full = mpps_cell_full/(dlnP*dlnR)
         rel_mpps_grid[j,i] = mpps_cell/mpps_cell_full
-        
+
         mpps_ratio_cell = mpps_cell/mpps_cell_full
         #snum = r'${:.3f}$'.format(np.round(mpps_ratio_cell, 3)) if mpps_ratio_cell < 0.005 else r'${:.2f}$'.format(np.round(mpps_ratio_cell, 2))
         snum = r'${:.2g}$'.format(mpps_ratio_cell) if mpps_ratio_cell < 0.1 else r'${:.2f}$'.format(np.round(mpps_ratio_cell, 2))
@@ -524,19 +522,19 @@ for i in range(n_P_bins): # NOTE that order of for-loops are switched compared t
         pl_tot_cell = np.sum(pl_cell_bools)
         sys_cell_bools = np.any(pl_cell_bools, axis=1)
         sys_tot_cell = np.sum(sys_cell_bools)
-        
+
         pl_cell_bools_full = (P_all_full > P_bins[i]) & (P_all_full < P_bins[i+1]) & (Rp_all_full > R_bins[j]) & (Rp_all_full < R_bins[j+1])
         pl_tot_cell_full = np.sum(pl_cell_bools_full)
         sys_cell_bools_full = np.any(pl_cell_bools_full, axis=1)
         sys_tot_cell_full = np.sum(sys_cell_bools_full)
         print('(i=%s,j=%s): n_pl (cond) = %s/%s, n_pl (all) = %s/%s' % (i,j,pl_tot_cell,n_sys_cond,pl_tot_cell_full,n_sys_full))
-        
+
         mpps_cell = pl_tot_cell/n_sys_cond # mean number of planets in bin per star, for conditioned systems
         mpps_dlnPR_cell = mpps_cell/(dlnP*dlnR)
         mpps_cell_full = pl_tot_cell_full/n_sys_full # mean number of planets in bin per star, for all systems
         mpps_dlnPR_cell_full = mpps_cell_full/(dlnP*dlnR)
         mpps_ratio_cell = mpps_cell/mpps_cell_full
-        
+
         table_array.append([P_bins[i], P_bins[i+1], R_bins[j], R_bins[j+1], mpps_dlnPR_cell, mpps_dlnPR_cell_full, mpps_ratio_cell])
 table_array = np.array(table_array)
 ###np.savetxt(fname, table_array, fmt=table_fmts, header=file_comments + ' '.join(table_headers))

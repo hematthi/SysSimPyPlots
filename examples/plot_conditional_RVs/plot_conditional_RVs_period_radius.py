@@ -16,14 +16,12 @@ import scipy.interpolate #for interpolation functions
 import corner #corner.py package for corner plots
 #matplotlib.rc('text', usetex=True)
 
-sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(__file__)))))
-
-from src.functions_general import *
-from src.functions_compare_kepler import *
-from src.functions_load_sims import *
-from src.functions_plot_catalogs import *
-from src.functions_plot_params import *
-from src.functions_compute_RVs import *
+from syssimpyplots.general import *
+from syssimpyplots.compare_kepler import *
+from syssimpyplots.load_sims import *
+from syssimpyplots.plot_catalogs import *
+from syssimpyplots.plot_params import *
+from syssimpyplots.compute_RVs import *
 
 
 
@@ -68,7 +66,7 @@ bleg, tleg = tgrid - (tgrid-bgrid)/n_R_bins, tgrid
 def compute_string_quantiles(x, nan_above=1000, qtls=[0.16,0.5,0.84]):
     lenx = len(x)
     x_sorted = np.sort(x)
-    
+
     x_qtls = x_sorted[[int(np.round(q*lenx)) for q in qtls]]
     if np.isnan(x_qtls[1]): # Case 1: median > nan_above
         if np.isnan(x_qtls[0]): # Case 1a: all quantiles > nan_above
@@ -80,7 +78,7 @@ def compute_string_quantiles(x, nan_above=1000, qtls=[0.16,0.5,0.84]):
             snum = r'${:d}_{{-{:d}}}$'.format(int(x_qtls[1]), int(x_qtls[1]-x_qtls[0]))
         else: # Case 2b: all quantiles <= nan_above
             snum = r'${:d}_{{-{:d}}}^{{+{:d}}}$'.format(int(x_qtls[1]), int(x_qtls[1]-x_qtls[0]), int(x_qtls[2]-x_qtls[1]))
-    
+
     return snum, x_qtls
 
 N_sample, repeat = 1000, 100
@@ -98,23 +96,23 @@ for j in range(n_R_bins):
             fname = 'RV_obs_N%s_repeat%s_20Nobs5to1000_sigma0p3_cases.txt' % (N_sample, repeat)
             outputs = np.genfromtxt(loadfiles_directory + subdir + fname, names=True)
             print('Loaded (1000): P_cond = [%s,%s], Rp_cond = [%s,%s]' % (P_bins[i], P_bins[i+1], R_bins[j], R_bins[j+1]))
-            
+
             has_ideal = True
         except:
             try:
                 fname = 'RV_obs_N%s_repeat%s_20Nobs5to300_sigma0p3.txt' % (N_sample, repeat)
                 outputs = np.genfromtxt(loadfiles_directory + subdir + fname, names=True)
                 print('Loaded (300): P_cond = [%s,%s], Rp_cond = [%s,%s]' % (P_bins[i], P_bins[i+1], R_bins[j], R_bins[j+1]))
-                
+
                 has_ideal = False
             except:
                 print('No simulation file: P_cond = [%s,%s], Rp_cond = [%s,%s]' % (P_bins[i], P_bins[i+1], R_bins[j], R_bins[j+1]))
                 continue
-        
+
         #N_obs_qtls = np.nanquantile(outputs['N_obs_min_20p'], [0.16,0.5,0.84])
         #N_obs_med_grid[j,i] = N_obs_qtls[1]
         #snum = r'${:d}_{{-{:d}}}^{{+{:d}}}$'.format(int(N_obs_qtls[1]), int(N_obs_qtls[1]-N_obs_qtls[0]), int(N_obs_qtls[2]-N_obs_qtls[1]))
-        
+
         snum, N_obs_qtls = compute_string_quantiles(outputs['N_obs_min_20p'])
         N_obs_med_grid[j,i] = N_obs_qtls[1]
 

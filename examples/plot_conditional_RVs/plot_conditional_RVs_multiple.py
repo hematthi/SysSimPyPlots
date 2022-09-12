@@ -16,14 +16,12 @@ import scipy.interpolate #for interpolation functions
 import corner #corner.py package for corner plots
 #matplotlib.rc('text', usetex=True)
 
-sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(__file__)))))
-
-from src.functions_general import *
-from src.functions_compare_kepler import *
-from src.functions_load_sims import *
-from src.functions_plot_catalogs import *
-from src.functions_plot_params import *
-from src.functions_compute_RVs import *
+from syssimpyplots.general import *
+from syssimpyplots.compare_kepler import *
+from syssimpyplots.load_sims import *
+from syssimpyplots.plot_catalogs import *
+from syssimpyplots.plot_params import *
+from syssimpyplots.compute_RVs import *
 
 
 
@@ -71,7 +69,7 @@ Nobs_norm_all, slope_all = [], []
 for i,fname in enumerate(fname_all):
     outputs_ideal = np.genfromtxt(loadfiles_directory + '../RV_obs_singles/' + fname, names=True, dtype=('f8','f8','f8'))
     outputs_ideal_all.append(outputs_ideal)
-    
+
     log_Nobs_norm, slope = fit_line_loglog_Nobs_K_single_planets(outputs_ideal, σ_1obs_all[i], [2., -2.]) # fit a line to the ideal case simulations
     Nobs_norm = 10.**log_Nobs_norm
     Nobs_norm_all.append(Nobs_norm)
@@ -123,7 +121,7 @@ plt.suptitle(r'$P_{\rm cond} = %s$d, $R_{p,\rm cond} = %s R_\oplus$' % (P_cond_b
 for j,σ_1obs in enumerate(σ_1obs_all):
     Nobs_ideal_Karray = linear_logNobs_logK(K_array, σ_1obs, Nobs_norm_all[j], slope_all[j], round_to_ints=False) # ideal N_obs at K_array points
     Nobs_ideal_Kcond = linear_logNobs_logK(outputs_all[j]['K_cond'], σ_1obs, Nobs_norm_all[j], slope_all[j], round_to_ints=True) # ideal N_obs at K_cond points
-    
+
     ax = plt.subplot(plot[j,:-1]) # main plot
     plt.loglog(outputs_all[j]['K_cond'], outputs_all[j]['N_obs_min_20p'], 'o', ms=3., color='k', label='Conditioned\nplanets')
     #plt.loglog(outputs_ideal_all[j]['K'], outputs_ideal_all[j]['N_obs_min_20p'], 'o', color='r')
@@ -144,7 +142,7 @@ for j,σ_1obs in enumerate(σ_1obs_all):
         plt.xlabel(r'$K_{\rm cond}$ (m/s)', fontsize=12)
         plt.legend(loc='lower left', bbox_to_anchor=(0,0.5), ncol=1, frameon=False, fontsize=10)
     plt.ylabel(r'$N_{\rm obs}$ for $RMSD(K_{\rm cond})/K_{\rm cond} < 0.2$', fontsize=12)
-    
+
     ax = plt.subplot(plot[j,-1]) # side panel CDFs
     K_cond_bins = [0.,0.5,1.,2.,4.,8.,np.inf]
     N_obs_min_20p_per_K_cond_bin = [outputs_all[j]['N_obs_min_20p'][(K_cond_bins[i] <= outputs_all[j]['K_cond']) & (outputs_all[j]['K_cond'] <= K_cond_bins[i+1])] for i in range(len(K_cond_bins)-1)]
@@ -243,7 +241,7 @@ plot = GridSpec(3,5,left=0.56,bottom=0.05,right=0.96,top=0.95,wspace=0,hspace=0)
 for j,outputs in enumerate(outputs_all):
     Nobs_ideal_Karray = linear_logNobs_logK(K_array, σ_1obs, Nobs_norm, slope, round_to_ints=False) # ideal N_obs at K_array points
     Nobs_ideal_Kcond = linear_logNobs_logK(outputs['K_cond'], σ_1obs, Nobs_norm, slope, round_to_ints=True) # ideal N_obs at K_cond points
-    
+
     ax = plt.subplot(plot[j,:-1]) # main plot
     plt.loglog(outputs['K_cond'], outputs['N_obs_min_20p'], 'o', ms=3., color='k', label='Conditioned\nplanets')
     #plt.loglog(outputs_ideal_all[j]['K'], outputs_ideal_all[j]['N_obs_min_20p'], 'o', color='r')
@@ -263,7 +261,7 @@ for j,outputs in enumerate(outputs_all):
         plt.xlabel(r'$K_{\rm cond}$ (m/s)', fontsize=12)
         plt.legend(loc='upper right', bbox_to_anchor=(1,1), ncol=1, frameon=False, fontsize=10)
     plt.ylabel(r'$N_{\rm obs}$ for $RMSD(K_{\rm cond})/K_{\rm cond} < 0.2$', fontsize=12)
-    
+
     ax = plt.subplot(plot[j,-1]) # side panel CDFs
     K_cond_bins = [0.,0.5,1.,2.,4.,8.,np.inf]
     N_obs_min_20p_per_K_cond_bin = [outputs['N_obs_min_20p'][(K_cond_bins[i] <= outputs['K_cond']) & (outputs['K_cond'] <= K_cond_bins[i+1])] for i in range(len(K_cond_bins)-1)]
@@ -398,17 +396,17 @@ for i,field in enumerate(fields_thres):
     x_qtls = compute_quantiles_with_nans(x)
     snum0 = report_quantiles_as_uncertainties_string(x_qtls, nan_above_val=int(np.nanmax(x)))
     l0, = plt.plot(np.sort(x), (np.arange(len(x))+1.)/np.float(len(x)), drawstyle='steps-post', color=colors_thres[i], ls=':', lw=1, label=labels_thres[i])
-    
+
     x = outputs_Venus_transiting_fit_all[field] # simulated systems with a Venus, fit all planets
     x_qtls = compute_quantiles_with_nans(x)
     snum1 = report_quantiles_as_uncertainties_string(x_qtls, nan_above_val=int(np.nanmax(x)))
     l1, = plt.plot(np.sort(x), (np.arange(len(x))+1.)/np.float(len(x)), drawstyle='steps-post', color=colors_thres[i], ls='--', lw=1)
-    
+
     x = outputs_Venus_transiting[field] # simulated systems with a Venus, fit only Venus
     x_qtls = compute_quantiles_with_nans(x)
     snum2 = report_quantiles_as_uncertainties_string(x_qtls, nan_above_val=int(np.nanmax(x)))
     l2, = plt.plot(np.sort(x), (np.arange(len(x))+1.)/np.float(len(x)), drawstyle='steps-post', color=colors_thres[i], ls='-', lw=1)
-    
+
     plot_snums.append([snum0, snum1, snum2])
     plot_lines.append([l0, l1, l2])
 plt.gca().set_xscale("log")
@@ -432,17 +430,17 @@ for i,field in enumerate(fields_thres):
     x_qtls = compute_quantiles_with_nans(x)
     snum0 = report_quantiles_as_uncertainties_string(x_qtls, nan_above_val=int(np.nanmax(x)))
     l0, = plt.plot(np.sort(x), (np.arange(len(x))+1.)/np.float(len(x)), drawstyle='steps-post', color=colors_thres[i], ls=':', lw=1, label=labels_thres[i])
-    
+
     x = outputs_Venus_all_fit_all[field] # simulated systems with a Venus, fit all planets
     x_qtls = compute_quantiles_with_nans(x)
     snum1 = report_quantiles_as_uncertainties_string(x_qtls, nan_above_val=int(np.nanmax(x)))
     l1, = plt.plot(np.sort(x), (np.arange(len(x))+1.)/np.float(len(x)), drawstyle='steps-post', color=colors_thres[i], ls='--', lw=1)
-    
+
     x = outputs_Venus_all[field] # simulated systems with a Venus, fit only Venus
     x_qtls = compute_quantiles_with_nans(x)
     snum2 = report_quantiles_as_uncertainties_string(x_qtls, nan_above_val=int(np.nanmax(x)))
     l2, = plt.plot(np.sort(x), (np.arange(len(x))+1.)/np.float(len(x)), drawstyle='steps-post', color=colors_thres[i], ls='-', lw=1)
-    
+
     plot_snums.append([snum0, snum1, snum2])
     plot_lines.append([l0, l1, l2])
 plt.gca().set_xscale("log")

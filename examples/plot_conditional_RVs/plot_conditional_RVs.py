@@ -16,14 +16,12 @@ import scipy.interpolate #for interpolation functions
 import corner #corner.py package for corner plots
 #matplotlib.rc('text', usetex=True)
 
-sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(__file__)))))
-
-from src.functions_general import *
-from src.functions_compare_kepler import *
-from src.functions_load_sims import *
-from src.functions_plot_catalogs import *
-from src.functions_plot_params import *
-from src.functions_compute_RVs import *
+from syssimpyplots.general import *
+from syssimpyplots.compare_kepler import *
+from syssimpyplots.load_sims import *
+from syssimpyplots.plot_catalogs import *
+from syssimpyplots.plot_params import *
+from syssimpyplots.compute_RVs import *
 
 
 
@@ -172,7 +170,7 @@ for i,K_mid in enumerate(K_cond_bins_mid):
         N_obs_min_20p_qtls_per_K_cond_bin_single_planet[i] = np.quantile(N_obs_min_20p_bin_single_planet, [0.16,0.5,0.84])
     else:
         N_obs_min_20p_qtls_per_K_cond_bin_single_planet[i] = [np.nan, np.nan, np.nan]
-    
+
 fig = plt.figure(figsize=(10,8))
 plot = GridSpec(1,5,left=0.15,bottom=0.12,right=0.95,top=0.95,wspace=0,hspace=0)
 ax = plt.subplot(plot[:,:])
@@ -356,32 +354,32 @@ for i,id_sys in enumerate(i_out):
         Rp_sys = sssp_per_sys['radii_all'][id_sys]
         e_sys = sssp_per_sys['e_all'][id_sys]
         incl_sys = sssp_per_sys['incl_all'][id_sys]
-        
+
         det_sys = det_sys[P_sys > 0]
         Mp_sys = Mp_sys[P_sys > 0]
         Rp_sys = Rp_sys[P_sys > 0]
         e_sys = e_sys[P_sys > 0]
         incl_sys = incl_sys[P_sys > 0]
         P_sys = P_sys[P_sys > 0]
-        
+
         K_sys = rv_K(Mp_sys, P_sys, e=e_sys, i=incl_sys, Mstar=Mstar_sys)
         id_pl_cond = np.arange(len(P_sys))[(P_sys > conds['P_lower']) & (P_sys < conds['P_upper']) & (Rp_sys > conds['Rp_lower']) & (Rp_sys < conds['Rp_upper'])][0] # index of conditioned planet
         K_cond = outputs['K_cond'][i]
         P_cond = outputs['P_cond'][i]
-        
+
         K_diff_cond = K_sys - K_cond
         K_others = K_sys[np.arange(len(P_sys)) != id_pl_cond]
         P_others = P_sys[np.arange(len(P_sys)) != id_pl_cond]
         #print('K_diffs:', K_diff_cond, ' (K_all: ', K_sys, '; K_cond = ', K_cond)
         #print('K_others:', K_others)
-        
+
         P_ratios_largestK.append(P_others[K_others == np.max(K_others)] / P_cond)
         K_ratios_largestK.append(K_others[K_others == np.max(K_others)] / K_cond)
-        
+
         P_ratios_closestP.append(P_others[np.argmin(np.abs(np.log10(P_others) - np.log10(P_cond)))] / P_cond)
         #K_ratios_closestP.append(K_others[np.argmin(np.abs(P_others - P_cond))] / K_cond) # closest P in linear space
         K_ratios_closestP.append(K_others[np.argmin(np.abs(np.log10(P_others) - np.log10(P_cond)))] / K_cond) # closest P in log space
-        
+
         sum_K_ratios.append(np.sum(K_others)/K_cond)
         sum_K_in_ratios.append(np.sum(K_others[P_others < P_cond])/K_cond)
         sum_K_out_ratios.append(np.sum(K_others[P_others > P_cond])/K_cond)

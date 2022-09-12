@@ -15,13 +15,11 @@ import scipy.interpolate #for interpolation functions
 import corner #corner.py package for corner plots
 #matplotlib.rc('text', usetex=True)
 
-sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(__file__)))))
-
-from src.functions_general import *
-from src.functions_compare_kepler import *
-from src.functions_load_sims import *
-from src.functions_plot_catalogs import *
-from src.functions_plot_params import *
+from syssimpyplots.general import *
+from syssimpyplots.compare_kepler import *
+from syssimpyplots.load_sims import *
+from syssimpyplots.plot_catalogs import *
+from syssimpyplots.plot_params import *
 
 
 
@@ -35,7 +33,7 @@ def compute_HZ_Kopparapu_2014(teff, lum):
     # Assumes an Earth-mass planet, and returns an array of [OHZ_in, CHZ_in, CHZ_out, OHZ_out] (AU)
     # OHZ_in and OHZ_out correspond to recent Venus and early Mars limits
     # CHZ_in and CHZ_out correspond to runaway greenhouse and maximum greenhouse limits
-    
+
     seffsun  = np.array([1.776, 1.107, 0.356, 0.320])
     a = np.array([2.136e-4, 1.332e-4, 6.171e-5, 5.547e-5])
     b = np.array([2.533e-8, 1.580e-8, 1.698e-9, 1.526e-9])

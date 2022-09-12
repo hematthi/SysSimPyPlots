@@ -5,14 +5,12 @@ import time
 import os
 import sys
 
-sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(__file__)))))
-
-from src.functions_general import *
-from src.functions_compare_kepler import *
-from src.functions_load_sims import *
-from src.functions_plot_catalogs import *
-from src.functions_plot_params import *
-from src.functions_compute_RVs import *
+from syssimpyplots.general import *
+from syssimpyplots.compare_kepler import *
+from syssimpyplots.load_sims import *
+from syssimpyplots.plot_catalogs import *
+from syssimpyplots.plot_params import *
+from syssimpyplots.compute_RVs import *
 
 
 
@@ -57,5 +55,3 @@ outputs = fit_RVobs_systems_conditional(sssp_per_sys, sssp, conds, N_obs_all, co
 #outputs_single_planet_RVs = fit_RVobs_single_planets_vs_K(K_array, N_obs_all, P_cond_bounds, alpha_P=alpha_P, sigma_ecc=sigma_ecc, repeat=repeat, sigma_1obs=sigma_1obs)
 #np.savetxt(loadfiles_directory + fname, outputs_single_planet_RVs, fmt='%f %f %f', header=' '.join(outputs_single_planet_RVs.dtype.names), footer='N_obs = '+', '.join([str(x) for  x in N_obs_all]))
 #outputs_single_planet_RVs = np.genfromtxt(loadfiles_directory + fname, names=True, dtype=('f8','f8','f8'))
-
-
