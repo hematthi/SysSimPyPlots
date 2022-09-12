@@ -112,6 +112,8 @@ Analogous to the functions for loading and summarizing an observed catalog, ther
 
 .. code-block:: python
 
+   from syssimpyplots.compare_kepler import *
+   
    koi_table = load_Kepler_planets_cleaned()
 
    ssk_per_sys, ssk = compute_summary_stats_from_Kepler_catalog(P_min, P_max, radii_min, radii_max)
