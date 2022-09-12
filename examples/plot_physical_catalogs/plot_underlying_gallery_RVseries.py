@@ -15,14 +15,13 @@ import scipy.interpolate #for interpolation functions
 import corner #corner.py package for corner plots
 #matplotlib.rc('text', usetex=True)
 
-sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(__file__)))))
+from syssimpyplots.general import *
+from syssimpyplots.compare_kepler import *
+from syssimpyplots.load_sims import *
+from syssimpyplots.plot_catalogs import *
+from syssimpyplots.plot_params import *
 
-from src.functions_general import *
-from src.functions_compare_kepler import *
-from src.functions_load_sims import *
-from src.functions_plot_catalogs import *
-from src.functions_plot_params import *
-from src.functions_compute_RVs import *
+from syssimpyplots.compute_RVs import *
 
 
 
@@ -65,7 +64,7 @@ sss_per_sys, sss = compute_summary_stats_from_cat_obs(file_name_path=loadfiles_d
 
 ssk_per_sys, ssk = compute_summary_stats_from_Kepler_catalog(P_min, P_max, radii_min, radii_max, compute_ratios=compute_ratios)
 
-dists, dists_w = compute_distances_sim_Kepler(sss_per_sys, sss, ssk_per_sys, ssk, weights_all['all'], dists_include, N_sim, cos_factor=cos_factor, AD_mod=AD_mod, compute_ratios=compute_ratios)
+dists, dists_w = compute_distances_sim_Kepler(sss_per_sys, sss, ssk_per_sys, ssk, weights_all['all'], dists_include, N_sim, cos_factor=cos_factor, AD_mod=AD_mod)
 
 # To load and combine multiple simulated catalogs:
 #loadfiles_directory = '../../ACI/Simulated_Data/AMD_system/Split_stars/Singles_ecc/Params11_KS/Distribute_AMD_per_mass/durations_norm_circ_singles_multis_GF2020_KS/GP_best_models/'
@@ -162,5 +161,6 @@ plt.show()
 ##### To make scatter plots of K vs. P conditioned on a given planet:
 
 #fig_name = savefigures_directory + model_name + '_systems_with_P%s_%s_R%s_%s_detected_K_P.pdf' % (P_cond_bounds[0], P_cond_bounds[1], Rp_cond_bounds[0], Rp_cond_bounds[1])
-fig_name = savefigures_directory + model_name + '_systems_with_transiting_Venus_K_P.pdf'
-plot_scatter_K_vs_P_conditional(sssp_per_sys, sssp, conds, log_y=True, fig_size=(8,5), save_name=fig_name, save_fig=savefigures)
+fig_name_base = savefigures_directory + model_name + '_systems_with_transiting_Venus_K_P'
+plot_scatter_K_vs_P_conditional(sssp_per_sys, sssp, conds, log_y=True, fig_size=(8,5), save_name_base=fig_name_base, save_fig=savefigures)
+plt.show()

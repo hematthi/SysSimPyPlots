@@ -15,13 +15,11 @@ import scipy.interpolate #for interpolation functions
 import corner #corner.py package for corner plots
 #matplotlib.rc('text', usetex=True)
 
-sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(__file__)))))
-
-from src.functions_general import *
-from src.functions_compare_kepler import *
-from src.functions_load_sims import *
-from src.functions_plot_catalogs import *
-from src.functions_plot_params import *
+from syssimpyplots.general import *
+from syssimpyplots.compare_kepler import *
+from syssimpyplots.load_sims import *
+from syssimpyplots.plot_catalogs import *
+from syssimpyplots.plot_params import *
 
 
 
@@ -158,39 +156,39 @@ for i in range(runs):
     N_sim_i = read_targets_period_radius_bounds(loadfiles_directory + 'periods%s.out' % run_number)[0]
     param_vals_i = read_sim_params(loadfiles_directory + 'periods%s.out' % run_number)
     sssp_per_sys_i, sssp_i = compute_summary_stats_from_cat_phys(file_name_path=loadfiles_directory, run_number=run_number, load_full_tables=True)
-    
+
     # Multiplicities:
     counts, bins = np.histogram(sssp_per_sys_i['Mtot_all'], bins=Mtot_bins)
     #counts[1] = N_sim_i - len(sssp_per_sys_i['Mtot_all'])
     Mtot_counts_all.append(counts/float(np.sum(counts)))
-    
+
     mean_pl_all.append(np.mean(sssp_per_sys_i['Mtot_all'][sssp_per_sys_i['Mtot_all'] > 0]))
     mean_pl_per_star_all.append(np.mean(sssp_per_sys_i['Mtot_all']))
     print(len(sssp_per_sys_i['Mtot_all']), ' --- ', N_sim_i)
-    
+
     # Multiplicities for Earth-sized planets:
     Earth_bools_per_sys = (sssp_per_sys_i['radii_all'] > 0.75) & (sssp_per_sys_i['radii_all'] < 1.25)
     Earth_counts_per_sys = np.sum(Earth_bools_per_sys, axis=1)
     counts, bins = np.histogram(Earth_counts_per_sys, bins=Mtot_bins)
     counts[1] = N_sim_i - len(Earth_counts_per_sys)
     Mtot_earth_counts_all.append(counts/float(np.sum(counts)))
-    
+
     # Numbers of clusters:
     counts, bins = np.histogram(sssp_i['clustertot_all'], bins=clustertot_bins)
     clustertot_counts_all.append(counts/float(np.sum(counts)))
-    
+
     # Numbers of planets per cluster:
     counts, bins = np.histogram(sssp_i['pl_per_cluster_all'], bins=pl_per_cluster_bins)
     pl_per_cluster_counts_all.append(counts/float(np.sum(counts)))
-    
+
     # Periods:
     counts, bins = np.histogram(sssp_i['P_all'], bins=P_bins)
     P_counts_all.append(counts/float(np.sum(counts)))
-    
+
     # Period ratios:
     counts, bins = np.histogram(sssp_i['Rm_all'], bins=Rm_bins)
     Rm_counts_all.append(counts/float(np.sum(counts)))
-    
+
     # Eccentricities:
     counts, bins = np.histogram(sssp_i['e_all'], bins=e_bins)
     e_counts_all.append(counts/float(np.sum(counts)))
@@ -203,43 +201,43 @@ for i in range(runs):
     e2p = e2p[sssp_per_sys_i['P_all'][sssp_per_sys_i['Mtot_all'] > 1] > 0]
     counts2p, bins = np.histogram(e2p, bins=e_bins)
     e2p_counts_all.append(counts2p/float(np.sum(counts))) # normalize counts to all planets
-    
+
     # Mutual inclinations:
     counts, bins = np.histogram(sssp_i['inclmut_all']*(180./np.pi), bins=im_bins)
     im_counts_all.append(counts/float(np.sum(counts)))
-    
+
     # Planet masses:
     counts, bins = np.histogram(sssp_i['mass_all'], bins=mass_bins)
     mass_counts_all.append(counts/float(np.sum(counts)))
-    
+
     # Planet radii:
     counts, bins = np.histogram(sssp_i['radii_all'], bins=radii_bins)
     radii_counts_all.append(counts/float(np.sum(counts)))
-    
+
     # Planet radii ratios:
     counts, bins = np.histogram(sssp_i['radii_ratio_all'], bins=radii_ratio_bins)
     radii_ratio_counts_all.append(counts/float(np.sum(counts)))
-    
+
     # Separations:
     counts, bins = np.histogram(sssp_i['N_mH_all'], bins=N_mH_bins)
     N_mH_counts_all.append(counts/float(np.sum(counts)))
-    
+
     # Stellar radii:
     counts, bins = np.histogram(sssp_i['Rstar_all'], bins=Rstar_bins)
     Rstar_counts_all.append(counts/float(np.sum(counts)))
-    
+
     # Dynamical masses:
     counts, bins = np.histogram(sssp_per_sys_i['dynamical_mass'], bins=dynamical_mass_bins)
     dynamical_mass_counts_all.append(counts/float(np.sum(counts)))
-    
+
     # Planet radii partitioning:
     counts, bins = np.histogram(sssp_per_sys_i['radii_partitioning'], bins=radii_partitioning_bins)
     radii_partitioning_counts_all.append(counts/float(np.sum(counts)))
-    
+
     # Planet radii monotonicity:
     counts, bins = np.histogram(sssp_per_sys_i['radii_monotonicity'], bins=radii_monotonicity_bins)
     radii_monotonicity_counts_all.append(counts/float(np.sum(counts)))
-    
+
     # Gap complexity:
     counts, bins = np.histogram(sssp_per_sys_i['gap_complexity'], bins=gap_complexity_bins)
     gap_complexity_counts_all.append(counts/float(np.sum(counts)))
@@ -252,7 +250,7 @@ for i in range(runs):
         e_n = e_n.flatten()
         im_n = sssp_per_sys_i['inclmut_all'][sssp_per_sys_i['Mtot_all'] == n,:n]
         im_n = im_n.flatten() * (180./np.pi)
-        
+
         e_med_n_all[i,j] = np.median(e_n)
         im_med_n_all[i,j] = np.median(im_n)
 
@@ -320,30 +318,30 @@ for b in range(len(pl_per_cluster_bins_mid)):
 for b in range(n_bins):
     # Periods:
     P_counts_qtls[b] = np.quantile(P_counts_all[:,b], [0.16, 0.5, 0.84])
-    
+
     # Period ratios:
     Rm_counts_qtls[b] = np.quantile(Rm_counts_all[:,b], [0.16, 0.5, 0.84])
-    
+
     # Eccentricities:
     e_counts_qtls[b] = np.quantile(e_counts_all[:,b], [0.16, 0.5, 0.84])
     e1_counts_qtls[b] = np.quantile(e1_counts_all[:,b], [0.16, 0.5, 0.84])
     e2p_counts_qtls[b] = np.quantile(e2p_counts_all[:,b], [0.16, 0.5, 0.84])
-    
+
     # Mutual inclinations:
     im_counts_qtls[b] = np.quantile(im_counts_all[:,b], [0.16, 0.5, 0.84])
-    
+
     # Planet masses:
     mass_counts_qtls[b] = np.quantile(mass_counts_all[:,b], [0.16, 0.5, 0.84])
-    
+
     # Planet radii:
     radii_counts_qtls[b] = np.quantile(radii_counts_all[:,b], [0.16, 0.5, 0.84])
-    
+
     # Planet radii ratios:
     radii_ratio_counts_qtls[b] = np.quantile(radii_ratio_counts_all[:,b], [0.16, 0.5, 0.84])
-    
+
     # Separations:
     N_mH_counts_qtls[b] = np.quantile(N_mH_counts_all[:,b], [0.16, 0.5, 0.84])
-    
+
     # Stellar radii:
     Rstar_counts_qtls[b] = np.quantile(Rstar_counts_all[:,b], [0.16, 0.5, 0.84])
 
@@ -559,7 +557,7 @@ for i,sssp_per_sys_i in enumerate([sssp_per_sys_0p5, sssp_per_sys_2]):
         e_n = e_n.flatten()
         im_n = sssp_per_sys_i['inclmut_all'][sssp_per_sys_i['Mtot_all'] == n,:n]
         im_n = im_n.flatten() * (180./np.pi)
-        
+
         e_med_n_fcrits[i,j] = np.median(e_n)
         im_med_n_fcrits[i,j] = np.median(im_n)
 

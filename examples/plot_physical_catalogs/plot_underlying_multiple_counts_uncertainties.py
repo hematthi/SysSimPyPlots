@@ -15,13 +15,11 @@ import scipy.interpolate #for interpolation functions
 import corner #corner.py package for corner plots
 #matplotlib.rc('text', usetex=True)
 
-sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(__file__)))))
-
-from src.functions_general import *
-from src.functions_compare_kepler import *
-from src.functions_load_sims import *
-from src.functions_plot_catalogs import *
-from src.functions_plot_params import *
+from syssimpyplots.general import *
+from syssimpyplots.compare_kepler import *
+from syssimpyplots.load_sims import *
+from syssimpyplots.plot_catalogs import *
+from syssimpyplots.plot_params import *
 
 
 
@@ -88,23 +86,23 @@ for loadfiles_dir in model_loadfiles_dirs:
     Mtot_counts = []
     clustertot_counts = []
     pl_per_cluster_counts = []
-    
+
     for i in range(1,runs+1): #range(1,runs+1)
         run_number = i
         print(i)
         N_sim_i = read_targets_period_radius_bounds(loadfiles_dir + 'clusterids_all%s.out' % run_number)[0]
         param_vals_i = read_sim_params(loadfiles_dir + 'clusterids_all%s.out' % run_number)
         sssp_per_sys_basic_i = load_cat_phys_separate_and_compute_basic_summary_stats_per_sys(loadfiles_dir, run_number)
-        
+
         # Multiplicities:
         counts, bins = np.histogram(sssp_per_sys_basic_i['Mtot_all'], bins=Mtot_bins)
         counts[1] = N_sim_i - len(sssp_per_sys_basic_i['Mtot_all'])
         Mtot_counts.append(counts/float(np.sum(counts)))
-        
+
         # Numbers of clusters:
         counts, bins = np.histogram(sssp_per_sys_basic_i['clustertot_all'], bins=clustertot_bins)
         clustertot_counts.append(counts/float(np.sum(counts)))
-        
+
         # Numbers of planets per cluster:
         counts, bins = np.histogram(sssp_per_sys_basic_i['pl_per_cluster_all'], bins=pl_per_cluster_bins)
         pl_per_cluster_counts.append(counts/float(np.sum(counts)))
@@ -200,4 +198,3 @@ if savefigures:
     plt.savefig(savefigures_directory + subdirectory + save_name + '_underlying_planets_per_cluster.pdf')
     plt.close()
 #'''
-

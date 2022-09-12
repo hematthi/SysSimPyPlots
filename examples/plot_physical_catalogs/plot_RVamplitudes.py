@@ -15,14 +15,13 @@ import scipy.interpolate #for interpolation functions
 import corner #corner.py package for corner plots
 #matplotlib.rc('text', usetex=True)
 
-sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(__file__)))))
+from syssimpyplots.general import *
+from syssimpyplots.compare_kepler import *
+from syssimpyplots.load_sims import *
+from syssimpyplots.plot_catalogs import *
+from syssimpyplots.plot_params import *
 
-from src.functions_general import *
-from src.functions_compare_kepler import *
-from src.functions_load_sims import *
-from src.functions_plot_catalogs import *
-from src.functions_plot_params import *
-from src.functions_compute_RVs import *
+from syssimpyplots.compute_RVs import *
 
 
 
@@ -85,7 +84,7 @@ for i,P_sys in enumerate(sssp_per_sys['P_all']):
         else: # multi-planet systems
             j_inrange = np.arange(len(P_sys))[(P_sys > 5.) & (P_sys < 10.)]
             #print(i, ': planets in [5,10]d = ', len(j_inrange))
-            
+
             #K_sys = rv_K(Mp_sys, P_sys, Mstar=sssp['Mstar_all'][i])
             K_sys = rv_K(Mp_sys, P_sys, e=e_sys, i=incl_sys, Mstar=sssp['Mstar_all'][i])
             idsort_K_sys = np.argsort(K_sys)

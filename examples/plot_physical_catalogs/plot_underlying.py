@@ -16,13 +16,12 @@ import scipy.optimize #for fitting functions
 import corner #corner.py package for corner plots
 #matplotlib.rc('text', usetex=True)
 
-sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(__file__)))))
+from syssimpyplots.general import *
+from syssimpyplots.compare_kepler import *
+from syssimpyplots.load_sims import *
+from syssimpyplots.plot_catalogs import *
+from syssimpyplots.plot_params import *
 
-from src.functions_general import *
-from src.functions_compare_kepler import *
-from src.functions_load_sims import *
-from src.functions_plot_catalogs import *
-from src.functions_plot_params import *
 
 
 
@@ -259,7 +258,7 @@ for i,n in enumerate(n_array):
     e_n = e_n.flatten()
     im_n = sssp_per_sys['inclmut_all'][sssp_per_sys['Mtot_all'] == n,:n]
     im_n = im_n.flatten() * (180./np.pi)
-    
+
     e_med_array[i] = np.median(e_n)
     im_med_array[i] = np.median(im_n)
 

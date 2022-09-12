@@ -15,13 +15,13 @@ import scipy.interpolate #for interpolation functions
 import corner #corner.py package for corner plots
 #matplotlib.rc('text', usetex=True)
 
-sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(__file__)))))
+from syssimpyplots.general import *
+from syssimpyplots.compare_kepler import *
+from syssimpyplots.load_sims import *
+from syssimpyplots.plot_catalogs import *
+from syssimpyplots.plot_params import *
 
-from src.functions_general import *
-from src.functions_compare_kepler import *
-from src.functions_load_sims import *
-from src.functions_plot_catalogs import *
-from src.functions_plot_params import *
+from syssimpyplots.compute_RVs import *
 
 
 
@@ -64,33 +64,31 @@ sss_per_sys, sss = compute_summary_stats_from_cat_obs(file_name_path=loadfiles_d
 
 ssk_per_sys, ssk = compute_summary_stats_from_Kepler_catalog(P_min, P_max, radii_min, radii_max, compute_ratios=compute_ratios)
 
-dists, dists_w = compute_distances_sim_Kepler(sss_per_sys, sss, ssk_per_sys, ssk, weights_all['all'], dists_include, N_sim, cos_factor=cos_factor, AD_mod=AD_mod, compute_ratios=compute_ratios)
+dists, dists_w = compute_distances_sim_Kepler(sss_per_sys, sss, ssk_per_sys, ssk, weights_all['all'], dists_include, N_sim, cos_factor=cos_factor, AD_mod=AD_mod)
 
 
 
 
-
-from src.functions_compute_RVs import *
 
 def plot_systems_gallery_conditional(sssp_per_sys, sssp, P_cond, Rp_cond, det=False, fig_size=(6,12), panels_per_fig=1, N_sys_sample=50, N_sys_per_plot=50, plot_line_per=1, afs=20, tfs=20, save_name_base='no_name_fig', save_fig=False):
-    
+
     # P_cond = [P_lower, P_upper] for period of planet conditioned on
     # Rp_cond = [Rp_lower, Rp_upper] for radius of planet conditioned on
     P_lower, P_upper = P_cond
     Rp_lower, Rp_upper = Rp_cond
     assert P_lower < P_upper
     assert Rp_lower < Rp_upper
-    
+
     n_per_sys = sssp_per_sys['Mtot_all']
     n_det_per_sys = np.sum(sssp_per_sys['det_all'], axis=1)
-    
+
     if det:
         bools_in_P_Rp_cond = np.any((sssp_per_sys['det_all'] == 1) & (sssp_per_sys['P_all'] > P_lower) & (sssp_per_sys['P_all'] < P_upper) & (sssp_per_sys['radii_all'] > Rp_lower) & (sssp_per_sys['radii_all'] < Rp_upper), axis=1)
     else:
         bools_in_P_Rp_cond = np.any((sssp_per_sys['P_all'] > P_lower) & (sssp_per_sys['P_all'] < P_upper) & (sssp_per_sys['radii_all'] > Rp_lower) & (sssp_per_sys['radii_all'] < Rp_upper), axis=1)
     i_cond = np.arange(len(n_per_sys))[bools_in_P_Rp_cond]
     print('Number of systems that have a planet with period in %s (d) and radius in %s (R_earth): %s' % (P_cond, Rp_cond, len(i_cond)))
-    
+
     i_sample = np.random.choice(i_cond, N_sys_sample, replace=False)
     i_sort = np.argsort(sssp['Mstar_all'][i_sample])
 
@@ -102,7 +100,7 @@ def plot_systems_gallery_conditional(sssp_per_sys, sssp, P_cond, Rp_cond, det=Fa
     e_sample = sssp_per_sys['e_all'][i_sample][i_sort]
     incl_sample = sssp_per_sys['incl_all'][i_sample][i_sort]
     clusterids_sample = sssp_per_sys['clusterids_all'][i_sample][i_sort]
-    
+
     n_panels = int(np.ceil(float(N_sys_sample)/N_sys_per_plot))
     n_figs = int(np.ceil(float(n_panels)/panels_per_fig))
     print('Generating %s figures...' % n_figs)
@@ -115,7 +113,7 @@ def plot_systems_gallery_conditional(sssp_per_sys, sssp, P_cond, Rp_cond, det=Fa
             j_end = (h*panels_per_fig + i+1)*N_sys_per_plot
             for j in range(len(P_sample[j_start:j_end])):
                 id_sys = (h*panels_per_fig + i)*N_sys_per_plot + j
-                
+
                 Mstar_sys = Mstar_sample[id_sys]
                 P_sys = P_sample[id_sys]
                 det_sys = det_sample[id_sys]
@@ -124,7 +122,7 @@ def plot_systems_gallery_conditional(sssp_per_sys, sssp, P_cond, Rp_cond, det=Fa
                 e_sys = e_sample[id_sys]
                 incl_sys = incl_sample[id_sys]
                 clusterids_sys = clusterids_sample[id_sys]
-                
+
                 det_sys = det_sys[P_sys > 0]
                 Mp_sys = Mp_sys[P_sys > 0]
                 Rp_sys = Rp_sys[P_sys > 0]
@@ -132,14 +130,14 @@ def plot_systems_gallery_conditional(sssp_per_sys, sssp, P_cond, Rp_cond, det=Fa
                 incl_sys = incl_sys[P_sys > 0]
                 clusterids_sys = clusterids_sys[P_sys > 0]
                 P_sys = P_sys[P_sys > 0]
-                
+
                 K_sys = rv_K(Mp_sys, P_sys, e=e_sys, i=incl_sys, Mstar=Mstar_sys)
                 #print(K_sys)
                 sc = plt.scatter(P_sys[det_sys == 1], np.ones(np.sum(det_sys == 1))+j, c=K_sys[det_sys == 1], s=10.*Rp_sys[det_sys == 1]**2., vmin=0., vmax=5.)
                 plt.scatter(P_sys[det_sys == 0], np.ones(np.sum(det_sys == 0))+j, c=K_sys[det_sys == 0], edgecolors='r', s=10.*Rp_sys[det_sys == 0]**2., vmin=0., vmax=5.) #facecolors='none'
                 #sc = plt.scatter(P_sys, np.ones(len(P_sys))+j, c=K_sys, s=10.*Rp_sys**2., vmin=0., vmax=10.)
                 #plt.scatter(P_sys[det_sys == 0], np.ones(np.sum(det_sys == 0))+j, color='r', marker='x', s=8.*Rp_sys[det_sys == 0]**2.)
-                
+
                 if (j+1)%plot_line_per == 0:
                     plt.axhline(y=j+1, lw=0.5, ls='--', color='k')
                     plt.text(x=1.8, y=j+1, s='{:.2f}'.format(np.round(Mstar_sys,2)), va='center', ha='right', fontsize=8)
@@ -161,7 +159,7 @@ def plot_systems_gallery_conditional(sssp_per_sys, sssp, P_cond, Rp_cond, det=Fa
         cax = plt.subplot(plot[0,0])
         cbar = plt.colorbar(sc, cax=cax, orientation='horizontal')
         cbar.set_label(r'RV semi-amplitude $K$ (m/s)', fontsize=12)
-        
+
         save_name = save_name_base + '_%s.pdf' % i
         if save_fig:
             plt.savefig(save_name)
@@ -189,3 +187,5 @@ plot_systems_gallery_conditional(sssp_per_sys, sssp, P_cond, Rp_cond, det=True, 
 P_cond, Rp_cond = [19.,21.], [2.,5.]
 fig_name = savefigures_directory + model_name + '_systems_with_P%s_%s_R%s_%s_detected' % (P_cond[0], P_cond[1], Rp_cond[0], Rp_cond[1])
 plot_systems_gallery_conditional(sssp_per_sys, sssp, P_cond, Rp_cond, det=True, fig_size=(5,10), afs=afs, tfs=tfs, save_name_base=fig_name, save_fig=savefigures)
+
+plt.show()

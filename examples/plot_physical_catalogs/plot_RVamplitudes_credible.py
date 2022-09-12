@@ -15,14 +15,13 @@ import scipy.interpolate #for interpolation functions
 import corner #corner.py package for corner plots
 #matplotlib.rc('text', usetex=True)
 
-sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(__file__)))))
+from syssimpyplots.general import *
+from syssimpyplots.compare_kepler import *
+from syssimpyplots.load_sims import *
+from syssimpyplots.plot_catalogs import *
+from syssimpyplots.plot_params import *
 
-from src.functions_general import *
-from src.functions_compare_kepler import *
-from src.functions_load_sims import *
-from src.functions_plot_catalogs import *
-from src.functions_plot_params import *
-from src.functions_compute_RVs import *
+from syssimpyplots.compute_RVs import *
 
 
 
@@ -138,7 +137,7 @@ for i in range(runs): #range(1,runs+1)
             else: # multi-planet systems
                 j_inrange = np.arange(len(P_sys))[(P_sys > 5.) & (P_sys < 10.)]
                 #print(i, ': planets in [5,10]d = ', len(j_inrange))
-                
+
                 #K_sys = rv_K(Mp_sys, P_sys, Mstar=sssp_i['Mstar_all'][i])
                 K_sys = rv_K(Mp_sys, P_sys, e=e_sys, i=incl_sys, Mstar=sssp_i['Mstar_all'][i])
                 idsort_K_sys = np.argsort(K_sys)
@@ -211,7 +210,7 @@ for i in range(runs): #range(1,runs+1)
     n_kr_obs_above1_pr_obs_below1 = np.sum(kr_all[(det_inrange_all == 1) & (pr_all < 1.)] > 1.)
     n_pr_obs_above1_kr_obs_above1 = np.sum(pr_all[(det_inrange_all == 1) & (kr_all > 1.)] > 1.)
     n_pr_obs_above1_kr_obs_below1 = np.sum(pr_all[(det_inrange_all == 1) & (kr_all < 1.)] > 1.)
-    
+
     f_all_kr_above1.append(np.sum(kr_all > 1.)/len(kr_all))
     f_obs_kr_above1.append(n_kr_obs_above1/n_kr_obs)
     f_obs_kr_above1_given_pr_above1.append(n_kr_obs_above1_pr_obs_above1/n_pr_obs_above1)
