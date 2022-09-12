@@ -15,13 +15,11 @@ import scipy.interpolate #for interpolation functions
 import corner #corner.py package for corner plots
 #matplotlib.rc('text', usetex=True)
 
-sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(__file__)))))
-
-from src.functions_general import *
-from src.functions_compare_kepler import *
-from src.functions_load_sims import *
-from src.functions_plot_catalogs import *
-from src.functions_plot_params import *
+from syssimpyplots.general import *
+from syssimpyplots.compare_kepler import *
+from syssimpyplots.load_sims import *
+from syssimpyplots.plot_catalogs import *
+from syssimpyplots.plot_params import *
 
 
 
@@ -175,7 +173,7 @@ plot = GridSpec(len(m_mults), 1, left=0.15, bottom=0.1, right=0.975, top=0.975, 
 
 for i,m in enumerate(m_mults):
     ax = plt.subplot(plot[i,0])
-    
+
     if m == 5:
         n_mults = mult_true_all[mult_obs_all >= m]
         n_mults_1earth = mult_true_1earth_all[mult_obs_1earth_all >= m]
@@ -208,7 +206,7 @@ plot = GridSpec(len(m_mults), 1, left=0.15, bottom=0.1, right=0.975, top=0.975, 
 
 for i,m in enumerate(m_mults):
     ax = plt.subplot(plot[i,0])
-    
+
     ecc_m = []
     if m == 5:
         m_label = r'$m = 5+$'
@@ -224,7 +222,7 @@ for i,m in enumerate(m_mults):
                 ecc_m = ecc_m + list(sssp_per_sys['e_all'][i][dets == 1])
 
     print(m, ': ', len(ecc_m))
-    
+
     xlabel = r'Eccentricity $e$' if m == 1 else None
     xticks = [0.001, 0.01, 0.1, 1.] if m == 1 else []
     plot_panel_pdf_simple(ax, [ecc_m], [], x_min=1e-3, x_max=1., n_bins=20, normalize=False, log_x=True, xticks_custom=xticks, xlabel_text=xlabel, ylabel_text=None, afs=afs, tfs=tfs, lfs=lfs)

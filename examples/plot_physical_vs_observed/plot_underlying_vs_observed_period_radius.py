@@ -15,14 +15,12 @@ import scipy.interpolate #for interpolation functions
 import corner #corner.py package for corner plots
 #matplotlib.rc('text', usetex=True)
 
-sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(__file__)))))
-
-from src.functions_general import *
-from src.functions_compare_kepler import *
-from src.functions_load_sims import *
-from src.functions_plot_catalogs import *
-from src.functions_plot_params import *
-from src.functions_compute_RVs import *
+from syssimpyplots.general import *
+from syssimpyplots.compare_kepler import *
+from syssimpyplots.load_sims import *
+from syssimpyplots.plot_catalogs import *
+from syssimpyplots.plot_params import *
+from syssimpyplots.compute_RVs import *
 
 
 
@@ -65,7 +63,7 @@ sss_per_sys, sss = compute_summary_stats_from_cat_obs(file_name_path=loadfiles_d
 
 ssk_per_sys, ssk = compute_summary_stats_from_Kepler_catalog(P_min, P_max, radii_min, radii_max, compute_ratios=compute_ratios)
 
-dists, dists_w = compute_distances_sim_Kepler(sss_per_sys, sss, ssk_per_sys, ssk, weights_all['all'], dists_include, N_sim, cos_factor=cos_factor, AD_mod=AD_mod, compute_ratios=compute_ratios)
+dists, dists_w = compute_distances_sim_Kepler(sss_per_sys, sss, ssk_per_sys, ssk, weights_all['all'], dists_include, N_sim, cos_factor=cos_factor, AD_mod=AD_mod)
 
 
 
@@ -234,11 +232,11 @@ for i,det_sys in enumerate(sssp_per_sys['det_all']):
         incl_sys = sssp_per_sys['incl_all'][i][P_sys > 0]
         P_sys = P_sys[P_sys > 0]
         n_pl = len(P_sys)
-        
+
         K_sys = rv_K(Mp_sys, P_sys, e=e_sys, i=incl_sys, Mstar=sssp['Mstar_all'][i])
         n_pl_K0p1 = np.sum(K_sys > 0.1)
         n_pl_K1 = np.sum(K_sys > 1.)
-        
+
         if n_pl == 1:
             PRK_obs.append([P_sys[0], Rp_sys[0], 1, n_pl, n_pl_K0p1, n_pl_K1, 0, 0, 0])
         else:
@@ -267,7 +265,7 @@ for j in range(n_R_bins):
         counts_K1_cell = np.sum(PRK_obs_cell[:,2] == 1) # number of observed planets in cell that are intrinsic singles
         counts_K2_cell = np.sum(PRK_obs_cell[:,2] == 2) # number of observed planets in cell that are the largest K in their multiplanet systems
         counts_K3_cell = np.sum(PRK_obs_cell[:,2] == 3) # number of observed planets in cell that are NOT the largest K in their multiplanet systems
-        
+
         counts_frac_K3_grid[j,i] = counts_K3_cell/counts_tot_cell
         plt.text(x=-0.02+(i+1)*(1./n_P_bins), y=(j+1)*(1./n_R_bins)-0.025, s='%s' % counts_K1_cell, ha='right', va='top', color='k', fontsize=16, transform=ax.transAxes)
         plt.text(x=-0.02+(i+1)*(1./n_P_bins), y=(j+1)*(1./n_R_bins)-0.075, s='%s' % counts_K2_cell, ha='right', va='top', color='r', fontsize=16, transform=ax.transAxes)
@@ -313,7 +311,7 @@ for j in range(n_R_bins):
         mean_n_pl = np.mean(PRK_obs_cell[:,3]) # mean intrinsic multiplicity
         mean_n_pl_K0p1 = np.mean(PRK_obs_cell[:,4]) # mean intrinsic multiplicity of K > 0.1m/s
         mean_n_pl_K1 = np.mean(PRK_obs_cell[:,5]) # mean intrinsic multiplicity of K > 1m/s
-        
+
         mean_n_pl_grid[j,i] = mean_n_pl
         mean_n_pl_K0p1_grid[j,i] = mean_n_pl_K0p1
         mean_n_pl_K1_grid[j,i] = mean_n_pl_K1
@@ -359,7 +357,7 @@ for j in range(n_R_bins):
         mean_n_pl_miss_interior = np.mean(PRK_obs_cell[:,6]) # mean number of missed planets interior
         mean_n_pl_miss_interior_K0p1 = np.mean(PRK_obs_cell[:,7]) # mean number of missed planets interior, with K > 0.1m/s
         mean_n_pl_miss_interior_K1 = np.mean(PRK_obs_cell[:,8]) # mean number of missed planets interior, with K > 1m/s
-        
+
         mean_n_pl_miss_interior_grid[j,i] = mean_n_pl_miss_interior
         mean_n_pl_miss_interior_K0p1_grid[j,i] = mean_n_pl_miss_interior_K0p1
         mean_n_pl_miss_interior_K1_grid[j,i] = mean_n_pl_miss_interior_K1
@@ -409,7 +407,7 @@ for j in range(n_R_bins):
         counts_miss_interior = np.sum(PRK_obs_cell[:,6] > 0) # number of times there are missed planets interior
         counts_miss_interior_K0p1 = np.sum(PRK_obs_cell[:,7] > 0) # number of times there are missed planets interior, with K > 0.1m/s
         counts_miss_interior_K1 = np.sum(PRK_obs_cell[:,8] > 0) # number of times there are missed planets interior, with K > 1m/s
-        
+
         f_miss_interior_grid[j,i] = counts_miss_interior/counts_tot_cell
         f_miss_interior_K0p1_grid[j,i] = counts_miss_interior_K0p1/counts_tot_cell
         f_miss_interior_K1_grid[j,i] = counts_miss_interior_K1/counts_tot_cell

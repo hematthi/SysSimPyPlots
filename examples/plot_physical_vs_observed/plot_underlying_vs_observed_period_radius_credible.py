@@ -15,14 +15,12 @@ import scipy.interpolate #for interpolation functions
 import corner #corner.py package for corner plots
 #matplotlib.rc('text', usetex=True)
 
-sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(__file__)))))
-
-from src.functions_general import *
-from src.functions_compare_kepler import *
-from src.functions_load_sims import *
-from src.functions_plot_catalogs import *
-from src.functions_plot_params import *
-from src.functions_compute_RVs import *
+from syssimpyplots.general import *
+from syssimpyplots.compare_kepler import *
+from syssimpyplots.load_sims import *
+from syssimpyplots.plot_catalogs import *
+from syssimpyplots.plot_params import *
+from syssimpyplots.compute_RVs import *
 
 
 
@@ -64,7 +62,7 @@ sss_per_sys, sss = compute_summary_stats_from_cat_obs(file_name_path=loadfiles_d
 
 ssk_per_sys, ssk = compute_summary_stats_from_Kepler_catalog(P_min, P_max, radii_min, radii_max, compute_ratios=compute_ratios)
 
-dists, dists_w = compute_distances_sim_Kepler(sss_per_sys, sss, ssk_per_sys, ssk, weights_all['all'], dists_include, N_sim, cos_factor=cos_factor, AD_mod=AD_mod, compute_ratios=compute_ratios)
+dists, dists_w = compute_distances_sim_Kepler(sss_per_sys, sss, ssk_per_sys, ssk, weights_all['all'], dists_include, N_sim, cos_factor=cos_factor, AD_mod=AD_mod)
 
 
 
@@ -98,11 +96,11 @@ for i in range(runs): #range(1,runs+1)
             incl_sys = sssp_per_sys_i['incl_all'][i][P_sys > 0]
             P_sys = P_sys[P_sys > 0]
             n_pl = len(P_sys)
-            
+
             K_sys = rv_K(Mp_sys, P_sys, e=e_sys, i=incl_sys, Mstar=sssp_i['Mstar_all'][i])
             n_pl_K0p1 = np.sum(K_sys > 0.1)
             n_pl_K1 = np.sum(K_sys > 1.)
-            
+
             if n_pl == 1:
                 PRK_obs.append([P_sys[0], Rp_sys[0], 1, n_pl, n_pl_K0p1, n_pl_K1, 0, 0, 0])
             else:
@@ -170,18 +168,18 @@ for j in range(n_R_bins):
             sys_tot_cell_all.append(np.sum(sys_cell_bools))
         pl_tot_cell_all = np.array(pl_tot_cell_all)
         sys_tot_cell_all = np.array(sys_tot_cell_all)
-        
+
         mean_pl_cell_all = pl_tot_cell_all/N_sim_i # mean number of such planets per star
         mean_pl_sys_cell_all = pl_tot_cell_all/sys_tot_cell_all # mean number of such planets per system with at least one such planet
         fswp_cell_all = sys_tot_cell_all/N_sim_i # fraction of stars with such planets
-        
+
         mean_pl_cell_qtls = np.quantile(mean_pl_cell_all, [0.16,0.5,0.84])
         mean_pl_sys_cell_qtls = np.quantile(mean_pl_sys_cell_all, [0.16,0.5,0.84])
         fswp_cell_qtls = np.quantile(fswp_cell_all, [0.16,0.5,0.84])
-        
+
         mean_pl_grid[j,i] = mean_pl_cell_qtls[1]
         fswp_grid[j,i] = fswp_cell_qtls[1]
-        
+
         plt.text(x=-0.01+(i+1)*(1./n_P_bins), y=(j+1)*(1./n_R_bins)-0.025, s=r'${:.2f}$'.format(np.round(mean_pl_cell_qtls[1], 2)), ha='right', va='top', color='b', fontsize=sfs, transform=ax.transAxes)
         plt.text(x=-0.01+(i+1)*(1./n_P_bins), y=(j+1)*(1./n_R_bins)-0.075, s=r'${:.2f}$'.format(np.round(mean_pl_sys_cell_qtls[1], 2)), ha='right', va='top', color='r', fontsize=sfs, transform=ax.transAxes)
         snum = r'${:.2f}_{{-{:.2f}}}^{{+{:.2f}}}$'.format(np.round(fswp_cell_qtls[1], 2), np.round(fswp_cell_qtls[1]-fswp_cell_qtls[0], 2), np.round(fswp_cell_qtls[2]-fswp_cell_qtls[1], 2))
@@ -231,13 +229,13 @@ for j in range(n_R_bins):
             counts_cell = len(PRK_obs_cell) # number of observed planets in cell
             counts_cell_all.append(counts_cell)
         counts_cell_all = np.array(counts_cell_all)
-        
+
         counts_sim_cell_qtls = np.quantile(counts_cell_all, [0.16,0.5,0.84])
         counts_Kep_cell = np.sum((ssk['P_obs'] > P_bins[i]) & (ssk['P_obs'] < P_bins[i+1]) & (ssk['radii_obs'] > R_bins[j]) & (ssk['radii_obs'] < R_bins[j+1]))
         counts_ratio_cell_qtls = np.quantile(counts_cell_all/counts_Kep_cell, [0.16,0.5,0.84])
         counts_sim_grid[j,i] = counts_sim_cell_qtls[1]
         counts_Kep_grid[j,i] = counts_Kep_cell
-        
+
         plt.text(x=-0.01+(i+1)*(1./n_P_bins), y=(j+1)*(1./n_R_bins)-0.025, s=r'${:.1f}$'.format(np.round(counts_sim_cell_qtls[1], 1)), ha='right', va='top', color='b', fontsize=sfs, transform=ax.transAxes)
         plt.text(x=-0.01+(i+1)*(1./n_P_bins), y=(j+1)*(1./n_R_bins)-0.075, s='%s' % counts_Kep_cell, ha='right', va='top', color='r', fontsize=sfs, transform=ax.transAxes)
         snum = r'${:.2f}_{{-{:.2f}}}^{{+{:.2f}}}$'.format(np.round(counts_ratio_cell_qtls[1], 2), np.round(counts_ratio_cell_qtls[1]-counts_ratio_cell_qtls[0], 2), np.round(counts_ratio_cell_qtls[2]-counts_ratio_cell_qtls[1], 2)) if counts_Kep_cell > 0 else r'$-$'
@@ -368,11 +366,11 @@ for j in range(n_R_bins):
         nbar_cell_all = np.array(nbar_cell_all)
         nbar_K0p1_cell_all = np.array(nbar_K0p1_cell_all)
         nbar_K1_cell_all = np.array(nbar_K1_cell_all)
-        
+
         nbar_cell_qtls = np.quantile(nbar_cell_all, [0.16,0.5,0.84])
         nbar_K0p1_cell_qtls = np.quantile(nbar_K0p1_cell_all, [0.16,0.5,0.84])
         nbar_K1_cell_qtls = np.quantile(nbar_K1_cell_all, [0.16,0.5,0.84])
-        
+
         nbar_grid[j,i] = nbar_cell_qtls[1]
         nbar_K0p1_grid[j,i] = nbar_K0p1_cell_qtls[1]
         nbar_K1_grid[j,i] = nbar_K1_cell_qtls[1]
@@ -435,11 +433,11 @@ for j in range(n_R_bins):
         nbar_missin_cell_all = np.array(nbar_missin_cell_all)
         nbar_missin_K0p1_cell_all = np.array(nbar_missin_K0p1_cell_all)
         nbar_missin_K1_cell_all = np.array(nbar_missin_K1_cell_all)
-        
+
         nbar_missin_cell_qtls = np.quantile(nbar_missin_cell_all, [0.16,0.5,0.84])
         nbar_missin_K0p1_cell_qtls = np.quantile(nbar_missin_K0p1_cell_all, [0.16,0.5,0.84])
         nbar_missin_K1_cell_qtls = np.quantile(nbar_missin_K1_cell_all, [0.16,0.5,0.84])
-        
+
         nbar_missin_grid[j,i] = nbar_missin_cell_qtls[1]
         nbar_missin_K0p1_grid[j,i] = nbar_missin_K0p1_cell_qtls[1]
         nbar_missin_K1_grid[j,i] = nbar_missin_K1_cell_qtls[1]
@@ -508,19 +506,19 @@ for j in range(n_R_bins):
         counts_missin_cell_all = np.array(counts_missin_cell_all)
         counts_missin_K0p1_cell_all = np.array(counts_missin_K0p1_cell_all)
         counts_missin_K1_cell_all = np.array(counts_missin_K1_cell_all)
-        
+
         counts_cell_qtls = np.quantile(counts_cell_all, [0.16,0.5,0.84])
         counts_missin_cell_qtls = np.quantile(counts_missin_cell_all, [0.16,0.5,0.84])
         counts_missin_K0p1_cell_qtls = np.quantile(counts_missin_K0p1_cell_all, [0.16,0.5,0.84])
         counts_missin_K1_cell_qtls = np.quantile(counts_missin_K1_cell_all, [0.16,0.5,0.84])
-        
+
         f_missin_cell_qtls = np.nanquantile(counts_missin_cell_all/counts_cell_all, [0.16,0.5,0.84])
         f_missin_K0p1_cell_qtls = np.nanquantile(counts_missin_K0p1_cell_all/counts_cell_all, [0.16,0.5,0.84])
         f_missin_K1_cell_qtls = np.nanquantile(counts_missin_K1_cell_all/counts_cell_all, [0.16,0.5,0.84])
         f_missin_grid[j,i] = f_missin_cell_qtls[1]
         f_missin_K0p1_grid[j,i] = f_missin_K0p1_cell_qtls[1]
         f_missin_K1_grid[j,i] = f_missin_K1_cell_qtls[1]
-        
+
         #snum = r'${:.2f}_{{-{:.2f}}}^{{+{:.2f}}}$'.format(np.round(f_missin_cell_qtls[1], 2), np.round(f_missin_cell_qtls[1]-f_missin_cell_qtls[0], 2), np.round(f_missin_cell_qtls[2]-f_missin_cell_qtls[1], 2))
         snum = r'${:.2f}_{{-{:.2f}}}^{{+{:.2f}}}$'.format(np.round(f_missin_K1_cell_qtls[1], 2), np.round(f_missin_K1_cell_qtls[1]-f_missin_K1_cell_qtls[0], 2), np.round(f_missin_K1_cell_qtls[2]-f_missin_K1_cell_qtls[1], 2))
         plt.text(x=0.01+i*(1./n_P_bins), y=(j+1)*(1./n_R_bins)-0.09, s=snum, ha='left', va='center', color='k', fontsize=mfs, fontweight='bold', transform=ax.transAxes)
