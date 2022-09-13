@@ -5,9 +5,11 @@ Installation
 Using pip
 ---------
 
-.. attention::
+You can install the most recent stable version of SysSimPyPlots using `pip <https://pip.pypa.io/en/stable/>`_:
 
-   SysSimPyPlots will be pip installable soon! Stay tuned.
+.. code-block:: bash
+
+   python -m pip install syssimpyplots
 
 
 From source
