@@ -1,5 +1,5 @@
 # SysSimPyPlots
 
-Loading and Plotting Simulated Catalogs from SysSim
+Loading, analyzing, and plotting catalogs generated from the SysSim models.
 
-Currently under construction! Documentation and installation instructions coming soon...
+For installation instructions, tutorials, and detailed documentation, [read the documentation](https://syssimpyplots.readthedocs.io/).

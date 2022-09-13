@@ -20,5 +20,6 @@ classifiers = [
 ]
 
 [project.urls]
-"Homepage" = "https://github.com/hematthi/SysSimPyPlots"
+"Homepage"  = "https://syssimpyplots.readthedocs.io"
+"Source" = "https://github.com/hematthi/SysSimPyPlots"
 "Bug Tracker" = "https://github.com/hematthi/SysSimPyPlots/issues"
