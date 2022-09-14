@@ -9,6 +9,21 @@ Plotting histograms and CDFs are a great way of visually comparing different mod
 
 .. code-block:: python
 
+   # Load modules and catalogs as before:
+   from syssimpyplots.general import *
+   from syssimpyplots.load_sims import *
+   from syssimpyplots.plot_catalogs import *
+   from syssimpyplots.compare_kepler import *
+
+   load_dir = '/path/to/a/simulated/catalog/' # replace with your path!
+
+   N_sim, cos_factor, P_min, P_max, radii_min, radii_max = read_targets_period_radius_bounds(load_dir + 'periods.out')
+
+   sss_per_sys, sss = compute_summary_stats_from_cat_obs(file_name_path=load_dir)
+   ssk_per_sys, ssk = compute_summary_stats_from_Kepler_catalog(P_min, P_max, radii_min, radii_max)
+
+
+
    # Compute the KS distance between two multiplicity distributions:
    d_KS, x_KS = KS_dist_mult(sss_per_sys['Mtot_obs'], ssk_per_sys['Mtot_obs'])
 

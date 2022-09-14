@@ -3,8 +3,8 @@ Loading catalogs
 
 The data you download from following the :ref:`"Downloading simulated catalogs" section <downloading_catalogs>` contains a number of catalog pairs, each consisting of:
 
-- a "physical catalog": a set of intrinsic, physical planetary systems (before any observations; contains properties like the true orbital periods, planet radii, etc.)
-- an "observed catalog": a set of transiting and detected planet candidates derived from a physical catalog (after a Kepler-like mission; contains properties like the measured orbital periods, transit depths, etc.)
+- a "**physical catalog**": a set of intrinsic, physical planetary systems (before any observations; contains properties like the true orbital periods, planet radii, etc.)
+- an "**observed catalog**": a set of transiting and detected planet candidates derived from a physical catalog (after a Kepler-like mission; contains properties like the measured orbital periods, transit depths, etc.)
 
 
 Loading physical catalogs
@@ -14,7 +14,6 @@ First, you need to import some required packages:
 
 .. code-block:: python
 
-   import numpy as np
    from syssimpyplots.general import *
    from syssimpyplots.load_sims import *
 
@@ -34,7 +33,7 @@ While you could directly work with the ``cat_phys`` table, it would be convenien
 
    sssp_per_sys, sssp = compute_summary_stats_from_cat_phys(file_name_path=load_dir)
 
-The function above outputs two dictionary objects, which we have stored in ``sssp_per_sys`` and ``sssp``. They contain mostly the same information but summarized in different ways.
+(This may take a minute or two, depending on the size of the catalog.) The function above outputs two dictionary objects, which we have stored in ``sssp_per_sys`` and ``sssp``. They contain mostly the same information but summarized in different ways.
 
 .. collapse:: What do they contain?
 
@@ -90,7 +89,7 @@ As before, we only passed the path to the simulated catalog to the function ``co
 Reading simulation parameters
 -----------------------------
 
-You may want to read the number of simulated targets and the period and radius bounds for the simulated planets, without loading the full catalog (which may take up to a minute for larger physical catalogs):
+You may want to read the number of simulated targets and the period and radius bounds for the simulated planets, without loading the full catalog (which may take several minutes for larger physical catalogs):
 
 .. code-block:: python
 
@@ -113,7 +112,7 @@ Analogous to the functions for loading and summarizing an observed catalog, ther
 .. code-block:: python
 
    from syssimpyplots.compare_kepler import *
-   
+
    koi_table = load_Kepler_planets_cleaned()
 
    ssk_per_sys, ssk = compute_summary_stats_from_Kepler_catalog(P_min, P_max, radii_min, radii_max)

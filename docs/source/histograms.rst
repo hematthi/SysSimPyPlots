@@ -9,7 +9,6 @@ On the previous page, you learned how to load a catalog (physical and observed).
 
 .. code-block:: python
 
-   import numpy as np
    from syssimpyplots.general import *
    from syssimpyplots.load_sims import *
    from syssimpyplots.plot_catalogs import *
