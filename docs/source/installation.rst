@@ -34,11 +34,11 @@ After you have installed SysSimPyPlots, you will still need to download some sim
 
    This simulated catalog contains five times as many stars as the Kepler catalog in our sample, and is about 450 MB in size.
 
-If you want to perform more robust analyses, you can download many more simulated catalogs from the `SysSimExClusters Simulated Catalog folder <https://pennstateoffice365-my.sharepoint.com/:f:/g/personal/myh7_psu_edu/Ei7QJqnmaCBGipPM4uMzrusBjw_hUwo0KfIDBe-0UTYyMw>`_.
+If you want to perform more robust analyses, you can download many more simulated catalogs from the `SysSimExClusters Simulated Catalog folder <https://drive.google.com/drive/folders/1KGY7E1fK48O9mDuF6mDDhpXlyErkkd7t?usp=sharing`_.
 
 .. note::
 
-   This folder contains 100 individual catalogs, each with the same number of stars as the Kepler catalog in our sample. The total file size is about 3.3 GB compressed, and close to 10 GB when opened/uncompressed.
+   This folder contains 100 individual catalogs, each with the same number of stars as the Kepler catalog in our sample. The total file size is about 3.5 GB compressed, and roughly 8.2 GB when opened/uncompressed.
 
 More details are provided in the `SysSimExClusters repository <https://github.com/ExoJulia/SysSimExClusters>`_. Check the READMEs of the individual branches for each paper.
 

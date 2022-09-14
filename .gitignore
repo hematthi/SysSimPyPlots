@@ -4,3 +4,4 @@ src/__pycache__
 docs/build
 dist
 *.egg-info
+*.key
