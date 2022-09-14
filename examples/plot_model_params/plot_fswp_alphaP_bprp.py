@@ -43,7 +43,7 @@ teff_med = np.nanmedian(stars_cleaned['teff'])
 bp_rp_corr_med = np.nanmedian(stars_cleaned['bp_rp'] - stars_cleaned['e_bp_rp_interp'])
 
 # To load the table at: 'http://www.pas.rochester.edu/~emamajek/EEM_dwarf_UBVIJHK_colors_Teff.txt':
-EEM_table = np.genfromtxt("../../data/EEM_dwarf_UBVIJHK_colors_Teff.txt", skip_header=21, names=True)
+EEM_table = np.genfromtxt("/Users/hematthi/Documents/GradSchool/Research/ExoplanetsSysSim_Clusters/Miscellaneous_data/EEM_dwarf_UBVIJHK_colors_Teff.txt", skip_header=21, names=True)
 
 # To define interpolation functions for getting various stellar parameters from bp_rp:
 Teff_interp = scipy.interpolate.interp1d(EEM_table['BpRp'], EEM_table['Teff'])

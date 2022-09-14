@@ -28,7 +28,7 @@ for js in job_seeds:
     d_all_vals_evals_jobs.append(d_all_vals_evals)
     weights_all_jobs.append(weights_all)
 '''
-Nmult_evals, d_all_keys_evals, d_all_vals_evals, weights_all = load_split_stars_model_evaluations_and_weights('../../data/Clustered_P_R_split_stars_weights_ADmod_true_targs88912_evals100_all_pairs.txt')
+Nmult_evals, d_all_keys_evals, d_all_vals_evals, weights_all = load_split_stars_model_evaluations_and_weights('../../src/syssimpyplots/data/Clustered_P_R_split_stars_weights_ADmod_true_targs88912_evals100_all_pairs.txt')
 #Nmult_evals, d_all_keys_evals, d_all_vals_evals, weights_all = load_split_stars_model_evaluations_and_weights('../../ACI/Clustered_P_R_split_stars_weights_ADmod_true_targs79935_evals100_all_pairs.txt')
 Nmult_evals_jobs.append(Nmult_evals)
 d_all_vals_evals_jobs.append(d_all_vals_evals)

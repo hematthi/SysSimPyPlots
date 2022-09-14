@@ -4,7 +4,7 @@ import os
 
 import syssimpyplots.general as gen
 
-path_data = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(__file__)))), 'data')
+path_data = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'data')
 
 
 

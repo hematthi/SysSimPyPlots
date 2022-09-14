@@ -49,14 +49,16 @@ sssp_per_sys, sssp = compute_summary_stats_from_cat_phys(file_name_path=loadfile
 ##### To load some mass-radius tables:
 
 # NWG-2018 model:
-MR_table_file = '../../data/MRpredict_table_weights3025_R1001_Q1001.txt'
+MR_table_file = '../../src/syssimpyplots/data/MRpredict_table_weights3025_R1001_Q1001.txt'
 with open(MR_table_file, 'r') as file:
     lines = (line for line in file if not line.startswith('#'))
     MR_table = np.genfromtxt(lines, names=True, delimiter=', ')
 
 # Li Zeng models:
-MR_earthlike_rocky = np.genfromtxt('../../data/MR_earthlike_rocky.txt', names=['mass','radius']) # mass and radius are in Earth units
-MR_pure_iron = np.genfromtxt('../../data/MR_pure_iron.txt', names=['mass','radius']) # mass and radius are in Earth units
+# https://www.cfa.harvard.edu/~lzeng/tables/massradiusEarthlikeRocky.txt
+# https://www.cfa.harvard.edu/~lzeng/tables/massradiusFe.txt
+MR_earthlike_rocky = np.genfromtxt('/Users/hematthi/Documents/GradSchool/Research/ExoplanetsSysSim_Clusters/Miscellaneous_data/MR_earthlike_rocky.txt', names=['mass','radius']) # mass and radius are in Earth units
+MR_pure_iron = np.genfromtxt('/Users/hematthi/Documents/GradSchool/Research/ExoplanetsSysSim_Clusters/Miscellaneous_data/MR_pure_iron.txt', names=['mass','radius']) # mass and radius are in Earth units
 
 # To construct an interpolation function for each MR relation:
 MR_NWG2018_interp = scipy.interpolate.interp1d(10.**MR_table['log_R'], 10.**MR_table['05'])

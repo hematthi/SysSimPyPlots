@@ -38,7 +38,7 @@ bprp_corr = stars_cleaned['bp_rp'] - stars_cleaned['e_bp_rp_true']
 #bprp_corr = stars_cleaned['bp_rp'] - stars_cleaned['e_bp_rp_interp']
 bprp_corr_med = np.nanmedian(bprp_corr)
 
-cks_table = np.genfromtxt('../../data/cks_physical_merged.csv', names=True, delimiter=',')
+cks_table = np.genfromtxt('/Users/hematthi/Documents/GradSchool/Research/ExoplanetsSysSim_Clusters/Miscellaneous_data/cks_physical_merged.csv', names=True, delimiter=',')
 
 # To match CKS and CKS+isochrone T_eff's to colors:
 bprp_corr_match = []
