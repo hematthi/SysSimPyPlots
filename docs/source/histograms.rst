@@ -42,7 +42,7 @@ On the previous page, you learned how to load a catalog (physical and observed).
 
    The observed period distribution of a simulated catalog.
 
-As demonstrated above, the :py:func:`plot_fig_counts_hist_simple` function should be used for quantities taking on discrete, integer values, as it is designed to center each bin on an integer. The multiplicity distribution is a perfect example of this case!
+As demonstrated above, the :py:func:`plot_fig_counts_hist_simple <syssimpyplots.plot_catalogs.plot_fig_counts_hist_simple>` function should be used for quantities taking on discrete, integer values, as it is designed to center each bin on an integer. The multiplicity distribution is a perfect example of this case!
 
 For continuous distributions (such as the period distribution), the :py:func:`plot_fig_pdf_simple <syssimpyplots.plot_catalogs.plot_fig_pdf_simple>` function should be used.
 
