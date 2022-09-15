@@ -44,11 +44,11 @@ On the previous page, you learned how to load a catalog (physical and observed).
 
 As demonstrated above, the :py:func:`plot_fig_counts_hist_simple` function should be used for quantities taking on discrete, integer values, as it is designed to center each bin on an integer. The multiplicity distribution is a perfect example of this case!
 
-For continuous distributions (such as the period distribution), the :py:func:`plot_fig_pdf_simple` function should be used.
+For continuous distributions (such as the period distribution), the :py:func:`plot_fig_pdf_simple <syssimpyplots.plot_catalogs.plot_fig_pdf_simple>` function should be used.
 
 .. tip::
 
-   The two functions above are actually wrappers of the functions :py:func:`plot_panel_counts_hist_simple` and :py:func:`plot_panel_pdf_simple`, respectively, which do most of the work and create a single panel (requiring an axes subplot object to plot on) instead of a figure. These are useful for making multi-panel figures!
+   The two functions above are actually wrappers of the functions :py:func:`plot_panel_counts_hist_simple <syssimpyplots.plot_catalogs.plot_panel_counts_hist_simple>` and :py:func:`plot_panel_pdf_simple syssimpyplots.plot_catalogs.plot_panel_pdf_simple`, respectively, which do most of the work and create a single panel (requiring an axes subplot object to plot on) instead of a figure. These are useful for making multi-panel figures!
 
 
 Plotting multiple catalogs
