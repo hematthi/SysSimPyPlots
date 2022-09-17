@@ -18,7 +18,7 @@ import syssimpyplots.load_sims as lsims
 
 
 
-# Functions to make plots comparing the simulated and Kepler populations:
+# Functions for plotting histograms and cumulative distributions:
 
 def setup_fig_single(fig_size, left, bottom, right, top):
     """
@@ -546,14 +546,14 @@ def plot_fig_pdf_composite(x_sim_all, x_Kep_all, param_vals=None, x_mins=[None],
         plt.savefig(save_name)
         plt.close()
 
-def load_cat_obs_and_plot_fig_pdf_composite(loadfiles_directory, weights, run_number='', Rstar_min=0., Rstar_max=1e6, Mstar_min=0., Mstar_max=1e6, teff_min=0., teff_max=1e6, bp_rp_min=-1e6, bp_rp_max=1e6, label_dist=True, AD_mod=True, dists_include=[], n_bins=100, lw=1, alpha=0.2, afs=12, tfs=12, lfs=12, save_name='no_name_fig.pdf', save_fig=False):
+def load_cat_obs_and_plot_fig_pdf_composite(load_dir, weights, run_number='', Rstar_min=0., Rstar_max=10., Mstar_min=0., Mstar_max=10., teff_min=0., teff_max=1e4, bp_rp_min=-5., bp_rp_max=5., label_dist=True, AD_mod=True, dists_include=[], n_bins=100, lw=1, alpha=0.2, afs=12, tfs=12, lfs=12, save_name='no_name_fig.pdf', save_fig=False):
 
     #To load and analyze the simulated and Kepler observed catalogs:
 
-    N_sim, cos_factor, P_min, P_max, radii_min, radii_max = lsims.read_targets_period_radius_bounds(loadfiles_directory + 'periods%s.out' % run_number)
-    param_vals = lsims.read_sim_params(loadfiles_directory + 'periods%s.out' % run_number)
+    N_sim, cos_factor, P_min, P_max, radii_min, radii_max = lsims.read_targets_period_radius_bounds(load_dir + 'periods%s.out' % run_number)
+    param_vals = lsims.read_sim_params(load_dir + 'periods%s.out' % run_number)
 
-    sss_per_sys, sss = lsims.compute_summary_stats_from_cat_obs(file_name_path=loadfiles_directory, run_number=run_number, Rstar_min=Rstar_min, Rstar_max=Rstar_max, Mstar_min=Mstar_min, Mstar_max=Mstar_max, teff_min=teff_min, teff_max=teff_max, bp_rp_min=bp_rp_min, bp_rp_max=bp_rp_max)
+    sss_per_sys, sss = lsims.compute_summary_stats_from_cat_obs(file_name_path=load_dir, run_number=run_number, Rstar_min=Rstar_min, Rstar_max=Rstar_max, Mstar_min=Mstar_min, Mstar_max=Mstar_max, teff_min=teff_min, teff_max=teff_max, bp_rp_min=bp_rp_min, bp_rp_max=bp_rp_max)
 
     ssk_per_sys, ssk = ckep.compute_summary_stats_from_Kepler_catalog(P_min, P_max, radii_min, radii_max, Rstar_min=Rstar_min, Rstar_max=Rstar_max, Mstar_min=Mstar_min, Mstar_max=Mstar_max, teff_min=teff_min, teff_max=teff_max, bp_rp_min=bp_rp_min, bp_rp_max=bp_rp_max)
 
@@ -659,14 +659,14 @@ def load_cat_obs_and_plot_fig_pdf_composite(loadfiles_directory, weights, run_nu
         plt.savefig(save_name)
         plt.close()
 
-def load_cat_obs_and_plot_fig_pdf_composite_simple(loadfiles_directory, weights, run_number='', Rstar_min=0., Rstar_max=1e6, Mstar_min=0., Mstar_max=1e6, teff_min=0., teff_max=1e6, bp_rp_min=-1e6, bp_rp_max=1e6, label_dist=True, AD_mod=True, dists_include=[], n_bins=100, c_sim=['k'], lw=1, alpha=0.2, afs=12, tfs=12, lfs=12, fig_size=(16,8), save_name='no_name_fig.pdf', save_fig=False):
+def load_cat_obs_and_plot_fig_pdf_composite_simple(load_dir, weights, run_number='', Rstar_min=0., Rstar_max=10., Mstar_min=0., Mstar_max=10., teff_min=0., teff_max=1e4, bp_rp_min=-5., bp_rp_max=5., label_dist=True, AD_mod=True, dists_include=[], n_bins=100, c_sim=['k'], lw=1, alpha=0.2, afs=12, tfs=12, lfs=12, fig_size=(16,8), save_name='no_name_fig.pdf', save_fig=False):
 
     #To load and analyze the simulated and Kepler observed catalogs:
 
-    N_sim, cos_factor, P_min, P_max, radii_min, radii_max = lsims.read_targets_period_radius_bounds(loadfiles_directory + 'periods%s.out' % run_number)
-    param_vals = lsims.read_sim_params(loadfiles_directory + 'periods%s.out' % run_number)
+    N_sim, cos_factor, P_min, P_max, radii_min, radii_max = lsims.read_targets_period_radius_bounds(load_dir + 'periods%s.out' % run_number)
+    param_vals = lsims.read_sim_params(load_dir + 'periods%s.out' % run_number)
 
-    sss_per_sys, sss = lsims.compute_summary_stats_from_cat_obs(file_name_path=loadfiles_directory, run_number=run_number, Rstar_min=Rstar_min, Rstar_max=Rstar_max, Mstar_min=Mstar_min, Mstar_max=Mstar_max, teff_min=teff_min, teff_max=teff_max, bp_rp_min=bp_rp_min, bp_rp_max=bp_rp_max)
+    sss_per_sys, sss = lsims.compute_summary_stats_from_cat_obs(file_name_path=load_dir, run_number=run_number, Rstar_min=Rstar_min, Rstar_max=Rstar_max, Mstar_min=Mstar_min, Mstar_max=Mstar_max, teff_min=teff_min, teff_max=teff_max, bp_rp_min=bp_rp_min, bp_rp_max=bp_rp_max)
 
     ssk_per_sys, ssk = ckep.compute_summary_stats_from_Kepler_catalog(P_min, P_max, radii_min, radii_max, Rstar_min=Rstar_min, Rstar_max=Rstar_max, Mstar_min=Mstar_min, Mstar_max=Mstar_max, teff_min=teff_min, teff_max=teff_max, bp_rp_min=bp_rp_min, bp_rp_max=bp_rp_max)
 
@@ -759,12 +759,12 @@ def load_cat_obs_and_plot_fig_pdf_composite_simple(loadfiles_directory, weights,
         plt.savefig(save_name)
         plt.close()
 
-def load_cat_obs_and_plot_fig_pdf_split_bprp_GF2020_metrics(loadfiles_directory, weights_all, run_number='', label_dist=True, AD_mod=True, dists_include=[], n_bins=100, lw=1, alpha=0.2, afs=12, tfs=12, lfs=12, fig_size=(16,8), save_name='no_name_fig.pdf', save_fig=False):
+def load_cat_obs_and_plot_fig_pdf_split_bprp_GF2020_metrics(load_dir, weights_all, run_number='', label_dist=True, AD_mod=True, dists_include=[], n_bins=100, lw=1, alpha=0.2, afs=12, tfs=12, lfs=12, fig_size=(16,8), save_name='no_name_fig.pdf', save_fig=False):
 
     #To load and analyze the simulated and Kepler observed catalogs:
 
-    N_sim, cos_factor, P_min, P_max, radii_min, radii_max = lsims.read_targets_period_radius_bounds(loadfiles_directory + 'periods%s.out' % run_number)
-    param_vals = lsims.read_sim_params(loadfiles_directory + 'periods%s.out' % run_number)
+    N_sim, cos_factor, P_min, P_max, radii_min, radii_max = lsims.read_targets_period_radius_bounds(load_dir + 'periods%s.out' % run_number)
+    param_vals = lsims.read_sim_params(load_dir + 'periods%s.out' % run_number)
 
     #To plot the 'observed' distributions with the actual observed Kepler distributions:
 
@@ -792,7 +792,7 @@ def load_cat_obs_and_plot_fig_pdf_split_bprp_GF2020_metrics(loadfiles_directory,
     xlabel_texts = [r'$\mathcal{Q}_R$', r'$\mathcal{M}_R$', r'$\mathcal{C}$']
 
     for i,sample in enumerate(sample_names):
-        sss_per_sys, sss = lsims.compute_summary_stats_from_cat_obs(file_name_path=loadfiles_directory, run_number=run_number, bp_rp_min=sample_bprp_min[i], bp_rp_max=sample_bprp_max[i])
+        sss_per_sys, sss = lsims.compute_summary_stats_from_cat_obs(file_name_path=load_dir, run_number=run_number, bp_rp_min=sample_bprp_min[i], bp_rp_max=sample_bprp_max[i])
         ssk_per_sys, ssk = ckep.compute_summary_stats_from_Kepler_catalog(P_min, P_max, radii_min, radii_max, bp_rp_min=sample_bprp_min[i], bp_rp_max=sample_bprp_max[i])
         dists, dists_w = ckep.compute_distances_sim_Kepler(sss_per_sys, sss, ssk_per_sys, ssk, weights_all[sample], dists_include, N_sim, cos_factor=cos_factor, AD_mod=AD_mod)
 
@@ -809,14 +809,14 @@ def load_cat_obs_and_plot_fig_pdf_split_bprp_GF2020_metrics(loadfiles_directory,
 
 
 
-def load_cat_phys_and_plot_fig_pdf_composite_simple(loadfiles_directory, run_number='', n_bins=100, c_sim=['k'], lw=1, afs=12, tfs=12, lfs=12, fig_size=(16,8), save_name='no_name_fig.pdf', save_fig=False):
+def load_cat_phys_and_plot_fig_pdf_composite_simple(load_dir, run_number='', n_bins=100, c_sim=['k'], lw=1, afs=12, tfs=12, lfs=12, fig_size=(16,8), save_name='no_name_fig.pdf', save_fig=False):
 
     #To load and analyze the simulated physical catalogs:
 
-    N_sim, cos_factor, P_min, P_max, radii_min, radii_max = lsims.read_targets_period_radius_bounds(loadfiles_directory + 'periods%s.out' % run_number)
-    param_vals = lsims.read_sim_params(loadfiles_directory + 'periods%s.out' % run_number)
+    N_sim, cos_factor, P_min, P_max, radii_min, radii_max = lsims.read_targets_period_radius_bounds(load_dir + 'periods%s.out' % run_number)
+    param_vals = lsims.read_sim_params(load_dir + 'periods%s.out' % run_number)
 
-    sssp_per_sys, sssp = lsims.compute_summary_stats_from_cat_phys(file_name_path=loadfiles_directory, run_number=run_number)
+    sssp_per_sys, sssp = lsims.compute_summary_stats_from_cat_phys(file_name_path=load_dir, run_number=run_number)
 
 
 
@@ -876,173 +876,269 @@ def load_cat_phys_and_plot_fig_pdf_composite_simple(loadfiles_directory, run_num
 
 
 
-def load_cat_obs_and_plot_figs_multis_gallery(loadfiles_directory, run_number='', x_min=2., x_max=300., n_pl=3, plot_Kep=True, show_title=True, fig_size=(10,10), N_sys_per_plot=150, plot_line_per=10, afs=16, tfs=20, save_name_base='no_name_fig', save_fig=False):
+# Functions for plotting galleries of systems:
 
-    #To load and analyze the simulated and Kepler observed catalogs:
+def plot_figs_systems_gallery(x_per_sys, s_per_sys, x_min=2., x_max=300., log_x=True, s_norm=2., color_by='k', colors_per_sys=None, det_per_sys=None, llabel_per_sys=None, llabel_text=None, llabel_fmt=r'{:.2f}', xticks_custom=None, xlabel_text=r'Period $P$ (days)', title=None, afs=16, tfs=16, lfs=8, sys_per_fig=100, line_every=10, max_figs=5, fig_size=(4,8), fig_lbrt=[0.1,0.1,0.9,0.95], save_name_base='gallery', save_fig=False):
+    """
+    Plot a gallery of systems to visualize their architectures.
 
-    N_sim, cos_factor, P_min, P_max, radii_min, radii_max = lsims.read_targets_period_radius_bounds(loadfiles_directory + 'periods%s.out' % run_number)
-    param_vals = lsims.read_sim_params(loadfiles_directory + 'periods%s.out' % run_number)
+    Parameters
+    ----------
+    x_per_sys : array[float]
+        The properties of the planets in each system to plot on the x-axis. This is a 2-d array (where each row is a separate system), typically of the orbital period (days).
+    s_per_sys : array[float]
+        The properties of the planets in each system to plot as the sizes of the points (which will be proportional to the squared values of `s_per_sys`). This is a 2-d array (where each row is a separate system), typically of the planet radii (Earth radii).
+    x_min : float, default=2.
+        The lower limit for the x-axis.
+    x_max : float, default=300.
+        The upper limit for the x-axis.
+    log_x : bool, default=True
+        Whether to plot the x-axis on a log-scale.
+    s_norm : float, default=2.
+        The normalization for the sizes of the points.
+    color_by : {'k', 'size_order', 'custom'}
+        A string indicating the way the points are colored. The options are: 'k' to color all points in black; 'size_order' to color the points by their size ordering; 'custom' to color the points by custom values given by `colors_per_sys`.
+    colors_per_sys : array[float], optional
+        A 2-d array for coloring the planets in each system, used if `color_by='custom'`.
+    det_per_sys : array[float], optional
+        A 2-d array indicating which planets in each system are detected. If provided, will mark undetected planets with red outlines.
+    llabel_per_sys : array[float], optional
+        A 1-d array for labeling each system.
+    llabel_text : str, optional
+        The label for the labelings of each system.
+    llabel_fmt : str, optional
+        The string formatting of the labels in `llabel_per_sys`.
+    xticks_custom : list or array[float], optional
+        The x-values at which to plot ticks.
+    xlabel_text : str, default=r'Period $P$ (days)'
+        The x-axis label.
+    title : str, optional
+        The title for the figures.
+    afs : int, default=16
+        The axes fontsize.
+    tfs : int, default=16
+        The text fontsize.
+    lfs : int, default=8
+        The labels fontsize.
+    sys_per_fig : int, default=100
+        The number of systems to plot on each figure.
+    line_every : int, default=10
+        The number of systems before a horizontal line is plotted.
+    max_figs : int, default=5
+        The maximum number of figures to generate.
+    fig_size : tuple, default=(4,8)
+        The figure size.
+    fig_lbrt : list[float], default=[0.1, 0.1, 0.9, 0.95]
+        The positions of the (left, bottom, right, and top) margins of the plotting panel (all values must be between 0 and 1).
+    save_name_base : str, default='gallery'
+        The start of the file names for saving each figure.
+    save_fig : bool, default=False
+        Whether to save the figures. If True, will save each figure in the working directory with the file names given by `save_name_base` with an index appended.
+    """
+    assert max_figs < 20 # extra limit to prevent accidentally making too many figures
+    N_sys = len(x_per_sys)
+    assert N_sys == len(s_per_sys)
+    if colors_per_sys is not None:
+        assert N_sys == len(colors_per_sys)
+    if det_per_sys is not None:
+        assert N_sys == len(det_per_sys)
+    if llabel_per_sys is not None:
+        assert N_sys == len(llabel_per_sys)
 
-    sss_per_sys, sss = lsims.compute_summary_stats_from_cat_obs(file_name_path=loadfiles_directory, run_number=run_number)
+    # Set up the number of figures:
+    n_figs = int(np.ceil(N_sys/sys_per_fig))
+    if n_figs > max_figs:
+        print('Warning: too many systems (%s) to plot! Limiting number of figures to %s.' % (N_sys, max_figs))
+        print('If you want to increase the number of systems to plot, increase either `sys_per_fig` or `max_figs`.')
+        n_figs = max_figs
 
-    ssk_per_sys, ssk = ckep.compute_summary_stats_from_Kepler_catalog(P_min, P_max, radii_min, radii_max)
-
-
-
-    # To plot the observed multi-systems by period to visualize the systems (similar to Fig 1 in Fabrycky et al. 2014):
-    N_multi = sum(sss_per_sys['Mtot_obs'] >= n_pl) #number of simulated multi-systems with n_pl or more planets
-    N_multi_confirmed = sum(ssk_per_sys['Mtot_obs'] >= n_pl)
-
-    i_sorted_P0 = np.argsort(sss_per_sys['P_obs'][sss_per_sys['Mtot_obs'] >= n_pl,0]) #array of indices that would sort the arrays of multi-systems by the innermost period of each system
-    i_sorted_P0 = i_sorted_P0[np.sort(np.random.choice(np.arange(len(i_sorted_P0)), int(round(N_multi/(N_sim/ckep.N_Kep))), replace=False))]
-    P_obs_multi = sss_per_sys['P_obs'][sss_per_sys['Mtot_obs'] >= n_pl][i_sorted_P0]
-    radii_obs_multi = sss_per_sys['radii_obs'][sss_per_sys['Mtot_obs'] >= n_pl][i_sorted_P0]
-
-    i_sorted_P0_confirmed = np.argsort(ssk_per_sys['P_obs'][ssk_per_sys['Mtot_obs'] >= n_pl,0]) #array of indices that would sort the arrays of multi-systems by the innermost period of each system
-    P_obs_multi_confirmed = ssk_per_sys['P_obs'][ssk_per_sys['Mtot_obs'] >= n_pl][i_sorted_P0_confirmed]
-    radii_obs_multi_confirmed = ssk_per_sys['radii_obs'][ssk_per_sys['Mtot_obs'] >= n_pl][i_sorted_P0_confirmed]
-
-    n_figs = int(np.ceil(float(len(i_sorted_P0))/N_sys_per_plot))
-    print('Generating %s figures showing systems with %s or more planets...' % (n_figs, n_pl))
+    # Plot each figure:
+    print('Generating %s figures each showing %s systems...' % (n_figs, sys_per_fig))
     for i in range(n_figs):
-        fig = plt.figure(figsize=fig_size)
-        if plot_Kep:
-            cols = 2
-        else:
-            cols = 1
-        plot = GridSpec(1,cols,left=0.05,bottom=0.1,right=0.95,top=0.95,wspace=0,hspace=0.1)
+        ax = setup_fig_single(fig_size, fig_lbrt[0], fig_lbrt[1], fig_lbrt[2], fig_lbrt[3])
+        if title is not None:
+            plt.title(title, fontsize=tfs)
 
-        ax = plt.subplot(plot[0,0])
-        if plot_Kep:
-            if show_title:
-                plt.title('Kepler observed %s+ planet systems' % n_pl, fontsize=tfs)
-            for j in range(len(P_obs_multi_confirmed[i*N_sys_per_plot:(i+1)*N_sys_per_plot])):
-                P_sys = P_obs_multi_confirmed[i*N_sys_per_plot + j]
-                radii_sys = radii_obs_multi_confirmed[i*N_sys_per_plot + j]
-                P_sys = P_sys[P_sys > 0]
-                radii_sys = radii_sys[radii_sys > 0]
-                plt.scatter(P_sys, np.ones(len(P_sys))+j, c=np.argsort(radii_sys), s=2.*radii_sys**2.)
-                if (j+1)%plot_line_per == 0:
-                    plt.axhline(y=j+1, lw=0.05, color='k')
-            plt.gca().set_xscale("log")
-            ax.set_xticks([3,10,30,100,300])
-            ax.get_xaxis().set_major_formatter(matplotlib.ticker.ScalarFormatter())
-            ax.set_yticks([])
-            plt.xlim([x_min, x_max])
-            plt.ylim([0., N_sys_per_plot])
-            plt.xlabel(r'$P$ (days)', fontsize=tfs)
+        for j in range(len(x_per_sys[i*sys_per_fig:(i+1)*sys_per_fig])):
+            x_sys = x_per_sys[i*sys_per_fig + j]
+            s_sys = s_per_sys[i*sys_per_fig + j]
+            x_sys = x_sys[x_sys > 0] # to remove zero-padding
+            s_sys = s_sys[s_sys > 0] # to remove zero-padding
 
-            ax = plt.subplot(plot[0,1])
+            # Set the color scheme for the planets:
+            if color_by == 'size_order':
+                c_sys = np.argsort(s_sys)
+            elif color_by == 'custom' and colors_per_sys is not None:
+                c_sys = colors_per_sys
+            else:
+                c_sys = 'k'
 
-        if show_title:
-            plt.title('Simulated observed %s+ planet systems' % n_pl, fontsize=tfs)
-        for j in range(len(P_obs_multi[i*N_sys_per_plot:(i+1)*N_sys_per_plot])):
-            P_sys = P_obs_multi[i*N_sys_per_plot + j]
-            radii_sys = radii_obs_multi[i*N_sys_per_plot + j]
-            P_sys = P_sys[P_sys > 0]
-            radii_sys = radii_sys[radii_sys > 0]
-            plt.scatter(P_sys, np.ones(len(P_sys))+j, c=np.argsort(radii_sys), s=2.*radii_sys**2.)
-            if (j+1)%plot_line_per == 0:
+            # Plot the planets:
+            if det_per_sys is not None: # plot detected and undetected planets differently
+                det_sys = det_per_sys[i*sys_per_fig + j][x_sys > 0] # still have to remove zero-padding, but according to `x_sys` since `det_sys` contains zeros for undetected planets
+                bools_det = det_sys == 1 # boolean array for indicating detected/undetected planets
+                plt.scatter(x_sys[bools_det], np.ones(np.sum(bools_det))+j, c=c_sys[bools_det], s=s_norm*s_sys[bools_det]**2.) # detected planets
+                plt.scatter(x_sys[~bools_det], np.ones(np.sum([~bools_det]))+j, facecolors=c_sys[~bools_det], edgecolors='r', s=s_norm*s_sys[~bools_det]**2.) # undetected planets marked with red outlines
+            else: # plot all planets the same way if no `det_per_sys` provided
+                plt.scatter(x_sys, np.ones(len(x_sys))+j, c=c_sys, s=s_norm*s_sys**2.)
+
+            # Optional: label each system (e.g. with some quantity)
+            if llabel_per_sys is not None: # to put a left-label on the system
+                plt.text(x=0.9*x_min, y=j+1, s=llabel_fmt.format(llabel_per_sys[i*sys_per_fig + j]), va='center', ha='right', fontsize=lfs)
+            if (j+1)%line_every == 0: # to draw a line through every `line_every` systems
                 plt.axhline(y=j+1, lw=0.05, color='k')
-        plt.gca().set_xscale("log")
+
+        if llabel_per_sys is not None and llabel_text is not None: # to label the left-label
+            plt.text(x=0.9*x_min, y=j+2.5, s=llabel_text, va='center', ha='center', fontsize=lfs)
+        if log_x:
+            plt.gca().set_xscale("log")
         ax.tick_params(axis='both', labelsize=afs)
-        ax.set_xticks([3,10,30,100,300])
-        ax.get_xaxis().set_major_formatter(matplotlib.ticker.ScalarFormatter())
+        if xticks_custom is not None:
+            ax.set_xticks(xticks_custom)
+            ax.get_xaxis().set_major_formatter(matplotlib.ticker.ScalarFormatter())
         ax.set_yticks([])
         plt.xlim([x_min, x_max])
-        plt.ylim([0., N_sys_per_plot])
-        plt.xlabel(r'Period $P$ (days)', fontsize=tfs)
+        plt.ylim([0., sys_per_fig+1])
+        plt.xlabel(xlabel_text, fontsize=tfs)
 
-        save_name = save_name_base + '_%s.png' % i # .pdf
+        save_name = save_name_base + '_%s.pdf' % i # .pdf
         if save_fig:
             plt.savefig(save_name)
             plt.close()
 
-def plot_figs_multis_underlying_gallery(sssp_per_sys, sssp, n_min=1, n_max=20, n_det_min=0, n_det_max=10, x_min=2., x_max=300., fig_size=(10,10), panels_per_fig=1, N_sys_sample=150, N_sys_per_plot=150, plot_line_per=10, colorby='size', mark_det=False, afs=16, tfs=20, save_name_base='no_name_fig', save_fig=False):
+def plot_figs_observed_systems_gallery_from_cat_obs(ss_per_sys, sort_by='inner', n_min=3, n_max=20, x_min=2., x_max=300., log_x=True, s_norm=2., color_by='k', llabel=None, llabel_text=None, llabel_fmt=r'{:.2f}', xticks_custom=None, xlabel_text=r'Period $P$ (days)', title=None, afs=16, tfs=16, lfs=8, max_sys=100, sys_per_fig=100, line_every=10, max_figs=5, fig_size=(4,8), fig_lbrt=[0.1,0.1,0.9,0.95], save_name_base='gallery', save_fig=False):
+    # TODO: add param `plot_p_or_a` : {'p', 'a'}
+    # `sort_by` : {'inner', 'multiplicity', 'stellar_mass', 'none'}
+    # `llabel` : {'multiplicity', 'stellar_mass', 'none'}
+    assert n_min <= n_max
+
+    # Sample the systems passing the multiplicity requirements:
+    i_keep = np.arange(len(ss_per_sys['Mtot_obs']))[(ss_per_sys['Mtot_obs'] >= n_min) & (ss_per_sys['Mtot_obs'] <= n_max)]
+    N_sys = len(i_keep)
+    print('Total number of systems with %s <= m <= %s observed planets: %s' % (n_min, n_max, N_sys))
+    if N_sys > max_sys:
+        print('Total number of systems exceeds `max_sys`; sampling just %s systems.' % max_sys)
+        i_keep = np.random.choice(i_keep, max_sys, replace=False)
+
+    # Set up and sort the arrays of planets to be plotted:
+    x_per_sys = ss_per_sys['P_obs'][i_keep]
+    s_per_sys = ss_per_sys['radii_obs'][i_keep]
+    if sort_by=='inner':
+        i_sort = np.argsort(x_per_sys[:,0])
+    elif sort_by=='multiplicity':
+        i_sort = np.argsort(ss_per_sys['Mtot_obs'][i_keep])
+    elif sort_by=='stellar_mass':
+        i_sort = np.argsort(ss_per_sys['Mstar_obs'][i_keep])
+    else:
+        i_sort = np.arange(N_sys)
+    x_per_sys = x_per_sys[i_sort]
+    s_per_sys = s_per_sys[i_sort]
+
+    # Set up the color scheme for the planets:
+    if color_by=='k' or color_by=='size_order':
+        pass
+    elif color_by=='custom':
+        print('WARNING: other custom coloring is not supported by this function. Defaulting to black points.')
+        color_by = 'k'
+    else:
+        print('WARNING: `color_by` argument does not match any built-in options. Defaulting to black points.')
+        color_by = 'k'
+
+    # Set up the left-labels for each system, if any:
+    if llabel=='multiplicity':
+        llabel_per_sys = ss_per_sys['Mtot_obs'][i_keep][i_sort]
+        llabel_text = 'Mult.' if llabel_text is None else llabel_text # if the user did not set a llabel_text
+        llabel_fmt = r'{:d}'
+    elif llabel=='stellar_mass':
+        llabel_per_sys = ss_per_sys['Mstar_obs'][i_keep][i_sort]
+        llabel_text = r'$M_\star$ ($M_\odot$)' if llabel_text is None else llabel_text # if the user did not set a llabel_text
+    elif llabel is None:
+        llabel_per_sys = None
+    else:
+        print('No key matching "%s" for `llabel` argument; omitting the left-labels for each system.' % llabel)
+
+    # NOTE: `colors_per_sys` and `det_per_sys` for ``plot_figs_systems_gallery()`` are inaccessible/unused by this function
+    plot_figs_systems_gallery(x_per_sys, s_per_sys, x_min=x_min, x_max=x_max, log_x=log_x, s_norm=s_norm, color_by=color_by, llabel_per_sys=llabel_per_sys, llabel_text=llabel_text, llabel_fmt=llabel_fmt, xticks_custom=xticks_custom, xlabel_text=xlabel_text, title=title, afs=afs, tfs=tfs, lfs=lfs, sys_per_fig=sys_per_fig, line_every=line_every, max_figs=max_figs, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name_base=save_name_base, save_fig=save_fig)
+
+def plot_figs_physical_systems_gallery_from_cat_phys(sssp_per_sys, sssp, sort_by='inner', n_min=1, n_max=20, n_det_min=1, n_det_max=10, x_min=2., x_max=300., log_x=True, s_norm=2., color_by='k', mark_det=True, llabel=None, llabel_text=None, llabel_fmt=r'{:.2f}', xticks_custom=None, xlabel_text=r'Period $P$ (days)', title=None, afs=16, tfs=16, max_sys=100, sys_per_fig=100, line_every=10, max_figs=5, fig_size=(4,8), fig_lbrt=[0.1,0.1,0.9,0.95], save_name_base='gallery', save_fig=False):
 
     assert n_min <= n_max
     assert n_det_min <= n_det_max
 
-    # To plot the observed multi-systems by period to visualize the systems (similar to Fig 1 in Fabrycky et al. 2014):
-    # Note: since there are way too many simulated systems to plot them all, we will randomly sample a number of systems to plot
+    # Sample the systems passing the multiplicity requirements:
     n_per_sys = sssp_per_sys['Mtot_all']
     n_det_per_sys = np.sum(sssp_per_sys['det_all'], axis=1)
-    bools_n_range = (n_per_sys >= n_min) & (n_per_sys <= n_max)
-    bools_n_det_range = (n_det_per_sys >= n_det_min) & (n_det_per_sys <= n_det_max)
-    i_keep = np.arange(len(n_per_sys))[bools_n_range & bools_n_det_range]
-    print('Systems that satisfy requirements (%s <= n <= %s and %s <= n_det <= %s): %s' % (n_min, n_max, n_det_min, n_det_max, len(i_keep)))
+    bools_n_inrange = (n_per_sys >= n_min) & (n_per_sys <= n_max)
+    bools_n_det_inrange = (n_det_per_sys >= n_det_min) & (n_det_per_sys <= n_det_max)
+    i_keep = np.arange(len(n_per_sys))[bools_n_inrange & bools_n_det_inrange]
+    N_sys = len(i_keep)
+    print('Total number of systems with %s <= n <= %s physical planets and %s <= m <= %s observed planets: %s' % (n_min, n_max, n_det_min, n_det_max, N_sys))
+    if N_sys > max_sys:
+        print('Total number of systems exceeds `max_sys`; sampling just %s systems.' % max_sys)
+        i_keep = np.random.choice(i_keep, max_sys, replace=False)
 
-    i_keep_sample = np.random.choice(i_keep, N_sys_sample, replace=False) #array of indices of a sample of multi-systems with n_min or more planets
+    # Set up and sort the arrays of planets to be plotted:
+    x_per_sys = sssp_per_sys['P_all'][i_keep]
+    s_per_sys = sssp_per_sys['radii_all'][i_keep]
+    if sort_by=='inner':
+        i_sort = np.argsort(x_per_sys[:,0])
+    elif sort_by=='multiplicity':
+        i_sort = np.argsort(sssp_per_sys['Mtot_all'][i_keep])
+    elif sort_by=='stellar_mass':
+        i_sort = np.argsort(sssp['Mstar_all'][i_keep])
+    else:
+        i_sort = np.arange(N_sys)
+    x_per_sys = x_per_sys[i_sort]
+    s_per_sys = s_per_sys[i_sort]
 
-    i_sorted_P0 = np.argsort(sssp_per_sys['P_all'][i_keep_sample,0]) #array of indices that would sort the arrays of the sample of multi-systems by the innermost period of each system
-    P_sample_multi = sssp_per_sys['P_all'][i_keep_sample][i_sorted_P0]
-    radii_sample_multi = sssp_per_sys['radii_all'][i_keep_sample][i_sorted_P0]
-    clusterids_sample_multi = sssp_per_sys['clusterids_all'][i_keep_sample][i_sorted_P0]
-    det_sample_multi = sssp_per_sys['det_all'][i_keep_sample][i_sorted_P0]
+    # Set up the color scheme for the planets:
+    colors_per_sys = None
+    if color_by=='k' or color_by=='size_order':
+        pass
+    elif color_by=='cluster':
+        colors_per_sys = sssp_per_sys['clusterids_all'][i_keep][i_sort]
+    elif color_by=='mass':
+        colors_per_sys = sssp_per_sys['mass_all'][i_keep][i_sort]
+    elif color_by=='eccentricity':
+        colors_per_sys = sssp_per_sys['e_all'][i_keep][i_sort]
+    elif color_by=='AMD':
+        colors_per_sys = sssp_per_sys['AMD_all'][i_keep][i_sort]
+    else:
+        print('WARNING: `color_by` argument does not match any built-in options. Defaulting to black points.')
+        color_by = 'k'
+    color_by = 'custom' if colors_per_sys is not None else color_by
 
-    n_panels = int(np.ceil(float(N_sys_sample)/N_sys_per_plot))
-    n_figs = int(np.ceil(float(n_panels)/panels_per_fig))
-    print('Generating %s figures...' % n_figs)
-    for h in range(n_figs):
-        fig = plt.figure(figsize=fig_size)
-        plot = GridSpec(1,panels_per_fig,left=0.05,bottom=0.1,right=0.95,top=0.95,wspace=0,hspace=0.1)
-        for i in range(panels_per_fig):
-            ax = plt.subplot(plot[0,i])
-            #plt.title('Simulated sample of intrinsic %s+ planet systems' % n_min, fontsize=tfs)
-            j_start = (h*panels_per_fig + i)*N_sys_per_plot
-            j_end = (h*panels_per_fig + i+1)*N_sys_per_plot
-            for j in range(len(P_sample_multi[j_start:j_end])):
-                P_sys = P_sample_multi[(h*panels_per_fig + i)*N_sys_per_plot + j]
-                radii_sys = radii_sample_multi[(h*panels_per_fig + i)*N_sys_per_plot + j]
-                clusterids_sys = clusterids_sample_multi[(h*panels_per_fig + i)*N_sys_per_plot + j]
-                det_sys = det_sample_multi[(h*panels_per_fig + i)*N_sys_per_plot + j]
+    det_per_sys = sssp_per_sys['det_all'] if mark_det else None
 
-                det_sys = det_sys[P_sys > 0]
-                P_sys = P_sys[P_sys > 0]
-                radii_sys = radii_sys[radii_sys > 0]
-                clusterids_sys = clusterids_sys[clusterids_sys > 0]
-                if colorby == 'size':
-                    colors = np.argsort(radii_sys)
-                elif colorby == 'clusterid':
-                    colors = clusterids_sys
-                else:
-                    print('No match for colorby argument; defaulting to coloring by size ordering.')
-                    colors = np.argsort(radii_sys)
+    # Set up the left-labels for each system, if any:
+    if llabel=='multiplicity':
+        llabel_per_sys = sssp_per_sys['Mtot_all'][i_keep][i_sort]
+        llabel_text = 'Mult.' if llabel_text is None else llabel_text # if the user did not set a llabel_text
+        llabel_fmt = r'{:d}'
+    elif llabel=='stellar_mass':
+        llabel_per_sys = sssp['Mstar_all'][i_keep][i_sort]
+        llabel_text = r'$M_\star$ ($M_\odot$)' if llabel_text is None else llabel_text # if the user did not set a llabel_text
+    elif llabel is None:
+        llabel_per_sys = None
+    else:
+        print('No key matching "%s" for `llabel` argument; omitting the left-labels for each system.' % llabel)
 
-                if mark_det:
-                    plt.scatter(P_sys[det_sys == 1], np.ones(np.sum(det_sys == 1))+j, c=colors[det_sys == 1], s=2.*radii_sys[det_sys == 1]**2.)
-                    plt.scatter(P_sys[det_sys == 0], np.ones(np.sum(det_sys == 0))+j, facecolors='none', edgecolors='k', s=2.*radii_sys[det_sys == 0]**2.)
-                else:
-                    plt.scatter(P_sys, np.ones(len(P_sys))+j, c=colors, s=2.*radii_sys**2.)
-
-                if (j+1)%plot_line_per == 0:
-                    plt.axhline(y=j+1, lw=0.05, color='k')
-            plt.gca().set_xscale("log")
-            ax.tick_params(axis='both', labelsize=afs)
-            ax.set_xticks([3,10,30,100,300])
-            ax.get_xaxis().set_major_formatter(matplotlib.ticker.ScalarFormatter())
-            ax.set_yticks([])
-            plt.xlim([x_min, x_max])
-            plt.ylim([0., N_sys_per_plot])
-            plt.xlabel(r'Period $P$ (days)', fontsize=tfs)
-
-        save_name = save_name_base + '_%s.png' % i
-        if save_fig:
-            plt.savefig(save_name)
-            plt.close()
+    plot_figs_systems_gallery(x_per_sys, s_per_sys, x_min=x_min, x_max=x_max, log_x=log_x, s_norm=s_norm, color_by=color_by, colors_per_sys=colors_per_sys, det_per_sys=det_per_sys, llabel_per_sys=llabel_per_sys, llabel_text=llabel_text, llabel_fmt=llabel_fmt, xticks_custom=xticks_custom, xlabel_text=xlabel_text, title=title, afs=afs, tfs=tfs, lfs=lfs, sys_per_fig=sys_per_fig, line_every=line_every, max_figs=max_figs, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name_base=save_name_base, save_fig=save_fig)
 
 
 
 
 
-def load_cat_obs_and_plot_fig_period_radius(loadfiles_directory, run_number='', lw=1, save_name='no_name_fig.pdf', save_fig=False):
+# Functions for plotting period-radius distributions and grids:
+
+def load_cat_obs_and_plot_fig_period_radius(load_dir, run_number='', lw=1, save_name='no_name_fig.pdf', save_fig=False):
 
     #To load and analyze the simulated and Kepler observed catalogs:
 
-    N_sim, cos_factor, P_min, P_max, radii_min, radii_max = lsims.read_targets_period_radius_bounds(loadfiles_directory + 'periods%s.out' % run_number)
-    param_vals = lsims.read_sim_params(loadfiles_directory + 'periods%s.out' % run_number)
+    N_sim, cos_factor, P_min, P_max, radii_min, radii_max = lsims.read_targets_period_radius_bounds(load_dir + 'periods%s.out' % run_number)
+    param_vals = lsims.read_sim_params(load_dir + 'periods%s.out' % run_number)
 
-    sss_per_sys, sss = lsims.compute_summary_stats_from_cat_obs(file_name_path=loadfiles_directory, run_number=run_number)
+    sss_per_sys, sss = lsims.compute_summary_stats_from_cat_obs(file_name_path=load_dir, run_number=run_number)
 
     ssk_per_sys, ssk = ckep.compute_summary_stats_from_Kepler_catalog(P_min, P_max, radii_min, radii_max)
 
@@ -1112,8 +1208,6 @@ def load_cat_obs_and_plot_fig_period_radius(loadfiles_directory, run_number='', 
     if save_fig:
         plt.savefig(save_name)
         plt.close()
-
-
 
 
 
@@ -1263,6 +1357,8 @@ def plot_fig_period_radius_fraction_multis_higher(sss_per_sys, sss, P_bins, R_bi
 
 
 
+
+# Functions for making various other plots:
 
 def compute_pratio_in_out_and_plot_fig(p_per_sys_all, colors=['k'], labels=['Input'], xymax=50., xyticks_custom=None, afs=12, tfs=12, lfs=12, save_name='no_name_fig.pdf', save_fig=False):
 

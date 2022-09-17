@@ -252,9 +252,6 @@ for i in range(1,runs+1):
     f_pos_monotonicity.append(f_pos_M)
     f_low_gap_complexity.append(f_low_C)
 
-    # To also plot a gallery of systems for making a GIF:
-    #load_cat_obs_and_plot_figs_multis_gallery(loadfiles_directory, run_number=run_number, n_pl=3, plot_Kep=False, show_title=False, fig_size=(6,8), N_sys_per_plot=100, plot_line_per=101, save_name_base=savefigures_directory + subdirectory + model_name + '_%s_observed_multis' % run_number, save_fig=False)
-
     # To plot the fraction of planets in observed multis on a period-radius diagram:
     #P_bins = np.logspace(np.log10(P_min), np.log10(P_max), 6+1)
     #R_bins = np.logspace(np.log10(radii_min), np.log10(radii_max), 6+1)

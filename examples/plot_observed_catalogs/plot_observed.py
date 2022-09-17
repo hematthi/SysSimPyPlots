@@ -215,17 +215,6 @@ plt.show()
 
 
 
-##### To plot the observed multi-systems by period to visualize the systems (similar to Fig 1 in Fabrycky et al. 2014):
-
-#load_cat_obs_and_plot_figs_multis_gallery(loadfiles_directory, run_number=run_number, n_pl=3, plot_Kep=True, show_title=False, fig_size=(8,8), N_sys_per_plot=140, plot_line_per=1, tfs=20, save_name_base=savefigures_directory + subdirectory + model_name + '_multis', save_fig=savefigures)
-#load_cat_obs_and_plot_figs_multis_gallery(loadfiles_directory, run_number=run_number, n_pl=3, plot_Kep=False, show_title=False, fig_size=(6,8), N_sys_per_plot=140, plot_line_per=1, tfs=20, save_name_base=savefigures_directory + subdirectory + model_name + '_multis', save_fig=savefigures)
-plt.show()
-#plt.close()
-
-
-
-
-
 ##### To plot the inner vs. outer period ratios of triplets (in 3+ systems) (similar to Fig 6 in Zhu et al. 2019 and Fig 7 in Weiss et al. 2018a):
 '''
 p_per_sys_subset = sss_per_sys['P_obs'][np.random.choice(np.arange(len(sss_per_sys['P_obs'])), int(round(len(sss_per_sys['P_obs'])/(N_sim/N_Kep))), replace=False)]

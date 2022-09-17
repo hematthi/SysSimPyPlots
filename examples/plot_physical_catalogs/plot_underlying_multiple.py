@@ -306,16 +306,6 @@ plt.close()
 
 
 
-##### To plot galleries of a sample of intrinsic multi-planet systems:
-
-#plot_figs_multis_underlying_gallery(sssp_per_sys1, sssp1, n_pl=8, fig_size=(16,8), panels_per_fig=4, N_sys_sample=400, N_sys_per_plot=50, plot_line_per=1, colorby='clusterid', tfs=20, save_name_base=savefigures_directory + subdirectory + save_name + '_underlying_multis', save_fig=False)
-
-#plot_figs_multis_underlying_gallery(sssp_per_sys1, sssp1, n_pl=3, fig_size=(8,16), panels_per_fig=1, N_sys_sample=100, N_sys_per_plot=100, plot_line_per=10, colorby='clusterid', tfs=20, save_name_base=savefigures_directory + subdirectory + save_name + '_underlying_multis', save_fig=False)
-
-
-
-
-
 ##### To plot eccentricity vs mutual inclinations, with attached histograms:
 
 persys_1d_1, perpl_1d_1 = convert_underlying_properties_per_planet_1d(sssp_per_sys1, sssp1)

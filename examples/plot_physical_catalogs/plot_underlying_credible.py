@@ -254,9 +254,6 @@ for i in range(runs):
         e_med_n_all[i,j] = np.median(e_n)
         im_med_n_all[i,j] = np.median(im_n)
 
-    # To also plot a gallery of systems for making a GIF:
-    #plot_figs_multis_underlying_gallery(sssp_per_sys_i, sssp_i, n_min=3, n_det_min=0, fig_size=(6,8), panels_per_fig=1, N_sys_sample=100, N_sys_per_plot=100, plot_line_per=101, save_name_base=savefigures_directory + subdirectory + model_name + '_%s_underlying_systems' % run_number, save_fig=False)
-
 Mtot_counts_all = np.array(Mtot_counts_all)
 Mtot_earth_counts_all = np.array(Mtot_earth_counts_all)
 mean_pl_all = np.array(mean_pl_all)

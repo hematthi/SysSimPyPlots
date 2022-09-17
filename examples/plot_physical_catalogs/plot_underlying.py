@@ -139,12 +139,14 @@ plt.close()
 
 ##### To plot the underlying multi-systems by period to visualize the systems (similar to Fig 1 in Fabrycky et al. 2014, but for ALL the planets):
 ##### Note: since there are way too many simulated systems to plot them all, we will randomly sample a number of systems to plot
+##### OUTDATED/DEPRECATED FUNCTION! REPLACE WITH CALLS TO NEW FUNCTION #####
+'''
 #plot_figs_multis_underlying_gallery(sssp_per_sys, sssp, n_min=3, x_min=2., x_max=500., fig_size=(12,12), N_sys_sample=100, N_sys_per_plot=100, colorby='clusterid', tfs=tfs, save_name_base=savefigures_directory + subdirectory + model_name + '_underlying_systems_gallery', save_fig=False)
 #plot_figs_multis_underlying_gallery(sssp_per_sys, sssp, n_min=3, n_det_min=1, x_min=2., x_max=300., fig_size=(5,12), panels_per_fig=1, N_sys_sample=100, N_sys_per_plot=100, plot_line_per=1, colorby='clusterid', mark_det=True, tfs=tfs, save_name_base=savefigures_directory + subdirectory + model_name + '_underlying_systems_gallery', save_fig=False)
 plot_figs_multis_underlying_gallery(sssp_per_sys, sssp, n_min=3, n_det_min=1, x_min=2., x_max=300., fig_size=(6,8), panels_per_fig=1, N_sys_sample=140, N_sys_per_plot=140, plot_line_per=200, tfs=tfs, save_name_base=savefigures_directory + subdirectory + model_name + '_underlying_systems_gallery', save_fig=False)
 
 #plot_figs_multis_underlying_gallery(sssp_per_sys, sssp, n_min=3, n_det_min=1, x_min=2., x_max=300., fig_size=(16,12), panels_per_fig=10, N_sys_sample=1000, N_sys_per_plot=100, plot_line_per=1, colorby='clusterid', mark_det=True, tfs=tfs, save_name_base=savefigures_directory + subdirectory + model_name + '_underlying_systems_gallery', save_fig=False)
-
+'''
 
 
 
