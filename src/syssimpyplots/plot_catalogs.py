@@ -1026,6 +1026,7 @@ def plot_figs_observed_systems_gallery_from_cat_obs(ss_per_sys, sort_by='inner',
     llabel : {'multiplicity', 'stellar_mass'}, optional
         The property to left-label each system with. Default is None (no left-labels).
 
+
     The remaining parameters are described in the documentation for the function  :py:func:`syssimpyplots.plot_catalogs.plot_figs_systems_gallery`.
     """
     # TODO: add param `plot_p_or_a` : {'p', 'a'}
@@ -1099,6 +1100,7 @@ def plot_figs_physical_systems_gallery_from_cat_phys(sssp_per_sys, sssp, sort_by
         The property to left-label each system with.
     mark_det : bool, default=True
         Whether to mark the detected and undetected planets separately.
+
 
     The remaining parameters are described in the documentation for the function  :py:func:`syssimpyplots.plot_catalogs.plot_figs_systems_gallery`.
 
