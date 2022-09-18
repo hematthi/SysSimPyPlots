@@ -83,7 +83,7 @@ You can also sort by planet multiplicity instead of inner-most period by setting
 Plotting detected/undetected planets
 ------------------------------------
 
-There is a separate function for plotting galleries of physical systems, :py:func:``plot_figs_physical_systems_gallery_from_cat_phys <syssimpyplots.plot_catalogs.plot_figs_physical_systems_gallery_from_cat_phys>``. It provides much of the same functionality and uses mostly the same parameters, except it allows you to filter systems based on both the intrinsic multiplicity (``n_min`` and ``n_max``) as well as the observed multiplicity (``n_det_min`` and ``n_det_max``). It also contains more options for ``color_by``, and has a ``mark_det`` boolean parameter for whether or not to indicate the detected and undetected planets. The following examples showcase some of these options:
+There is a separate function for plotting galleries of physical systems, :py:func:`plot_figs_physical_systems_gallery_from_cat_phys <syssimpyplots.plot_catalogs.plot_figs_physical_systems_gallery_from_cat_phys>`. It provides much of the same functionality and uses mostly the same parameters, except it allows you to filter systems based on both the intrinsic multiplicity (using ``n_min`` and ``n_max``) as well as the observed multiplicity (using ``n_det_min`` and ``n_det_max``). It also contains more options for ``color_by``, and has a ``mark_det`` boolean parameter for whether or not to indicate the detected and undetected planets. The following examples showcase some of these options:
 
 .. code-block:: python
 
@@ -95,13 +95,13 @@ There is a separate function for plotting galleries of physical systems, :py:fun
 
    plt.show()
 
-|gallery_phys1| Examples of physical systems |gallery_phys2|
+|gallery_phys1| |gallery_phys2|
 
 .. |gallery_phys1| image:: images/example_gallery_phys_colors_clusterid.png
-   :scale: 100%
+   :scale: 75%
 
 .. |gallery_phys2| image:: images/example_gallery_phys_markdet.png
-   :scale: 100%
+   :scale: 75%
 
 In the left figure, we selected only systems with at least five planets (regardless of whether or not any planets are detected) and colored them by their cluster id's, so planets with the same color were drawn from the same "cluster".
 
