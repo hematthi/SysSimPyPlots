@@ -27,6 +27,7 @@ Contents
    loading
    histograms
    distances
+   galleries
    api
 
 
