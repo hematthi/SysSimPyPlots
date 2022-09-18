@@ -48,7 +48,7 @@ For continuous distributions (such as the period distribution), the :py:func:`pl
 
 .. tip::
 
-   The two functions above are actually wrappers of the functions :py:func:`plot_panel_counts_hist_simple <syssimpyplots.plot_catalogs.plot_panel_counts_hist_simple>` and :py:func:`plot_panel_pdf_simple syssimpyplots.plot_catalogs.plot_panel_pdf_simple`, respectively, which do most of the work and create a single panel (requiring an axes subplot object to plot on) instead of a figure. These are useful for making multi-panel figures!
+   The two functions above are actually wrappers of the functions :py:func:`plot_panel_counts_hist_simple <syssimpyplots.plot_catalogs.plot_panel_counts_hist_simple>` and :py:func:`plot_panel_pdf_simple <syssimpyplots.plot_catalogs.plot_panel_pdf_simple>`, respectively, which do most of the work and create a single panel (requiring an axes subplot object to plot on) instead of a figure. These are useful for making multi-panel figures!
 
 
 Plotting multiple catalogs
