@@ -962,25 +962,26 @@ def plot_figs_systems_gallery(x_per_sys, s_per_sys, x_min=2., x_max=300., log_x=
             plt.title(title, fontsize=tfs)
 
         for j in range(len(x_per_sys[i*sys_per_fig:(i+1)*sys_per_fig])):
-            x_sys = x_per_sys[i*sys_per_fig + j]
+            x_sys_padded = x_per_sys[i*sys_per_fig + j]
+            x_sys = np.copy(x_sys_padded)[x_sys_padded > 0] # to remove zero-padding
             s_sys = s_per_sys[i*sys_per_fig + j]
-            x_sys = x_sys[x_sys > 0] # to remove zero-padding
             s_sys = s_sys[s_sys > 0] # to remove zero-padding
 
             # Set the color scheme for the planets:
             if color_by == 'size_order':
                 c_sys = np.argsort(s_sys)
             elif color_by == 'custom' and colors_per_sys is not None:
-                c_sys = colors_per_sys
+                c_sys = colors_per_sys[i*sys_per_fig + j]
+                c_sys = c_sys[x_sys_padded > 0]
             else:
-                c_sys = 'k'
+                c_sys = np.array(['k']*len(x_sys))
 
             # Plot the planets:
             if det_per_sys is not None: # plot detected and undetected planets differently
-                det_sys = det_per_sys[i*sys_per_fig + j][x_sys > 0] # still have to remove zero-padding, but according to `x_sys` since `det_sys` contains zeros for undetected planets
+                det_sys = det_per_sys[i*sys_per_fig + j][x_sys_padded > 0] # still have to remove zero-padding, but according to `x_sys` since `det_sys` contains zeros for undetected planets
                 bools_det = det_sys == 1 # boolean array for indicating detected/undetected planets
                 plt.scatter(x_sys[bools_det], np.ones(np.sum(bools_det))+j, c=c_sys[bools_det], s=s_norm*s_sys[bools_det]**2.) # detected planets
-                plt.scatter(x_sys[~bools_det], np.ones(np.sum([~bools_det]))+j, facecolors=c_sys[~bools_det], edgecolors='r', s=s_norm*s_sys[~bools_det]**2.) # undetected planets marked with red outlines
+                plt.scatter(x_sys[~bools_det], np.ones(np.sum([~bools_det]))+j, c=c_sys[~bools_det], edgecolors='r', s=s_norm*s_sys[~bools_det]**2.) # undetected planets marked with red outlines
             else: # plot all planets the same way if no `det_per_sys` provided
                 plt.scatter(x_sys, np.ones(len(x_sys))+j, c=c_sys, s=s_norm*s_sys**2.)
 
@@ -1082,7 +1083,7 @@ def plot_figs_observed_systems_gallery_from_cat_obs(ss_per_sys, sort_by='inner',
     # NOTE: `colors_per_sys` and `det_per_sys` for ``plot_figs_systems_gallery()`` are inaccessible/unused by this function
     plot_figs_systems_gallery(x_per_sys, s_per_sys, x_min=x_min, x_max=x_max, log_x=log_x, s_norm=s_norm, color_by=color_by, llabel_per_sys=llabel_per_sys, llabel_text=llabel_text, llabel_fmt=llabel_fmt, xticks_custom=xticks_custom, xlabel_text=xlabel_text, title=title, afs=afs, tfs=tfs, lfs=lfs, sys_per_fig=sys_per_fig, line_every=line_every, max_figs=max_figs, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name_base=save_name_base, save_fmt=save_fmt, save_fig=save_fig)
 
-def plot_figs_physical_systems_gallery_from_cat_phys(sssp_per_sys, sssp, sort_by='inner', n_min=1, n_max=20, n_det_min=1, n_det_max=10, x_min=2., x_max=300., log_x=True, s_norm=2., color_by='k', mark_det=True, llabel=None, llabel_text=None, llabel_fmt=r'{:.2f}', xticks_custom=None, xlabel_text=r'Period $P$ (days)', title=None, afs=16, tfs=16, max_sys=100, sys_per_fig=100, line_every=1, max_figs=5, fig_size=(4,8), fig_lbrt=[0.1,0.1,0.9,0.95], save_name_base='gallery', save_fmt='png', save_fig=False):
+def plot_figs_physical_systems_gallery_from_cat_phys(sssp_per_sys, sssp, sort_by='inner', n_min=1, n_max=20, n_det_min=1, n_det_max=10, x_min=2., x_max=300., log_x=True, s_norm=2., color_by='k', mark_det=True, llabel=None, llabel_text=None, llabel_fmt=r'{:.2f}', xticks_custom=None, xlabel_text=r'Period $P$ (days)', title=None, afs=16, tfs=16, lfs=8, max_sys=100, sys_per_fig=100, line_every=1, max_figs=5, fig_size=(4,8), fig_lbrt=[0.1,0.1,0.9,0.95], save_name_base='gallery', save_fmt='png', save_fig=False):
     """
     Plot a gallery of systems from a physical catalog.
 
@@ -1154,7 +1155,7 @@ def plot_figs_physical_systems_gallery_from_cat_phys(sssp_per_sys, sssp, sort_by
         color_by = 'k'
     color_by = 'custom' if colors_per_sys is not None else color_by
 
-    det_per_sys = sssp_per_sys['det_all'] if mark_det else None
+    det_per_sys = sssp_per_sys['det_all'][i_keep][i_sort] if mark_det else None
 
     # Set up the left-labels for each system, if any:
     if llabel=='multiplicity':

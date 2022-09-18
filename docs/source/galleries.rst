@@ -21,6 +21,10 @@ Here is a simple example using our function :py:func:`plot_figs_observed_systems
 
    N_sim, cos_factor, P_min, P_max, radii_min, radii_max = read_targets_period_radius_bounds(load_dir + 'periods.out')
 
+   # Load a simulated physical catalog:
+   sssp_per_sys, sssp = compute_summary_stats_from_cat_phys(file_name_path=load_dir, load_full_tables=True, match_observed=True)
+
+   # Load simulated and Kepler observed catalogs:
    sss_per_sys, sss = compute_summary_stats_from_cat_obs(file_name_path=load_dir)
    ssk_per_sys, ssk = compute_summary_stats_from_Kepler_catalog(P_min, P_max, radii_min, radii_max)
 
@@ -31,7 +35,7 @@ Here is a simple example using our function :py:func:`plot_figs_observed_systems
    plt.show()
 
 .. image:: images/example_gallery.png
-   :scale: 50 %
+   :scale: 100 %
    :alt: Example gallery of 3+ systems
    :align: center
 
@@ -50,7 +54,7 @@ The ``color_by`` parameter allows you to choose from a number of color schemes. 
    plt.show()
 
 .. image:: images/example_gallery_colors_size.png
-   :scale: 50 %
+   :scale: 100 %
    :alt: Example gallery coloring by size order
    :align: center
 
@@ -67,10 +71,38 @@ You can also sort by planet multiplicity instead of inner-most period by setting
    plt.show()
 
 .. image:: images/example_gallery_sort_label_mult.png
-   :scale: 50 %
+   :scale: 100 %
    :alt: Example gallery sorted and labeled by multiplicity
    :align: center
 
 .. tip::
 
    The label does not have to be the same as or even related to the ``sort_by`` parameter, but it's useful for checking that it has actually sorted things correctly.
+
+
+Plotting detected/undetected planets
+------------------------------------
+
+There is a separate function for plotting galleries of physical systems, :py:func:``plot_figs_physical_systems_gallery_from_cat_phys <syssimpyplots.plot_catalogs.plot_figs_physical_systems_gallery_from_cat_phys>``. It provides much of the same functionality and uses mostly the same parameters, except it allows you to filter systems based on both the intrinsic multiplicity (``n_min`` and ``n_max``) as well as the observed multiplicity (``n_det_min`` and ``n_det_max``). It also contains more options for ``color_by``, and has a ``mark_det`` boolean parameter for whether or not to indicate the detected and undetected planets. The following examples showcase some of these options:
+
+.. code-block:: python
+
+   # Plot a gallery of physical systems with at least 5 planets:
+   plot_figs_physical_systems_gallery_from_cat_phys(sssp_per_sys, sssp, sort_by='inner', n_min=5, n_det_min=0, color_by='cluster', mark_det=False, llabel='multiplicity', llabel_text=r'$n_{\rm pl}$', max_sys=50, sys_per_fig=50)
+
+   # Plot a gallery of physical systems with at least two detected planets:
+   plot_figs_physical_systems_gallery_from_cat_phys(sssp_per_sys, sssp, sort_by='inner', n_det_min=2, color_by='k', mark_det=True, llabel='multiplicity', llabel_text=r'$n_{\rm pl}$', max_sys=50, sys_per_fig=50)
+
+   plt.show()
+
+|gallery_phys1| Examples of physical systems |gallery_phys2|
+
+.. |gallery_phys1| image:: images/example_gallery_phys_colors_clusterid.png
+   :scale: 100%
+
+.. |gallery_phys2| image:: images/example_gallery_phys_markdet.png
+   :scale: 100%
+
+In the left figure, we selected only systems with at least five planets (regardless of whether or not any planets are detected) and colored them by their cluster id's, so planets with the same color were drawn from the same "cluster".
+
+In the right figure, we selected systems with at least two detected planets and marked all undetected planets with red outlines using the ``mark_det=True`` option.
