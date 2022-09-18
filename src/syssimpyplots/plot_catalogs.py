@@ -878,7 +878,7 @@ def load_cat_phys_and_plot_fig_pdf_composite_simple(load_dir, run_number='', n_b
 
 # Functions for plotting galleries of systems:
 
-def plot_figs_systems_gallery(x_per_sys, s_per_sys, x_min=2., x_max=300., log_x=True, s_norm=2., color_by='k', colors_per_sys=None, det_per_sys=None, llabel_per_sys=None, llabel_text=None, llabel_fmt=r'{:.2f}', xticks_custom=None, xlabel_text=r'Period $P$ (days)', title=None, afs=16, tfs=16, lfs=8, sys_per_fig=100, line_every=10, max_figs=5, fig_size=(4,8), fig_lbrt=[0.1,0.1,0.9,0.95], save_name_base='gallery', save_fig=False):
+def plot_figs_systems_gallery(x_per_sys, s_per_sys, x_min=2., x_max=300., log_x=True, s_norm=2., color_by='k', colors_per_sys=None, det_per_sys=None, llabel_per_sys=None, llabel_text=None, llabel_fmt=r'{:.2f}', xticks_custom=None, xlabel_text=r'Period $P$ (days)', title=None, afs=16, tfs=16, lfs=8, sys_per_fig=100, line_every=1, max_figs=5, fig_size=(4,8), fig_lbrt=[0.1,0.1,0.9,0.95], save_name_base='gallery', save_fmt='png', save_fig=False):
     """
     Plot a gallery of systems to visualize their architectures.
 
@@ -922,7 +922,7 @@ def plot_figs_systems_gallery(x_per_sys, s_per_sys, x_min=2., x_max=300., log_x=
         The labels fontsize.
     sys_per_fig : int, default=100
         The number of systems to plot on each figure.
-    line_every : int, default=10
+    line_every : int, default=1
         The number of systems before a horizontal line is plotted.
     max_figs : int, default=5
         The maximum number of figures to generate.
@@ -932,6 +932,8 @@ def plot_figs_systems_gallery(x_per_sys, s_per_sys, x_min=2., x_max=300., log_x=
         The positions of the (left, bottom, right, and top) margins of the plotting panel (all values must be between 0 and 1).
     save_name_base : str, default='gallery'
         The start of the file names for saving each figure.
+    save_fmt : str, default='png'
+        The file format for saving each figure (e.g., 'png', 'pdf', 'eps', 'jpg', etc.).
     save_fig : bool, default=False
         Whether to save the figures. If True, will save each figure in the working directory with the file names given by `save_name_base` with an index appended.
     """
@@ -1001,12 +1003,31 @@ def plot_figs_systems_gallery(x_per_sys, s_per_sys, x_min=2., x_max=300., log_x=
         plt.ylim([0., sys_per_fig+1])
         plt.xlabel(xlabel_text, fontsize=tfs)
 
-        save_name = save_name_base + '_%s.pdf' % i # .pdf
+        if n_figs==1:
+            save_name = save_name_base + '.%s' % save_fmt
+        else:
+            save_name = save_name_base + '_%s.%s' % (i, save_fmt)
         if save_fig:
             plt.savefig(save_name)
             plt.close()
 
-def plot_figs_observed_systems_gallery_from_cat_obs(ss_per_sys, sort_by='inner', n_min=3, n_max=20, x_min=2., x_max=300., log_x=True, s_norm=2., color_by='k', llabel=None, llabel_text=None, llabel_fmt=r'{:.2f}', xticks_custom=None, xlabel_text=r'Period $P$ (days)', title=None, afs=16, tfs=16, lfs=8, max_sys=100, sys_per_fig=100, line_every=10, max_figs=5, fig_size=(4,8), fig_lbrt=[0.1,0.1,0.9,0.95], save_name_base='gallery', save_fig=False):
+def plot_figs_observed_systems_gallery_from_cat_obs(ss_per_sys, sort_by='inner', n_min=3, n_max=20, x_min=2., x_max=300., log_x=True, s_norm=2., color_by='k', llabel=None, llabel_text=None, llabel_fmt=r'{:.2f}', xticks_custom=None, xlabel_text=r'Period $P$ (days)', title=None, afs=16, tfs=16, lfs=8, max_sys=100, sys_per_fig=100, line_every=1, max_figs=5, fig_size=(4,8), fig_lbrt=[0.1,0.1,0.9,0.95], save_name_base='gallery', save_fmt='png', save_fig=False):
+    """
+    Plot a gallery of systems from an observed catalog.
+
+    Filters, samples, and sorts the systems before plotting them using the function :py:func:`syssimpyplots.plot_catalogs.plot_figs_systems_gallery`.
+
+    Parameters
+    ----------
+    ss_per_sys : dict
+        The dictionary containing the planetary and stellar properties for each system in an observed catalog (2-d and 1-d arrays). Can be a simulated catalog (i.e. returned by :py:func:`syssimpyplots.load_sims.compute_summary_stats_from_cat_obs`) or a Kepler catalog (i.e. returned by :py:func:`syssimpyplots.compare_kepler.compute_summary_stats_from_Kepler_catalog`).
+    sort_by : {'inner', 'multiplicity', 'stellar_mass'}, optional
+        The property to sort the systems by. Default is None (no sorting).
+    llabel : {'multiplicity', 'stellar_mass'}, optional
+        The property to left-label each system with. Default is None (no left-labels).
+
+    The remaining parameters are described in the documentation for the function  :py:func:`syssimpyplots.plot_catalogs.plot_figs_systems_gallery`.
+    """
     # TODO: add param `plot_p_or_a` : {'p', 'a'}
     # `sort_by` : {'inner', 'multiplicity', 'stellar_mass', 'none'}
     # `llabel` : {'multiplicity', 'stellar_mass', 'none'}
@@ -1058,10 +1079,33 @@ def plot_figs_observed_systems_gallery_from_cat_obs(ss_per_sys, sort_by='inner',
         print('No key matching "%s" for `llabel` argument; omitting the left-labels for each system.' % llabel)
 
     # NOTE: `colors_per_sys` and `det_per_sys` for ``plot_figs_systems_gallery()`` are inaccessible/unused by this function
-    plot_figs_systems_gallery(x_per_sys, s_per_sys, x_min=x_min, x_max=x_max, log_x=log_x, s_norm=s_norm, color_by=color_by, llabel_per_sys=llabel_per_sys, llabel_text=llabel_text, llabel_fmt=llabel_fmt, xticks_custom=xticks_custom, xlabel_text=xlabel_text, title=title, afs=afs, tfs=tfs, lfs=lfs, sys_per_fig=sys_per_fig, line_every=line_every, max_figs=max_figs, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name_base=save_name_base, save_fig=save_fig)
+    plot_figs_systems_gallery(x_per_sys, s_per_sys, x_min=x_min, x_max=x_max, log_x=log_x, s_norm=s_norm, color_by=color_by, llabel_per_sys=llabel_per_sys, llabel_text=llabel_text, llabel_fmt=llabel_fmt, xticks_custom=xticks_custom, xlabel_text=xlabel_text, title=title, afs=afs, tfs=tfs, lfs=lfs, sys_per_fig=sys_per_fig, line_every=line_every, max_figs=max_figs, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name_base=save_name_base, save_fmt=save_fmt, save_fig=save_fig)
 
-def plot_figs_physical_systems_gallery_from_cat_phys(sssp_per_sys, sssp, sort_by='inner', n_min=1, n_max=20, n_det_min=1, n_det_max=10, x_min=2., x_max=300., log_x=True, s_norm=2., color_by='k', mark_det=True, llabel=None, llabel_text=None, llabel_fmt=r'{:.2f}', xticks_custom=None, xlabel_text=r'Period $P$ (days)', title=None, afs=16, tfs=16, max_sys=100, sys_per_fig=100, line_every=10, max_figs=5, fig_size=(4,8), fig_lbrt=[0.1,0.1,0.9,0.95], save_name_base='gallery', save_fig=False):
+def plot_figs_physical_systems_gallery_from_cat_phys(sssp_per_sys, sssp, sort_by='inner', n_min=1, n_max=20, n_det_min=1, n_det_max=10, x_min=2., x_max=300., log_x=True, s_norm=2., color_by='k', mark_det=True, llabel=None, llabel_text=None, llabel_fmt=r'{:.2f}', xticks_custom=None, xlabel_text=r'Period $P$ (days)', title=None, afs=16, tfs=16, max_sys=100, sys_per_fig=100, line_every=1, max_figs=5, fig_size=(4,8), fig_lbrt=[0.1,0.1,0.9,0.95], save_name_base='gallery', save_fmt='png', save_fig=False):
+    """
+    Plot a gallery of systems from a physical catalog.
 
+    Filters, samples, and sorts the systems before plotting them using the function :py:func:`syssimpyplots.plot_catalogs.plot_figs_systems_gallery`.
+
+    Parameters
+    ----------
+    sssp_per_sys : dict
+        The dictionary containing the planetary and stellar properties for each system in an physical catalog (2-d and 1-d arrays), such as one returned by :py:func:`syssimpyplots.load_sims.compute_summary_stats_from_cat_phys`).
+    sort_by : {'inner', 'multiplicity', 'stellar_mass'}, optional
+        The property to sort the systems by. Default is None (no sorting).
+    color_by : {'k', 'size_order', 'cluster', 'mass', 'eccentricity', 'AMD'}
+        The way in which the planets are colored.
+    llabel : {'multiplicity', 'stellar_mass'}, optional
+        The property to left-label each system with.
+    mark_det : bool, default=True
+        Whether to mark the detected and undetected planets separately.
+
+    The remaining parameters are described in the documentation for the function  :py:func:`syssimpyplots.plot_catalogs.plot_figs_systems_gallery`.
+
+    Note
+    ----
+    The `mark_det=True` option requires the ``sssp_per_sys`` object to have been generated with `load_full_tables=True` and `match_observed=True`!
+    """
     assert n_min <= n_max
     assert n_det_min <= n_det_max
 
@@ -1123,7 +1167,7 @@ def plot_figs_physical_systems_gallery_from_cat_phys(sssp_per_sys, sssp, sort_by
     else:
         print('No key matching "%s" for `llabel` argument; omitting the left-labels for each system.' % llabel)
 
-    plot_figs_systems_gallery(x_per_sys, s_per_sys, x_min=x_min, x_max=x_max, log_x=log_x, s_norm=s_norm, color_by=color_by, colors_per_sys=colors_per_sys, det_per_sys=det_per_sys, llabel_per_sys=llabel_per_sys, llabel_text=llabel_text, llabel_fmt=llabel_fmt, xticks_custom=xticks_custom, xlabel_text=xlabel_text, title=title, afs=afs, tfs=tfs, lfs=lfs, sys_per_fig=sys_per_fig, line_every=line_every, max_figs=max_figs, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name_base=save_name_base, save_fig=save_fig)
+    plot_figs_systems_gallery(x_per_sys, s_per_sys, x_min=x_min, x_max=x_max, log_x=log_x, s_norm=s_norm, color_by=color_by, colors_per_sys=colors_per_sys, det_per_sys=det_per_sys, llabel_per_sys=llabel_per_sys, llabel_text=llabel_text, llabel_fmt=llabel_fmt, xticks_custom=xticks_custom, xlabel_text=xlabel_text, title=title, afs=afs, tfs=tfs, lfs=lfs, sys_per_fig=sys_per_fig, line_every=line_every, max_figs=max_figs, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name_base=save_name_base, save_fmt=save_fmt, save_fig=save_fig)
 
 
 
