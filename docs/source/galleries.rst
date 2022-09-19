@@ -35,7 +35,7 @@ Here is a simple example using our function :py:func:`plot_figs_observed_systems
    plt.show()
 
 .. image:: images/example_gallery.png
-   :scale: 100 %
+   :scale: 80 %
    :alt: Example gallery of 3+ systems
    :align: center
 
@@ -54,7 +54,7 @@ The ``color_by`` parameter allows you to choose from a number of color schemes. 
    plt.show()
 
 .. image:: images/example_gallery_colors_size.png
-   :scale: 100 %
+   :scale: 80 %
    :alt: Example gallery coloring by size order
    :align: center
 
@@ -71,7 +71,7 @@ You can also sort by planet multiplicity instead of inner-most period by setting
    plt.show()
 
 .. image:: images/example_gallery_sort_label_mult.png
-   :scale: 100 %
+   :scale: 80 %
    :alt: Example gallery sorted and labeled by multiplicity
    :align: center
 
@@ -98,10 +98,10 @@ There is a separate function for plotting galleries of physical systems, :py:fun
 |gallery_phys1| |gallery_phys2|
 
 .. |gallery_phys1| image:: images/example_gallery_phys_colors_clusterid.png
-   :scale: 75%
+   :scale: 80%
 
 .. |gallery_phys2| image:: images/example_gallery_phys_markdet.png
-   :scale: 75%
+   :scale: 80%
 
 In the left figure, we selected only systems with at least five planets (regardless of whether or not any planets are detected) and colored them by their cluster id's, so planets with the same color were drawn from the same "cluster".
 
