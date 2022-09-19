@@ -39,15 +39,15 @@ Here is a simple example using our function :py:func:`plot_figs_observed_systems
    :alt: Example gallery of 3+ systems
    :align: center
 
-This function can be applied to both simulated observed (e.g. ``sss_per_sys``) and Kepler-observed (e.g. ``ssk_per_sys``) catalogs. In this example, we have selected systems with at least three observed planets, sorted them by the period of their inner-most planet, and included 50 systems in a single figure.
+This function can be applied to both simulated observed (e.g. ``sss_per_sys``) and Kepler-observed (e.g. ``ssk_per_sys``) catalogs. In this example, we have selected systems with at least three observed planets (using ``n_max=3``), sorted them by the period of their inner-most planet (using ``sort_by='inner'``), and included 50 systems in a single figure.
 
 .. tip::
 
-   You can change the number of systems, and/or the number of figures, plotted by varying the ``max_sys`` and ``sys_per_fig`` parameters. For example, setting ``max_sys=200`` and ``sys_per_fig=50`` will make four figures each showing 50 different systems (if there are enough systems with the required multiplicity in the catalog).
+   You can change the number of systems, and/or the number of figures, by varying the ``max_sys`` and ``sys_per_fig`` parameters. For example, setting ``max_sys=200`` and ``sys_per_fig=50`` will make four figures each showing 50 different systems (if there are enough systems with the required multiplicity in the catalog).
 
    If there are more than ``max_sys`` systems satisfying the given criteria, the function will randomly sample a subset of these systems.
 
-The ``color_by`` parameter allows you to choose from a number of color schemes. For example, you can also the planets by their relative size order in each system (so all the smallest planets are one color, all the 2nd smallest planets are another color, etc.):
+The ``color_by`` parameter allows you to choose from a number of color schemes. For example, you can also color the planets by their relative size order in each system (so all the smallest planets are one color, all the 2nd smallest planets are another color, etc.):
 
 .. code-block:: python
 
