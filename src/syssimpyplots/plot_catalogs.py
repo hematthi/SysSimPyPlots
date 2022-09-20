@@ -1010,7 +1010,7 @@ def plot_figs_systems_gallery(x_per_sys, s_per_sys, x_min=2., x_max=300., log_x=
             plt.fill_between([x_min, x_max], j+2, j+4, color='b', alpha=0.2)
 
         if llabel_per_sys is not None and llabel_text is not None: # to label the left-label
-            plt.text(x=0.9*x_min, y=j+2, s=llabel_text, va='center', ha='center', fontsize=lfs)
+            plt.text(x=0.9*x_min, y=j+2, s=llabel_text, va='center', ha='right', fontsize=lfs)
         if log_x:
             plt.gca().set_xscale("log")
         ax.tick_params(axis='both', labelsize=afs)
