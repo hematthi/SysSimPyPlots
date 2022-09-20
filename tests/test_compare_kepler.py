@@ -136,7 +136,7 @@ def test_compute_distances_sim_Kepler():
     sss_per_sys, sss = compute_summary_stats_from_cat_obs(file_name_path=loadfiles_directory, compute_ratios=compute_ratios)
     ssk_per_sys, ssk = compute_summary_stats_from_Kepler_catalog(P_min, P_max, radii_min, radii_max, compute_ratios=compute_ratios)
 
-    dists, dists_w = compute_distances_sim_Kepler(sss_per_sys, sss, ssk_per_sys, ssk, weights_all['all'], dists_include, N_sim, cos_factor=cos_factor, AD_mod=AD_mod, compute_ratios=compute_ratios)
+    dists, dists_w = compute_distances_sim_Kepler(sss_per_sys, sss, ssk_per_sys, ssk, weights_all['all'], dists_include, N_sim, cos_factor=cos_factor, AD_mod=AD_mod)
 
     for key in dists.keys():
         assert dists[key] >= 0 # check that all distance terms are non-negative
