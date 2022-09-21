@@ -32,7 +32,7 @@ First, load the catalogs again:
 
 .. Note::
 
-   This time, we have loaded the physical catalog with the options ``load_full_tables=True`` and ``match_observed=True``, which will include a field in ``sssp_per_sys`` containing a 2-d array of the whether each planet is detected or not (1 or 0, respectively) in the simulation, accessible by ``sssp_per_sys['det_all']``.
+   This time, we have loaded the physical catalog with the options ``load_full_tables=True`` and ``match_observed=True``, which will include a field in ``sssp_per_sys`` containing a 2-d array indicating whether each planet is detected or not (1 or 0, respectively) in the simulation, accessible by ``sssp_per_sys['det_all']``.
 
 Now, pass the simulated observed catalog (``sss_per_sys``) into the following function as follows:
 
