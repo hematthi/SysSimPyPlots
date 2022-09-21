@@ -7,7 +7,9 @@ Another way to visualize the catalogs is to plot *galleries* of their individual
 Plotting a simple gallery
 -------------------------
 
-Here is a simple example using our function :py:func:`plot_figs_observed_systems_gallery_from_cat_obs <syssimpyplots.plot_catalogs.plot_figs_observed_systems_gallery_from_cat_obs>` to plot a gallery of systems with three or more observed planets:
+Here is a simple example using our function :py:func:`plot_figs_observed_systems_gallery_from_cat_obs <syssimpyplots.plot_catalogs.plot_figs_observed_systems_gallery_from_cat_obs>` to plot a gallery of systems with three or more observed planets.
+
+First, load the catalogs again:
 
 .. code-block:: python
 
@@ -28,7 +30,13 @@ Here is a simple example using our function :py:func:`plot_figs_observed_systems
    sss_per_sys, sss = compute_summary_stats_from_cat_obs(file_name_path=load_dir)
    ssk_per_sys, ssk = compute_summary_stats_from_Kepler_catalog(P_min, P_max, radii_min, radii_max)
 
+.. Note::
 
+   This time, we have loaded the physical catalog with the options ``load_full_tables=True`` and ``match_observed=True``, which will include a field in ``sssp_per_sys`` containing a 2-d array of the whether each planet is detected or not (1 or 0, respectively) in the simulation, accessible by ``sssp_per_sys['det_all']``.
+
+Now, pass the simulated observed catalog (``sss_per_sys``) into the following function as follows:
+
+.. code-block:: python
 
    # Plot a gallery of the simulated systems with 3+ observed planets:
    plot_figs_observed_systems_gallery_from_cat_obs(sss_per_sys, sort_by='inner', n_min=3, color_by='k', max_sys=50, sys_per_fig=50)
