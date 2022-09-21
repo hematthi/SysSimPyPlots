@@ -87,7 +87,15 @@ The third argument (empty list ``[]`` in the above examples) allows you to easil
 
 Note that we've set ``legend=True`` to tell which is which! The ``normalize=True`` option is also useful when the catalogs have different numbers of systems (in this case, the simulated catalog has five times as many targets as the Kepler catalog).
 
+
+Plotting multiple catalogs
+--------------------------
+
 You can also plot multiple simulated (and Kepler) catalogs simultaneously by simply adding them to the lists:
+
+.. caution::
+
+   The following example only works if you have more than one simulated catalog in the same folder (e.g. you downloaded the larger folder described in the :ref:`"Downloading simulated catalogs" section <downloading_catalogs>`), but it is illustrative of how easily you can do it.
 
 .. code-block:: python
 
