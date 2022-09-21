@@ -884,10 +884,10 @@ def plot_figs_systems_gallery(x_per_sys, s_per_sys, x_min=2., x_max=300., log_x=
 
     Parameters
     ----------
-    x_per_sys : array[float]
-        The properties of the planets in each system to plot on the x-axis. This is a 2-d array (where each row is a separate system), typically of the orbital period (days).
-    s_per_sys : array[float]
-        The properties of the planets in each system to plot as the sizes of the points (which will be proportional to the squared values of `s_per_sys`). This is a 2-d array (where each row is a separate system), typically of the planet radii (Earth radii).
+    x_per_sys : list[array[float]] or 2-d array[float]
+        The properties of the planets in each system to plot on the x-axis. This can be a list of 1-d arrays, or a 2-d array (where each row is a separate system, potentially with padded values), typically of the orbital period (days).
+    s_per_sys : list[array[float]] or 2-d array[float]
+        The properties of the planets in each system to plot as the sizes of the points (which will be proportional to the squared values of `s_per_sys`). This can be a list of 1-d arrays, or a 2-d array (where each row is a separate system, potentially with padded values), typically of the planet radii (Earth radii).
     x_min : float, default=2.
         The lower limit for the x-axis.
     x_max : float, default=300.
