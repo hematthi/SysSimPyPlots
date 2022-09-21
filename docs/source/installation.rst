@@ -15,12 +15,14 @@ You can install the most recent stable version of SysSimPyPlots using `pip <http
 From source
 -----------
 
-All of the code is publicly available on `Github <https://github.com/hematthi/SysSimPyPlots>`_. Thus an alternative to pip is to download or clone the repository (make sure to fork it first if you might want to make your own changes) and install it from there:
+All of the code is publicly available on `Github <https://github.com/hematthi/SysSimPyPlots>`_. Thus an alternative to pip is to download or clone the repository and install it from there:
 
 .. code-block:: bash
 
-   git clone git@github.com:hematthi/SysSimPyPlots.git
+   git clone https://github.com/hematthi/SysSimPyPlots.git
    python -m pip install .
+
+There are multiple ways of cloning; if you have trouble with the above or prefer another, see `this Github guide <https://docs.github.com/en/get-started/getting-started-with-git/about-remote-repositories>`_. You should also fork the repository first if you want to make your own changes to the source code later.
 
 
 .. _downloading_catalogs:
@@ -28,7 +30,7 @@ All of the code is publicly available on `Github <https://github.com/hematthi/Sy
 Downloading simulated catalogs
 ------------------------------
 
-After you have installed SysSimPyPlots, you will still need to download some simulated catalogs in order to explore any models. You can download a single, representative catalog generated from the latest model (the "maximum AMD model" described in `He et al. 2020 <https://ui.adsabs.harvard.edu/abs/2020arXiv200714473H/abstract>`_) using this `link <https://drive.google.com/drive/folders/18-PMwzqDeCDQtXStAG4u_EWTOx-T4gML?usp=sharing>`_.
+After you have installed SysSimPyPlots, you will still need to download some simulated catalogs in order to explore any models. You can download a single, representative catalog generated from the latest model (the "maximum AMD model" described in `He et al. 2020 <https://ui.adsabs.harvard.edu/abs/2020arXiv200714473H/abstract>`_) using `this link <https://drive.google.com/drive/folders/18-PMwzqDeCDQtXStAG4u_EWTOx-T4gML?usp=sharing>`_.
 
 .. note::
 
@@ -53,7 +55,7 @@ SysSimPyPlots has been tested on Python >3.7 and uses:
 - ``numpy`` (for almost everything)
 - ``matplotlib`` (for making plots)
 - ``scipy`` (for some miscellaneous functions)
-- ``corner`` (for plotting multi-dimensional parameter spaces)
+- ``corner.py`` (for plotting multi-dimensional parameter spaces; see `how to install <https://corner.readthedocs.io/en/latest/install/>`_)
 
 
 If you want to go further
