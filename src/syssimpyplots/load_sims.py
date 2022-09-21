@@ -1,6 +1,7 @@
 # To import required modules:
 import numpy as np
-import pandas as pd
+import os
+#import pandas as pd
 import time
 
 import syssimpyplots.general as gen
@@ -217,7 +218,7 @@ def load_planets_stars_phys_separate(file_name_path, run_number):
     ----------
     file_name_path : str
         The path to the physical catalog.
-    run_number : str
+    run_number : str or int
         The run number appended to the file names for the physical catalog.
 
     Returns
@@ -245,7 +246,7 @@ def load_planets_stars_phys_separate(file_name_path, run_number):
 
     clusterids_per_sys = [] # list to be filled with lists of all the cluster id's per system
     try:
-        with open(file_name_path + 'clusterids_all%s.out' % run_number, 'r') as file:
+        with open(os.path.join(file_name_path, 'clusterids_all%s.out' % run_number), 'r') as file:
             for line in file:
                 if line[0] != '#':
                     line = line[1:-2].split(', ')
@@ -256,7 +257,7 @@ def load_planets_stars_phys_separate(file_name_path, run_number):
 
     P_per_sys = [] # list to be filled with lists of all periods per system (days)
     try:
-        with open(file_name_path + 'periods_all%s.out' % run_number, 'r') as file:
+        with open(os.path.join(file_name_path, 'periods_all%s.out' % run_number), 'r') as file:
             for line in file:
                 if line[0] != '#':
                     line = line[1:-2].split(', ')
@@ -268,7 +269,7 @@ def load_planets_stars_phys_separate(file_name_path, run_number):
 
     radii_per_sys = [] # list to be filled with lists of all planet radii per system (solar radii)
     try:
-        with open(file_name_path + 'radii_all%s.out' % run_number, 'r') as file:
+        with open(os.path.join(file_name_path, 'radii_all%s.out' % run_number), 'r') as file:
             for line in file:
                 if line[0] != '#':
                     line = line[1:-2].split(', ')
@@ -280,7 +281,7 @@ def load_planets_stars_phys_separate(file_name_path, run_number):
 
     mass_per_sys = [] # list to be filled with lists of all planet radii per system (solar masses)
     try:
-        with open(file_name_path + 'masses_all%s.out' % run_number, 'r') as file:
+        with open(os.path.join(file_name_path, 'masses_all%s.out' % run_number), 'r') as file:
             for line in file:
                 if line[0] != '#':
                     line = line[1:-2].split(', ')
@@ -292,7 +293,7 @@ def load_planets_stars_phys_separate(file_name_path, run_number):
 
     e_per_sys = [] # list to be filled with lists of all eccentricities per system
     try:
-        with open(file_name_path + 'eccentricities_all%s.out' % run_number, 'r') as file:
+        with open(os.path.join(file_name_path, 'eccentricities_all%s.out' % run_number), 'r') as file:
             for line in file:
                 if line[0] != '#':
                     line = line[1:-2].split(', ')
@@ -304,7 +305,7 @@ def load_planets_stars_phys_separate(file_name_path, run_number):
 
     inclmut_per_sys = [] # list to be filled with lists of all mutual inclinations (rad) per system
     try:
-        with open(file_name_path + 'mutualinclinations_all%s.out' % run_number, 'r') as file:
+        with open(os.path.join(file_name_path, 'mutualinclinations_all%s.out' % run_number), 'r') as file:
             for line in file:
                 if line[0] != '#':
                     line = line[1:-2].split(', ')
@@ -316,7 +317,7 @@ def load_planets_stars_phys_separate(file_name_path, run_number):
 
     incl_per_sys = [] # list to be filled with lists of all sky inclinations (rad) per system
     try:
-        with open(file_name_path + 'inclinations_all%s.out' % run_number, 'r') as file:
+        with open(os.path.join(file_name_path, 'inclinations_all%s.out' % run_number), 'r') as file:
             for line in file:
                 if line[0] != '#':
                     line = line[1:-2].split(', ')
@@ -327,13 +328,13 @@ def load_planets_stars_phys_separate(file_name_path, run_number):
         print('No file with sky inclinations found.')
 
     try:
-        Mstar_all = np.loadtxt(file_name_path + 'stellar_masses_with_planets%s.out' % run_number) # array of stellar masses of all the systems with a planetary system, in solar masses
+        Mstar_all = np.loadtxt(os.path.join(file_name_path, 'stellar_masses_with_planets%s.out' % run_number)) # array of stellar masses of all the systems with a planetary system, in solar masses
     except:
         Mstar_all = []
         print('No file with stellar masses found.')
 
     try:
-        Rstar_all = np.loadtxt(file_name_path + 'stellar_radii_with_planets%s.out' % run_number) # array of stellar radii of all the systems with a planetary system, in solar radii
+        Rstar_all = np.loadtxt(os.path.join(file_name_path, 'stellar_radii_with_planets%s.out' % run_number)) # array of stellar radii of all the systems with a planetary system, in solar radii
     except:
         Rstar_all = []
         print('No file with stellar radii found.')
@@ -529,7 +530,7 @@ def load_cat_phys_separate_and_compute_basic_summary_stats_per_sys(file_name_pat
     ----------
     file_name_path : str
         The path to the physical catalog.
-    run_number : str
+    run_number : str or int
         The run number appended to the file names for the physical catalog.
 
     Returns
@@ -558,7 +559,7 @@ def compute_summary_stats_from_cat_phys(cat_phys=None, star_phys=None, file_name
         A table with the basic properties of the planet-hosting stars.
     file_name_path : str, default=None
         The path to the physical catalog.
-    run_number : str, default=''
+    run_number : str or int, default=''
         The run number appended to the file names for the physical catalog.
     load_full_tables : bool, default=False
         Whether to load full tables of the physical catalogs. Required to be True if also want to match the physical planets to the observed planets.
@@ -948,7 +949,7 @@ def load_planets_stars_obs_separate(file_name_path, run_number):
     ----------
     file_name_path : str
         The path to the observed catalog.
-    run_number : str
+    run_number : str or int
         The run number appended to the file names for the observed catalog.
 
     Returns
@@ -965,7 +966,7 @@ def load_planets_stars_obs_separate(file_name_path, run_number):
         The stellar radius (solar radii) of each system.
     """
     P_per_sys = [] #list to be filled with lists of the observed periods per system (days)
-    with open(file_name_path + 'periods%s.out' % run_number, 'r') as file:
+    with open(os.path.join(file_name_path, 'periods%s.out' % run_number), 'r') as file:
         for line in file:
             if line[0] != '#':
                 line = line[1:-2]
@@ -977,7 +978,7 @@ def load_planets_stars_obs_separate(file_name_path, run_number):
                     P_per_sys.append(P_sys)
 
     D_per_sys = [] #list to be filled with lists of the transit depths per system
-    with open(file_name_path + 'depths%s.out' % run_number, 'r') as file:
+    with open(os.path.join(file_name_path, 'depths%s.out' % run_number), 'r') as file:
         for line in file:
             if line[0] != '#':
                 line = line[1:-2]
@@ -989,7 +990,7 @@ def load_planets_stars_obs_separate(file_name_path, run_number):
                     D_per_sys.append(D_sys)
 
     tdur_per_sys = [] #list to be filled with lists of the transit durations per system (days)
-    with open(file_name_path + 'durations%s.out' % run_number, 'r') as file:
+    with open(os.path.join(file_name_path, 'durations%s.out' % run_number), 'r') as file:
         for line in file:
             if line[0] != '#':
                 line = line[1:-2]
@@ -1001,7 +1002,7 @@ def load_planets_stars_obs_separate(file_name_path, run_number):
                     tdur_per_sys.append(tdur_sys)
 
     Mstar_per_sys = [] #list to be filled with the stellar masses of the systems with observed planets (Msun)
-    with open(file_name_path + 'stellar_masses_obs%s.out' % run_number, 'r') as file:
+    with open(os.path.join(file_name_path, 'stellar_masses_obs%s.out' % run_number), 'r') as file:
         for line in file:
             if line[0] != '#':
                 line = line[1:-2]
@@ -1011,7 +1012,7 @@ def load_planets_stars_obs_separate(file_name_path, run_number):
     Mstar_per_sys = np.array(Mstar_per_sys)
 
     Rstar_per_sys = [] #list to be filled with the stellar radii of the systems with observed planets (Rsun)
-    with open(file_name_path + 'stellar_radii_obs%s.out' % run_number, 'r') as file:
+    with open(os.path.join(file_name_path, 'stellar_radii_obs%s.out' % run_number), 'r') as file:
         for line in file:
             if line[0] != '#':
                 line = line[1:-2]
@@ -1034,7 +1035,7 @@ def count_planets_from_loading_cat_obs_stars_only(file_name_path=None, run_numbe
     ----------
     file_name_path : str, default=None
         The path to the observed catalog.
-    run_number : str, default=''
+    run_number : str or int, default=''
         The run number appended to the file names for the observed catalog.
     Rstar_min : float, default=0.
         The minimum stellar radius (solar radii) to include in the sample.
@@ -1095,7 +1096,7 @@ def compute_summary_stats_from_cat_obs(cat_obs=None, star_obs=None, file_name_pa
         A table with the basic properties of the observed planet-hosting stars.
     file_name_path : str, default=None
         The path to the observed catalog.
-    run_number : str, default=''
+    run_number : str or int, default=''
         The run number appended to the file names for the observed catalog.
     P_min : float, default=0.
         The minimum orbital period to include in the sample.
@@ -1573,7 +1574,7 @@ def load_cat_phys_multiple_and_compute_combine_summary_stats(file_name_path, run
     ----------
     file_name_path : str
         The path to the physical catalogs.
-    run_number : range, default=range(1,11)
+    run_numbers : range or list[int], default=range(1,11)
         The range of catalog run numbers over which we want to load and combine.
     load_full_tables : bool, default=False
         Whether to load full tables of the physical catalogs. Required to be True if also want to match the physical planets to the observed planets.
