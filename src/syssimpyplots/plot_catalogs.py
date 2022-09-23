@@ -1112,7 +1112,7 @@ def plot_figs_physical_systems_gallery_from_cat_phys(sssp_per_sys, sssp, sort_by
     Parameters
     ----------
     sssp_per_sys : dict
-        The dictionary containing the planetary and stellar properties for each system in an physical catalog (2-d and 1-d arrays), such as one returned by :py:func:`syssimpyplots.load_sims.compute_summary_stats_from_cat_phys`).
+        The dictionary containing the planetary and stellar properties for each system in a physical catalog (2-d and 1-d arrays), such as one returned by :py:func:`syssimpyplots.load_sims.compute_summary_stats_from_cat_phys`).
     sort_by : {'inner', 'multiplicity', 'stellar_mass'}, optional
         The property to sort the systems by. Default is None (no sorting).
     n_min : int, default=3
