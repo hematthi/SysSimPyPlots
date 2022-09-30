@@ -13,7 +13,7 @@ Welcome to SysSimPyPlots's documentation!
 
 .. note::
 
-   Some parts of the documentation for this project (this site!) are still under development! Feel free to `create an issue on Github <https://github.com/hematthi/SysSimPyPlots/issues>`_ if you find any problems.
+   Feel free to `create an issue on Github <https://github.com/hematthi/SysSimPyPlots/issues>`_ if you find any problems.
 
 
 Contents

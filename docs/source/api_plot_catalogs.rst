@@ -3,10 +3,5 @@
 plot_catalogs.py
 ================
 
-.. note::
-
-   Currently under construction!
-
-
 .. automodule:: syssimpyplots.plot_catalogs
    :members:

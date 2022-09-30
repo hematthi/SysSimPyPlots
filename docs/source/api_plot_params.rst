@@ -3,10 +3,5 @@
 plot_params.py
 ================
 
-.. note::
-
-   Currently under construction!
-
-
 .. automodule:: syssimpyplots.plot_params
    :members:
