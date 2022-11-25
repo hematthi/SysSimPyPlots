@@ -878,7 +878,7 @@ def load_cat_phys_and_plot_fig_pdf_composite_simple(load_dir, run_number='', n_b
 
 # Functions for plotting galleries of systems:
 
-def plot_figs_systems_gallery(x_per_sys, s_per_sys, x_min=2., x_max=300., log_x=True, s_norm=2., color_by='k', colors_per_sys=None, det_per_sys=None, llabel_per_sys=None, llabel_text=None, llabel_fmt=r'{:.2f}', xticks_custom=None, xlabel_text=r'Period $P$ (days)', title=None, legend=False, s_examples=[1.,3.,10.], s_units=r'$R_\oplus$', legend_fmt=r'${:.0f}$', afs=16, tfs=16, lfs=8, sys_per_fig=100, line_every=1, max_figs=5, fig_size=(4,8), fig_lbrt=[0.1,0.1,0.9,0.95], save_name_base='gallery', save_fmt='png', save_fig=False):
+def plot_figs_systems_gallery(x_per_sys, s_per_sys, x_min=2., x_max=300., log_x=True, s_norm=2., color_by='k', colors_per_sys=None, det_per_sys=None, llabel_per_sys=None, llabel_text=None, llabel_fmt=r'{:.2f}', rlabel_per_sys=None, rlabel_text=None, rlabel_fmt=r'{:.2f}', xticks_custom=None, xlabel_text=r'Period $P$ (days)', title=None, legend=False, s_examples=[1.,3.,10.], s_units=r'$R_\oplus$', legend_fmt=r'${:.0f}$', afs=16, tfs=16, lfs=8, sys_per_fig=100, line_every=1, max_figs=5, fig_size=(4,8), fig_lbrt=[0.1,0.1,0.9,0.95], save_name_base='gallery', save_fmt='png', save_fig=False):
     """
     Plot a gallery of systems to visualize their architectures.
 
@@ -903,11 +903,17 @@ def plot_figs_systems_gallery(x_per_sys, s_per_sys, x_min=2., x_max=300., log_x=
     det_per_sys : array[float], optional
         A 2-d array indicating which planets in each system are detected. If provided, will mark undetected planets with red outlines.
     llabel_per_sys : array[float], optional
-        A 1-d array for labeling each system.
+        A 1-d array for left-labeling each system.
     llabel_text : str, optional
-        The label for the labelings of each system.
+        The label for the left-labelings of each system.
     llabel_fmt : str, optional
-        The string formatting of the labels in `llabel_per_sys`.
+        The string formatting of the left-labels in `llabel_per_sys`.
+    rlabel_per_sys : array[float], optional
+        A 1-d array for right-labeling each system.
+    rlabel_text : str, optional
+        The label for the right-labelings of each system.
+    rlabel_fmt : str, optional
+        The string formatting of the right-labels in `rlabel_per_sys`.
     xticks_custom : list or array[float], optional
         The x-values at which to plot ticks.
     xlabel_text : str, default=r'Period $P$ (days)'
@@ -954,6 +960,8 @@ def plot_figs_systems_gallery(x_per_sys, s_per_sys, x_min=2., x_max=300., log_x=
         assert N_sys == len(det_per_sys)
     if llabel_per_sys is not None:
         assert N_sys == len(llabel_per_sys)
+    if rlabel_per_sys is not None:
+        assert N_sys == len(rlabel_per_sys)
 
     # Set up the number of figures:
     n_figs = int(np.ceil(N_sys/sys_per_fig))
@@ -996,6 +1004,8 @@ def plot_figs_systems_gallery(x_per_sys, s_per_sys, x_min=2., x_max=300., log_x=
             # Optional: label each system (e.g. with some quantity)
             if llabel_per_sys is not None: # to put a left-label on the system
                 plt.text(x=0.9*x_min, y=j+1, s=llabel_fmt.format(llabel_per_sys[i*sys_per_fig + j]), va='center', ha='right', fontsize=lfs)
+            if rlabel_per_sys is not None: # to put a right-label on the system
+                plt.text(x=1.1*x_max, y=j+1, s=rlabel_fmt.format(rlabel_per_sys[i*sys_per_fig + j]), va='center', ha='left', fontsize=lfs)
             if (j+1)%line_every == 0: # to draw a line through every `line_every` systems
                 plt.axhline(y=j+1, lw=0.05, color='k')
 
@@ -1011,6 +1021,8 @@ def plot_figs_systems_gallery(x_per_sys, s_per_sys, x_min=2., x_max=300., log_x=
 
         if llabel_per_sys is not None and llabel_text is not None: # to label the left-label
             plt.text(x=0.9*x_min, y=j+2, s=llabel_text, va='center', ha='right', fontsize=lfs)
+        if rlabel_per_sys is not None and rlabel_text is not None: # to label the right-label
+            plt.text(x=1.1*x_max, y=j+2, s=rlabel_text, va='center', ha='left', fontsize=lfs)
         if log_x:
             plt.gca().set_xscale("log")
         ax.tick_params(axis='both', labelsize=afs)
@@ -1100,7 +1112,7 @@ def plot_figs_observed_systems_gallery_from_cat_obs(ss_per_sys, sort_by='inner',
     else:
         print('No key matching "%s" for `llabel` argument; omitting the left-labels for each system.' % llabel)
 
-    # NOTE: `colors_per_sys` and `det_per_sys` for ``plot_figs_systems_gallery()`` are inaccessible/unused by this function
+    # NOTE: `colors_per_sys`, `det_per_sys`, `rlabel_per_sys`, `rlabel_text`, and `rlabel_fmt` for ``plot_figs_systems_gallery()`` are inaccessible/unused by this function
     plot_figs_systems_gallery(x_per_sys, s_per_sys, x_min=x_min, x_max=x_max, log_x=log_x, s_norm=s_norm, color_by=color_by, llabel_per_sys=llabel_per_sys, llabel_text=llabel_text, llabel_fmt=llabel_fmt, xticks_custom=xticks_custom, xlabel_text=xlabel_text, title=title, legend=legend, s_examples=s_examples, s_units=s_units, legend_fmt=legend_fmt, afs=afs, tfs=tfs, lfs=lfs, sys_per_fig=sys_per_fig, line_every=line_every, max_figs=max_figs, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name_base=save_name_base, save_fmt=save_fmt, save_fig=save_fig)
 
 def plot_figs_physical_systems_gallery_from_cat_phys(sssp_per_sys, sssp, sort_by='inner', n_min=1, n_max=20, n_det_min=1, n_det_max=10, x_min=2., x_max=300., log_x=True, s_norm=2., color_by='k', mark_det=True, llabel=None, llabel_text=None, llabel_fmt=r'{:.2f}', xticks_custom=None, xlabel_text=r'Period $P$ (days)', title=None, legend=False, s_examples=[1.,3.,10.], s_units=r'$R_\oplus$', legend_fmt=r'${:.0f}$', afs=16, tfs=16, lfs=8, max_sys=100, sys_per_fig=100, line_every=1, max_figs=5, fig_size=(4,8), fig_lbrt=[0.1,0.1,0.9,0.95], save_name_base='gallery', save_fmt='png', save_fig=False):
@@ -1199,6 +1211,7 @@ def plot_figs_physical_systems_gallery_from_cat_phys(sssp_per_sys, sssp, sort_by
     else:
         print('No key matching "%s" for `llabel` argument; omitting the left-labels for each system.' % llabel)
 
+    # NOTE: `rlabel_per_sys`, `rlabel_text`, and `rlabel_fmt` for ``plot_figs_systems_gallery()`` are inaccessible/unused by this function
     plot_figs_systems_gallery(x_per_sys, s_per_sys, x_min=x_min, x_max=x_max, log_x=log_x, s_norm=s_norm, color_by=color_by, colors_per_sys=colors_per_sys, det_per_sys=det_per_sys, llabel_per_sys=llabel_per_sys, llabel_text=llabel_text, llabel_fmt=llabel_fmt, xticks_custom=xticks_custom, xlabel_text=xlabel_text, title=title, legend=legend, s_examples=s_examples, s_units=s_units, legend_fmt=legend_fmt, afs=afs, tfs=tfs, lfs=lfs, sys_per_fig=sys_per_fig, line_every=line_every, max_figs=max_figs, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name_base=save_name_base, save_fmt=save_fmt, save_fig=save_fig)
 
 
