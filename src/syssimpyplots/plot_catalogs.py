@@ -878,7 +878,7 @@ def load_cat_phys_and_plot_fig_pdf_composite_simple(load_dir, run_number='', n_b
 
 # Functions for plotting galleries of systems:
 
-def plot_figs_systems_gallery(x_per_sys, s_per_sys, x_min=2., x_max=300., log_x=True, s_norm=2., alpha=None, color_by='k', colors_per_sys=None, det_per_sys=None, llabel_per_sys=None, llabel_text=None, llabel_fmt=r'{:.2f}', rlabel_per_sys=None, rlabel_text=None, rlabel_fmt=r'{:.2f}', xticks_custom=None, xlabel_text=r'Period $P$ (days)', title=None, legend=False, s_examples=[1.,3.,10.], s_units=r'$R_\oplus$', legend_fmt=r'${:.0f}$', afs=16, tfs=16, lfs=8, sys_per_fig=100, line_every=1, max_figs=5, fig_size=(4,8), fig_lbrt=[0.1,0.1,0.9,0.95], save_name_base='gallery', save_fmt='png', save_fig=False):
+def plot_figs_systems_gallery(x_per_sys, s_per_sys, x_min=2., x_max=300., log_x=True, s_norm=2., alpha=None, color_by='k', colors_per_sys=None, det_per_sys=None, llabel_per_sys=None, llabel_text=None, llabel_fmt=r'{:.2f}', rlabel_per_sys=None, rlabel_text=None, rlabel_fmt=r'{:.2f}', xticks_custom=None, xlabel_text=r'Period $P$ (days)', title=None, legend=False, s_examples=[1.,3.,10.], s_units=r'$R_\oplus$', legend_fmt=r'${:.0f}$', cmap='inferno', vmin=None, vmax=None, cbar_label=r'Colorscale units', cbar_lbrt=[0.1, 0.95, 0.9, 0.98], afs=16, tfs=16, lfs=8, sys_per_fig=100, line_every=1, max_figs=5, fig_size=(4,8), fig_lbrt=[0.1,0.1,0.9,0.95], save_name_base='gallery', save_fmt='png', save_fig=False):
     """
     Plot a gallery of systems to visualize their architectures.
 
@@ -930,6 +930,16 @@ def plot_figs_systems_gallery(x_per_sys, s_per_sys, x_min=2., x_max=300., log_x=
         The text for displaying the units in the legend.
     legend_fmt : str, default=r'${:.0f}$'
         The string formatter for the example values in the legend.
+    cmap : str or colormap, default='inferno'
+        The colormap to use for coloring the planets. Only used if `color_by='custom'` and `colors_per_sys` is provided.
+    vmin : float, optional
+        The minimum value to map to the colormap. Only used if `color_by='custom'` and `colors_per_sys` is provided.
+    vmax : float, optional
+        The minimum value to map to the colormap. Only used if `color_by='custom'` and `colors_per_sys` is provided.
+    cbar_label : str, default=r'Colorscale units'
+        The colorbar label. Only used if `color_by='custom'` and `colors_per_sys` is provided.
+    cbar_lbrt : list[float], default=[0.1, 0.95, 0.9, 0.98]
+        The positions of the (left, bottom, right, and top) margins of the colorbar panel (all values must be between 0 and 1). Only used if `color_by='custom'` and `colors_per_sys` is provided; make sure this does not overlap with `fig_lbrt`!
     afs : int, default=16
         The axes fontsize.
     tfs : int, default=16
@@ -945,7 +955,7 @@ def plot_figs_systems_gallery(x_per_sys, s_per_sys, x_min=2., x_max=300., log_x=
     fig_size : tuple, default=(4,8)
         The figure size.
     fig_lbrt : list[float], default=[0.1, 0.1, 0.9, 0.95]
-        The positions of the (left, bottom, right, and top) margins of the plotting panel (all values must be between 0 and 1).
+        The positions of the (left, bottom, right, and top) margins of the plotting panel (all values must be between 0 and 1). If a colorbar will also be shown, make sure this does not overlap with `cbar_lbrt`!
     save_name_base : str, default='gallery'
         The start of the file names for saving each figure.
     save_fmt : str, default='png'
@@ -961,8 +971,15 @@ def plot_figs_systems_gallery(x_per_sys, s_per_sys, x_min=2., x_max=300., log_x=
             assert N_sys == len(alpha)
         else: # assumes 'alpha' must be a scalar then
             alpha = alpha*np.ones(N_sys)
+    use_cmap = False
     if colors_per_sys is not None:
         assert N_sys == len(colors_per_sys)
+        if color_by == 'custom':
+            use_cmap = True
+            if cbar_lbrt[1] < fig_lbrt[3]:
+                print('Caution: will also show a colorbar at the top. Choose `cbar_lbrt` and `fig_lbrt` carefully such that they do not overlap.')
+        else:
+            print('Warning: `colors_per_sys` was provided - did you mean to use it for the point colors? If so, also set `color_by="custom"` to use it.')
     if det_per_sys is not None:
         assert N_sys == len(det_per_sys)
     if llabel_per_sys is not None:
@@ -1003,10 +1020,17 @@ def plot_figs_systems_gallery(x_per_sys, s_per_sys, x_min=2., x_max=300., log_x=
             if det_per_sys is not None: # plot detected and undetected planets differently
                 det_sys = det_per_sys[i*sys_per_fig + j][x_sys_padded > 0] # still have to remove zero-padding, but according to `x_sys` since `det_sys` contains zeros for undetected planets
                 bools_det = det_sys == 1 # boolean array for indicating detected/undetected planets
-                plt.scatter(x_sys[bools_det], np.ones(np.sum(bools_det))+j, c=c_sys[bools_det], s=s_norm*s_sys[bools_det]**2., alpha=alpha if alpha is None else alpha[i*sys_per_fig + j]) # detected planets
-                plt.scatter(x_sys[~bools_det], np.ones(np.sum([~bools_det]))+j, c=c_sys[~bools_det], edgecolors='r', s=s_norm*s_sys[~bools_det]**2., alpha=alpha if alpha is None else alpha[i*sys_per_fig + j]) # undetected planets marked with red outlines
+                if use_cmap:
+                    sc = plt.scatter(x_sys[bools_det], np.ones(np.sum(bools_det))+j, c=c_sys[bools_det], s=s_norm*s_sys[bools_det]**2., alpha=alpha if alpha is None else alpha[i*sys_per_fig + j], cmap=cmap, vmin=vmin, vmax=vmax) # detected planets
+                    plt.scatter(x_sys[~bools_det], np.ones(np.sum([~bools_det]))+j, c=c_sys[~bools_det], edgecolors='r', s=s_norm*s_sys[~bools_det]**2., alpha=alpha if alpha is None else alpha[i*sys_per_fig + j], cmap=cmap, vmin=vmin, vmax=vmax) # undetected planets marked with red outlines
+                else:
+                    plt.scatter(x_sys[bools_det], np.ones(np.sum(bools_det))+j, c=c_sys[bools_det], s=s_norm*s_sys[bools_det]**2., alpha=alpha if alpha is None else alpha[i*sys_per_fig + j]) # detected planets
+                    plt.scatter(x_sys[~bools_det], np.ones(np.sum([~bools_det]))+j, c=c_sys[~bools_det], edgecolors='r', s=s_norm*s_sys[~bools_det]**2., alpha=alpha if alpha is None else alpha[i*sys_per_fig + j]) # undetected planets marked with red outlines
             else: # plot all planets the same way if no `det_per_sys` provided
-                plt.scatter(x_sys, np.ones(len(x_sys))+j, c=c_sys, s=s_norm*s_sys**2., alpha=alpha if alpha is None else alpha[i*sys_per_fig + j])
+                if use_cmap:
+                    sc = plt.scatter(x_sys, np.ones(len(x_sys))+j, c=c_sys, s=s_norm*s_sys**2., alpha=alpha if alpha is None else alpha[i*sys_per_fig + j], cmap=cmap, vmin=vmin, vmax=vmax)
+                else:
+                    plt.scatter(x_sys, np.ones(len(x_sys))+j, c=c_sys, s=s_norm*s_sys**2., alpha=alpha if alpha is None else alpha[i*sys_per_fig + j])
 
             # Optional: label each system (e.g. with some quantity)
             if llabel_per_sys is not None: # to put a left-label on the system
@@ -1040,6 +1064,13 @@ def plot_figs_systems_gallery(x_per_sys, s_per_sys, x_min=2., x_max=300., log_x=
         plt.xlim([x_min, x_max])
         plt.ylim([0., sys_per_fig+3 if legend else sys_per_fig+1])
         plt.xlabel(xlabel_text, fontsize=tfs)
+        
+        # Optional, only plotted if 'color_by="custom"' and 'colors_per_sys' is provided: plot a colorbar
+        if use_cmap:
+            plot = GridSpec(1, 1, left=cbar_lbrt[0], bottom=cbar_lbrt[1], right=cbar_lbrt[2], top=cbar_lbrt[3], wspace=0, hspace=0)
+            cax = plt.subplot(plot[0,0])
+            cbar = plt.colorbar(sc, cax=cax, orientation='horizontal')
+            cbar.set_label(cbar_label, fontsize=lfs)
 
         if n_figs==1:
             save_name = save_name_base + '.%s' % save_fmt
@@ -1119,10 +1150,10 @@ def plot_figs_observed_systems_gallery_from_cat_obs(ss_per_sys, sort_by='inner',
     else:
         print('No key matching "%s" for `llabel` argument; omitting the left-labels for each system.' % llabel)
 
-    # NOTE: `alpha`, `colors_per_sys`, `det_per_sys`, `rlabel_per_sys`, `rlabel_text`, and `rlabel_fmt` for ``plot_figs_systems_gallery()`` are inaccessible/unused by this function
+    # NOTE: `alpha`, `colors_per_sys`, `det_per_sys`, `rlabel_per_sys`, `rlabel_text`, `rlabel_fmt`, `cmap`, `vmin`, `vmax`, `cbar_label`, and `cbar_lbrt` for ``plot_figs_systems_gallery()`` are currently inaccessible/unused by this function
     plot_figs_systems_gallery(x_per_sys, s_per_sys, x_min=x_min, x_max=x_max, log_x=log_x, s_norm=s_norm, color_by=color_by, llabel_per_sys=llabel_per_sys, llabel_text=llabel_text, llabel_fmt=llabel_fmt, xticks_custom=xticks_custom, xlabel_text=xlabel_text, title=title, legend=legend, s_examples=s_examples, s_units=s_units, legend_fmt=legend_fmt, afs=afs, tfs=tfs, lfs=lfs, sys_per_fig=sys_per_fig, line_every=line_every, max_figs=max_figs, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name_base=save_name_base, save_fmt=save_fmt, save_fig=save_fig)
 
-def plot_figs_physical_systems_gallery_from_cat_phys(sssp_per_sys, sssp, sort_by='inner', n_min=1, n_max=20, n_det_min=1, n_det_max=10, x_min=2., x_max=300., log_x=True, s_norm=2., color_by='k', mark_det=True, llabel=None, llabel_text=None, llabel_fmt=r'{:.2f}', xticks_custom=None, xlabel_text=r'Period $P$ (days)', title=None, legend=False, s_examples=[1.,3.,10.], s_units=r'$R_\oplus$', legend_fmt=r'${:.0f}$', afs=16, tfs=16, lfs=8, max_sys=100, sys_per_fig=100, line_every=1, max_figs=5, fig_size=(4,8), fig_lbrt=[0.1,0.1,0.9,0.95], save_name_base='gallery', save_fmt='png', save_fig=False):
+def plot_figs_physical_systems_gallery_from_cat_phys(sssp_per_sys, sssp, sort_by='inner', n_min=1, n_max=20, n_det_min=1, n_det_max=10, x_min=2., x_max=300., log_x=True, s_norm=2., color_by='k', mark_det=True, llabel=None, llabel_text=None, llabel_fmt=r'{:.2f}', xticks_custom=None, xlabel_text=r'Period $P$ (days)', title=None, legend=False, s_examples=[1.,3.,10.], s_units=r'$R_\oplus$', legend_fmt=r'${:.0f}$', cmap='inferno', vmin=None, vmax=None, cbar_label=r'Colorscale units', cbar_lbrt=[0.1, 0.95, 0.9, 0.98], afs=16, tfs=16, lfs=8, max_sys=100, sys_per_fig=100, line_every=1, max_figs=5, fig_size=(4,8), fig_lbrt=[0.1,0.1,0.9,0.95], save_name_base='gallery', save_fmt='png', save_fig=False):
     """
     Plot a gallery of systems from a physical catalog.
 
@@ -1218,8 +1249,8 @@ def plot_figs_physical_systems_gallery_from_cat_phys(sssp_per_sys, sssp, sort_by
     else:
         print('No key matching "%s" for `llabel` argument; omitting the left-labels for each system.' % llabel)
 
-    # NOTE: `alpha`, `rlabel_per_sys`, `rlabel_text`, and `rlabel_fmt` for ``plot_figs_systems_gallery()`` are inaccessible/unused by this function
-    plot_figs_systems_gallery(x_per_sys, s_per_sys, x_min=x_min, x_max=x_max, log_x=log_x, s_norm=s_norm, color_by=color_by, colors_per_sys=colors_per_sys, det_per_sys=det_per_sys, llabel_per_sys=llabel_per_sys, llabel_text=llabel_text, llabel_fmt=llabel_fmt, xticks_custom=xticks_custom, xlabel_text=xlabel_text, title=title, legend=legend, s_examples=s_examples, s_units=s_units, legend_fmt=legend_fmt, afs=afs, tfs=tfs, lfs=lfs, sys_per_fig=sys_per_fig, line_every=line_every, max_figs=max_figs, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name_base=save_name_base, save_fmt=save_fmt, save_fig=save_fig)
+    # NOTE: `alpha`, `rlabel_per_sys`, `rlabel_text`, and `rlabel_fmt` for ``plot_figs_systems_gallery()`` are currently inaccessible/unused by this function
+    plot_figs_systems_gallery(x_per_sys, s_per_sys, x_min=x_min, x_max=x_max, log_x=log_x, s_norm=s_norm, color_by=color_by, colors_per_sys=colors_per_sys, det_per_sys=det_per_sys, llabel_per_sys=llabel_per_sys, llabel_text=llabel_text, llabel_fmt=llabel_fmt, xticks_custom=xticks_custom, xlabel_text=xlabel_text, title=title, legend=legend, s_examples=s_examples, s_units=s_units, legend_fmt=legend_fmt, cmap=cmap, vmin=vmin, vmax=vmax, cbar_label=cbar_label, cbar_lbrt=cbar_lbrt, afs=afs, tfs=tfs, lfs=lfs, sys_per_fig=sys_per_fig, line_every=line_every, max_figs=max_figs, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name_base=save_name_base, save_fmt=save_fmt, save_fig=save_fig)
 
 
 
