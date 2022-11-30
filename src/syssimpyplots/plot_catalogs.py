@@ -878,7 +878,7 @@ def load_cat_phys_and_plot_fig_pdf_composite_simple(load_dir, run_number='', n_b
 
 # Functions for plotting galleries of systems:
 
-def plot_figs_systems_gallery(x_per_sys, s_per_sys, x_min=2., x_max=300., log_x=True, s_norm=2., color_by='k', colors_per_sys=None, det_per_sys=None, llabel_per_sys=None, llabel_text=None, llabel_fmt=r'{:.2f}', rlabel_per_sys=None, rlabel_text=None, rlabel_fmt=r'{:.2f}', xticks_custom=None, xlabel_text=r'Period $P$ (days)', title=None, legend=False, s_examples=[1.,3.,10.], s_units=r'$R_\oplus$', legend_fmt=r'${:.0f}$', afs=16, tfs=16, lfs=8, sys_per_fig=100, line_every=1, max_figs=5, fig_size=(4,8), fig_lbrt=[0.1,0.1,0.9,0.95], save_name_base='gallery', save_fmt='png', save_fig=False):
+def plot_figs_systems_gallery(x_per_sys, s_per_sys, x_min=2., x_max=300., log_x=True, s_norm=2., alpha=None, color_by='k', colors_per_sys=None, det_per_sys=None, llabel_per_sys=None, llabel_text=None, llabel_fmt=r'{:.2f}', rlabel_per_sys=None, rlabel_text=None, rlabel_fmt=r'{:.2f}', xticks_custom=None, xlabel_text=r'Period $P$ (days)', title=None, legend=False, s_examples=[1.,3.,10.], s_units=r'$R_\oplus$', legend_fmt=r'${:.0f}$', afs=16, tfs=16, lfs=8, sys_per_fig=100, line_every=1, max_figs=5, fig_size=(4,8), fig_lbrt=[0.1,0.1,0.9,0.95], save_name_base='gallery', save_fmt='png', save_fig=False):
     """
     Plot a gallery of systems to visualize their architectures.
 
@@ -896,6 +896,8 @@ def plot_figs_systems_gallery(x_per_sys, s_per_sys, x_min=2., x_max=300., log_x=
         Whether to plot the x-axis on a log-scale.
     s_norm : float, default=2.
         The normalization for the sizes of the points.
+    alpha : float, optional
+        The transparency of the points, between 0 (transparent) and 1 (opaque).
     color_by : {'k', 'size_order', 'custom'}
         A string indicating the way the points are colored. The options are: 'k' to color all points in black; 'size_order' to color the points by their size ordering; 'custom' to color the points by custom values given by `colors_per_sys`.
     colors_per_sys : array[float], optional
@@ -996,10 +998,10 @@ def plot_figs_systems_gallery(x_per_sys, s_per_sys, x_min=2., x_max=300., log_x=
             if det_per_sys is not None: # plot detected and undetected planets differently
                 det_sys = det_per_sys[i*sys_per_fig + j][x_sys_padded > 0] # still have to remove zero-padding, but according to `x_sys` since `det_sys` contains zeros for undetected planets
                 bools_det = det_sys == 1 # boolean array for indicating detected/undetected planets
-                plt.scatter(x_sys[bools_det], np.ones(np.sum(bools_det))+j, c=c_sys[bools_det], s=s_norm*s_sys[bools_det]**2.) # detected planets
-                plt.scatter(x_sys[~bools_det], np.ones(np.sum([~bools_det]))+j, c=c_sys[~bools_det], edgecolors='r', s=s_norm*s_sys[~bools_det]**2.) # undetected planets marked with red outlines
+                plt.scatter(x_sys[bools_det], np.ones(np.sum(bools_det))+j, c=c_sys[bools_det], s=s_norm*s_sys[bools_det]**2., alpha=alpha) # detected planets
+                plt.scatter(x_sys[~bools_det], np.ones(np.sum([~bools_det]))+j, c=c_sys[~bools_det], edgecolors='r', s=s_norm*s_sys[~bools_det]**2., alpha=alpha) # undetected planets marked with red outlines
             else: # plot all planets the same way if no `det_per_sys` provided
-                plt.scatter(x_sys, np.ones(len(x_sys))+j, c=c_sys, s=s_norm*s_sys**2.)
+                plt.scatter(x_sys, np.ones(len(x_sys))+j, c=c_sys, s=s_norm*s_sys**2., alpha=alpha)
 
             # Optional: label each system (e.g. with some quantity)
             if llabel_per_sys is not None: # to put a left-label on the system
@@ -1013,7 +1015,7 @@ def plot_figs_systems_gallery(x_per_sys, s_per_sys, x_min=2., x_max=300., log_x=
         if legend:
             # Plot three example planets of different sizes for reference:
             x_examples = np.logspace(np.log10(x_min), np.log10(x_max), len(s_examples)+2)[1:-1] if log_x else np.linspace(x_min, x_max, 5)[1:-1] # first and last elements are for buffer zones
-            plt.scatter(x_examples, np.ones(len(s_examples))+j+2, c='k', s=s_norm*np.array(s_examples)**2.)
+            plt.scatter(x_examples, np.ones(len(s_examples))+j+2, c='k', s=s_norm*np.array(s_examples)**2., alpha=alpha)
             for s,size in enumerate(s_examples):
                 plt.annotate(legend_fmt.format(size) + s_units, (1.2*x_examples[s], j+3), ha='left', va='center', fontsize=lfs)
             plt.text(1.1*x_min, j+3, s='Legend:', ha='left', va='center', fontsize=lfs)
@@ -1112,7 +1114,7 @@ def plot_figs_observed_systems_gallery_from_cat_obs(ss_per_sys, sort_by='inner',
     else:
         print('No key matching "%s" for `llabel` argument; omitting the left-labels for each system.' % llabel)
 
-    # NOTE: `colors_per_sys`, `det_per_sys`, `rlabel_per_sys`, `rlabel_text`, and `rlabel_fmt` for ``plot_figs_systems_gallery()`` are inaccessible/unused by this function
+    # NOTE: `alpha`, `colors_per_sys`, `det_per_sys`, `rlabel_per_sys`, `rlabel_text`, and `rlabel_fmt` for ``plot_figs_systems_gallery()`` are inaccessible/unused by this function
     plot_figs_systems_gallery(x_per_sys, s_per_sys, x_min=x_min, x_max=x_max, log_x=log_x, s_norm=s_norm, color_by=color_by, llabel_per_sys=llabel_per_sys, llabel_text=llabel_text, llabel_fmt=llabel_fmt, xticks_custom=xticks_custom, xlabel_text=xlabel_text, title=title, legend=legend, s_examples=s_examples, s_units=s_units, legend_fmt=legend_fmt, afs=afs, tfs=tfs, lfs=lfs, sys_per_fig=sys_per_fig, line_every=line_every, max_figs=max_figs, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name_base=save_name_base, save_fmt=save_fmt, save_fig=save_fig)
 
 def plot_figs_physical_systems_gallery_from_cat_phys(sssp_per_sys, sssp, sort_by='inner', n_min=1, n_max=20, n_det_min=1, n_det_max=10, x_min=2., x_max=300., log_x=True, s_norm=2., color_by='k', mark_det=True, llabel=None, llabel_text=None, llabel_fmt=r'{:.2f}', xticks_custom=None, xlabel_text=r'Period $P$ (days)', title=None, legend=False, s_examples=[1.,3.,10.], s_units=r'$R_\oplus$', legend_fmt=r'${:.0f}$', afs=16, tfs=16, lfs=8, max_sys=100, sys_per_fig=100, line_every=1, max_figs=5, fig_size=(4,8), fig_lbrt=[0.1,0.1,0.9,0.95], save_name_base='gallery', save_fmt='png', save_fig=False):
@@ -1211,7 +1213,7 @@ def plot_figs_physical_systems_gallery_from_cat_phys(sssp_per_sys, sssp, sort_by
     else:
         print('No key matching "%s" for `llabel` argument; omitting the left-labels for each system.' % llabel)
 
-    # NOTE: `rlabel_per_sys`, `rlabel_text`, and `rlabel_fmt` for ``plot_figs_systems_gallery()`` are inaccessible/unused by this function
+    # NOTE: `alpha`, `rlabel_per_sys`, `rlabel_text`, and `rlabel_fmt` for ``plot_figs_systems_gallery()`` are inaccessible/unused by this function
     plot_figs_systems_gallery(x_per_sys, s_per_sys, x_min=x_min, x_max=x_max, log_x=log_x, s_norm=s_norm, color_by=color_by, colors_per_sys=colors_per_sys, det_per_sys=det_per_sys, llabel_per_sys=llabel_per_sys, llabel_text=llabel_text, llabel_fmt=llabel_fmt, xticks_custom=xticks_custom, xlabel_text=xlabel_text, title=title, legend=legend, s_examples=s_examples, s_units=s_units, legend_fmt=legend_fmt, afs=afs, tfs=tfs, lfs=lfs, sys_per_fig=sys_per_fig, line_every=line_every, max_figs=max_figs, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name_base=save_name_base, save_fmt=save_fmt, save_fig=save_fig)
 
 
