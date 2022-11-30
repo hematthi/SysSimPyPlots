@@ -896,8 +896,8 @@ def plot_figs_systems_gallery(x_per_sys, s_per_sys, x_min=2., x_max=300., log_x=
         Whether to plot the x-axis on a log-scale.
     s_norm : float, default=2.
         The normalization for the sizes of the points.
-    alpha : float, optional
-        The transparency of the points, between 0 (transparent) and 1 (opaque).
+    alpha : float or list/array[float], optional
+        The transparency of the points, between 0 (transparent) and 1 (opaque). Can be a 1-d list/array to assign a different alpha to each system.
     color_by : {'k', 'size_order', 'custom'}
         A string indicating the way the points are colored. The options are: 'k' to color all points in black; 'size_order' to color the points by their size ordering; 'custom' to color the points by custom values given by `colors_per_sys`.
     colors_per_sys : array[float], optional
@@ -956,6 +956,11 @@ def plot_figs_systems_gallery(x_per_sys, s_per_sys, x_min=2., x_max=300., log_x=
     assert max_figs < 20 # extra limit to prevent accidentally making too many figures
     N_sys = len(x_per_sys)
     assert N_sys == len(s_per_sys)
+    if alpha is not None:
+        if np.ndim(alpha) == 1:
+            assert N_sys == len(alpha)
+        else: # assumes 'alpha' must be a scalar then
+            alpha = alpha*np.ones(N_sys)
     if colors_per_sys is not None:
         assert N_sys == len(colors_per_sys)
     if det_per_sys is not None:
@@ -998,10 +1003,10 @@ def plot_figs_systems_gallery(x_per_sys, s_per_sys, x_min=2., x_max=300., log_x=
             if det_per_sys is not None: # plot detected and undetected planets differently
                 det_sys = det_per_sys[i*sys_per_fig + j][x_sys_padded > 0] # still have to remove zero-padding, but according to `x_sys` since `det_sys` contains zeros for undetected planets
                 bools_det = det_sys == 1 # boolean array for indicating detected/undetected planets
-                plt.scatter(x_sys[bools_det], np.ones(np.sum(bools_det))+j, c=c_sys[bools_det], s=s_norm*s_sys[bools_det]**2., alpha=alpha) # detected planets
-                plt.scatter(x_sys[~bools_det], np.ones(np.sum([~bools_det]))+j, c=c_sys[~bools_det], edgecolors='r', s=s_norm*s_sys[~bools_det]**2., alpha=alpha) # undetected planets marked with red outlines
+                plt.scatter(x_sys[bools_det], np.ones(np.sum(bools_det))+j, c=c_sys[bools_det], s=s_norm*s_sys[bools_det]**2., alpha=alpha if alpha is None else alpha[i*sys_per_fig + j]) # detected planets
+                plt.scatter(x_sys[~bools_det], np.ones(np.sum([~bools_det]))+j, c=c_sys[~bools_det], edgecolors='r', s=s_norm*s_sys[~bools_det]**2., alpha=alpha if alpha is None else alpha[i*sys_per_fig + j]) # undetected planets marked with red outlines
             else: # plot all planets the same way if no `det_per_sys` provided
-                plt.scatter(x_sys, np.ones(len(x_sys))+j, c=c_sys, s=s_norm*s_sys**2., alpha=alpha)
+                plt.scatter(x_sys, np.ones(len(x_sys))+j, c=c_sys, s=s_norm*s_sys**2., alpha=alpha if alpha is None else alpha[i*sys_per_fig + j])
 
             # Optional: label each system (e.g. with some quantity)
             if llabel_per_sys is not None: # to put a left-label on the system
@@ -1015,7 +1020,7 @@ def plot_figs_systems_gallery(x_per_sys, s_per_sys, x_min=2., x_max=300., log_x=
         if legend:
             # Plot three example planets of different sizes for reference:
             x_examples = np.logspace(np.log10(x_min), np.log10(x_max), len(s_examples)+2)[1:-1] if log_x else np.linspace(x_min, x_max, 5)[1:-1] # first and last elements are for buffer zones
-            plt.scatter(x_examples, np.ones(len(s_examples))+j+2, c='k', s=s_norm*np.array(s_examples)**2., alpha=alpha)
+            plt.scatter(x_examples, np.ones(len(s_examples))+j+2, c='k', s=s_norm*np.array(s_examples)**2.)
             for s,size in enumerate(s_examples):
                 plt.annotate(legend_fmt.format(size) + s_units, (1.2*x_examples[s], j+3), ha='left', va='center', fontsize=lfs)
             plt.text(1.1*x_min, j+3, s='Legend:', ha='left', va='center', fontsize=lfs)
