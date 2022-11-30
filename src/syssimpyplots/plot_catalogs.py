@@ -935,7 +935,7 @@ def plot_figs_systems_gallery(x_per_sys, s_per_sys, x_min=2., x_max=300., log_x=
     vmin : float, optional
         The minimum value to map to the colormap. Only used if `color_by='custom'` and `colors_per_sys` is provided.
     vmax : float, optional
-        The minimum value to map to the colormap. Only used if `color_by='custom'` and `colors_per_sys` is provided.
+        The maximum value to map to the colormap. Only used if `color_by='custom'` and `colors_per_sys` is provided.
     cbar_label : str, default=r'Colorscale units'
         The colorbar label. Only used if `color_by='custom'` and `colors_per_sys` is provided.
     cbar_lbrt : list[float], default=[0.1, 0.95, 0.9, 0.98]
