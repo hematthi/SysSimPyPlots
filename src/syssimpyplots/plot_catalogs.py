@@ -163,7 +163,7 @@ def plot_panel_counts_hist_simple(ax, x_sim, x_Kep, x_min=0, x_max=None, y_min=N
     if legend:
         plt.legend(loc='upper right', bbox_to_anchor=(0.99,0.99), ncol=1, frameon=False, fontsize=lfs) #show the legend
 
-def plot_fig_counts_hist_simple(fig_size, x_sim, x_Kep, x_min=0, x_max=None, y_min=None, y_max=None, x_llim=None, x_ulim=None, normalize=False, N_sim_Kep_factor=1., log_y=False, c_sim=['k'], c_Kep=['k'], ls_sim=['-'], ms_Kep=['x'], lines_Kep=False, lw=1, labels_sim=['Simulated'], labels_Kep=['Kepler'], xticks_custom=None, xlabel_text='x', ylabel_text='Number', afs=20, tfs=20, lfs=16, legend=False, show_counts_sim=False, show_counts_Kep=False, fig_lbrt=[0.15, 0.2, 0.95, 0.925], save_name='no_name_fig.pdf', save_fig=False):
+def plot_fig_counts_hist_simple(x_sim, x_Kep, x_min=0, x_max=None, y_min=None, y_max=None, x_llim=None, x_ulim=None, normalize=False, N_sim_Kep_factor=1., log_y=False, c_sim=['k'], c_Kep=['k'], ls_sim=['-'], ms_Kep=['x'], lines_Kep=False, lw=1, labels_sim=['Simulated'], labels_Kep=['Kepler'], xticks_custom=None, xlabel_text='x', ylabel_text='Number', afs=20, tfs=20, lfs=16, legend=False, show_counts_sim=False, show_counts_Kep=False, fig_size=(8,4), fig_lbrt=[0.15, 0.2, 0.95, 0.925], save_name='no_name_fig.pdf', save_fig=False):
     """
     Plot a figure with histogram(s) of discrete integer values.
 
@@ -171,8 +171,8 @@ def plot_fig_counts_hist_simple(fig_size, x_sim, x_Kep, x_min=0, x_max=None, y_m
 
     Parameters
     ----------
-    fig_size : tuple
-        The figure size, e.g. '(16,8)'.
+    fig_size : tuple, default=(8,4)
+        The figure size (width, height).
     fig_lbrt : list[float], default=[0.15, 0.2, 0.95, 0.925]
         The positions of the (left, bottom, right, and top) margins of the plotting panel (all values must be between 0 and 1).
     save_name : str, default='no_name_fig.pdf'
@@ -296,7 +296,7 @@ def plot_panel_pdf_simple(ax, x_sim, x_Kep, x_min=None, x_max=None, y_min=None, 
     if legend:
         plt.legend(loc='upper right', bbox_to_anchor=(0.99,0.99), ncol=1, frameon=False, fontsize=lfs) #show the legend
 
-def plot_fig_pdf_simple(fig_size, x_sim, x_Kep, x_min=None, x_max=None, y_min=None, y_max=None, n_bins=100, normalize=True, N_sim_Kep_factor=1., log_x=False, log_y=False, c_sim=['k'], c_Kep=['k'], ls_sim=['-'], ls_Kep=['-'], lw=1, alpha=0.2, labels_sim=['Simulated'], labels_Kep=['Kepler'], extra_text=None, xticks_custom=None, xlabel_text='x', ylabel_text='Fraction', afs=20, tfs=20, lfs=16, legend=False, fig_lbrt=[0.15, 0.2, 0.95, 0.925], save_name='no_name_fig.pdf', save_fig=False):
+def plot_fig_pdf_simple(x_sim, x_Kep, x_min=None, x_max=None, y_min=None, y_max=None, n_bins=100, normalize=True, N_sim_Kep_factor=1., log_x=False, log_y=False, c_sim=['k'], c_Kep=['k'], ls_sim=['-'], ls_Kep=['-'], lw=1, alpha=0.2, labels_sim=['Simulated'], labels_Kep=['Kepler'], extra_text=None, xticks_custom=None, xlabel_text='x', ylabel_text='Fraction', afs=20, tfs=20, lfs=16, legend=False, fig_size=(8,4), fig_lbrt=[0.15, 0.2, 0.95, 0.925], save_name='no_name_fig.pdf', save_fig=False):
     """
     Plot a figure with histogram(s) of continuous distributions.
 
@@ -304,8 +304,8 @@ def plot_fig_pdf_simple(fig_size, x_sim, x_Kep, x_min=None, x_max=None, y_min=No
 
     Parameters
     ----------
-    fig_size : tuple
-        The figure size, e.g. '(16,8)'.
+    fig_size : tuple, default=(8,4)
+        The figure size (width, height).
     fig_lbrt : list[float], default=[0.15, 0.2, 0.95, 0.925]
         The positions of the (left, bottom, right, and top) margins of the plotting panel (all values must be between 0 and 1).
     save_name : str, default='no_name_fig.pdf'
@@ -430,7 +430,7 @@ def plot_panel_cdf_simple(ax, x_sim, x_Kep, x_min=None, x_max=None, y_min=0., y_
         else:
             plt.legend(loc='upper left', bbox_to_anchor=(0.01,0.99), ncol=1, frameon=False, fontsize=lfs) #show the legend
 
-def plot_fig_cdf_simple(fig_size, x_sim, x_Kep, x_min=None, x_max=None, y_min=0., y_max=1., log_x=False, c_sim=['k'], c_Kep=['k'], ls_sim=['-'], ls_Kep=['--'], lw=1, labels_sim=['Simulated'], labels_Kep=['Kepler'], extra_text=None, xticks_custom=None, xlabel_text='x', ylabel_text='CDF', one_minus=False, afs=20, tfs=20, lfs=16, legend=False, label_dist=False, fig_lbrt=[0.15, 0.2, 0.95, 0.925], save_name='no_name_fig.pdf', save_fig=False):
+def plot_fig_cdf_simple(x_sim, x_Kep, x_min=None, x_max=None, y_min=0., y_max=1., log_x=False, c_sim=['k'], c_Kep=['k'], ls_sim=['-'], ls_Kep=['--'], lw=1, labels_sim=['Simulated'], labels_Kep=['Kepler'], extra_text=None, xticks_custom=None, xlabel_text='x', ylabel_text='CDF', one_minus=False, afs=20, tfs=20, lfs=16, legend=False, label_dist=False, fig_size=(8,4), fig_lbrt=[0.15, 0.2, 0.95, 0.925], save_name='no_name_fig.pdf', save_fig=False):
     """
     Plot a figure with CDF(s) of continuous distributions.
 
@@ -438,8 +438,8 @@ def plot_fig_cdf_simple(fig_size, x_sim, x_Kep, x_min=None, x_max=None, y_min=0.
 
     Parameters
     ----------
-    fig_size : tuple
-        The figure size, e.g. '(16,8)'.
+    fig_size : tuple, default=(8,4)
+        The figure size (width, height).
     fig_lbrt : list[float], default=[0.15, 0.2, 0.95, 0.925]
         The positions of the (left, bottom, right, and top) margins of the plotting panel (all values must be between 0 and 1).
     save_name : str, default='no_name_fig.pdf'
@@ -463,7 +463,7 @@ def plot_fig_cdf_simple(fig_size, x_sim, x_Kep, x_min=None, x_max=None, y_min=0.
     else:
         return ax
 
-def plot_fig_mult_cdf_simple(fig_size, x_sim, x_Kep, x_min=1, x_max=None, y_min=0., y_max=1., c_sim=['k'], c_Kep=['k'], ls_sim=['-'], ls_Kep=['--'], lw=1, labels_sim=['Simulated'], labels_Kep=['Kepler'], xticks_custom=None, xlabel_text='x', ylabel_text='CDF', afs=20, tfs=20, lfs=16, legend=False, fig_lbrt=[0.15, 0.2, 0.95, 0.925], save_name='no_name_fig.pdf', save_fig=False):
+def plot_fig_mult_cdf_simple(x_sim, x_Kep, x_min=1, x_max=None, y_min=0., y_max=1., c_sim=['k'], c_Kep=['k'], ls_sim=['-'], ls_Kep=['--'], lw=1, labels_sim=['Simulated'], labels_Kep=['Kepler'], xticks_custom=None, xlabel_text='x', ylabel_text='CDF', afs=20, tfs=20, lfs=16, legend=False, fig_size=(8,4), fig_lbrt=[0.15, 0.2, 0.95, 0.925], save_name='no_name_fig.pdf', save_fig=False):
     """
     Plot a figure with CDF(s) of discrete integer values.
 

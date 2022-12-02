@@ -305,7 +305,7 @@ if savefigures == True:
     plt.close()
 
 # Multiplicities:
-plot_fig_counts_hist_simple(fig_size, [sss_per_sys['Mtot_obs'] for sss_per_sys in split_sss_per_sys], [ssk_per_sys['Mtot_obs'] for ssk_per_sys in split_ssk_per_sys], x_min=0, x_llim=0.5, normalize=False, N_sim_Kep_factor=float(N_sim)/N_Kep, log_y=True, c_sim=split_colors, c_Kep=split_colors, ls_sim=split_linestyles, ms_Kep=['x','x'], lw=1, labels_sim=['Simulated',None], labels_Kep=['Kepler', None], xlabel_text='Observed planets per system', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt)
+plot_fig_counts_hist_simple([sss_per_sys['Mtot_obs'] for sss_per_sys in split_sss_per_sys], [ssk_per_sys['Mtot_obs'] for ssk_per_sys in split_ssk_per_sys], x_min=0, x_llim=0.5, normalize=False, N_sim_Kep_factor=float(N_sim)/N_Kep, log_y=True, c_sim=split_colors, c_Kep=split_colors, ls_sim=split_linestyles, ms_Kep=['x','x'], lw=1, labels_sim=['Simulated',None], labels_Kep=['Kepler', None], xlabel_text='Observed planets per system', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 for i,sample in enumerate(split_names):
     label_this = r'16% and 84%' if i==0 else None
     plt.plot(Mtot_bins_mid, Mtot_counts_16[sample], drawstyle='steps-mid', color=split_colors[i], lw=1, ls='--', label=label_this)
@@ -317,7 +317,7 @@ if savefigures:
 
 # Periods:
 P_axis = np.logspace(np.log10(P_min), np.log10(P_max), pts)
-ax = plot_fig_pdf_simple(fig_size, [], [], x_min=P_min, x_max=P_max, y_min=0, y_max=1, log_x=True, xticks_custom=[3,10,30,100,300], xlabel_text=r'$P$ (days)', ylabel_text='Density', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt)
+ax = plot_fig_pdf_simple([], [], x_min=P_min, x_max=P_max, y_min=0, y_max=1, log_x=True, xticks_custom=[3,10,30,100,300], xlabel_text=r'$P$ (days)', ylabel_text='Density', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 for i,sample in enumerate(split_names):
     #kde_pts_Kep = Rm_kde_Kep[sample](np.log10(Rm_axis))
     kde_pts_Kep, bw_pts_Kep = kde_kNN_bw(P_kde_Kep[sample], np.log10(P_axis), kNN_factor=kNN_factor)
@@ -340,7 +340,7 @@ if savefigures:
 # Period ratios (all, with some upper cut-off):
 Rm_axis = np.logspace(np.log10(1.), np.log10(30.), pts)
 R_max_cut = np.max(Rm_axis)
-plot_fig_pdf_simple(fig_size, [], [], x_min=np.min(Rm_axis), x_max=R_max_cut, y_max=5, log_x=True, xticks_custom=[1,2,3,4,5,10,20], xlabel_text=r'$\mathcal{P} = P_{i+1}/P_i$', ylabel_text='Density', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt)
+plot_fig_pdf_simple([], [], x_min=np.min(Rm_axis), x_max=R_max_cut, y_max=5, log_x=True, xticks_custom=[1,2,3,4,5,10,20], xlabel_text=r'$\mathcal{P} = P_{i+1}/P_i$', ylabel_text='Density', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 for i,sample in enumerate(split_names):
     #kde_pts_Kep = Rm_kde_Kep[sample](np.log10(Rm_axis))
     kde_pts_Kep, bw_pts_Kep = kde_kNN_bw(Rm_kde_Kep[sample], np.log10(Rm_axis), kNN_factor=kNN_factor)
@@ -360,7 +360,7 @@ if savefigures:
 
 # Transit durations:
 tdur_axis = np.linspace(0., 12., pts)
-plot_fig_pdf_simple(fig_size, [], [], x_min=np.min(tdur_axis), x_max=np.max(tdur_axis), y_max=0.4, xlabel_text=r'$t_{\rm dur}$ (hrs)', ylabel_text='Density', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt)
+plot_fig_pdf_simple([], [], x_min=np.min(tdur_axis), x_max=np.max(tdur_axis), y_max=0.4, xlabel_text=r'$t_{\rm dur}$ (hrs)', ylabel_text='Density', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 for i,sample in enumerate(split_names):
     #kde_pts_Kep = tdur_kde_Kep[sample](tdur_axis)
     kde_pts_Kep, bw_pts_Kep = kde_kNN_bw(tdur_kde_Kep[sample], tdur_axis, kNN_factor=kNN_factor)
@@ -380,7 +380,7 @@ if savefigures:
 
 # Circular normalized transit durations (separate singles and multis):
 tdur_tcirc_axis = np.linspace(0., 1.5, pts)
-plot_fig_pdf_simple(fig_size, [], [], x_min=np.min(tdur_tcirc_axis), x_max=np.max(tdur_tcirc_axis), y_max=5, extra_text='Observed singles', xlabel_text=r'$t_{\rm dur}/t_{\rm circ}$', ylabel_text='Density', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt)
+plot_fig_pdf_simple([], [], x_min=np.min(tdur_tcirc_axis), x_max=np.max(tdur_tcirc_axis), y_max=5, extra_text='Observed singles', xlabel_text=r'$t_{\rm dur}/t_{\rm circ}$', ylabel_text='Density', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 for i,sample in enumerate(split_names):
     #kde_pts_Kep = tdur_tcirc_1_kde_Kep[sample](tdur_tcirc_axis)
     kde_pts_Kep, bw_pts_Kep = kde_kNN_bw(tdur_tcirc_1_kde_Kep[sample], tdur_tcirc_axis, kNN_factor=kNN_factor)
@@ -398,7 +398,7 @@ if savefigures:
     plt.savefig(savefigures_directory + subdirectory + model_name + '_tdur_tcirc_singles_compare.pdf')
     plt.close()
 
-plot_fig_pdf_simple(fig_size, [], [], x_min=np.min(tdur_tcirc_axis), x_max=np.max(tdur_tcirc_axis), y_max=5, extra_text='Observed multis', xlabel_text=r'$t_{\rm dur}/t_{\rm circ}$', ylabel_text='Density', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt)
+plot_fig_pdf_simple([], [], x_min=np.min(tdur_tcirc_axis), x_max=np.max(tdur_tcirc_axis), y_max=5, extra_text='Observed multis', xlabel_text=r'$t_{\rm dur}/t_{\rm circ}$', ylabel_text='Density', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 for i,sample in enumerate(split_names):
     #kde_pts_Kep = tdur_tcirc_2p_kde_Kep[sample](tdur_tcirc_axis)
     kde_pts_Kep, bw_pts_Kep = kde_kNN_bw(tdur_tcirc_2p_kde_Kep[sample], tdur_tcirc_axis, kNN_factor=kNN_factor)
@@ -418,7 +418,7 @@ if savefigures:
 
 # Transit depths:
 D_axis = np.logspace(-5., -1.5, pts)
-plot_fig_pdf_simple(fig_size, [], [], x_min=np.min(D_axis), x_max=np.max(D_axis), y_max=1.4, log_x=True, xlabel_text=r'$\delta$', ylabel_text='Density', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt)
+plot_fig_pdf_simple([], [], x_min=np.min(D_axis), x_max=np.max(D_axis), y_max=1.4, log_x=True, xlabel_text=r'$\delta$', ylabel_text='Density', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 for i,sample in enumerate(split_names):
     #kde_pts_Kep = D_kde_Kep[sample](np.log10(D_axis))
     kde_pts_Kep, bw_pts_Kep = kde_kNN_bw(D_kde_Kep[sample], np.log10(D_axis), kNN_factor=kNN_factor)
@@ -438,7 +438,7 @@ if savefigures:
 
 # Planet radii:
 radii_axis = np.linspace(radii_min, radii_max, pts)
-plot_fig_pdf_simple(fig_size, [], [], x_min=radii_min, x_max=radii_max, y_max=0.5, xlabel_text=r'$R_p (R_\oplus)$', ylabel_text='Density', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt)
+plot_fig_pdf_simple([], [], x_min=radii_min, x_max=radii_max, y_max=0.5, xlabel_text=r'$R_p (R_\oplus)$', ylabel_text='Density', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 for i,sample in enumerate(split_names):
     #kde_pts_Kep = radii_kde_Kep[sample](radii_axis)
     kde_pts_Kep, bw_pts_Kep = kde_kNN_bw(radii_kde_Kep[sample], radii_axis, kNN_factor=kNN_factor)
@@ -458,7 +458,7 @@ if savefigures:
 
 # Stellar radii:
 Rstar_axis = np.linspace(0.5, 2.5, pts)
-plot_fig_pdf_simple(fig_size, [], [], x_min=np.min(Rstar_axis), x_max=np.max(Rstar_axis), y_max=3, xlabel_text=r'$R_\star (R_\odot)$', ylabel_text='Density', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt)
+plot_fig_pdf_simple([], [], x_min=np.min(Rstar_axis), x_max=np.max(Rstar_axis), y_max=3, xlabel_text=r'$R_\star (R_\odot)$', ylabel_text='Density', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 for i,sample in enumerate(split_names):
     #kde_pts_Kep = Rstar_kde_Kep[sample](Rstar_axis)
     kde_pts_Kep, bw_pts_Kep = kde_kNN_bw(Rstar_kde_Kep[sample], Rstar_axis, kNN_factor=kNN_factor)
@@ -478,7 +478,7 @@ if savefigures:
 
 # Transit depth ratios:
 D_ratio_axis = np.logspace(-1.5, 1.5, pts)
-plot_fig_pdf_simple(fig_size, [], [], x_min=np.min(D_ratio_axis), x_max=np.max(D_ratio_axis), y_max=1.6, log_x=True, xlabel_text=r'$\delta_{i+1}/\delta_i$', ylabel_text='Density', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt)
+plot_fig_pdf_simple([], [], x_min=np.min(D_ratio_axis), x_max=np.max(D_ratio_axis), y_max=1.6, log_x=True, xlabel_text=r'$\delta_{i+1}/\delta_i$', ylabel_text='Density', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 for i,sample in enumerate(split_names):
     #kde_pts_Kep = D_ratio_kde_Kep[sample](np.log10(D_ratio_axis))
     kde_pts_Kep, bw_pts_Kep = kde_kNN_bw(D_ratio_kde_Kep[sample], np.log10(D_ratio_axis), kNN_factor=kNN_factor)
@@ -498,7 +498,7 @@ if savefigures:
 
 # Log(xi):
 xi_axis = np.linspace(-0.5, 0.5, pts)
-plot_fig_pdf_simple(fig_size, [], [], x_min=np.min(xi_axis), x_max=np.max(xi_axis), y_max=10, xlabel_text=r'$\log{\xi}$', ylabel_text='Density', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt)
+plot_fig_pdf_simple([], [], x_min=np.min(xi_axis), x_max=np.max(xi_axis), y_max=10, xlabel_text=r'$\log{\xi}$', ylabel_text='Density', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 for i,sample in enumerate(split_names):
     #kde_pts_Kep = xi_kde_Kep[sample](xi_axis)
     kde_pts_Kep, bw_pts_Kep = kde_kNN_bw(xi_kde_Kep[sample], xi_axis, kNN_factor=kNN_factor)
@@ -517,7 +517,7 @@ if savefigures:
     plt.close()
 
 # Log(xi) (not near MMR):
-plot_fig_pdf_simple(fig_size, [], [], x_min=np.min(xi_axis), x_max=np.max(xi_axis), y_max=10, extra_text='Not near MMR', xlabel_text=r'$\log{\xi}$', ylabel_text='Density', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt)
+plot_fig_pdf_simple([], [], x_min=np.min(xi_axis), x_max=np.max(xi_axis), y_max=10, extra_text='Not near MMR', xlabel_text=r'$\log{\xi}$', ylabel_text='Density', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 for i,sample in enumerate(split_names):
     #kde_pts_Kep = xi_nonres_kde_Kep[sample](xi_axis)
     kde_pts_Kep, bw_pts_Kep = kde_kNN_bw(xi_nonres_kde_Kep[sample], xi_axis, kNN_factor=kNN_factor)
@@ -536,7 +536,7 @@ if savefigures:
     plt.close()
 
 # Log(xi) (near MMR):
-plot_fig_pdf_simple(fig_size, [], [], x_min=np.min(xi_axis), x_max=np.max(xi_axis), y_max=10, extra_text='Near MMR', xlabel_text=r'$\log{\xi}$', ylabel_text='Density', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt)
+plot_fig_pdf_simple([], [], x_min=np.min(xi_axis), x_max=np.max(xi_axis), y_max=10, extra_text='Near MMR', xlabel_text=r'$\log{\xi}$', ylabel_text='Density', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 for i,sample in enumerate(split_names):
     #kde_pts_Kep = xi_res_kde_Kep[sample](xi_axis)
     kde_pts_Kep, bw_pts_Kep = kde_kNN_bw(xi_res_kde_Kep[sample], xi_axis, kNN_factor=kNN_factor)
@@ -557,7 +557,7 @@ if savefigures:
 ### GF2020 metrics:
 # Planet radii partitioning:
 radii_partitioning_axis = np.logspace(-5., 0., pts)
-plot_fig_pdf_simple(fig_size, [], [], x_min=1e-5, x_max=1., y_max=0.7, xlabel_text=r'$\mathcal{Q}_R$', ylabel_text='Density', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt)
+plot_fig_pdf_simple([], [], x_min=1e-5, x_max=1., y_max=0.7, xlabel_text=r'$\mathcal{Q}_R$', ylabel_text='Density', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 for i,sample in enumerate(split_names):
     #kde_pts_Kep = radii_partitioning_kde_Kep[sample](np.log10(radii_partitioning_axis))
     kde_pts_Kep, bw_pts_Kep = kde_kNN_bw(radii_partitioning_kde_Kep[sample], np.log10(radii_partitioning_axis), kNN_factor=kNN_factor)
@@ -577,7 +577,7 @@ if savefigures:
 
 # Planet radii monotonicity:
 radii_monotonicity_axis = np.linspace(-0.5, 0.6, pts)
-plot_fig_pdf_simple(fig_size, [], [], x_min=-0.5, x_max=0.6, y_max=4, xlabel_text=r'$\mathcal{M}_R$', ylabel_text='Density', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt)
+plot_fig_pdf_simple([], [], x_min=-0.5, x_max=0.6, y_max=4, xlabel_text=r'$\mathcal{M}_R$', ylabel_text='Density', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 for i,sample in enumerate(split_names):
     #kde_pts_Kep = radii_monotonicity_kde_Kep[sample](radii_monotonicity_axis)
     kde_pts_Kep, bw_pts_Kep = kde_kNN_bw(radii_monotonicity_kde_Kep[sample], radii_monotonicity_axis, kNN_factor=kNN_factor)
@@ -597,7 +597,7 @@ if savefigures:
 
 # Gap complexity:
 gap_complexity_axis = np.linspace(0., 1., pts)
-plot_fig_pdf_simple(fig_size, [], [], x_min=0., x_max=1., y_max=10, xlabel_text=r'$\mathcal{C}$', ylabel_text='Density', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt)
+plot_fig_pdf_simple([], [], x_min=0., x_max=1., y_max=10, xlabel_text=r'$\mathcal{C}$', ylabel_text='Density', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 for i,sample in enumerate(split_names):
     #kde_pts_Kep = gap_complexity_kde_Kep[sample](gap_complexity_axis)
     kde_pts_Kep, bw_pts_Kep = kde_kNN_bw(gap_complexity_kde_Kep[sample], gap_complexity_axis, kNN_factor=kNN_factor)

@@ -410,7 +410,7 @@ for m in range(models):
 
 
 # Multiplicities:
-plot_fig_counts_hist_simple(fig_size, [], [ssk_per_sys['Mtot_obs']], x_min=0, x_llim=0.5, normalize=True, log_y=True, lw=lw, xlabel_text='Observed planets per system', ylabel_text='Fraction', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt)
+plot_fig_counts_hist_simple([], [ssk_per_sys['Mtot_obs']], x_min=0, x_llim=0.5, normalize=True, log_y=True, lw=lw, xlabel_text='Observed planets per system', ylabel_text='Fraction', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 for m in range(models):
     plt.plot(Mtot_bins_mid, Mtot_counts_qtls[m][:,1], drawstyle='steps-mid', color=model_colors[m], ls=model_linestyles[m], lw=lw, label=model_names[m])
     plt.errorbar(Mtot_bins_mid + model_stagger_errorbars[m], Mtot_counts_qtls[m][:,1], yerr=[Mtot_counts_qtls[m][:,1]-Mtot_counts_qtls[m][:,0], Mtot_counts_qtls[m][:,2]-Mtot_counts_qtls[m][:,1]], fmt='none', color=model_colors[m], lw=lw, label='') #capsize=5 #label=r'16% and 84%' if m==0 else ''
@@ -420,7 +420,7 @@ if savefigures:
     plt.close()
 
 # Periods:
-plot_fig_pdf_simple(fig_size, [sss['P_obs'] for sss in model_sss], [ssk['P_obs']], x_min=P_min, x_max=P_max, y_min=1e-3, y_max=0.1, n_bins=n_bins, log_x=True, log_y=True, c_sim=model_colors, lw=lw, ls_sim=model_linestyles, labels_sim=model_names, xticks_custom=[3,10,30,100,300], xlabel_text=r'$P$ (days)', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_lbrt=fig_lbrt)
+plot_fig_pdf_simple([sss['P_obs'] for sss in model_sss], [ssk['P_obs']], x_min=P_min, x_max=P_max, y_min=1e-3, y_max=0.1, n_bins=n_bins, log_x=True, log_y=True, c_sim=model_colors, lw=lw, ls_sim=model_linestyles, labels_sim=model_names, xticks_custom=[3,10,30,100,300], xlabel_text=r'$P$ (days)', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_size=fig_size, fig_lbrt=fig_lbrt)
 for m in range(models):
     label_this = r'16%-84%' if m==0 else ''
     plt.fill_between(P_bins_mid, P_counts_qtls[m][:,0], P_counts_qtls[m][:,2], color=model_colors[m], alpha=alpha, label=label_this)
@@ -430,7 +430,7 @@ if savefigures:
 
 # Period ratios (all, with some upper cut-off):
 R_max_cut = 30. #upper cut-off for plotting period ratios; np.max(sss['Rm_obs'])
-plot_fig_pdf_simple(fig_size, [sss['Rm_obs'][sss['Rm_obs'] < R_max_cut] for sss in model_sss], [ssk['Rm_obs'][ssk['Rm_obs'] < R_max_cut]], x_min=1., x_max=R_max_cut, n_bins=n_bins, log_x=True, c_sim=model_colors, lw=lw, ls_sim=model_linestyles, labels_sim=model_names, xticks_custom=[1,2,3,4,5,10,20], xlabel_text=r'$P_{i+1}/P_i$', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt)
+plot_fig_pdf_simple([sss['Rm_obs'][sss['Rm_obs'] < R_max_cut] for sss in model_sss], [ssk['Rm_obs'][ssk['Rm_obs'] < R_max_cut]], x_min=1., x_max=R_max_cut, n_bins=n_bins, log_x=True, c_sim=model_colors, lw=lw, ls_sim=model_linestyles, labels_sim=model_names, xticks_custom=[1,2,3,4,5,10,20], xlabel_text=r'$P_{i+1}/P_i$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 for m in range(models):
     plt.fill_between(Rm_bins_mid, Rm_counts_qtls[m][:,0], Rm_counts_qtls[m][:,2], color=model_colors[m], alpha=alpha)
 plt.minorticks_off()
@@ -439,7 +439,7 @@ if savefigures:
     plt.close()
 
 # Transit durations:
-plot_fig_pdf_simple(fig_size, [sss['tdur_obs'] for sss in model_sss], [ssk['tdur_obs']], x_min=0., x_max=15., n_bins=n_bins, c_sim=model_colors, lw=lw, ls_sim=model_linestyles, labels_sim=model_names, xlabel_text=r'$t_{\rm dur}$ (hrs)', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt)
+plot_fig_pdf_simple([sss['tdur_obs'] for sss in model_sss], [ssk['tdur_obs']], x_min=0., x_max=15., n_bins=n_bins, c_sim=model_colors, lw=lw, ls_sim=model_linestyles, labels_sim=model_names, xlabel_text=r'$t_{\rm dur}$ (hrs)', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 for m in range(models):
     plt.fill_between(tdur_bins_mid, tdur_counts_qtls[m][:,0], tdur_counts_qtls[m][:,2], color=model_colors[m], alpha=alpha)
 if savefigures:
@@ -447,14 +447,14 @@ if savefigures:
     plt.close()
 
 # Circular normalized transit durations (separate singles and multis):
-plot_fig_pdf_simple(fig_size, [sss['tdur_tcirc_1_obs'] for sss in model_sss], [ssk['tdur_tcirc_1_obs']], x_min=np.min(tdur_tcirc_bins), x_max=np.max(tdur_tcirc_bins), n_bins=n_bins, c_sim=model_colors, lw=lw, ls_sim=model_linestyles, labels_sim=model_names, extra_text='Observed singles', xlabel_text=r'$t_{\rm dur}/t_{\rm circ}$', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt)
+plot_fig_pdf_simple([sss['tdur_tcirc_1_obs'] for sss in model_sss], [ssk['tdur_tcirc_1_obs']], x_min=np.min(tdur_tcirc_bins), x_max=np.max(tdur_tcirc_bins), n_bins=n_bins, c_sim=model_colors, lw=lw, ls_sim=model_linestyles, labels_sim=model_names, extra_text='Observed singles', xlabel_text=r'$t_{\rm dur}/t_{\rm circ}$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 for m in range(models):
     plt.fill_between(tdur_tcirc_bins_mid, tdur_tcirc_1_counts_qtls[m][:,0], tdur_tcirc_1_counts_qtls[m][:,2], color=model_colors[m], alpha=alpha)
 if savefigures:
     plt.savefig(savefigures_directory + subdirectory + save_name + '_tdur_tcirc_singles_compare.pdf')
     plt.close()
 
-plot_fig_pdf_simple(fig_size, [sss['tdur_tcirc_2p_obs'] for sss in model_sss], [ssk['tdur_tcirc_2p_obs']], x_min=np.min(tdur_tcirc_bins), x_max=np.max(tdur_tcirc_bins), n_bins=n_bins, c_sim=model_colors, lw=lw, ls_sim=model_linestyles, labels_sim=model_names, extra_text='Observed multis', xlabel_text=r'$t_{\rm dur}/t_{\rm circ}$', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt)
+plot_fig_pdf_simple([sss['tdur_tcirc_2p_obs'] for sss in model_sss], [ssk['tdur_tcirc_2p_obs']], x_min=np.min(tdur_tcirc_bins), x_max=np.max(tdur_tcirc_bins), n_bins=n_bins, c_sim=model_colors, lw=lw, ls_sim=model_linestyles, labels_sim=model_names, extra_text='Observed multis', xlabel_text=r'$t_{\rm dur}/t_{\rm circ}$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 for m in range(models):
     plt.fill_between(tdur_tcirc_bins_mid, tdur_tcirc_2p_counts_qtls[m][:,0], tdur_tcirc_2p_counts_qtls[m][:,2], color=model_colors[m], alpha=alpha)
 if savefigures:
@@ -462,7 +462,7 @@ if savefigures:
     plt.close()
 
 # Transit depths:
-plot_fig_pdf_simple(fig_size, [sss['D_obs'] for sss in model_sss], [ssk['D_obs']], x_min=np.min(D_bins), x_max=np.max(D_bins), log_x=True, c_sim=model_colors, lw=lw, ls_sim=model_linestyles, labels_sim=model_names, xlabel_text=r'$\delta$', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt)
+plot_fig_pdf_simple([sss['D_obs'] for sss in model_sss], [ssk['D_obs']], x_min=np.min(D_bins), x_max=np.max(D_bins), log_x=True, c_sim=model_colors, lw=lw, ls_sim=model_linestyles, labels_sim=model_names, xlabel_text=r'$\delta$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 for m in range(models):
     plt.fill_between(D_bins_mid, D_counts_qtls[m][:,0], D_counts_qtls[m][:,2], color=model_colors[m], alpha=alpha)
 if savefigures:
@@ -470,7 +470,7 @@ if savefigures:
     plt.close()
 
 # Planet radii:
-plot_fig_pdf_simple(fig_size, [sss['radii_obs'] for sss in model_sss], [ssk['radii_obs']], x_min=radii_min, x_max=radii_max, n_bins=n_bins, c_sim=model_colors, lw=lw, ls_sim=model_linestyles, labels_sim=model_names, xlabel_text=r'$R_p (R_\oplus)$', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt)
+plot_fig_pdf_simple([sss['radii_obs'] for sss in model_sss], [ssk['radii_obs']], x_min=radii_min, x_max=radii_max, n_bins=n_bins, c_sim=model_colors, lw=lw, ls_sim=model_linestyles, labels_sim=model_names, xlabel_text=r'$R_p (R_\oplus)$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 for m in range(models):
     plt.fill_between(radii_bins_mid, radii_counts_qtls[m][:,0], radii_counts_qtls[m][:,2], color=model_colors[m], alpha=alpha)
 if savefigures:
@@ -478,7 +478,7 @@ if savefigures:
     plt.close()
 
 # Stellar radii:
-plot_fig_pdf_simple(fig_size, [sss['Rstar_obs'] for sss in model_sss], [ssk['Rstar_obs']], x_min=0.5, x_max=2.5, n_bins=n_bins, c_sim=model_colors, lw=lw, ls_sim=model_linestyles, labels_sim=model_names, xlabel_text=r'$R_\star (R_\odot)$', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt)
+plot_fig_pdf_simple([sss['Rstar_obs'] for sss in model_sss], [ssk['Rstar_obs']], x_min=0.5, x_max=2.5, n_bins=n_bins, c_sim=model_colors, lw=lw, ls_sim=model_linestyles, labels_sim=model_names, xlabel_text=r'$R_\star (R_\odot)$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 for m in range(models):
     plt.fill_between(Rstar_bins_mid, Rstar_counts_qtls[m][:,0], Rstar_counts_qtls[m][:,2], color=model_colors[m], alpha=alpha)
 if savefigures:
@@ -486,7 +486,7 @@ if savefigures:
     plt.close()
 
 # Transit depth ratios:
-plot_fig_pdf_simple(fig_size, [sss['D_ratio_obs'] for sss in model_sss], [ssk['D_ratio_obs']], x_min=np.min(D_ratio_bins), x_max=np.max(D_ratio_bins), n_bins=n_bins, log_x=True, c_sim=model_colors, lw=lw, ls_sim=model_linestyles, labels_sim=model_names, xlabel_text=r'$\delta_{i+1}/\delta_i$', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt)
+plot_fig_pdf_simple([sss['D_ratio_obs'] for sss in model_sss], [ssk['D_ratio_obs']], x_min=np.min(D_ratio_bins), x_max=np.max(D_ratio_bins), n_bins=n_bins, log_x=True, c_sim=model_colors, lw=lw, ls_sim=model_linestyles, labels_sim=model_names, xlabel_text=r'$\delta_{i+1}/\delta_i$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 for m in range(models):
     plt.fill_between(D_ratio_bins_mid, D_ratio_counts_qtls[m][:,0], D_ratio_counts_qtls[m][:,2], color=model_colors[m], alpha=alpha)
 if savefigures:
@@ -494,7 +494,7 @@ if savefigures:
     plt.close()
 
 # Log(xi):
-plot_fig_pdf_simple(fig_size, [np.log10(sss['xi_obs']) for sss in model_sss], [np.log10(ssk['xi_obs'])], x_min=np.min(xi_bins), x_max=np.max(xi_bins), n_bins=n_bins, c_sim=model_colors, lw=lw, ls_sim=model_linestyles, labels_sim=model_names, xlabel_text=r'$\log{\xi}$', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt)
+plot_fig_pdf_simple([np.log10(sss['xi_obs']) for sss in model_sss], [np.log10(ssk['xi_obs'])], x_min=np.min(xi_bins), x_max=np.max(xi_bins), n_bins=n_bins, c_sim=model_colors, lw=lw, ls_sim=model_linestyles, labels_sim=model_names, xlabel_text=r'$\log{\xi}$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 for m in range(models):
     plt.fill_between(xi_bins_mid, xi_counts_qtls[m][:,0], xi_counts_qtls[m][:,2], color=model_colors[m], alpha=alpha)
 if savefigures:

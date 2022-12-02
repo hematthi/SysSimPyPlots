@@ -18,13 +18,11 @@ On the previous page, you learned how to load a catalog (physical and observed).
 
    sss_per_sys, sss = compute_summary_stats_from_cat_obs(file_name_path=load_dir)
 
-   fig_size = (8,4) # size of each figure (width, height)
-
    # To plot a histogram of the observed multiplicities (number of planets per system):
-   ax = plot_fig_counts_hist_simple(fig_size, [sss_per_sys['Mtot_obs']], [], x_min=0, x_max=8, x_llim=0.5, log_y=True, xlabel_text='Observed multiplicity', ylabel_text='Number of systems')
+   ax = plot_fig_counts_hist_simple([sss_per_sys['Mtot_obs']], [], x_min=0, x_max=8, x_llim=0.5, log_y=True, xlabel_text='Observed multiplicity', ylabel_text='Number of systems')
 
    # To plot a histogram of the observed orbital periods:
-   ax = plot_fig_pdf_simple(fig_size, [sss['P_obs']], [], x_min=3., x_max=300., normalize=False, log_x=True, log_y=True, xticks_custom=[3,10,30,100,300], xlabel_text=r'$P$ (days)', ylabel_text='Number of planets')
+   ax = plot_fig_pdf_simple([sss['P_obs']], [], x_min=3., x_max=300., normalize=False, log_x=True, log_y=True, xticks_custom=[3,10,30,100,300], xlabel_text=r'$P$ (days)', ylabel_text='Number of planets')
 
    plt.show()
 
@@ -64,10 +62,10 @@ The third argument (empty list ``[]`` in the above examples) allows you to easil
    ssk_per_sys, ssk = compute_summary_stats_from_Kepler_catalog(P_min, P_max, radii_min, radii_max)
 
    # To plot a histogram of the observed multiplicities (number of planets per system):
-   ax = plot_fig_counts_hist_simple(fig_size, [sss_per_sys['Mtot_obs']], [ssk_per_sys['Mtot_obs']], x_min=0, x_max=9, y_max=1, x_llim=0.5, normalize=True, log_y=True, xlabel_text='Observed multiplicity', ylabel_text='Fraction', legend=True)
+   ax = plot_fig_counts_hist_simple([sss_per_sys['Mtot_obs']], [ssk_per_sys['Mtot_obs']], x_min=0, x_max=9, y_max=1, x_llim=0.5, normalize=True, log_y=True, xlabel_text='Observed multiplicity', ylabel_text='Fraction', legend=True)
 
    # To plot a histogram of the observed orbital periods:
-   ax = plot_fig_pdf_simple(fig_size, [sss['P_obs']], [ssk['P_obs']], x_min=3., x_max=300., log_x=True, log_y=True, xticks_custom=[3,10,30,100,300], xlabel_text=r'$P$ (days)', legend=True)
+   ax = plot_fig_pdf_simple([sss['P_obs']], [ssk['P_obs']], x_min=3., x_max=300., log_x=True, log_y=True, xticks_custom=[3,10,30,100,300], xlabel_text=r'$P$ (days)', legend=True)
 
    plt.show()
 
@@ -106,7 +104,7 @@ You can also plot multiple simulated (and Kepler) catalogs simultaneously by sim
    sss_per_sys2, sss2 = compute_summary_stats_from_cat_obs(file_name_path=load_dir, run_number='2')
 
    # To plot histograms of the observed orbital periods:
-   ax = plot_fig_pdf_simple(fig_size, [sss1['P_obs'], sss2['P_obs']], [], x_min=3., x_max=300., log_x=True, log_y=True, c_sim=['k','r'], ls_sim=['-','-'], labels_sim=['Catalog 1', 'Catalog 2'], xticks_custom=[3,10,30,100,300], xlabel_text=r'$P$ (days)', legend=True)
+   ax = plot_fig_pdf_simple([sss1['P_obs'], sss2['P_obs']], [], x_min=3., x_max=300., log_x=True, log_y=True, c_sim=['k','r'], ls_sim=['-','-'], labels_sim=['Catalog 1', 'Catalog 2'], xticks_custom=[3,10,30,100,300], xlabel_text=r'$P$ (days)', legend=True)
 
    plt.show()
 
@@ -130,10 +128,10 @@ Similarly, we also provide the following functions for plotting cumulative distr
 .. code-block:: python
 
    # To plot a CDF of the observed multiplicities:
-   ax = plot_fig_mult_cdf_simple(fig_size, [sss_per_sys['Mtot_obs']], [ssk_per_sys['Mtot_obs']], y_min=0.6, y_max=1., xlabel_text='Observed planets per system', legend=True)
+   ax = plot_fig_mult_cdf_simple([sss_per_sys['Mtot_obs']], [ssk_per_sys['Mtot_obs']], y_min=0.6, y_max=1., xlabel_text='Observed planets per system', legend=True)
 
    # To plot a CDF of the observed orbital periods:
-   ax = plot_fig_cdf_simple(fig_size, [sss['P_obs']], [ssk['P_obs']], x_min=3., x_max=300., log_x=True, xticks_custom=[3,10,30,100,300], xlabel_text=r'$P$ (days)', legend=True)
+   ax = plot_fig_cdf_simple([sss['P_obs']], [ssk['P_obs']], x_min=3., x_max=300., log_x=True, xticks_custom=[3,10,30,100,300], xlabel_text=r'$P$ (days)', legend=True)
 
    plt.show()
 

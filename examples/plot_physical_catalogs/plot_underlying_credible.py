@@ -402,7 +402,7 @@ if savefigures:
     plt.close()
 
 # Periods:
-plot_fig_pdf_simple(fig_size, [sssp['P_all']], [], x_min=P_min, x_max=P_max, n_bins=n_bins, log_x=True, log_y=True, lw=lw, xticks_custom=[3,10,30,100,300], xlabel_text=r'$P$ (days)', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt)
+plot_fig_pdf_simple([sssp['P_all']], [], x_min=P_min, x_max=P_max, n_bins=n_bins, log_x=True, log_y=True, lw=lw, xticks_custom=[3,10,30,100,300], xlabel_text=r'$P$ (days)', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 plt.fill_between(P_bins_mid, P_counts_qtls[:,0], P_counts_qtls[:,2], alpha=alpha, label=r'16%-84%')
 plt.legend(loc='lower right', bbox_to_anchor=(1,0), ncol=1, frameon=False, fontsize=lfs)
 if savefigures:
@@ -410,7 +410,7 @@ if savefigures:
     plt.close()
 
 # Period ratios (all):
-plot_fig_pdf_simple(fig_size, [sssp['Rm_all']], [], x_min=Rm_bins[0], x_max=Rm_bins[-1], y_max=0.07, n_bins=n_bins, log_x=True, lw=lw, xticks_custom=[1,2,3,4,5,10,20], xlabel_text=r'$P_{i+1}/P_i$', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt)
+plot_fig_pdf_simple([sssp['Rm_all']], [], x_min=Rm_bins[0], x_max=Rm_bins[-1], y_max=0.07, n_bins=n_bins, log_x=True, lw=lw, xticks_custom=[1,2,3,4,5,10,20], xlabel_text=r'$P_{i+1}/P_i$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 plt.fill_between(Rm_bins_mid, Rm_counts_qtls[:,0], Rm_counts_qtls[:,2], alpha=alpha)
 plt.minorticks_off()
 if savefigures:
@@ -418,49 +418,49 @@ if savefigures:
     plt.close()
 
 # Eccentricities:
-plot_fig_pdf_simple(fig_size, [sssp['e_all']], [], x_min=e_bins[0], x_max=e_bins[-1], log_x=True, n_bins=n_bins, lw=lw, xlabel_text=r'$e$', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt)
+plot_fig_pdf_simple([sssp['e_all']], [], x_min=e_bins[0], x_max=e_bins[-1], log_x=True, n_bins=n_bins, lw=lw, xlabel_text=r'$e$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 plt.fill_between(e_bins_mid, e_counts_qtls[:,0], e_counts_qtls[:,2], alpha=alpha)
 if savefigures:
     plt.savefig(savefigures_directory + subdirectory + model_name + '_underlying_eccentricities.pdf')
     plt.close()
 
 # Mutual inclinations:
-plot_fig_pdf_simple(fig_size, [sssp['inclmut_all']*(180./np.pi)], [], x_min=im_bins[0], x_max=im_bins[-1], y_max=0.06, log_x=True, n_bins=n_bins, lw=lw, xlabel_text=r'$i_m$ (deg)', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt)
+plot_fig_pdf_simple([sssp['inclmut_all']*(180./np.pi)], [], x_min=im_bins[0], x_max=im_bins[-1], y_max=0.06, log_x=True, n_bins=n_bins, lw=lw, xlabel_text=r'$i_m$ (deg)', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 plt.fill_between(im_bins_mid, im_counts_qtls[:,0], im_counts_qtls[:,2], alpha=alpha)
 if savefigures:
     plt.savefig(savefigures_directory + subdirectory + model_name + '_underlying_mutualinclinations.pdf')
     plt.close()
 
 # Planet masses:
-plot_fig_pdf_simple(fig_size, [sssp['mass_all']], [], x_min=mass_bins[0], x_max=mass_bins[-1], n_bins=n_bins, log_x=True, lw=lw, xlabel_text=r'$M_p$ ($M_\oplus$)', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt)
+plot_fig_pdf_simple([sssp['mass_all']], [], x_min=mass_bins[0], x_max=mass_bins[-1], n_bins=n_bins, log_x=True, lw=lw, xlabel_text=r'$M_p$ ($M_\oplus$)', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 plt.fill_between(mass_bins_mid, mass_counts_qtls[:,0], mass_counts_qtls[:,2], alpha=alpha)
 if savefigures:
     plt.savefig(savefigures_directory + subdirectory + model_name + '_underlying_masses.pdf')
     plt.close()
 
 # Planet radii:
-plot_fig_pdf_simple(fig_size, [sssp['radii_all']], [], x_min=radii_min, x_max=radii_max, y_max=0.025, n_bins=n_bins, log_x=True, lw=lw, xticks_custom=[0.5,1,2,4,10], xlabel_text=r'$R_p$ ($R_\oplus$)', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt)
+plot_fig_pdf_simple([sssp['radii_all']], [], x_min=radii_min, x_max=radii_max, y_max=0.025, n_bins=n_bins, log_x=True, lw=lw, xticks_custom=[0.5,1,2,4,10], xlabel_text=r'$R_p$ ($R_\oplus$)', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 plt.fill_between(radii_bins_mid, radii_counts_qtls[:,0], radii_counts_qtls[:,2], alpha=alpha)
 if savefigures:
     plt.savefig(savefigures_directory + subdirectory + model_name + '_underlying_radii.pdf')
     plt.close()
 
 # Planet radii ratios:
-plot_fig_pdf_simple(fig_size, [sssp['radii_ratio_all']], [], x_min=radii_ratio_bins[0], x_max=radii_ratio_bins[-1], y_max=0.06, n_bins=n_bins, log_x=True, lw=lw, xlabel_text=r'$R_{p,i+1}/R_{p,i}$', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt)
+plot_fig_pdf_simple([sssp['radii_ratio_all']], [], x_min=radii_ratio_bins[0], x_max=radii_ratio_bins[-1], y_max=0.06, n_bins=n_bins, log_x=True, lw=lw, xlabel_text=r'$R_{p,i+1}/R_{p,i}$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 plt.fill_between(radii_ratio_bins_mid, radii_ratio_counts_qtls[:,0], radii_ratio_counts_qtls[:,2], alpha=alpha)
 if savefigures:
     plt.savefig(savefigures_directory + subdirectory + model_name + '_underlying_radii_ratios.pdf')
     plt.close()
 
 # Separations in mutual Hill radii:
-plot_fig_pdf_simple(fig_size, [sssp['N_mH_all']], [], x_min=N_mH_bins[0], x_max=N_mH_bins[-1], y_max=0.05, n_bins=n_bins, log_x=True, lw=lw, xlabel_text=r'$\Delta$', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt)
+plot_fig_pdf_simple([sssp['N_mH_all']], [], x_min=N_mH_bins[0], x_max=N_mH_bins[-1], y_max=0.05, n_bins=n_bins, log_x=True, lw=lw, xlabel_text=r'$\Delta$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 plt.fill_between(N_mH_bins_mid, N_mH_counts_qtls[:,0], N_mH_counts_qtls[:,2], alpha=alpha)
 if savefigures:
     plt.savefig(savefigures_directory + subdirectory + model_name + '_underlying_deltas.pdf')
     plt.close()
 
 # Stellar radii:
-plot_fig_pdf_simple(fig_size, [sssp['Rstar_all']], [], x_min=Rstar_bins[0], x_max=Rstar_bins[-1], n_bins=n_bins, lw=lw, xlabel_text=r'$R_\star (R_\odot)$', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt)
+plot_fig_pdf_simple([sssp['Rstar_all']], [], x_min=Rstar_bins[0], x_max=Rstar_bins[-1], n_bins=n_bins, lw=lw, xlabel_text=r'$R_\star (R_\odot)$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 plt.fill_between(Rstar_bins_mid, Rstar_counts_qtls[:,0], Rstar_counts_qtls[:,2], alpha=alpha)
 if savefigures:
     plt.savefig(savefigures_directory + subdirectory + model_name + '_underlying_stellar_radii.pdf')
@@ -468,28 +468,28 @@ if savefigures:
 
 ### GF2020 metrics, but for the underlying systems:
 # Dynamical masses CDFs:
-plot_fig_pdf_simple(fig_size, [sssp_per_sys['dynamical_mass']], [], x_min=dynamical_mass_bins[0], x_max=dynamical_mass_bins[-1], y_max=0.05, n_bins=n_bins, log_x=True, lw=lw, xlabel_text=r'$\mu$', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt)
+plot_fig_pdf_simple([sssp_per_sys['dynamical_mass']], [], x_min=dynamical_mass_bins[0], x_max=dynamical_mass_bins[-1], y_max=0.05, n_bins=n_bins, log_x=True, lw=lw, xlabel_text=r'$\mu$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 plt.fill_between(dynamical_mass_bins_mid, dynamical_mass_counts_qtls[:,0], dynamical_mass_counts_qtls[:,2], alpha=alpha)
 if savefigures:
     plt.savefig(savefigures_directory + subdirectory + model_name + '_underlying_dynamical_masses.pdf')
     plt.close()
 
 # Planet radii partitioning CDFs:
-plot_fig_pdf_simple(fig_size, [sssp_per_sys['radii_partitioning']], [], x_min=radii_partitioning_bins[0], x_max=radii_partitioning_bins[-1], y_max=0.05, n_bins=n_bins, log_x=True, lw=lw, xlabel_text=r'$\mathcal{Q}_R$', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt)
+plot_fig_pdf_simple([sssp_per_sys['radii_partitioning']], [], x_min=radii_partitioning_bins[0], x_max=radii_partitioning_bins[-1], y_max=0.05, n_bins=n_bins, log_x=True, lw=lw, xlabel_text=r'$\mathcal{Q}_R$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 plt.fill_between(radii_partitioning_bins_mid, radii_partitioning_counts_qtls[:,0], radii_partitioning_counts_qtls[:,2], alpha=alpha)
 if savefigures:
     plt.savefig(savefigures_directory + subdirectory + model_name + '_underlying_radii_partitioning.pdf')
     plt.close()
 
 # Planet radii monotonicity CDFs:
-plot_fig_pdf_simple(fig_size, [sssp_per_sys['radii_monotonicity']], [], x_min=radii_monotonicity_bins[0], x_max=radii_monotonicity_bins[-1], y_max=0.03, n_bins=n_bins, lw=lw, xlabel_text=r'$\mathcal{M}_R$', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt)
+plot_fig_pdf_simple([sssp_per_sys['radii_monotonicity']], [], x_min=radii_monotonicity_bins[0], x_max=radii_monotonicity_bins[-1], y_max=0.03, n_bins=n_bins, lw=lw, xlabel_text=r'$\mathcal{M}_R$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 plt.fill_between(radii_monotonicity_bins_mid, radii_monotonicity_counts_qtls[:,0], radii_monotonicity_counts_qtls[:,2], alpha=alpha)
 if savefigures:
     plt.savefig(savefigures_directory + subdirectory + model_name + '_underlying_radii_monotonicity.pdf')
     plt.close()
 
 # Gap complexity CDFs:
-plot_fig_pdf_simple(fig_size, [sssp_per_sys['gap_complexity']], [], x_min=gap_complexity_bins[0], x_max=gap_complexity_bins[-1], y_max=0.06, n_bins=n_bins, log_x=False, lw=lw, xlabel_text=r'$\mathcal{C}$', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt)
+plot_fig_pdf_simple([sssp_per_sys['gap_complexity']], [], x_min=gap_complexity_bins[0], x_max=gap_complexity_bins[-1], y_max=0.06, n_bins=n_bins, log_x=False, lw=lw, xlabel_text=r'$\mathcal{C}$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 plt.fill_between(gap_complexity_bins_mid, gap_complexity_counts_qtls[:,0], gap_complexity_counts_qtls[:,2], alpha=alpha)
 if savefigures:
     plt.savefig(savefigures_directory + subdirectory + model_name + '_underlying_gap_complexity.pdf')

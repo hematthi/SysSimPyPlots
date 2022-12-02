@@ -87,11 +87,11 @@ lfs = 16 #legend labels font size
 
 #'''
 # Multiplicities:
-#plot_fig_counts_hist_simple(fig_size, [np.concatenate((sssp_per_sys['Mtot_all'], np.zeros(N_sim-len(sssp_per_sys['Mtot_all']), dtype=int))) for sssp_per_sys in model_sssp_per_sys], [], x_min=-1, x_llim=-0.5, x_ulim=10.5, normalize=True, c_sim=model_colors, ls_sim=model_linestyles, lw=lw, labels_sim=model_names, xlabel_text='Planets per system', ylabel_text='Fraction', afs=afs, tfs=tfs, lfs=lfs, legend=True, show_counts_sim=False, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + save_name + '_underlying_multiplicities.pdf', save_fig=savefigures) # if sssp_per_sys['Mtot_all'] does not contain zeros
-plot_fig_counts_hist_simple(fig_size, [sssp_per_sys['Mtot_all'] for sssp_per_sys in model_sssp_per_sys], [], x_min=-1, x_llim=-0.5, x_ulim=10.5, normalize=True, c_sim=model_colors, ls_sim=model_linestyles, lw=lw, labels_sim=model_names, xlabel_text='Planets per system', ylabel_text='Fraction', afs=afs, tfs=tfs, lfs=lfs, legend=True, show_counts_sim=False, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + save_name + '_underlying_multiplicities.pdf', save_fig=savefigures) # if sssp_per_sys['Mtot_all'] contains zeros
+#plot_fig_counts_hist_simple([np.concatenate((sssp_per_sys['Mtot_all'], np.zeros(N_sim-len(sssp_per_sys['Mtot_all']), dtype=int))) for sssp_per_sys in model_sssp_per_sys], [], x_min=-1, x_llim=-0.5, x_ulim=10.5, normalize=True, c_sim=model_colors, ls_sim=model_linestyles, lw=lw, labels_sim=model_names, xlabel_text='Planets per system', ylabel_text='Fraction', afs=afs, tfs=tfs, lfs=lfs, legend=True, show_counts_sim=False, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + save_name + '_underlying_multiplicities.pdf', save_fig=savefigures) # if sssp_per_sys['Mtot_all'] does not contain zeros
+plot_fig_counts_hist_simple([sssp_per_sys['Mtot_all'] for sssp_per_sys in model_sssp_per_sys], [], x_min=-1, x_llim=-0.5, x_ulim=10.5, normalize=True, c_sim=model_colors, ls_sim=model_linestyles, lw=lw, labels_sim=model_names, xlabel_text='Planets per system', ylabel_text='Fraction', afs=afs, tfs=tfs, lfs=lfs, legend=True, show_counts_sim=False, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + save_name + '_underlying_multiplicities.pdf', save_fig=savefigures) # if sssp_per_sys['Mtot_all'] contains zeros
 
 # Clusters per system:
-plot_fig_counts_hist_simple(fig_size, [sssp['clustertot_all'] for sssp in model_sssp], [], x_llim=0.5, x_ulim=5.5, normalize=True, lw=lw, c_sim=model_colors, ls_sim=model_linestyles, labels_sim=model_names, xlabel_text=r'Clusters per system $N_c$', ylabel_text='Fraction', afs=afs, tfs=tfs, lfs=lfs, show_counts_sim=False, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + save_name + '_underlying_clusters_per_system.pdf', save_fig=savefigures)
+plot_fig_counts_hist_simple([sssp['clustertot_all'] for sssp in model_sssp], [], x_llim=0.5, x_ulim=5.5, normalize=True, lw=lw, c_sim=model_colors, ls_sim=model_linestyles, labels_sim=model_names, xlabel_text=r'Clusters per system $N_c$', ylabel_text='Fraction', afs=afs, tfs=tfs, lfs=lfs, show_counts_sim=False, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + save_name + '_underlying_clusters_per_system.pdf', save_fig=savefigures)
 '''
 for n in [1,2,3]:
     for i,sssp in enumerate(model_sssp):
@@ -103,23 +103,23 @@ if savefigures:
 '''
 
 # Planets per cluster:
-plot_fig_counts_hist_simple(fig_size, [sssp['pl_per_cluster_all'] for sssp in model_sssp], [], x_llim=0.5, x_ulim=7.5, normalize=True, lw=lw, c_sim=model_colors, ls_sim=model_linestyles, labels_sim=model_names, xlabel_text=r'Planets per cluster $N_p$', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + save_name + '_underlying_planets_per_cluster.pdf', save_fig=savefigures)
+plot_fig_counts_hist_simple([sssp['pl_per_cluster_all'] for sssp in model_sssp], [], x_llim=0.5, x_ulim=7.5, normalize=True, lw=lw, c_sim=model_colors, ls_sim=model_linestyles, labels_sim=model_names, xlabel_text=r'Planets per cluster $N_p$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + save_name + '_underlying_planets_per_cluster.pdf', save_fig=savefigures)
 
 # Periods:
-#plot_fig_pdf_simple(fig_size, [sssp['P_all'] for sssp in model_sssp], [], x_min=P_min, x_max=P_max, n_bins=n_bins, log_x=True, log_y=True, c_sim=model_colors, lw=lw, ls_sim=model_linestyles, labels_sim=model_names, xticks_custom=[3,10,30,100,300], xlabel_text=r'$P$ (days)', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + save_name + '_underlying_periods.pdf', save_fig=savefigures)
-plot_fig_pdf_simple(fig_size, [sssp['P_all'] for sssp in model_sssp], [], x_min=P_min, x_max=1000., n_bins=n_bins, normalize=False, log_x=True, log_y=True, c_sim=model_colors, lw=lw, ls_sim=model_linestyles, labels_sim=model_names, xticks_custom=[3,10,30,100,300], xlabel_text=r'$P$ (days)', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + save_name + '_underlying_periods.pdf', save_fig=savefigures) #####
+#plot_fig_pdf_simple([sssp['P_all'] for sssp in model_sssp], [], x_min=P_min, x_max=P_max, n_bins=n_bins, log_x=True, log_y=True, c_sim=model_colors, lw=lw, ls_sim=model_linestyles, labels_sim=model_names, xticks_custom=[3,10,30,100,300], xlabel_text=r'$P$ (days)', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + save_name + '_underlying_periods.pdf', save_fig=savefigures)
+plot_fig_pdf_simple([sssp['P_all'] for sssp in model_sssp], [], x_min=P_min, x_max=1000., n_bins=n_bins, normalize=False, log_x=True, log_y=True, c_sim=model_colors, lw=lw, ls_sim=model_linestyles, labels_sim=model_names, xticks_custom=[3,10,30,100,300], xlabel_text=r'$P$ (days)', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + save_name + '_underlying_periods.pdf', save_fig=savefigures) #####
 
 # Period ratios (all):
-plot_fig_pdf_simple(fig_size, [sssp['Rm_all'] for sssp in model_sssp], [], x_min=1., x_max=20., n_bins=n_bins, log_x=True, c_sim=model_colors, lw=lw, ls_sim=model_linestyles, labels_sim=model_names, xticks_custom=[1,2,3,4,5,10,20], xlabel_text=r'$P_{i+1}/P_i$', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + save_name + '_underlying_periodratios.pdf', save_fig=savefigures)
+plot_fig_pdf_simple([sssp['Rm_all'] for sssp in model_sssp], [], x_min=1., x_max=20., n_bins=n_bins, log_x=True, c_sim=model_colors, lw=lw, ls_sim=model_linestyles, labels_sim=model_names, xticks_custom=[1,2,3,4,5,10,20], xlabel_text=r'$P_{i+1}/P_i$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + save_name + '_underlying_periodratios.pdf', save_fig=savefigures)
 #plt.minorticks_off()
 
 # Period ratios (< 5):
-plot_fig_pdf_simple(fig_size, [sssp['Rm_all'][sssp['Rm_all'] < 5] for sssp in model_sssp], [], x_min=1., x_max=5., n_bins=n_bins, log_x=True, c_sim=model_colors, lw=lw, ls_sim=model_linestyles, labels_sim=model_names, xticks_custom=[1,2,3,4,5], xlabel_text=r'$P_{i+1}/P_i$', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + save_name + '_underlying_periodratios_less5.pdf', save_fig=savefigures)
+plot_fig_pdf_simple([sssp['Rm_all'][sssp['Rm_all'] < 5] for sssp in model_sssp], [], x_min=1., x_max=5., n_bins=n_bins, log_x=True, c_sim=model_colors, lw=lw, ls_sim=model_linestyles, labels_sim=model_names, xticks_custom=[1,2,3,4,5], xlabel_text=r'$P_{i+1}/P_i$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + save_name + '_underlying_periodratios_less5.pdf', save_fig=savefigures)
 
 # Eccentricities:
 x_min, x_max = 1e-3, 1.
-#plot_fig_pdf_simple(fig_size, [sssp['e_all'] for sssp in model_sssp], [], x_min=x_min, x_max=x_max, n_bins=n_bins, log_x=True, c_sim=model_colors, lw=lw, ls_sim=model_linestyles, labels_sim=model_names, xticks_custom=[1e-3,1e-2,1e-1,1.], xlabel_text=r'$e$', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt)
-plot_fig_pdf_simple(fig_size, [sssp2['e_all']], [], x_min=x_min, x_max=x_max, n_bins=n_bins, log_x=True, c_sim=[model_colors[1]], lw=lw, ls_sim=[model_linestyles[1]], labels_sim=[''], xticks_custom=[1e-3,1e-2,1e-1,1.], xlabel_text=r'$e$', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt)
+#plot_fig_pdf_simple([sssp['e_all'] for sssp in model_sssp], [], x_min=x_min, x_max=x_max, n_bins=n_bins, log_x=True, c_sim=model_colors, lw=lw, ls_sim=model_linestyles, labels_sim=model_names, xticks_custom=[1e-3,1e-2,1e-1,1.], xlabel_text=r'$e$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
+plot_fig_pdf_simple([sssp2['e_all']], [], x_min=x_min, x_max=x_max, n_bins=n_bins, log_x=True, c_sim=[model_colors[1]], lw=lw, ls_sim=[model_linestyles[1]], labels_sim=[''], xticks_custom=[1e-3,1e-2,1e-1,1.], xlabel_text=r'$e$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 bins = np.logspace(np.log10(x_min), np.log10(x_max), n_bins+1)
 e1 = sssp_per_sys1['e_all'][sssp_per_sys1['Mtot_all'] == 1, 0]
 e2p = sssp_per_sys1['e_all'][sssp_per_sys1['Mtot_all'] > 1]
@@ -132,35 +132,35 @@ if savefigures:
     plt.close()
 
 # Mutual inclinations:
-plot_fig_pdf_simple(fig_size, [sssp['inclmut_all']*(180./np.pi) for sssp in model_sssp], [], x_min=1e-2, x_max=90., n_bins=n_bins, log_x=True, c_sim=model_colors, lw=lw, ls_sim=model_linestyles, labels_sim=model_names, xticks_custom=[1e-2,1e-1,1.,10.,1e2], xlabel_text=r'$i_m$ (deg)', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + save_name + '_underlying_mutualinclinations.pdf', save_fig=savefigures)
+plot_fig_pdf_simple([sssp['inclmut_all']*(180./np.pi) for sssp in model_sssp], [], x_min=1e-2, x_max=90., n_bins=n_bins, log_x=True, c_sim=model_colors, lw=lw, ls_sim=model_linestyles, labels_sim=model_names, xticks_custom=[1e-2,1e-1,1.,10.,1e2], xlabel_text=r'$i_m$ (deg)', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + save_name + '_underlying_mutualinclinations.pdf', save_fig=savefigures)
 
 # Planet masses:
-plot_fig_pdf_simple(fig_size, [sssp['mass_all'] for sssp in model_sssp], [], x_min=0.09, x_max=1e2, n_bins=n_bins, log_x=True, c_sim=model_colors, lw=lw, ls_sim=model_linestyles, labels_sim=model_names, xlabel_text=r'$M_p$ ($M_\oplus$)', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + save_name + '_underlying_masses.pdf', save_fig=savefigures)
+plot_fig_pdf_simple([sssp['mass_all'] for sssp in model_sssp], [], x_min=0.09, x_max=1e2, n_bins=n_bins, log_x=True, c_sim=model_colors, lw=lw, ls_sim=model_linestyles, labels_sim=model_names, xlabel_text=r'$M_p$ ($M_\oplus$)', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + save_name + '_underlying_masses.pdf', save_fig=savefigures)
 
 # Planet radii:
-plot_fig_pdf_simple(fig_size, [sssp['radii_all'] for sssp in model_sssp], [], x_min=radii_min, x_max=radii_max, n_bins=n_bins, log_x=True, c_sim=model_colors, lw=lw, ls_sim=model_linestyles, labels_sim=model_names, xticks_custom=[0.5,1,2,4,10], xlabel_text=r'$R_p$ ($R_\oplus$)', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + save_name + '_underlying_radii.pdf', save_fig=savefigures)
+plot_fig_pdf_simple([sssp['radii_all'] for sssp in model_sssp], [], x_min=radii_min, x_max=radii_max, n_bins=n_bins, log_x=True, c_sim=model_colors, lw=lw, ls_sim=model_linestyles, labels_sim=model_names, xticks_custom=[0.5,1,2,4,10], xlabel_text=r'$R_p$ ($R_\oplus$)', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + save_name + '_underlying_radii.pdf', save_fig=savefigures)
 
 # Planet radii ratios:
-plot_fig_pdf_simple(fig_size, [sssp['radii_ratio_all'] for sssp in model_sssp], [], x_min=0.1, x_max=10., n_bins=n_bins, log_x=True, c_sim=model_colors, lw=lw, ls_sim=model_linestyles, labels_sim=model_names, xlabel_text=r'$R_{p,i+1}/R_{p,i}$', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + save_name + '_underlying_radii_ratios.pdf', save_fig=savefigures)
+plot_fig_pdf_simple([sssp['radii_ratio_all'] for sssp in model_sssp], [], x_min=0.1, x_max=10., n_bins=n_bins, log_x=True, c_sim=model_colors, lw=lw, ls_sim=model_linestyles, labels_sim=model_names, xlabel_text=r'$R_{p,i+1}/R_{p,i}$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + save_name + '_underlying_radii_ratios.pdf', save_fig=savefigures)
 
 # Separations in mutual Hill radii:
-plot_fig_pdf_simple(fig_size, [sssp['N_mH_all'] for sssp in model_sssp], [], x_min=1., x_max=200., n_bins=n_bins, log_x=True, c_sim=model_colors, lw=lw, ls_sim=model_linestyles, labels_sim=model_names, xlabel_text=r'$\Delta$', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + save_name + '_underlying_deltas.pdf', save_fig=savefigures)
+plot_fig_pdf_simple([sssp['N_mH_all'] for sssp in model_sssp], [], x_min=1., x_max=200., n_bins=n_bins, log_x=True, c_sim=model_colors, lw=lw, ls_sim=model_linestyles, labels_sim=model_names, xlabel_text=r'$\Delta$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + save_name + '_underlying_deltas.pdf', save_fig=savefigures)
 
 # Stellar radii:
-plot_fig_pdf_simple(fig_size, [sssp['Rstar_all'] for sssp in model_sssp], [], x_min=0.5, x_max=2.5, n_bins=n_bins, c_sim=model_colors, lw=lw, ls_sim=model_linestyles, labels_sim=model_names, xlabel_text=r'$R_\star (R_\odot)$', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + save_name + '_underlying_stellar_radii.pdf', save_fig=savefigures)
+plot_fig_pdf_simple([sssp['Rstar_all'] for sssp in model_sssp], [], x_min=0.5, x_max=2.5, n_bins=n_bins, c_sim=model_colors, lw=lw, ls_sim=model_linestyles, labels_sim=model_names, xlabel_text=r'$R_\star (R_\odot)$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + save_name + '_underlying_stellar_radii.pdf', save_fig=savefigures)
 
 ### GF2020 metrics, but for the underlying systems:
-# Dynamical masses CDFs:
-plot_fig_pdf_simple(fig_size, [sssp_per_sys['dynamical_mass'] for sssp_per_sys in model_sssp_per_sys], [], x_min=2e-7, x_max=1e-3, n_bins=n_bins, log_x=True, c_sim=model_colors, lw=lw, ls_sim=model_linestyles, labels_sim=model_names, xlabel_text=r'$\mu$', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + save_name + '_underlying_dynamical_masses.pdf', save_fig=savefigures)
+# Dynamical masses:
+plot_fig_pdf_simple([sssp_per_sys['dynamical_mass'] for sssp_per_sys in model_sssp_per_sys], [], x_min=2e-7, x_max=1e-3, n_bins=n_bins, log_x=True, c_sim=model_colors, lw=lw, ls_sim=model_linestyles, labels_sim=model_names, xlabel_text=r'$\mu$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + save_name + '_underlying_dynamical_masses.pdf', save_fig=savefigures)
 
-# Planet radii partitioning CDFs:
-plot_fig_pdf_simple(fig_size, [sssp_per_sys['radii_partitioning'] for sssp_per_sys in model_sssp_per_sys], [], x_min=1e-5, x_max=1., n_bins=n_bins, log_x=True, c_sim=model_colors, lw=lw, ls_sim=model_linestyles, labels_sim=model_names, xlabel_text=r'$\mathcal{Q}_R$', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + save_name + '_underlying_radii_partitioning.pdf', save_fig=savefigures)
+# Planet radii partitioning:
+plot_fig_pdf_simple([sssp_per_sys['radii_partitioning'] for sssp_per_sys in model_sssp_per_sys], [], x_min=1e-5, x_max=1., n_bins=n_bins, log_x=True, c_sim=model_colors, lw=lw, ls_sim=model_linestyles, labels_sim=model_names, xlabel_text=r'$\mathcal{Q}_R$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + save_name + '_underlying_radii_partitioning.pdf', save_fig=savefigures)
 
-# Planet radii monotonicity CDFs:
-plot_fig_pdf_simple(fig_size, [sssp_per_sys['radii_monotonicity'] for sssp_per_sys in model_sssp_per_sys], [], x_min=-0.6, x_max=0.6, n_bins=n_bins, c_sim=model_colors, lw=lw, ls_sim=model_linestyles, labels_sim=model_names, xlabel_text=r'$\mathcal{M}_R$', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + save_name + '_underlying_radii_monotonicity.pdf', save_fig=savefigures)
+# Planet radii monotonicity:
+plot_fig_pdf_simple([sssp_per_sys['radii_monotonicity'] for sssp_per_sys in model_sssp_per_sys], [], x_min=-0.6, x_max=0.6, n_bins=n_bins, c_sim=model_colors, lw=lw, ls_sim=model_linestyles, labels_sim=model_names, xlabel_text=r'$\mathcal{M}_R$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + save_name + '_underlying_radii_monotonicity.pdf', save_fig=savefigures)
 
-# Gap complexity CDFs:
-plot_fig_pdf_simple(fig_size, [sssp_per_sys['gap_complexity'] for sssp_per_sys in model_sssp_per_sys], [], x_min=0., x_max=1., n_bins=n_bins, log_x=False, c_sim=model_colors, lw=lw, ls_sim=model_linestyles, labels_sim=model_names, xlabel_text=r'$\mathcal{C}$', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + save_name + '_underlying_gap_complexity.pdf', save_fig=savefigures)
+# Gap complexity:
+plot_fig_pdf_simple([sssp_per_sys['gap_complexity'] for sssp_per_sys in model_sssp_per_sys], [], x_min=0., x_max=1., n_bins=n_bins, log_x=False, c_sim=model_colors, lw=lw, ls_sim=model_linestyles, labels_sim=model_names, xlabel_text=r'$\mathcal{C}$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + save_name + '_underlying_gap_complexity.pdf', save_fig=savefigures)
 
 plt.show()
 plt.close()
@@ -373,12 +373,12 @@ plt.show()
 ##### For Sarah's TDV paper:
 
 x_min, x_max = 1e-3, 1.
-plot_fig_pdf_simple((8,4), [sssp['e_all'] for sssp in model_sssp], [], x_min=x_min, x_max=x_max, n_bins=n_bins, log_x=True, c_sim=model_colors, lw=1, ls_sim=model_linestyles, labels_sim=model_names, xticks_custom=[1e-3,1e-2,1e-1,1.], xlabel_text=r'$e$', afs=16, tfs=16, lfs=16, fig_lbrt=[0.15,0.15,0.95,0.95])
+plot_fig_pdf_simple([sssp['e_all'] for sssp in model_sssp], [], x_min=x_min, x_max=x_max, n_bins=n_bins, log_x=True, c_sim=model_colors, lw=1, ls_sim=model_linestyles, labels_sim=model_names, xticks_custom=[1e-3,1e-2,1e-1,1.], xlabel_text=r'$e$', afs=16, tfs=16, lfs=16, fig_lbrt=[0.15,0.15,0.95,0.95])
 if savefigures:
     plt.savefig(savefigures_directory + subdirectory + 'f_amd_crit_underlying_eccentricities.pdf')
     plt.close()
 
-plot_fig_pdf_simple((8,4), [sssp['inclmut_all']*(180./np.pi) for sssp in model_sssp], [], x_min=1e-2, x_max=90., n_bins=n_bins, log_x=True, c_sim=model_colors, lw=1, ls_sim=model_linestyles, labels_sim=model_names, xticks_custom=[1e-2,1e-1,1.,10.,1e2], xlabel_text=r'$i$ [deg]', afs=16, tfs=16, lfs=16, fig_lbrt=[0.15,0.15,0.95,0.95])
+plot_fig_pdf_simple([sssp['inclmut_all']*(180./np.pi) for sssp in model_sssp], [], x_min=1e-2, x_max=90., n_bins=n_bins, log_x=True, c_sim=model_colors, lw=1, ls_sim=model_linestyles, labels_sim=model_names, xticks_custom=[1e-2,1e-1,1.,10.,1e2], xlabel_text=r'$i$ [deg]', afs=16, tfs=16, lfs=16, fig_lbrt=[0.15,0.15,0.95,0.95])
 plt.legend(loc='upper left', bbox_to_anchor=(0,1), ncol=1, frameon=False, fontsize=lfs)
 if savefigures:
     plt.savefig(savefigures_directory + subdirectory + 'f_amd_crit_underlying_mutualinclinations.pdf')

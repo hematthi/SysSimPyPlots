@@ -388,7 +388,7 @@ if savefigures == True:
     plt.close()
 
 # Multiplicities:
-plot_fig_counts_hist_simple(fig_size, [sss_per_sys['Mtot_obs'] for sss_per_sys in split_sss_per_sys], [ssk_per_sys['Mtot_obs'] for ssk_per_sys in split_ssk_per_sys], x_min=0, x_llim=0.5, normalize=False, N_sim_Kep_factor=float(N_sim)/N_Kep, log_y=True, c_sim=split_colors, c_Kep=split_colors, ls_sim=split_linestyles, ms_Kep=['x','x'], lw=lw, labels_sim=['Simulated',None], labels_Kep=['Kepler', None], xlabel_text='Observed planets per system', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt)
+plot_fig_counts_hist_simple([sss_per_sys['Mtot_obs'] for sss_per_sys in split_sss_per_sys], [ssk_per_sys['Mtot_obs'] for ssk_per_sys in split_ssk_per_sys], x_min=0, x_llim=0.5, normalize=False, N_sim_Kep_factor=float(N_sim)/N_Kep, log_y=True, c_sim=split_colors, c_Kep=split_colors, ls_sim=split_linestyles, ms_Kep=['x','x'], lw=lw, labels_sim=['Simulated',None], labels_Kep=['Kepler', None], xlabel_text='Observed planets per system', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 for i,sample in enumerate(split_names):
     label_this = r'16% and 84%' if i==0 else None
     plt.plot(Mtot_bins_mid, Mtot_counts_16[sample], drawstyle='steps-mid', color=split_colors[i], lw=1, ls='--', label=label_this)
@@ -399,7 +399,7 @@ if savefigures:
     plt.close()
 
 # Periods:
-plot_fig_pdf_simple(fig_size, [sss['P_obs'] for sss in split_sss], [ssk['P_obs'] for ssk in split_ssk], x_min=P_min, x_max=P_max, y_min=1e-3, y_max=0.1, n_bins=n_bins, log_x=True, log_y=True, c_sim=split_colors, c_Kep=split_colors, ls_sim=split_linestyles, ls_Kep=split_linestyles, lw=lw, labels_sim=['Simulated',None], labels_Kep=['Kepler', None], xticks_custom=[3,10,30,100,300], xlabel_text=r'$P$ (days)', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_lbrt=fig_lbrt)
+plot_fig_pdf_simple([sss['P_obs'] for sss in split_sss], [ssk['P_obs'] for ssk in split_ssk], x_min=P_min, x_max=P_max, y_min=1e-3, y_max=0.1, n_bins=n_bins, log_x=True, log_y=True, c_sim=split_colors, c_Kep=split_colors, ls_sim=split_linestyles, ls_Kep=split_linestyles, lw=lw, labels_sim=['Simulated',None], labels_Kep=['Kepler', None], xticks_custom=[3,10,30,100,300], xlabel_text=r'$P$ (days)', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_size=fig_size, fig_lbrt=fig_lbrt)
 for i,sample in enumerate(split_names):
     plt.plot(P_bins_mid, P_counts_16[sample], drawstyle='steps-mid', color=split_colors[i], lw=1, ls='--', label='16')
     plt.plot(P_bins_mid, P_counts_84[sample], drawstyle='steps-mid', color=split_colors[i], lw=1, ls='--', label='84')
@@ -409,7 +409,7 @@ if savefigures:
 
 # Period ratios (all, with some upper cut-off):
 R_max_cut = np.max(Rm_bins)
-plot_fig_pdf_simple(fig_size, [sss['Rm_obs'][sss['Rm_obs'] < R_max_cut] for sss in split_sss], [ssk['Rm_obs'][ssk['Rm_obs'] < R_max_cut] for ssk in split_ssk], x_min=np.min(Rm_bins), x_max=R_max_cut, n_bins=n_bins, log_x=True, c_sim=split_colors, c_Kep=split_colors, ls_sim=split_linestyles, ls_Kep=split_linestyles, lw=lw, labels_sim=split_names, labels_Kep=[None, None], xticks_custom=[1,2,3,4,5,10,20], xlabel_text=r'$\mathcal{P} = P_{i+1}/P_i$', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt)
+plot_fig_pdf_simple([sss['Rm_obs'][sss['Rm_obs'] < R_max_cut] for sss in split_sss], [ssk['Rm_obs'][ssk['Rm_obs'] < R_max_cut] for ssk in split_ssk], x_min=np.min(Rm_bins), x_max=R_max_cut, n_bins=n_bins, log_x=True, c_sim=split_colors, c_Kep=split_colors, ls_sim=split_linestyles, ls_Kep=split_linestyles, lw=lw, labels_sim=split_names, labels_Kep=[None, None], xticks_custom=[1,2,3,4,5,10,20], xlabel_text=r'$\mathcal{P} = P_{i+1}/P_i$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 for i,sample in enumerate(split_names):
     plt.plot(Rm_bins_mid, Rm_counts_16[sample], drawstyle='steps-mid', color=split_colors[i], lw=1, ls='--', label='16')
     plt.plot(Rm_bins_mid, Rm_counts_84[sample], drawstyle='steps-mid', color=split_colors[i], lw=1, ls='--', label='84')
@@ -418,7 +418,7 @@ if savefigures:
     plt.close()
 
 # Transit durations:
-plot_fig_pdf_simple(fig_size, [sss['tdur_obs'] for sss in split_sss], [ssk['tdur_obs'] for ssk in split_ssk], x_min=np.min(tdur_bins), x_max=np.max(tdur_bins), n_bins=n_bins, c_sim=split_colors, c_Kep=split_colors, ls_sim=split_linestyles, ls_Kep=split_linestyles, lw=lw, labels_sim=split_names, labels_Kep=[None, None], xlabel_text=r'$t_{\rm dur}$ (hrs)', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt)
+plot_fig_pdf_simple([sss['tdur_obs'] for sss in split_sss], [ssk['tdur_obs'] for ssk in split_ssk], x_min=np.min(tdur_bins), x_max=np.max(tdur_bins), n_bins=n_bins, c_sim=split_colors, c_Kep=split_colors, ls_sim=split_linestyles, ls_Kep=split_linestyles, lw=lw, labels_sim=split_names, labels_Kep=[None, None], xlabel_text=r'$t_{\rm dur}$ (hrs)', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 for i,sample in enumerate(split_names):
     plt.plot(tdur_bins_mid, tdur_counts_16[sample], drawstyle='steps-mid', color=split_colors[i], lw=1, ls='--', label='16')
     plt.plot(tdur_bins_mid, tdur_counts_84[sample], drawstyle='steps-mid', color=split_colors[i], lw=1, ls='--', label='84')
@@ -427,7 +427,7 @@ if savefigures:
     plt.close()
 
 # Circular normalized transit durations (separate singles and multis):
-plot_fig_pdf_simple(fig_size, [sss['tdur_tcirc_1_obs'] for sss in split_sss], [ssk['tdur_tcirc_1_obs'] for ssk in split_ssk], x_min=np.min(tdur_tcirc_bins), x_max=np.max(tdur_tcirc_bins), n_bins=n_bins, c_sim=split_colors, c_Kep=split_colors, ls_sim=split_linestyles, ls_Kep=split_linestyles, lw=lw, labels_sim=split_names, labels_Kep=[None, None], extra_text='Observed singles', xlabel_text=r'$t_{\rm dur}/t_{\rm circ}$', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt)
+plot_fig_pdf_simple([sss['tdur_tcirc_1_obs'] for sss in split_sss], [ssk['tdur_tcirc_1_obs'] for ssk in split_ssk], x_min=np.min(tdur_tcirc_bins), x_max=np.max(tdur_tcirc_bins), n_bins=n_bins, c_sim=split_colors, c_Kep=split_colors, ls_sim=split_linestyles, ls_Kep=split_linestyles, lw=lw, labels_sim=split_names, labels_Kep=[None, None], extra_text='Observed singles', xlabel_text=r'$t_{\rm dur}/t_{\rm circ}$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 for i,sample in enumerate(split_names):
     plt.plot(tdur_tcirc_bins_mid, tdur_tcirc_1_counts_16[sample], drawstyle='steps-mid', color=split_colors[i], lw=1, ls='--', label='16')
     plt.plot(tdur_tcirc_bins_mid, tdur_tcirc_1_counts_84[sample], drawstyle='steps-mid', color=split_colors[i], lw=1, ls='--', label='84')
@@ -435,7 +435,7 @@ if savefigures:
     plt.savefig(savefigures_directory + subdirectory + model_name + '_tdur_tcirc_singles_compare.pdf')
     plt.close()
 
-plot_fig_pdf_simple(fig_size, [sss['tdur_tcirc_2p_obs'] for sss in split_sss], [ssk['tdur_tcirc_2p_obs'] for ssk in split_ssk], x_min=np.min(tdur_tcirc_bins), x_max=np.max(tdur_tcirc_bins), n_bins=n_bins, c_sim=split_colors, c_Kep=split_colors, ls_sim=split_linestyles, ls_Kep=split_linestyles, lw=lw, labels_sim=split_names, labels_Kep=[None, None], extra_text='Observed multis', xlabel_text=r'$t_{\rm dur}/t_{\rm circ}$', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt)
+plot_fig_pdf_simple([sss['tdur_tcirc_2p_obs'] for sss in split_sss], [ssk['tdur_tcirc_2p_obs'] for ssk in split_ssk], x_min=np.min(tdur_tcirc_bins), x_max=np.max(tdur_tcirc_bins), n_bins=n_bins, c_sim=split_colors, c_Kep=split_colors, ls_sim=split_linestyles, ls_Kep=split_linestyles, lw=lw, labels_sim=split_names, labels_Kep=[None, None], extra_text='Observed multis', xlabel_text=r'$t_{\rm dur}/t_{\rm circ}$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 for i,sample in enumerate(split_names):
     plt.plot(tdur_tcirc_bins_mid, tdur_tcirc_2p_counts_16[sample], drawstyle='steps-mid', color=split_colors[i], lw=1, ls='--', label='16')
     plt.plot(tdur_tcirc_bins_mid, tdur_tcirc_2p_counts_84[sample], drawstyle='steps-mid', color=split_colors[i], lw=1, ls='--', label='84')
@@ -445,7 +445,7 @@ if savefigures:
 
 
 # Transit depths:
-plot_fig_pdf_simple(fig_size, [sss['D_obs'] for sss in split_sss], [ssk['D_obs'] for ssk in split_ssk], x_min=np.min(D_bins), x_max=np.max(D_bins), n_bins=n_bins, log_x=True, c_sim=split_colors, c_Kep=split_colors, ls_sim=split_linestyles, ls_Kep=split_linestyles, lw=lw, labels_sim=split_names, labels_Kep=[None, None], xlabel_text=r'$\delta$', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt)
+plot_fig_pdf_simple([sss['D_obs'] for sss in split_sss], [ssk['D_obs'] for ssk in split_ssk], x_min=np.min(D_bins), x_max=np.max(D_bins), n_bins=n_bins, log_x=True, c_sim=split_colors, c_Kep=split_colors, ls_sim=split_linestyles, ls_Kep=split_linestyles, lw=lw, labels_sim=split_names, labels_Kep=[None, None], xlabel_text=r'$\delta$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 for i,sample in enumerate(split_names):
     plt.plot(D_bins_mid, D_counts_16[sample], drawstyle='steps-mid', color=split_colors[i], lw=1, ls='--', label='16')
     plt.plot(D_bins_mid, D_counts_84[sample], drawstyle='steps-mid', color=split_colors[i], lw=1, ls='--', label='84')
@@ -454,7 +454,7 @@ if savefigures:
     plt.close()
 
 # Planet radii:
-plot_fig_pdf_simple(fig_size, [sss['radii_obs'] for sss in split_sss], [ssk['radii_obs'] for ssk in split_ssk], x_min=radii_min, x_max=radii_max, n_bins=n_bins, c_sim=split_colors, c_Kep=split_colors, ls_sim=split_linestyles, ls_Kep=split_linestyles, lw=lw, labels_sim=split_names, labels_Kep=[None, None], xlabel_text=r'$R_p (R_\oplus)$', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt)
+plot_fig_pdf_simple([sss['radii_obs'] for sss in split_sss], [ssk['radii_obs'] for ssk in split_ssk], x_min=radii_min, x_max=radii_max, n_bins=n_bins, c_sim=split_colors, c_Kep=split_colors, ls_sim=split_linestyles, ls_Kep=split_linestyles, lw=lw, labels_sim=split_names, labels_Kep=[None, None], xlabel_text=r'$R_p (R_\oplus)$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 for i,sample in enumerate(split_names):
     plt.plot(radii_bins_mid, radii_counts_16[sample], drawstyle='steps-mid', color=split_colors[i], lw=1, ls='--', label='16')
     plt.plot(radii_bins_mid, radii_counts_84[sample], drawstyle='steps-mid', color=split_colors[i], lw=1, ls='--', label='84')
@@ -463,7 +463,7 @@ if savefigures:
     plt.close()
 
 # Stellar radii:
-plot_fig_pdf_simple(fig_size, [sss_per_sys['Rstar_obs'] for sss_per_sys in split_sss_per_sys], [ssk_per_sys['Rstar_obs'] for ssk_per_sys in split_ssk_per_sys], x_min=np.min(Rstar_bins), x_max=np.max(Rstar_bins), n_bins=n_bins, c_sim=split_colors, c_Kep=split_colors, ls_sim=split_linestyles, ls_Kep=split_linestyles, lw=lw, labels_sim=split_names, labels_Kep=[None, None], xlabel_text=r'$R_\star (R_\odot)$', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt)
+plot_fig_pdf_simple([sss_per_sys['Rstar_obs'] for sss_per_sys in split_sss_per_sys], [ssk_per_sys['Rstar_obs'] for ssk_per_sys in split_ssk_per_sys], x_min=np.min(Rstar_bins), x_max=np.max(Rstar_bins), n_bins=n_bins, c_sim=split_colors, c_Kep=split_colors, ls_sim=split_linestyles, ls_Kep=split_linestyles, lw=lw, labels_sim=split_names, labels_Kep=[None, None], xlabel_text=r'$R_\star (R_\odot)$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 for i,sample in enumerate(split_names):
     plt.plot(Rstar_bins_mid, Rstar_counts_16[sample], drawstyle='steps-mid', color=split_colors[i], lw=1, ls='--', label='16')
     plt.plot(Rstar_bins_mid, Rstar_counts_84[sample], drawstyle='steps-mid', color=split_colors[i], lw=1, ls='--', label='84')
@@ -472,7 +472,7 @@ if savefigures:
     plt.close()
 
 # Transit depth ratios:
-plot_fig_pdf_simple(fig_size, [sss['D_ratio_obs'] for sss in split_sss], [ssk['D_ratio_obs'] for ssk in split_ssk], x_min=np.min(D_ratio_bins), x_max=np.max(D_ratio_bins), n_bins=n_bins, log_x=True, c_sim=split_colors, c_Kep=split_colors, ls_sim=split_linestyles, ls_Kep=split_linestyles, lw=lw, labels_sim=split_names, labels_Kep=[None, None], xlabel_text=r'$\delta_{i+1}/\delta_i$', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt)
+plot_fig_pdf_simple([sss['D_ratio_obs'] for sss in split_sss], [ssk['D_ratio_obs'] for ssk in split_ssk], x_min=np.min(D_ratio_bins), x_max=np.max(D_ratio_bins), n_bins=n_bins, log_x=True, c_sim=split_colors, c_Kep=split_colors, ls_sim=split_linestyles, ls_Kep=split_linestyles, lw=lw, labels_sim=split_names, labels_Kep=[None, None], xlabel_text=r'$\delta_{i+1}/\delta_i$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 for i,sample in enumerate(split_names):
     plt.plot(D_ratio_bins_mid, D_ratio_counts_16[sample], drawstyle='steps-mid', color=split_colors[i], lw=1, ls='--', label='16')
     plt.plot(D_ratio_bins_mid, D_ratio_counts_84[sample], drawstyle='steps-mid', color=split_colors[i], lw=1, ls='--', label='84')
@@ -481,7 +481,7 @@ if savefigures:
     plt.close()
 
 # Log(xi):
-plot_fig_pdf_simple(fig_size, [np.log10(sss['xi_obs']) for sss in split_sss], [np.log10(ssk['xi_obs']) for ssk in split_ssk], x_min=np.min(xi_bins), x_max=np.max(xi_bins), n_bins=n_bins, c_sim=split_colors, c_Kep=split_colors, ls_sim=split_linestyles, ls_Kep=split_linestyles, lw=lw, labels_sim=split_names, labels_Kep=[None, None], xlabel_text=r'$\log{\xi}$', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt)
+plot_fig_pdf_simple([np.log10(sss['xi_obs']) for sss in split_sss], [np.log10(ssk['xi_obs']) for ssk in split_ssk], x_min=np.min(xi_bins), x_max=np.max(xi_bins), n_bins=n_bins, c_sim=split_colors, c_Kep=split_colors, ls_sim=split_linestyles, ls_Kep=split_linestyles, lw=lw, labels_sim=split_names, labels_Kep=[None, None], xlabel_text=r'$\log{\xi}$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 for i,sample in enumerate(split_names):
     plt.plot(xi_bins_mid, xi_counts_16[sample], drawstyle='steps-mid', color=split_colors[i], lw=1, ls='--', label='16')
     plt.plot(xi_bins_mid, xi_counts_84[sample], drawstyle='steps-mid', color=split_colors[i], lw=1, ls='--', label='84')
@@ -490,7 +490,7 @@ if savefigures:
     plt.close()
 
 # Log(xi) (not near MMR):
-plot_fig_pdf_simple(fig_size, [np.log10(sss['xi_nonres_obs']) for sss in split_sss], [np.log10(ssk['xi_nonres_obs']) for ssk in split_ssk], x_min=-0.5, x_max=0.5, n_bins=n_bins, c_sim=split_colors, c_Kep=split_colors, ls_sim=split_linestyles, ls_Kep=split_linestyles, lw=lw, labels_sim=split_names, labels_Kep=[None, None], extra_text='Not near MMR', xlabel_text=r'$\log{\xi}$', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt)
+plot_fig_pdf_simple([np.log10(sss['xi_nonres_obs']) for sss in split_sss], [np.log10(ssk['xi_nonres_obs']) for ssk in split_ssk], x_min=-0.5, x_max=0.5, n_bins=n_bins, c_sim=split_colors, c_Kep=split_colors, ls_sim=split_linestyles, ls_Kep=split_linestyles, lw=lw, labels_sim=split_names, labels_Kep=[None, None], extra_text='Not near MMR', xlabel_text=r'$\log{\xi}$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 for i,sample in enumerate(split_names):
     plt.plot(xi_nonres_bins_mid, xi_nonres_counts_16[sample], drawstyle='steps-mid', color=split_colors[i], lw=1, ls='--', label='16')
     plt.plot(xi_nonres_bins_mid, xi_nonres_counts_84[sample], drawstyle='steps-mid', color=split_colors[i], lw=1, ls='--', label='84')
@@ -499,7 +499,7 @@ if savefigures:
     plt.close()
 
 # Log(xi) (near MMR):
-plot_fig_pdf_simple(fig_size, [np.log10(sss['xi_res_obs']) for sss in split_sss], [np.log10(ssk['xi_res_obs']) for ssk in split_ssk], x_min=-0.5, x_max=0.5, n_bins=n_bins, c_sim=split_colors, c_Kep=split_colors, ls_sim=split_linestyles, ls_Kep=split_linestyles, lw=lw, labels_sim=split_names, labels_Kep=[None, None], extra_text='Near MMR', xlabel_text=r'$\log{\xi}$', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt)
+plot_fig_pdf_simple([np.log10(sss['xi_res_obs']) for sss in split_sss], [np.log10(ssk['xi_res_obs']) for ssk in split_ssk], x_min=-0.5, x_max=0.5, n_bins=n_bins, c_sim=split_colors, c_Kep=split_colors, ls_sim=split_linestyles, ls_Kep=split_linestyles, lw=lw, labels_sim=split_names, labels_Kep=[None, None], extra_text='Near MMR', xlabel_text=r'$\log{\xi}$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 for i,sample in enumerate(split_names):
     plt.plot(xi_res_bins_mid, xi_res_counts_16[sample], drawstyle='steps-mid', color=split_colors[i], lw=1, ls='--', label='16')
     plt.plot(xi_res_bins_mid, xi_res_counts_84[sample], drawstyle='steps-mid', color=split_colors[i], lw=1, ls='--', label='84')
@@ -509,7 +509,7 @@ if savefigures:
 
 ### GF2020 metrics:
 # Planet radii partitioning:
-plot_fig_pdf_simple(fig_size, [sss_per_sys['radii_partitioning'] for sss_per_sys in split_sss_per_sys], [ssk_per_sys['radii_partitioning'] for ssk_per_sys in split_ssk_per_sys], x_min=1e-5, x_max=1., n_bins=n_bins, log_x=True, c_sim=split_colors, c_Kep=split_colors, ls_sim=split_linestyles, ls_Kep=split_linestyles, lw=lw, labels_sim=['Simulated', None], labels_Kep=['Kepler', None], xlabel_text=r'$\mathcal{Q}_R$', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt)
+plot_fig_pdf_simple([sss_per_sys['radii_partitioning'] for sss_per_sys in split_sss_per_sys], [ssk_per_sys['radii_partitioning'] for ssk_per_sys in split_ssk_per_sys], x_min=1e-5, x_max=1., n_bins=n_bins, log_x=True, c_sim=split_colors, c_Kep=split_colors, ls_sim=split_linestyles, ls_Kep=split_linestyles, lw=lw, labels_sim=['Simulated', None], labels_Kep=['Kepler', None], xlabel_text=r'$\mathcal{Q}_R$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 for i,sample in enumerate(split_names):
     plt.plot(radii_partitioning_bins_mid, radii_partitioning_counts_16[sample], drawstyle='steps-mid', color=split_colors[i], lw=1, ls='--', label='16% and 84%' if i==0 else '')
     plt.plot(radii_partitioning_bins_mid, radii_partitioning_counts_84[sample], drawstyle='steps-mid', color=split_colors[i], lw=1, ls='--', label='')
@@ -519,7 +519,7 @@ if savefigures:
     plt.close()
 
 # Planet radii monotonicity:
-plot_fig_pdf_simple(fig_size, [sss_per_sys['radii_monotonicity'] for sss_per_sys in split_sss_per_sys], [ssk_per_sys['radii_monotonicity'] for ssk_per_sys in split_ssk_per_sys], x_min=-0.5, x_max=0.6, n_bins=n_bins, c_sim=split_colors, c_Kep=split_colors, ls_sim=split_linestyles, ls_Kep=split_linestyles, lw=lw, labels_sim=split_names, labels_Kep=[None, None], xlabel_text=r'$\mathcal{M}_R$', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt)
+plot_fig_pdf_simple([sss_per_sys['radii_monotonicity'] for sss_per_sys in split_sss_per_sys], [ssk_per_sys['radii_monotonicity'] for ssk_per_sys in split_ssk_per_sys], x_min=-0.5, x_max=0.6, n_bins=n_bins, c_sim=split_colors, c_Kep=split_colors, ls_sim=split_linestyles, ls_Kep=split_linestyles, lw=lw, labels_sim=split_names, labels_Kep=[None, None], xlabel_text=r'$\mathcal{M}_R$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 for i,sample in enumerate(split_names):
     plt.plot(radii_monotonicity_bins_mid, radii_monotonicity_counts_16[sample], drawstyle='steps-mid', color=split_colors[i], lw=1, ls='--', label='16')
     plt.plot(radii_monotonicity_bins_mid, radii_monotonicity_counts_84[sample], drawstyle='steps-mid', color=split_colors[i], lw=1, ls='--', label='84')
@@ -528,7 +528,7 @@ if savefigures:
     plt.close()
 
 # Gap complexity:
-plot_fig_pdf_simple(fig_size, [sss_per_sys['gap_complexity'] for sss_per_sys in split_sss_per_sys], [ssk_per_sys['gap_complexity'] for ssk_per_sys in split_ssk_per_sys], x_min=0., x_max=1., n_bins=n_bins, log_x=False, c_sim=split_colors, c_Kep=split_colors, ls_sim=split_linestyles, ls_Kep=split_linestyles, lw=lw, labels_sim=split_names, labels_Kep=[None, None], xlabel_text=r'$\mathcal{C}$', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt)
+plot_fig_pdf_simple([sss_per_sys['gap_complexity'] for sss_per_sys in split_sss_per_sys], [ssk_per_sys['gap_complexity'] for ssk_per_sys in split_ssk_per_sys], x_min=0., x_max=1., n_bins=n_bins, log_x=False, c_sim=split_colors, c_Kep=split_colors, ls_sim=split_linestyles, ls_Kep=split_linestyles, lw=lw, labels_sim=split_names, labels_Kep=[None, None], xlabel_text=r'$\mathcal{C}$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 for i,sample in enumerate(split_names):
     plt.plot(gap_complexity_bins_mid, gap_complexity_counts_16[sample], drawstyle='steps-mid', color=split_colors[i], lw=1, ls='--', label='16')
     plt.plot(gap_complexity_bins_mid, gap_complexity_counts_84[sample], drawstyle='steps-mid', color=split_colors[i], lw=1, ls='--', label='84')
@@ -815,7 +815,7 @@ fig_size = (8,6)
 fig_lbrt = [0.15, 0.15, 0.95, 0.95]
 
 # Periods:
-plot_fig_pdf_simple(fig_size, [ssk['P_obs'] for ssk in split_ssk], [], x_min=P_min, x_max=P_max, y_min=1e-3, y_max=0.1, n_bins=n_bins, log_x=True, log_y=True, c_sim=split_colors, ls_sim=split_linestyles, lw=lw, labels_sim=['Kepler',None], xticks_custom=[3,10,30,100,300], xlabel_text=r'$P$ (days)', afs=afs, tfs=tfs, lfs=lfs, legend=False, fig_lbrt=fig_lbrt)
+plot_fig_pdf_simple([ssk['P_obs'] for ssk in split_ssk], [], x_min=P_min, x_max=P_max, y_min=1e-3, y_max=0.1, n_bins=n_bins, log_x=True, log_y=True, c_sim=split_colors, ls_sim=split_linestyles, lw=lw, labels_sim=['Kepler',None], xticks_custom=[3,10,30,100,300], xlabel_text=r'$P$ (days)', afs=afs, tfs=tfs, lfs=lfs, legend=False, fig_size=fig_size, fig_lbrt=fig_lbrt)
 for i,sample in enumerate(split_names):
     label_this = r'Simulated 16-84%' if i==0 else ''
     plt.fill_between(P_bins_mid, P_counts_16[sample], P_counts_84[sample], step='mid', color=split_colors[i], alpha=alpha, label=label_this)
@@ -826,7 +826,7 @@ if savefigures:
 
 # Period ratios (all, with some upper cut-off):
 R_max_cut = np.max(Rm_bins)
-plot_fig_pdf_simple(fig_size, [ssk['Rm_obs'][ssk['Rm_obs'] < R_max_cut] for ssk in split_ssk], [], x_min=np.min(Rm_bins), x_max=R_max_cut, n_bins=n_bins, log_x=True, c_sim=split_colors, ls_sim=split_linestyles, lw=lw, labels_sim=split_names, xticks_custom=[1,2,3,4,5,10,20], xlabel_text=r'$\mathcal{P} = P_{i+1}/P_i$', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt)
+plot_fig_pdf_simple([ssk['Rm_obs'][ssk['Rm_obs'] < R_max_cut] for ssk in split_ssk], [], x_min=np.min(Rm_bins), x_max=R_max_cut, n_bins=n_bins, log_x=True, c_sim=split_colors, ls_sim=split_linestyles, lw=lw, labels_sim=split_names, xticks_custom=[1,2,3,4,5,10,20], xlabel_text=r'$\mathcal{P} = P_{i+1}/P_i$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 for i,sample in enumerate(split_names):
     plt.fill_between(Rm_bins_mid, Rm_counts_16[sample], Rm_counts_84[sample], step='mid', color=split_colors[i], alpha=alpha)
 if savefigures:
@@ -834,7 +834,7 @@ if savefigures:
     plt.close()
 
 # Transit durations:
-plot_fig_pdf_simple(fig_size, [ssk['tdur_obs'] for ssk in split_ssk], [], x_min=np.min(tdur_bins), x_max=np.max(tdur_bins), n_bins=n_bins, c_sim=split_colors, ls_sim=split_linestyles, lw=lw, labels_sim=split_names, xlabel_text=r'$t_{\rm dur}$ (hrs)', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt)
+plot_fig_pdf_simple([ssk['tdur_obs'] for ssk in split_ssk], [], x_min=np.min(tdur_bins), x_max=np.max(tdur_bins), n_bins=n_bins, c_sim=split_colors, ls_sim=split_linestyles, lw=lw, labels_sim=split_names, xlabel_text=r'$t_{\rm dur}$ (hrs)', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 for i,sample in enumerate(split_names):
     plt.fill_between(tdur_bins_mid, tdur_counts_16[sample], tdur_counts_84[sample], step='mid', color=split_colors[i], alpha=alpha)
 if savefigures:
@@ -842,14 +842,14 @@ if savefigures:
     plt.close()
 
 # Circular normalized transit durations (separate singles and multis):
-plot_fig_pdf_simple(fig_size, [ssk['tdur_tcirc_1_obs'] for ssk in split_ssk], [], x_min=np.min(tdur_tcirc_bins), x_max=np.max(tdur_tcirc_bins), n_bins=n_bins, c_sim=split_colors, ls_sim=split_linestyles, lw=lw, labels_sim=split_names, extra_text='Observed singles', xlabel_text=r'$t_{\rm dur}/t_{\rm circ}$', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt)
+plot_fig_pdf_simple([ssk['tdur_tcirc_1_obs'] for ssk in split_ssk], [], x_min=np.min(tdur_tcirc_bins), x_max=np.max(tdur_tcirc_bins), n_bins=n_bins, c_sim=split_colors, ls_sim=split_linestyles, lw=lw, labels_sim=split_names, extra_text='Observed singles', xlabel_text=r'$t_{\rm dur}/t_{\rm circ}$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 for i,sample in enumerate(split_names):
     plt.fill_between(tdur_tcirc_bins_mid, tdur_tcirc_1_counts_16[sample], tdur_tcirc_1_counts_84[sample], step='mid', color=split_colors[i], alpha=alpha)
 if savefigures:
     plt.savefig(savefigures_directory + subdirectory + model_name + '_tdur_tcirc_singles_compare.pdf')
     plt.close()
 
-plot_fig_pdf_simple(fig_size, [ssk['tdur_tcirc_2p_obs'] for ssk in split_ssk], [], x_min=np.min(tdur_tcirc_bins), x_max=np.max(tdur_tcirc_bins), n_bins=n_bins, c_sim=split_colors, ls_sim=split_linestyles, lw=lw, labels_sim=split_names, extra_text='Observed multis', xlabel_text=r'$t_{\rm dur}/t_{\rm circ}$', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt)
+plot_fig_pdf_simple([ssk['tdur_tcirc_2p_obs'] for ssk in split_ssk], [], x_min=np.min(tdur_tcirc_bins), x_max=np.max(tdur_tcirc_bins), n_bins=n_bins, c_sim=split_colors, ls_sim=split_linestyles, lw=lw, labels_sim=split_names, extra_text='Observed multis', xlabel_text=r'$t_{\rm dur}/t_{\rm circ}$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 for i,sample in enumerate(split_names):
     plt.fill_between(tdur_tcirc_bins_mid, tdur_tcirc_2p_counts_16[sample], tdur_tcirc_2p_counts_84[sample], step='mid', color=split_colors[i], alpha=alpha)
 if savefigures:
@@ -857,7 +857,7 @@ if savefigures:
     plt.close()
 
 # Transit depths:
-plot_fig_pdf_simple(fig_size, [ssk['D_obs'] for ssk in split_ssk], [], x_min=np.min(D_bins), x_max=np.max(D_bins), n_bins=n_bins, log_x=True, c_sim=split_colors, ls_sim=split_linestyles, lw=lw, labels_sim=split_names, xlabel_text=r'$\delta$', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt)
+plot_fig_pdf_simple([ssk['D_obs'] for ssk in split_ssk], [], x_min=np.min(D_bins), x_max=np.max(D_bins), n_bins=n_bins, log_x=True, c_sim=split_colors, ls_sim=split_linestyles, lw=lw, labels_sim=split_names, xlabel_text=r'$\delta$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 for i,sample in enumerate(split_names):
     plt.fill_between(D_bins_mid, D_counts_16[sample], D_counts_84[sample], step='mid', color=split_colors[i], alpha=alpha)
 if savefigures:
@@ -865,7 +865,7 @@ if savefigures:
     plt.close()
 
 # Planet radii:
-plot_fig_pdf_simple(fig_size, [ssk['radii_obs'] for ssk in split_ssk], [], x_min=radii_min, x_max=radii_max, n_bins=n_bins, c_sim=split_colors, ls_sim=split_linestyles, lw=lw, labels_sim=split_names, xlabel_text=r'$R_p (R_\oplus)$', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt)
+plot_fig_pdf_simple([ssk['radii_obs'] for ssk in split_ssk], [], x_min=radii_min, x_max=radii_max, n_bins=n_bins, c_sim=split_colors, ls_sim=split_linestyles, lw=lw, labels_sim=split_names, xlabel_text=r'$R_p (R_\oplus)$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 for i,sample in enumerate(split_names):
     plt.fill_between(radii_bins_mid, radii_counts_16[sample], radii_counts_84[sample], step='mid', color=split_colors[i], alpha=alpha)
 if savefigures:
@@ -873,7 +873,7 @@ if savefigures:
     plt.close()
 
 # Stellar radii:
-plot_fig_pdf_simple(fig_size, [ssk_per_sys['Rstar_obs'] for ssk_per_sys in split_ssk_per_sys], [], x_min=np.min(Rstar_bins), x_max=np.max(Rstar_bins), n_bins=n_bins, c_sim=split_colors, ls_sim=split_linestyles, lw=lw, labels_sim=split_names, xlabel_text=r'$R_\star (R_\odot)$', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt)
+plot_fig_pdf_simple([ssk_per_sys['Rstar_obs'] for ssk_per_sys in split_ssk_per_sys], [], x_min=np.min(Rstar_bins), x_max=np.max(Rstar_bins), n_bins=n_bins, c_sim=split_colors, ls_sim=split_linestyles, lw=lw, labels_sim=split_names, xlabel_text=r'$R_\star (R_\odot)$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 for i,sample in enumerate(split_names):
     plt.fill_between(Rstar_bins_mid, Rstar_counts_16[sample], Rstar_counts_84[sample], step='mid', color=split_colors[i], alpha=alpha)
 if savefigures:
@@ -881,7 +881,7 @@ if savefigures:
     plt.close()
 
 # Transit depth ratios:
-plot_fig_pdf_simple(fig_size, [ssk['D_ratio_obs'] for ssk in split_ssk], [], x_min=np.min(D_ratio_bins), x_max=np.max(D_ratio_bins), n_bins=n_bins, log_x=True, c_sim=split_colors, ls_sim=split_linestyles, lw=lw, labels_sim=split_names, xlabel_text=r'$\delta_{i+1}/\delta_i$', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt)
+plot_fig_pdf_simple([ssk['D_ratio_obs'] for ssk in split_ssk], [], x_min=np.min(D_ratio_bins), x_max=np.max(D_ratio_bins), n_bins=n_bins, log_x=True, c_sim=split_colors, ls_sim=split_linestyles, lw=lw, labels_sim=split_names, xlabel_text=r'$\delta_{i+1}/\delta_i$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 for i,sample in enumerate(split_names):
     plt.fill_between(D_ratio_bins_mid, D_ratio_counts_16[sample], D_ratio_counts_84[sample], step='mid', color=split_colors[i], alpha=alpha)
 if savefigures:
@@ -889,7 +889,7 @@ if savefigures:
     plt.close()
 
 # Log(xi):
-plot_fig_pdf_simple(fig_size, [np.log10(ssk['xi_obs']) for ssk in split_ssk], [], x_min=np.min(xi_bins), x_max=np.max(xi_bins), n_bins=n_bins, c_sim=split_colors, ls_sim=split_linestyles, lw=lw, labels_sim=split_names, xlabel_text=r'$\log{\xi}$', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt)
+plot_fig_pdf_simple([np.log10(ssk['xi_obs']) for ssk in split_ssk], [], x_min=np.min(xi_bins), x_max=np.max(xi_bins), n_bins=n_bins, c_sim=split_colors, ls_sim=split_linestyles, lw=lw, labels_sim=split_names, xlabel_text=r'$\log{\xi}$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 for i,sample in enumerate(split_names):
     plt.fill_between(xi_bins_mid, xi_counts_16[sample], xi_counts_84[sample], step='mid', color=split_colors[i], alpha=alpha)
 if savefigures:
@@ -897,7 +897,7 @@ if savefigures:
     plt.close()
 
 # Log(xi) (not near MMR):
-plot_fig_pdf_simple(fig_size, [np.log10(ssk['xi_nonres_obs']) for ssk in split_ssk], [], x_min=-0.5, x_max=0.5, n_bins=n_bins, c_sim=split_colors, ls_sim=split_linestyles, lw=lw, labels_sim=split_names, extra_text='Not near MMR', xlabel_text=r'$\log{\xi}$', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt)
+plot_fig_pdf_simple([np.log10(ssk['xi_nonres_obs']) for ssk in split_ssk], [], x_min=-0.5, x_max=0.5, n_bins=n_bins, c_sim=split_colors, ls_sim=split_linestyles, lw=lw, labels_sim=split_names, extra_text='Not near MMR', xlabel_text=r'$\log{\xi}$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 for i,sample in enumerate(split_names):
     plt.fill_between(xi_nonres_bins_mid, xi_nonres_counts_16[sample], xi_nonres_counts_84[sample], step='mid', color=split_colors[i], alpha=alpha)
 if savefigures:
@@ -905,7 +905,7 @@ if savefigures:
     plt.close()
 
 # Log(xi) (near MMR):
-plot_fig_pdf_simple(fig_size, [np.log10(ssk['xi_res_obs']) for ssk in split_ssk], [], x_min=-0.5, x_max=0.5, n_bins=n_bins, c_sim=split_colors, ls_sim=split_linestyles, lw=lw, labels_sim=split_names, extra_text='Near MMR', xlabel_text=r'$\log{\xi}$', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt)
+plot_fig_pdf_simple([np.log10(ssk['xi_res_obs']) for ssk in split_ssk], [], x_min=-0.5, x_max=0.5, n_bins=n_bins, c_sim=split_colors, ls_sim=split_linestyles, lw=lw, labels_sim=split_names, extra_text='Near MMR', xlabel_text=r'$\log{\xi}$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 for i,sample in enumerate(split_names):
     plt.fill_between(xi_res_bins_mid, xi_res_counts_16[sample], xi_res_counts_84[sample], step='mid', color=split_colors[i], alpha=alpha)
 if savefigures:
@@ -914,7 +914,7 @@ if savefigures:
 
 ### GF2020 metrics:
 # Planet radii partitioning:
-plot_fig_pdf_simple(fig_size, [ssk_per_sys['radii_partitioning'] for ssk_per_sys in split_ssk_per_sys], [], x_min=1e-5, x_max=1., n_bins=n_bins, log_x=True, c_sim=split_colors, ls_sim=split_linestyles, lw=lw, labels_sim=['Kepler', None], xlabel_text=r'$\mathcal{Q}_R$', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt)
+plot_fig_pdf_simple([ssk_per_sys['radii_partitioning'] for ssk_per_sys in split_ssk_per_sys], [], x_min=1e-5, x_max=1., n_bins=n_bins, log_x=True, c_sim=split_colors, ls_sim=split_linestyles, lw=lw, labels_sim=['Kepler', None], xlabel_text=r'$\mathcal{Q}_R$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 for i,sample in enumerate(split_names):
     label_this = r'Simulated 16-84%' if i==0 else ''
     plt.fill_between(radii_partitioning_bins_mid, radii_partitioning_counts_16[sample], radii_partitioning_counts_84[sample], step='mid', color=split_colors[i], alpha=alpha, label=label_this)
@@ -924,7 +924,7 @@ if savefigures:
     plt.close()
 
 # Planet radii monotonicity:
-plot_fig_pdf_simple(fig_size, [ssk_per_sys['radii_monotonicity'] for ssk_per_sys in split_ssk_per_sys], [], x_min=-0.5, x_max=0.6, n_bins=n_bins, c_sim=split_colors, ls_sim=split_linestyles, lw=lw, labels_sim=split_names, xlabel_text=r'$\mathcal{M}_R$', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt)
+plot_fig_pdf_simple([ssk_per_sys['radii_monotonicity'] for ssk_per_sys in split_ssk_per_sys], [], x_min=-0.5, x_max=0.6, n_bins=n_bins, c_sim=split_colors, ls_sim=split_linestyles, lw=lw, labels_sim=split_names, xlabel_text=r'$\mathcal{M}_R$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 for i,sample in enumerate(split_names):
     plt.fill_between(radii_monotonicity_bins_mid, radii_monotonicity_counts_16[sample], radii_monotonicity_counts_84[sample], step='mid', color=split_colors[i], alpha=alpha)
 if savefigures:
@@ -932,7 +932,7 @@ if savefigures:
     plt.close()
 
 # Gap complexity:
-plot_fig_pdf_simple(fig_size, [ssk_per_sys['gap_complexity'] for ssk_per_sys in split_ssk_per_sys], [], x_min=0., x_max=1., n_bins=n_bins, log_x=False, c_sim=split_colors, ls_sim=split_linestyles, lw=lw, labels_sim=split_names, xlabel_text=r'$\mathcal{C}$', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt)
+plot_fig_pdf_simple([ssk_per_sys['gap_complexity'] for ssk_per_sys in split_ssk_per_sys], [], x_min=0., x_max=1., n_bins=n_bins, log_x=False, c_sim=split_colors, ls_sim=split_linestyles, lw=lw, labels_sim=split_names, xlabel_text=r'$\mathcal{C}$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 for i,sample in enumerate(split_names):
     plt.fill_between(gap_complexity_bins_mid, gap_complexity_counts_16[sample], gap_complexity_counts_84[sample], step='mid', color=split_colors[i], alpha=alpha)
 if savefigures:

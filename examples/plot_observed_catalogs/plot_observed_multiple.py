@@ -120,38 +120,38 @@ lfs = 12 #legend labels font size
 
 #'''
 # Multiplicities:
-plot_fig_counts_hist_simple(fig_size, [sss_per_sys['Mtot_obs'] for sss_per_sys in model_sss_per_sys], [ssk_per_sys['Mtot_obs']], x_min=0, y_min=1e-2, y_max=1e4, x_llim=0.5, N_sim_Kep_factor=float(N_sim)/N_Kep, log_y=True, c_sim=model_colors, ls_sim=model_linestyles, lw=lw, labels_sim=model_names, xlabel_text='Observed planets per system', afs=afs, tfs=tfs, lfs=lfs, legend=True, show_counts_sim=True, show_counts_Kep=True, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + save_name + '_multiplicities_compare.pdf', save_fig=savefigures)
+plot_fig_counts_hist_simple([sss_per_sys['Mtot_obs'] for sss_per_sys in model_sss_per_sys], [ssk_per_sys['Mtot_obs']], x_min=0, y_min=1e-2, y_max=1e4, x_llim=0.5, N_sim_Kep_factor=float(N_sim)/N_Kep, log_y=True, c_sim=model_colors, ls_sim=model_linestyles, lw=lw, labels_sim=model_names, xlabel_text='Observed planets per system', afs=afs, tfs=tfs, lfs=lfs, legend=True, show_counts_sim=True, show_counts_Kep=True, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + save_name + '_multiplicities_compare.pdf', save_fig=savefigures)
 
 # Periods:
-plot_fig_pdf_simple(fig_size, [sss['P_obs'] for sss in model_sss], [ssk['P_obs']], x_min=3., x_max=300., y_min=1e-3, y_max=0.1, n_bins=n_bins, log_x=True, c_sim=model_colors, log_y=True, ls_sim=model_linestyles, lw=lw, labels_sim=model_names, xticks_custom=[3,10,30,100,300], xlabel_text=r'$P$ (days)', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + save_name + '_periods_compare.pdf', save_fig=savefigures)
+plot_fig_pdf_simple([sss['P_obs'] for sss in model_sss], [ssk['P_obs']], x_min=3., x_max=300., y_min=1e-3, y_max=0.1, n_bins=n_bins, log_x=True, c_sim=model_colors, log_y=True, ls_sim=model_linestyles, lw=lw, labels_sim=model_names, xticks_custom=[3,10,30,100,300], xlabel_text=r'$P$ (days)', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + save_name + '_periods_compare.pdf', save_fig=savefigures)
 
 # Period ratios (all, with some upper cut-off):
 R_max_cut = 30. #upper cut-off for plotting period ratios; np.max(sss['Rm_obs'])
-plot_fig_pdf_simple(fig_size, [sss['Rm_obs'][sss['Rm_obs'] < R_max_cut] for sss in model_sss], [ssk['Rm_obs'][ssk['Rm_obs'] < R_max_cut]], x_min=1., x_max=R_max_cut, n_bins=n_bins, log_x=True, c_sim=model_colors, ls_sim=model_linestyles, lw=lw, labels_sim=model_names, xticks_custom=[1,2,3,4,5,10,20], xlabel_text=r'$P_{i+1}/P_i$', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + save_name + '_periodratios_compare.pdf', save_fig=savefigures)
+plot_fig_pdf_simple([sss['Rm_obs'][sss['Rm_obs'] < R_max_cut] for sss in model_sss], [ssk['Rm_obs'][ssk['Rm_obs'] < R_max_cut]], x_min=1., x_max=R_max_cut, n_bins=n_bins, log_x=True, c_sim=model_colors, ls_sim=model_linestyles, lw=lw, labels_sim=model_names, xticks_custom=[1,2,3,4,5,10,20], xlabel_text=r'$P_{i+1}/P_i$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + save_name + '_periodratios_compare.pdf', save_fig=savefigures)
 
 # Period ratios (< 5):
-plot_fig_pdf_simple(fig_size, [sss['Rm_obs'][sss['Rm_obs'] < 5.] for sss in model_sss], [ssk['Rm_obs'][ssk['Rm_obs'] < 5.]], x_min=1., x_max=5., n_bins=n_bins, c_sim=model_colors, ls_sim=model_linestyles, lw=lw, labels_sim=model_names, xlabel_text=r'$P_{i+1}/P_i$', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + save_name + '_periodratios_less5_compare.pdf', save_fig=savefigures)
+plot_fig_pdf_simple([sss['Rm_obs'][sss['Rm_obs'] < 5.] for sss in model_sss], [ssk['Rm_obs'][ssk['Rm_obs'] < 5.]], x_min=1., x_max=5., n_bins=n_bins, c_sim=model_colors, ls_sim=model_linestyles, lw=lw, labels_sim=model_names, xlabel_text=r'$P_{i+1}/P_i$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + save_name + '_periodratios_less5_compare.pdf', save_fig=savefigures)
 
 # Transit durations:
-plot_fig_pdf_simple(fig_size, [sss['tdur_obs'] for sss in model_sss], [ssk['tdur_obs']], x_min=0., x_max=15., n_bins=n_bins, c_sim=model_colors, ls_sim=model_linestyles, lw=lw, labels_sim=model_names, xlabel_text=r'$t_{\rm dur}$ (hrs)', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + save_name + '_durations_compare.pdf', save_fig=savefigures)
+plot_fig_pdf_simple([sss['tdur_obs'] for sss in model_sss], [ssk['tdur_obs']], x_min=0., x_max=15., n_bins=n_bins, c_sim=model_colors, ls_sim=model_linestyles, lw=lw, labels_sim=model_names, xlabel_text=r'$t_{\rm dur}$ (hrs)', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + save_name + '_durations_compare.pdf', save_fig=savefigures)
 
 # Circular normalized transit durations:
-plot_fig_pdf_simple(fig_size, [sss['tdur_tcirc_obs'] for sss in model_sss], [ssk['tdur_tcirc_obs']], x_min=0., x_max=1.5, n_bins=n_bins, c_sim=model_colors, ls_sim=model_linestyles, lw=lw, labels_sim=model_names, xlabel_text=r'$t_{\rm dur}/t_{\rm circ}$', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + save_name + '_tdur_tcirc_compare.pdf', save_fig=savefigures)
+plot_fig_pdf_simple([sss['tdur_tcirc_obs'] for sss in model_sss], [ssk['tdur_tcirc_obs']], x_min=0., x_max=1.5, n_bins=n_bins, c_sim=model_colors, ls_sim=model_linestyles, lw=lw, labels_sim=model_names, xlabel_text=r'$t_{\rm dur}/t_{\rm circ}$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + save_name + '_tdur_tcirc_compare.pdf', save_fig=savefigures)
 
 # Transit depths:
-plot_fig_pdf_simple(fig_size, [sss['D_obs'] for sss in model_sss], [ssk['D_obs']], x_min=10.**(-5.), x_max=10.**(-1.5), n_bins=n_bins, log_x=True, c_sim=model_colors, ls_sim=model_linestyles, lw=lw, labels_sim=model_names, xlabel_text=r'$\delta$', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + save_name + '_depths_compare.pdf', save_fig=savefigures)
+plot_fig_pdf_simple([sss['D_obs'] for sss in model_sss], [ssk['D_obs']], x_min=10.**(-5.), x_max=10.**(-1.5), n_bins=n_bins, log_x=True, c_sim=model_colors, ls_sim=model_linestyles, lw=lw, labels_sim=model_names, xlabel_text=r'$\delta$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + save_name + '_depths_compare.pdf', save_fig=savefigures)
 
 # Planet radii:
-plot_fig_pdf_simple(fig_size, [sss['radii_obs'] for sss in model_sss], [ssk['radii_obs']], x_min=radii_min, x_max=radii_max, n_bins=n_bins, c_sim=model_colors, ls_sim=model_linestyles, lw=lw, labels_sim=model_names, xlabel_text=r'$R_p (R_\oplus)$', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + save_name + '_radii_compare.pdf', save_fig=savefigures)
+plot_fig_pdf_simple([sss['radii_obs'] for sss in model_sss], [ssk['radii_obs']], x_min=radii_min, x_max=radii_max, n_bins=n_bins, c_sim=model_colors, ls_sim=model_linestyles, lw=lw, labels_sim=model_names, xlabel_text=r'$R_p (R_\oplus)$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + save_name + '_radii_compare.pdf', save_fig=savefigures)
 
 # Stellar radii:
-plot_fig_pdf_simple(fig_size, [sss['Rstar_obs'] for sss in model_sss], [ssk['Rstar_obs']], x_min=0.5, x_max=2.5, n_bins=n_bins, c_sim=model_colors, ls_sim=model_linestyles, lw=lw, labels_sim=model_names, xlabel_text=r'$R_\star (R_\odot)$', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + save_name + '_stellar_radii_compare.pdf', save_fig=savefigures)
+plot_fig_pdf_simple([sss['Rstar_obs'] for sss in model_sss], [ssk['Rstar_obs']], x_min=0.5, x_max=2.5, n_bins=n_bins, c_sim=model_colors, ls_sim=model_linestyles, lw=lw, labels_sim=model_names, xlabel_text=r'$R_\star (R_\odot)$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + save_name + '_stellar_radii_compare.pdf', save_fig=savefigures)
 
 # Transit depth ratios:
-plot_fig_pdf_simple(fig_size, [sss['D_ratio_obs'] for sss in model_sss], [ssk['D_ratio_obs']], x_min=10.**(-1.5), x_max=10.**(1.5), n_bins=n_bins, log_x=True, c_sim=model_colors, ls_sim=model_linestyles, lw=lw, labels_sim=model_names, xlabel_text=r'$\delta_{i+1}/\delta_i$', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + save_name + '_depthratios_compare.pdf', save_fig=savefigures)
+plot_fig_pdf_simple([sss['D_ratio_obs'] for sss in model_sss], [ssk['D_ratio_obs']], x_min=10.**(-1.5), x_max=10.**(1.5), n_bins=n_bins, log_x=True, c_sim=model_colors, ls_sim=model_linestyles, lw=lw, labels_sim=model_names, xlabel_text=r'$\delta_{i+1}/\delta_i$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + save_name + '_depthratios_compare.pdf', save_fig=savefigures)
 
 # Log(xi):
-plot_fig_pdf_simple(fig_size, [np.log10(sss['xi_obs']) for sss in model_sss], [np.log10(ssk['xi_obs'])], x_min=-0.5, x_max=0.5, n_bins=n_bins, c_sim=model_colors, ls_sim=model_linestyles, lw=lw, labels_sim=model_names, xlabel_text=r'$\log{\xi}$', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + save_name + '_logxi_all_compare.pdf', save_fig=savefigures)
+plot_fig_pdf_simple([np.log10(sss['xi_obs']) for sss in model_sss], [np.log10(ssk['xi_obs'])], x_min=-0.5, x_max=0.5, n_bins=n_bins, c_sim=model_colors, ls_sim=model_linestyles, lw=lw, labels_sim=model_names, xlabel_text=r'$\log{\xi}$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + save_name + '_logxi_all_compare.pdf', save_fig=savefigures)
 
 plt.show()
 plt.close()
@@ -173,8 +173,8 @@ plt.close()
 
 
 ##### To plot the circular normalized transit durations again (observed singles vs. multis):
-plot_fig_pdf_simple(fig_size, [sss['tdur_tcirc_1_obs'] for sss in model_sss], [ssk['tdur_tcirc_1_obs']], x_min=0., x_max=1.5, n_bins=n_bins, c_sim=model_colors, ls_sim=model_linestyles, lw=lw, labels_sim=model_names, xlabel_text=r'$t_{\rm dur}/t_{\rm circ}$', afs=afs, tfs=tfs, lfs=lfs, extra_text='Singles', fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + save_name + '_tdur_tcirc_singles_compare.pdf', save_fig=savefigures)
-plot_fig_pdf_simple(fig_size, [sss['tdur_tcirc_2p_obs'] for sss in model_sss], [ssk['tdur_tcirc_2p_obs']], x_min=0., x_max=1.5, n_bins=n_bins, c_sim=model_colors, ls_sim=model_linestyles, lw=lw, labels_sim=model_names, xlabel_text=r'$t_{\rm dur}/t_{\rm circ}$', afs=afs, tfs=tfs, lfs=lfs, extra_text='Multis', fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + save_name + '_tdur_tcirc_multis_compare.pdf', save_fig=savefigures)
+plot_fig_pdf_simple([sss['tdur_tcirc_1_obs'] for sss in model_sss], [ssk['tdur_tcirc_1_obs']], x_min=0., x_max=1.5, n_bins=n_bins, c_sim=model_colors, ls_sim=model_linestyles, lw=lw, labels_sim=model_names, xlabel_text=r'$t_{\rm dur}/t_{\rm circ}$', afs=afs, tfs=tfs, lfs=lfs, extra_text='Singles', fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + save_name + '_tdur_tcirc_singles_compare.pdf', save_fig=savefigures)
+plot_fig_pdf_simple([sss['tdur_tcirc_2p_obs'] for sss in model_sss], [ssk['tdur_tcirc_2p_obs']], x_min=0., x_max=1.5, n_bins=n_bins, c_sim=model_colors, ls_sim=model_linestyles, lw=lw, labels_sim=model_names, xlabel_text=r'$t_{\rm dur}/t_{\rm circ}$', afs=afs, tfs=tfs, lfs=lfs, extra_text='Multis', fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + save_name + '_tdur_tcirc_multis_compare.pdf', save_fig=savefigures)
 
 
 
@@ -229,5 +229,5 @@ if savefigures:
 
 ##### To remake the log(xi) plot for defense talk:
 
-plot_fig_pdf_simple((8,4), [np.log10(sss['xi_obs']) for sss in model_sss], [], x_min=-0.5, x_max=0.5, n_bins=n_bins, c_sim=model_colors, ls_sim=model_linestyles, lw=3, labels_sim=model_names, xlabel_text=r'$\log{\xi}$', afs=afs, tfs=tfs, lfs=20, legend=True, fig_lbrt=[0.15, 0.2, 0.95, 0.925], save_name=savefigures_directory + subdirectory + save_name + '_logxi_incl.pdf', save_fig=savefigures)
+plot_fig_pdf_simple([np.log10(sss['xi_obs']) for sss in model_sss], [], x_min=-0.5, x_max=0.5, n_bins=n_bins, c_sim=model_colors, ls_sim=model_linestyles, lw=3, labels_sim=model_names, xlabel_text=r'$\log{\xi}$', afs=afs, tfs=tfs, lfs=20, legend=True, fig_lbrt=[0.15, 0.2, 0.95, 0.925], save_name=savefigures_directory + subdirectory + save_name + '_logxi_incl.pdf', save_fig=savefigures)
 plt.show()

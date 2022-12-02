@@ -107,56 +107,56 @@ if savefigures == True:
     plt.close()
 
 # Multiplicities:
-plot_fig_counts_hist_simple(fig_size, [sss_per_sys['Mtot_obs']], [ssk_per_sys['Mtot_obs']], x_min=0, x_max=7, y_max=2e3, x_llim=0.5, normalize=False, N_sim_Kep_factor=float(N_sim)/N_Kep, log_y=True, lw=lw, xlabel_text='Observed planets per system', afs=afs, tfs=tfs, lfs=lfs, legend=True, show_counts_sim=False, show_counts_Kep=False, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_multiplicities_compare.pdf', save_fig=savefigures)
+plot_fig_counts_hist_simple([sss_per_sys['Mtot_obs']], [ssk_per_sys['Mtot_obs']], x_min=0, x_max=7, y_max=2e3, x_llim=0.5, normalize=False, N_sim_Kep_factor=float(N_sim)/N_Kep, log_y=True, lw=lw, xlabel_text='Observed planets per system', afs=afs, tfs=tfs, lfs=lfs, legend=True, show_counts_sim=False, show_counts_Kep=False, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_multiplicities_compare.pdf', save_fig=savefigures)
 
 # Periods:
-plot_fig_pdf_simple(fig_size, [sss['P_obs']], [ssk['P_obs']], x_min=3., x_max=300., y_min=1e-3, y_max=0.1, n_bins=n_bins, log_x=True, log_y=True, lw=lw, xticks_custom=[3,10,30,100,300], xlabel_text=r'$P$ (days)', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_periods_compare.pdf', save_fig=savefigures)
+plot_fig_pdf_simple([sss['P_obs']], [ssk['P_obs']], x_min=3., x_max=300., y_min=1e-3, y_max=0.1, n_bins=n_bins, log_x=True, log_y=True, lw=lw, xticks_custom=[3,10,30,100,300], xlabel_text=r'$P$ (days)', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_periods_compare.pdf', save_fig=savefigures)
 
 # Period ratios (all, with some upper cut-off):
 R_max_cut = 30. #upper cut-off for plotting period ratios; np.max(sss['Rm_obs'])
-plot_fig_pdf_simple(fig_size, [sss['Rm_obs'][sss['Rm_obs'] < R_max_cut]], [ssk['Rm_obs'][ssk['Rm_obs'] < R_max_cut]], x_min=1., x_max=R_max_cut, n_bins=n_bins, log_x=True, lw=lw, xticks_custom=[1,2,3,4,5,10,20], xlabel_text=r'$P_{i+1}/P_i$', afs=afs, tfs=tfs, lfs=lfs, legend=False, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_periodratios_compare.pdf', save_fig=savefigures)
+plot_fig_pdf_simple([sss['Rm_obs'][sss['Rm_obs'] < R_max_cut]], [ssk['Rm_obs'][ssk['Rm_obs'] < R_max_cut]], x_min=1., x_max=R_max_cut, n_bins=n_bins, log_x=True, lw=lw, xticks_custom=[1,2,3,4,5,10,20], xlabel_text=r'$P_{i+1}/P_i$', afs=afs, tfs=tfs, lfs=lfs, legend=False, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_periodratios_compare.pdf', save_fig=savefigures)
 
 # Period ratios (< 5):
-plot_fig_pdf_simple(fig_size, [sss['Rm_obs'][sss['Rm_obs'] < 5.]], [ssk['Rm_obs'][ssk['Rm_obs'] < 5.]], x_min=1., x_max=5., n_bins=n_bins, lw=lw, xlabel_text=r'$P_{i+1}/P_i$', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_periodratios_less5_compare.pdf', save_fig=savefigures)
+plot_fig_pdf_simple([sss['Rm_obs'][sss['Rm_obs'] < 5.]], [ssk['Rm_obs'][ssk['Rm_obs'] < 5.]], x_min=1., x_max=5., n_bins=n_bins, lw=lw, xlabel_text=r'$P_{i+1}/P_i$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_periodratios_less5_compare.pdf', save_fig=savefigures)
 
 # Transit durations:
-plot_fig_pdf_simple(fig_size, [sss['tdur_obs']], [ssk['tdur_obs']], x_min=0., x_max=15., n_bins=n_bins, lw=lw, xlabel_text=r'$t_{\rm dur}$ (hrs)', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_durations_compare.pdf', save_fig=savefigures)
+plot_fig_pdf_simple([sss['tdur_obs']], [ssk['tdur_obs']], x_min=0., x_max=15., n_bins=n_bins, lw=lw, xlabel_text=r'$t_{\rm dur}$ (hrs)', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_durations_compare.pdf', save_fig=savefigures)
 
 # Circular normalized transit durations:
-plot_fig_pdf_simple(fig_size, [sss['tdur_tcirc_obs']], [ssk['tdur_tcirc_obs']], x_min=0., x_max=1.5, n_bins=n_bins, lw=lw, xlabel_text=r'$t_{\rm dur}/t_{\rm circ}$', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_tdur_tcirc_compare.pdf', save_fig=savefigures)
+plot_fig_pdf_simple([sss['tdur_tcirc_obs']], [ssk['tdur_tcirc_obs']], x_min=0., x_max=1.5, n_bins=n_bins, lw=lw, xlabel_text=r'$t_{\rm dur}/t_{\rm circ}$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_tdur_tcirc_compare.pdf', save_fig=savefigures)
 
 # Transit depths:
-plot_fig_pdf_simple(fig_size, [sss['D_obs']], [ssk['D_obs']], log_x=True, lw=lw, xlabel_text=r'$\delta$', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_depths_compare.pdf', save_fig=savefigures)
+plot_fig_pdf_simple([sss['D_obs']], [ssk['D_obs']], log_x=True, lw=lw, xlabel_text=r'$\delta$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_depths_compare.pdf', save_fig=savefigures)
 
 # Transit depths (above and below the photoevaporation boundary):
-plot_fig_pdf_simple(fig_size, [sss['D_above_obs'], sss['D_below_obs']], [ssk['D_above_obs'], ssk['D_below_obs']], n_bins=n_bins, log_x=True, c_sim=['b','r'], c_Kep=['b','r'], ls_sim=['-','-'], ls_Kep=['-','-'], lw=lw, labels_sim=['Above', 'Below'], labels_Kep=[None, None], xlabel_text=r'$\delta$', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_depths_photoevap_compare.pdf', save_fig=savefigures)
+plot_fig_pdf_simple([sss['D_above_obs'], sss['D_below_obs']], [ssk['D_above_obs'], ssk['D_below_obs']], n_bins=n_bins, log_x=True, c_sim=['b','r'], c_Kep=['b','r'], ls_sim=['-','-'], ls_Kep=['-','-'], lw=lw, labels_sim=['Above', 'Below'], labels_Kep=[None, None], xlabel_text=r'$\delta$', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_depths_photoevap_compare.pdf', save_fig=savefigures)
 
 # Planet radii:
-plot_fig_pdf_simple(fig_size, [sss['radii_obs']], [ssk['radii_obs']], n_bins=n_bins, lw=lw, xlabel_text=r'$R_p (R_\oplus)$', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_radii_compare.pdf', save_fig=savefigures)
+plot_fig_pdf_simple([sss['radii_obs']], [ssk['radii_obs']], n_bins=n_bins, lw=lw, xlabel_text=r'$R_p (R_\oplus)$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_radii_compare.pdf', save_fig=savefigures)
 
 # Transit depth ratios:
-plot_fig_pdf_simple(fig_size, [sss['D_ratio_obs']], [ssk['D_ratio_obs']], n_bins=n_bins, log_x=True, lw=lw, xlabel_text=r'$\delta_{i+1}/\delta_i$', afs=afs, tfs=tfs, lfs=lfs, legend=False, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_depthratios_compare.pdf', save_fig=savefigures)
+plot_fig_pdf_simple([sss['D_ratio_obs']], [ssk['D_ratio_obs']], n_bins=n_bins, log_x=True, lw=lw, xlabel_text=r'$\delta_{i+1}/\delta_i$', afs=afs, tfs=tfs, lfs=lfs, legend=False, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_depthratios_compare.pdf', save_fig=savefigures)
 
 # Transit depth ratios (above, below, and across the photoevaporation boundary):
-plot_fig_pdf_simple(fig_size, [sss['D_ratio_above_obs'], sss['D_ratio_below_obs'], sss['D_ratio_across_obs']], [ssk['D_ratio_above_obs'], ssk['D_ratio_below_obs'], ssk['D_ratio_across_obs']], n_bins=n_bins, log_x=True, c_sim=['b','r','k'], c_Kep=['b','r','k'], ls_sim=['-','-','-'], ls_Kep=['-','-','-'], lw=lw, labels_sim=['Above', 'Below', 'Across'], labels_Kep=[None, None, None], xlabel_text=r'$\delta_{i+1}/\delta_i$', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_depthratios_photoevap_compare.pdf', save_fig=savefigures)
+plot_fig_pdf_simple([sss['D_ratio_above_obs'], sss['D_ratio_below_obs'], sss['D_ratio_across_obs']], [ssk['D_ratio_above_obs'], ssk['D_ratio_below_obs'], ssk['D_ratio_across_obs']], n_bins=n_bins, log_x=True, c_sim=['b','r','k'], c_Kep=['b','r','k'], ls_sim=['-','-','-'], ls_Kep=['-','-','-'], lw=lw, labels_sim=['Above', 'Below', 'Across'], labels_Kep=[None, None, None], xlabel_text=r'$\delta_{i+1}/\delta_i$', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_depthratios_photoevap_compare.pdf', save_fig=savefigures)
 
 # Log(xi):
-plot_fig_pdf_simple(fig_size, [np.log10(sss['xi_obs'])], [np.log10(ssk['xi_obs'])], x_min=-0.5, x_max=0.5, n_bins=n_bins, lw=lw, xlabel_text=r'$\log{\xi}$', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_logxi_all_compare.pdf', save_fig=savefigures)
+plot_fig_pdf_simple([np.log10(sss['xi_obs'])], [np.log10(ssk['xi_obs'])], x_min=-0.5, x_max=0.5, n_bins=n_bins, lw=lw, xlabel_text=r'$\log{\xi}$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_logxi_all_compare.pdf', save_fig=savefigures)
 
 # Log(xi) by res/non-res:
-plot_fig_pdf_simple(fig_size, [np.log10(sss['xi_res_obs']), np.log10(sss['xi_nonres_obs'])], [np.log10(ssk['xi_res_obs']), np.log10(ssk['xi_nonres_obs'])], x_min=-0.5, x_max=0.5, n_bins=n_bins, c_sim=['m','g'], c_Kep=['m','g'], ls_sim=['-','-'], ls_Kep=['-','-'], lw=lw, labels_sim=['Near MMR', 'Not near MMR'], labels_Kep=[None, None], xlabel_text=r'$\log{\xi}$', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_logxi_compare.pdf', save_fig=savefigures)
+plot_fig_pdf_simple([np.log10(sss['xi_res_obs']), np.log10(sss['xi_nonres_obs'])], [np.log10(ssk['xi_res_obs']), np.log10(ssk['xi_nonres_obs'])], x_min=-0.5, x_max=0.5, n_bins=n_bins, c_sim=['m','g'], c_Kep=['m','g'], ls_sim=['-','-'], ls_Kep=['-','-'], lw=lw, labels_sim=['Near MMR', 'Not near MMR'], labels_Kep=[None, None], xlabel_text=r'$\log{\xi}$', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_logxi_compare.pdf', save_fig=savefigures)
 
 # Log(xi) within res:
-plot_fig_pdf_simple(fig_size, [np.log10(sss['xi_res32_obs']), np.log10(sss['xi_res21_obs'])], [np.log10(ssk['xi_res32_obs']), np.log10(ssk['xi_res21_obs'])], x_min=-0.5, x_max=0.5, n_bins=n_bins, c_sim=['r','b'], c_Kep=['r','b'], ls_sim=['-','-'], ls_Kep=['-','-'], lw=lw, labels_sim=['Near 3:2 MMR', 'Near 2:1 MMR'], labels_Kep=[None, None], xlabel_text=r'$\log{\xi}$', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_logxi_res_compare.pdf', save_fig=savefigures)
+plot_fig_pdf_simple([np.log10(sss['xi_res32_obs']), np.log10(sss['xi_res21_obs'])], [np.log10(ssk['xi_res32_obs']), np.log10(ssk['xi_res21_obs'])], x_min=-0.5, x_max=0.5, n_bins=n_bins, c_sim=['r','b'], c_Kep=['r','b'], ls_sim=['-','-'], ls_Kep=['-','-'], lw=lw, labels_sim=['Near 3:2 MMR', 'Near 2:1 MMR'], labels_Kep=[None, None], xlabel_text=r'$\log{\xi}$', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_logxi_res_compare.pdf', save_fig=savefigures)
 
 # Stellar radii:
-plot_fig_pdf_simple(fig_size, [sss['Rstar_obs']], [ssk['Rstar_obs']], n_bins=n_bins, lw=lw, xlabel_text=r'$R_\star (R_\odot)$', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_stellar_radii_compare.pdf', save_fig=savefigures)
+plot_fig_pdf_simple([sss['Rstar_obs']], [ssk['Rstar_obs']], n_bins=n_bins, lw=lw, xlabel_text=r'$R_\star (R_\odot)$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_stellar_radii_compare.pdf', save_fig=savefigures)
 
 # Stellar masses:
-plot_fig_pdf_simple(fig_size, [sss['Mstar_obs']], [ssk['Mstar_obs']], x_max=2., n_bins=n_bins, lw=lw, xlabel_text=r'$M_\star (M_\odot)$', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_stellar_masses_compare.pdf', save_fig=savefigures)
+plot_fig_pdf_simple([sss['Mstar_obs']], [ssk['Mstar_obs']], x_max=2., n_bins=n_bins, lw=lw, xlabel_text=r'$M_\star (M_\odot)$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_stellar_masses_compare.pdf', save_fig=savefigures)
 
 # Stellar teff:
-plot_fig_pdf_simple(fig_size, [sss['teff_obs']], [ssk['teff_obs']], n_bins=n_bins, lw=lw, xlabel_text=r'$t_{\rm eff} (K)$', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_stellar_teff_compare.pdf', save_fig=savefigures)
+plot_fig_pdf_simple([sss['teff_obs']], [ssk['teff_obs']], n_bins=n_bins, lw=lw, xlabel_text=r'$t_{\rm eff} (K)$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_stellar_teff_compare.pdf', save_fig=savefigures)
 
 plt.show()
 #plt.close()
@@ -164,7 +164,7 @@ plt.show()
 
 
 # Multiplicity CDFs:
-plot_fig_mult_cdf_simple(fig_size, [sss_per_sys['Mtot_obs']], [ssk_per_sys['Mtot_obs']], y_min=0.6, y_max=1., lw=lw, xlabel_text='Observed planets per system', ylabel_text='CDF', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_lbrt=fig_lbrt)
+plot_fig_mult_cdf_simple([sss_per_sys['Mtot_obs']], [ssk_per_sys['Mtot_obs']], y_min=0.6, y_max=1., lw=lw, xlabel_text='Observed planets per system', ylabel_text='CDF', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_size=fig_size, fig_lbrt=fig_lbrt)
 plt.figtext(0.925, 0.45, r'$D_f = %s$' % np.round(dists['delta_f'], 4), ha='right', fontsize=lfs)
 plt.figtext(0.925, 0.35, r'$\rho_{\rm CRPD} = %s$' % np.round(dists['mult_CRPD_r'], 3), ha='right', fontsize=lfs)
 if savefigures:
@@ -172,40 +172,40 @@ if savefigures:
     plt.close()
 
 # Periods CDFs:
-plot_fig_cdf_simple(fig_size, [sss['P_obs']], [ssk['P_obs']], x_min=P_min, x_max=P_max, log_x=True, lw=lw, xticks_custom=[3,10,30,100,300], xlabel_text=r'$P$ (days)', afs=afs, tfs=tfs, lfs=lfs, label_dist=True, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_periods_CDFs.pdf', save_fig=savefigures)
+plot_fig_cdf_simple([sss['P_obs']], [ssk['P_obs']], x_min=P_min, x_max=P_max, log_x=True, lw=lw, xticks_custom=[3,10,30,100,300], xlabel_text=r'$P$ (days)', afs=afs, tfs=tfs, lfs=lfs, label_dist=True, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_periods_CDFs.pdf', save_fig=savefigures)
 
 # Period ratios CDFs:
-plot_fig_cdf_simple(fig_size, [sss['Rm_obs']], [ssk['Rm_obs']], log_x=True, lw=lw, xticks_custom=[1,2,3,4,5,10,20,40], xlabel_text=r'$P_{i+1}/P_i$', afs=afs, tfs=tfs, lfs=lfs, label_dist=True, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_periodratios_CDFs.pdf', save_fig=savefigures)
+plot_fig_cdf_simple([sss['Rm_obs']], [ssk['Rm_obs']], log_x=True, lw=lw, xticks_custom=[1,2,3,4,5,10,20,40], xlabel_text=r'$P_{i+1}/P_i$', afs=afs, tfs=tfs, lfs=lfs, label_dist=True, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_periodratios_CDFs.pdf', save_fig=savefigures)
 
 # Transit durations CDFs:
-plot_fig_cdf_simple(fig_size, [sss['tdur_obs']], [ssk['tdur_obs']], x_min=0., x_max=15., lw=lw, xlabel_text=r'$t_{\rm dur}$ (hrs)', afs=afs, tfs=tfs, lfs=lfs, label_dist=True, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_durations_CDFs.pdf', save_fig=savefigures)
+plot_fig_cdf_simple([sss['tdur_obs']], [ssk['tdur_obs']], x_min=0., x_max=15., lw=lw, xlabel_text=r'$t_{\rm dur}$ (hrs)', afs=afs, tfs=tfs, lfs=lfs, label_dist=True, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_durations_CDFs.pdf', save_fig=savefigures)
 
 # Circular normalized transit durations CDFs:
-plot_fig_cdf_simple(fig_size, [sss['tdur_tcirc_obs']], [ssk['tdur_tcirc_obs']], x_min=0., x_max=1.5, lw=lw, xlabel_text=r'$t_{\rm dur}/t_{\rm circ}$', afs=afs, tfs=tfs, lfs=lfs, label_dist=True, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_tdur_tcirc_CDFs.pdf', save_fig=savefigures)
+plot_fig_cdf_simple([sss['tdur_tcirc_obs']], [ssk['tdur_tcirc_obs']], x_min=0., x_max=1.5, lw=lw, xlabel_text=r'$t_{\rm dur}/t_{\rm circ}$', afs=afs, tfs=tfs, lfs=lfs, label_dist=True, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_tdur_tcirc_CDFs.pdf', save_fig=savefigures)
 
 # Transit depths CDFs:
-plot_fig_cdf_simple(fig_size, [sss['D_obs']], [ssk['D_obs']], log_x=True, lw=lw, xlabel_text=r'$\delta$', afs=afs, tfs=tfs, lfs=lfs, label_dist=True, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_depths_CDFs.pdf', save_fig=savefigures)
+plot_fig_cdf_simple([sss['D_obs']], [ssk['D_obs']], log_x=True, lw=lw, xlabel_text=r'$\delta$', afs=afs, tfs=tfs, lfs=lfs, label_dist=True, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_depths_CDFs.pdf', save_fig=savefigures)
 
 # Transit depths CDFs (above and below the photoevaporation boundary):
-plot_fig_cdf_simple(fig_size, [sss['D_above_obs'], sss['D_below_obs']], [ssk['D_above_obs'], ssk['D_below_obs']], log_x=True, c_sim=['b','r'], c_Kep=['b','r'], ls_sim=['-','-'], ls_Kep=['--','--'], lw=lw, labels_sim=['Above', 'Below'], labels_Kep=[None, None], xlabel_text=r'$\delta$', afs=afs, tfs=tfs, lfs=lfs, legend=True, label_dist=True, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_depths_photoevap_CDFs.pdf', save_fig=savefigures)
+plot_fig_cdf_simple([sss['D_above_obs'], sss['D_below_obs']], [ssk['D_above_obs'], ssk['D_below_obs']], log_x=True, c_sim=['b','r'], c_Kep=['b','r'], ls_sim=['-','-'], ls_Kep=['--','--'], lw=lw, labels_sim=['Above', 'Below'], labels_Kep=[None, None], xlabel_text=r'$\delta$', afs=afs, tfs=tfs, lfs=lfs, legend=True, label_dist=True, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_depths_photoevap_CDFs.pdf', save_fig=savefigures)
 
 # Planet radii CDFs:
-plot_fig_cdf_simple(fig_size, [sss['radii_obs']], [ssk['radii_obs']], x_min=radii_min, x_max=radii_max, lw=lw, xlabel_text=r'$R_p (R_\oplus)$', afs=afs, tfs=tfs, lfs=lfs, label_dist=True, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_radii_CDFs.pdf', save_fig=savefigures)
+plot_fig_cdf_simple([sss['radii_obs']], [ssk['radii_obs']], x_min=radii_min, x_max=radii_max, lw=lw, xlabel_text=r'$R_p (R_\oplus)$', afs=afs, tfs=tfs, lfs=lfs, label_dist=True, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_radii_CDFs.pdf', save_fig=savefigures)
 
 # Transit depth ratios CDFs:
-plot_fig_cdf_simple(fig_size, [sss['D_ratio_obs']], [ssk['D_ratio_obs']], x_min=10.**-1.5, x_max=10.**1.5, log_x=True, lw=lw, xlabel_text=r'$\delta_{i+1}/\delta_i$', afs=afs, tfs=tfs, lfs=lfs, label_dist=True, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_depthratios_CDFs.pdf', save_fig=savefigures)
+plot_fig_cdf_simple([sss['D_ratio_obs']], [ssk['D_ratio_obs']], x_min=10.**-1.5, x_max=10.**1.5, log_x=True, lw=lw, xlabel_text=r'$\delta_{i+1}/\delta_i$', afs=afs, tfs=tfs, lfs=lfs, label_dist=True, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_depthratios_CDFs.pdf', save_fig=savefigures)
 
 # Transit depth ratios CDFs (above, below, and across the photoevaporation boundary):
-plot_fig_cdf_simple(fig_size, [sss['D_ratio_above_obs'], sss['D_ratio_below_obs'], sss['D_ratio_across_obs']], [ssk['D_ratio_above_obs'], ssk['D_ratio_below_obs'], ssk['D_ratio_across_obs']], log_x=True, c_sim=['b','r','k'], c_Kep=['b','r','k'], ls_sim=['-','-','-'], ls_Kep=['--','--','--'], lw=lw, labels_sim=['Above', 'Below', 'Across'], labels_Kep=[None, None, None], xlabel_text=r'$\delta_{i+1}/\delta_i$', afs=afs, tfs=tfs, lfs=lfs, legend=True, label_dist=True, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_depthratios_photoevap_CDFs.pdf', save_fig=savefigures)
+plot_fig_cdf_simple([sss['D_ratio_above_obs'], sss['D_ratio_below_obs'], sss['D_ratio_across_obs']], [ssk['D_ratio_above_obs'], ssk['D_ratio_below_obs'], ssk['D_ratio_across_obs']], log_x=True, c_sim=['b','r','k'], c_Kep=['b','r','k'], ls_sim=['-','-','-'], ls_Kep=['--','--','--'], lw=lw, labels_sim=['Above', 'Below', 'Across'], labels_Kep=[None, None, None], xlabel_text=r'$\delta_{i+1}/\delta_i$', afs=afs, tfs=tfs, lfs=lfs, legend=True, label_dist=True, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_depthratios_photoevap_CDFs.pdf', save_fig=savefigures)
 
 # Log(xi) CDFs:
-plot_fig_cdf_simple(fig_size, [np.log10(sss['xi_obs'])], [np.log10(ssk['xi_obs'])], x_min=-0.5, x_max=0.5, lw=lw, xlabel_text=r'$\log{\xi}$', afs=afs, tfs=tfs, lfs=lfs, label_dist=True, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_logxi_all_CDFs.pdf', save_fig=savefigures)
+plot_fig_cdf_simple([np.log10(sss['xi_obs'])], [np.log10(ssk['xi_obs'])], x_min=-0.5, x_max=0.5, lw=lw, xlabel_text=r'$\log{\xi}$', afs=afs, tfs=tfs, lfs=lfs, label_dist=True, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_logxi_all_CDFs.pdf', save_fig=savefigures)
 
 # Log(xi) CDFs by res/non-res:
-plot_fig_cdf_simple(fig_size, [np.log10(sss['xi_res_obs']), np.log10(sss['xi_nonres_obs'])], [np.log10(ssk['xi_res_obs']), np.log10(ssk['xi_nonres_obs'])], x_min=-0.5, x_max=0.5, c_sim=['m','g'], c_Kep=['m','g'], ls_sim=['-','-'], ls_Kep=['--','--'], lw=lw, labels_sim=['Near MMR', 'Not near MMR'], labels_Kep=[None, None], xlabel_text=r'$\log{\xi}$', afs=afs, tfs=tfs, lfs=lfs, legend=True, label_dist=True, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_logxi_CDFs.pdf', save_fig=savefigures)
+plot_fig_cdf_simple([np.log10(sss['xi_res_obs']), np.log10(sss['xi_nonres_obs'])], [np.log10(ssk['xi_res_obs']), np.log10(ssk['xi_nonres_obs'])], x_min=-0.5, x_max=0.5, c_sim=['m','g'], c_Kep=['m','g'], ls_sim=['-','-'], ls_Kep=['--','--'], lw=lw, labels_sim=['Near MMR', 'Not near MMR'], labels_Kep=[None, None], xlabel_text=r'$\log{\xi}$', afs=afs, tfs=tfs, lfs=lfs, legend=True, label_dist=True, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_logxi_CDFs.pdf', save_fig=savefigures)
 
 # Log(xi) CDFs within res:
-plot_fig_cdf_simple(fig_size, [np.log10(sss['xi_res32_obs']), np.log10(sss['xi_res21_obs'])], [np.log10(ssk['xi_res32_obs']), np.log10(ssk['xi_res21_obs'])], x_min=-0.5, x_max=0.5, c_sim=['r','b'], c_Kep=['r','b'], ls_sim=['-','-'], ls_Kep=['--','--'], lw=lw, labels_sim=['Near 3:2 MMR', 'Near 2:1 MMR'], labels_Kep=[None, None], xlabel_text=r'$\log{\xi}$', afs=afs, tfs=tfs, lfs=lfs, legend=True, label_dist=True, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_logxi_res_CDFs.pdf', save_fig=savefigures)
+plot_fig_cdf_simple([np.log10(sss['xi_res32_obs']), np.log10(sss['xi_res21_obs'])], [np.log10(ssk['xi_res32_obs']), np.log10(ssk['xi_res21_obs'])], x_min=-0.5, x_max=0.5, c_sim=['r','b'], c_Kep=['r','b'], ls_sim=['-','-'], ls_Kep=['--','--'], lw=lw, labels_sim=['Near 3:2 MMR', 'Near 2:1 MMR'], labels_Kep=[None, None], xlabel_text=r'$\log{\xi}$', afs=afs, tfs=tfs, lfs=lfs, legend=True, label_dist=True, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_logxi_res_CDFs.pdf', save_fig=savefigures)
 
 plt.show()
 #plt.close()
@@ -234,7 +234,7 @@ pratios_small_sim = sss['Rm_obs'][sss['Rm_obs'] < 2.5]
 pratios_small_Kep = ssk['Rm_obs'][ssk['Rm_obs'] < 2.5]
 zeta1_small_sim = zeta1(pratios_small_sim)
 zeta1_small_Kep = zeta1(pratios_small_Kep)
-plot_fig_pdf_simple(fig_size, [zeta1_small_sim], [zeta1_small_Kep], x_min=-1., x_max=1., n_bins=30, normalize=True, lw=lw, labels_Kep=['Period ratios < 2.5'], xlabel_text=r'$\zeta_1$', ylabel_text='Number', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_zeta1_small_compare.pdf', save_fig=savefigures)
+plot_fig_pdf_simple([zeta1_small_sim], [zeta1_small_Kep], x_min=-1., x_max=1., n_bins=30, normalize=True, lw=lw, labels_Kep=['Period ratios < 2.5'], xlabel_text=r'$\zeta_1$', ylabel_text='Number', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_zeta1_small_compare.pdf', save_fig=savefigures)
 plt.show()
 #plt.close()
 
@@ -263,9 +263,9 @@ for i,target_id in enumerate(cat_obs['target_id']):
 e_singles = np.array(e_singles)
 e_multis = np.array(e_multis)
 
-plot_fig_pdf_simple(fig_size, [e_singles, e_multis, cat_phys['ecc']], [], n_bins=n_bins, c_sim=['b','r','k'], ls_sim=['-','--',':'], lw=lw, labels_sim=['Observed singles', 'Observed multis', 'Intrinsic distribution'], xlabel_text=r'$e$', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_ecc_singles_multis.pdf', save_fig=savefigures)
+plot_fig_pdf_simple([e_singles, e_multis, cat_phys['ecc']], [], n_bins=n_bins, c_sim=['b','r','k'], ls_sim=['-','--',':'], lw=lw, labels_sim=['Observed singles', 'Observed multis', 'Intrinsic distribution'], xlabel_text=r'$e$', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_ecc_singles_multis.pdf', save_fig=savefigures)
 
-plot_fig_cdf_simple(fig_size, [e_singles, e_multis, cat_phys['ecc']], [], c_sim=['b','r','k'], ls_sim=['-','--',':'], lw=lw, labels_sim=['Observed singles', 'Observed multis', 'Intrinsic distribution'], xlabel_text=r'$e$', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_ecc_singles_multis_CDFs.pdf', save_fig=savefigures)
+plot_fig_cdf_simple([e_singles, e_multis, cat_phys['ecc']], [], c_sim=['b','r','k'], ls_sim=['-','--',':'], lw=lw, labels_sim=['Observed singles', 'Observed multis', 'Intrinsic distribution'], xlabel_text=r'$e$', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_ecc_singles_multis_CDFs.pdf', save_fig=savefigures)
 
 plt.show()
 #plt.close()
@@ -278,17 +278,17 @@ plt.show()
 ##### To plot CDFs for some of the system-level metrics defined in GF2020:
 
 # Planet to star radii ratio CDFs:
-plot_fig_cdf_simple(fig_size, [sss_per_sys['radii_star_ratio']*(Rearth/Rsun)], [ssk_per_sys['radii_star_ratio']*(Rearth/Rsun)], log_x=True, lw=lw, xlabel_text=r'$\sum{R_p/R_\star}$', afs=afs, tfs=tfs, lfs=lfs, label_dist=True, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_radii_star_ratio_CDFs.pdf', save_fig=savefigures)
+plot_fig_cdf_simple([sss_per_sys['radii_star_ratio']*(Rearth/Rsun)], [ssk_per_sys['radii_star_ratio']*(Rearth/Rsun)], log_x=True, lw=lw, xlabel_text=r'$\sum{R_p/R_\star}$', afs=afs, tfs=tfs, lfs=lfs, label_dist=True, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_radii_star_ratio_CDFs.pdf', save_fig=savefigures)
 
 # Planet radii partitioning CDFs:
-plot_fig_cdf_simple(fig_size, [sss_per_sys['radii_partitioning']], [ssk_per_sys['radii_partitioning']], lw=lw, xlabel_text=r'$\mathcal{Q}_R$', afs=afs, tfs=tfs, lfs=lfs, label_dist=True, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_radii_partitioning_CDFs.pdf', save_fig=savefigures)
+plot_fig_cdf_simple([sss_per_sys['radii_partitioning']], [ssk_per_sys['radii_partitioning']], lw=lw, xlabel_text=r'$\mathcal{Q}_R$', afs=afs, tfs=tfs, lfs=lfs, label_dist=True, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_radii_partitioning_CDFs.pdf', save_fig=savefigures)
 #plt.legend(loc='lower left', bbox_to_anchor=(0.01,0.01), ncol=1, frameon=False, fontsize=lfs)
 
 # Planet radii monotonicity CDFs:
-plot_fig_cdf_simple(fig_size, [sss_per_sys['radii_monotonicity']], [ssk_per_sys['radii_monotonicity']], lw=lw, xlabel_text=r'$\mathcal{M}_R$', afs=afs, tfs=tfs, lfs=lfs, label_dist=True, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_radii_monotonicity_CDFs.pdf', save_fig=savefigures)
+plot_fig_cdf_simple([sss_per_sys['radii_monotonicity']], [ssk_per_sys['radii_monotonicity']], lw=lw, xlabel_text=r'$\mathcal{M}_R$', afs=afs, tfs=tfs, lfs=lfs, label_dist=True, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_radii_monotonicity_CDFs.pdf', save_fig=savefigures)
 
 # Gap complexity CDFs:
-plot_fig_cdf_simple(fig_size, [sss_per_sys['gap_complexity']], [ssk_per_sys['gap_complexity']], lw=lw, xlabel_text=r'$\mathcal{C}$', afs=afs, tfs=tfs, lfs=lfs, label_dist=True, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_gap_complexity_CDFs.pdf', save_fig=savefigures)
+plot_fig_cdf_simple([sss_per_sys['gap_complexity']], [ssk_per_sys['gap_complexity']], lw=lw, xlabel_text=r'$\mathcal{C}$', afs=afs, tfs=tfs, lfs=lfs, label_dist=True, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_gap_complexity_CDFs.pdf', save_fig=savefigures)
 
 plt.show()
 
@@ -306,12 +306,12 @@ tdur_2p = sss_per_sys['tdur_obs'][sss_per_sys['Mtot_obs'] > 1] # observed multis
 tdur_2p = tdur_2p[tdur_2p > 0]
 tdur_Kep_2p = ssk_per_sys['tdur_obs'][ssk_per_sys['Mtot_obs'] > 1]
 tdur_Kep_2p = tdur_Kep_2p[tdur_Kep_2p > 0]
-plot_fig_pdf_simple(fig_size, [tdur_1], [tdur_Kep_1], x_min=0., x_max=15., n_bins=n_bins, lw=lw, labels_sim=['Singles'], labels_Kep=[''], xlabel_text=r'$t_{\rm dur}$ (hrs)', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_durations_singles_compare.pdf', save_fig=savefigures)
-plot_fig_pdf_simple(fig_size, [tdur_2p], [tdur_Kep_2p], x_min=0., x_max=15., n_bins=n_bins, lw=lw, labels_sim=['Multis'], labels_Kep=[''], xlabel_text=r'$t_{\rm dur}$ (hrs)', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_durations_multis_compare.pdf', save_fig=savefigures)
+plot_fig_pdf_simple([tdur_1], [tdur_Kep_1], x_min=0., x_max=15., n_bins=n_bins, lw=lw, labels_sim=['Singles'], labels_Kep=[''], xlabel_text=r'$t_{\rm dur}$ (hrs)', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_durations_singles_compare.pdf', save_fig=savefigures)
+plot_fig_pdf_simple([tdur_2p], [tdur_Kep_2p], x_min=0., x_max=15., n_bins=n_bins, lw=lw, labels_sim=['Multis'], labels_Kep=[''], xlabel_text=r'$t_{\rm dur}$ (hrs)', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_durations_multis_compare.pdf', save_fig=savefigures)
 
 # Circular normalized transit durations:
-plot_fig_pdf_simple(fig_size, [sss['tdur_tcirc_1_obs']], [ssk['tdur_tcirc_1_obs']], x_min=0., x_max=1.5, n_bins=n_bins, lw=lw, labels_sim=['Singles'], labels_Kep=[''], xlabel_text=r'$t_{\rm dur}/t_{\rm circ}$', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_tdur_tcirc_singles_compare.pdf', save_fig=savefigures)
-plot_fig_pdf_simple(fig_size, [sss['tdur_tcirc_2p_obs']], [ssk['tdur_tcirc_2p_obs']], x_min=0., x_max=1.5, n_bins=n_bins, lw=lw, labels_sim=['Multis'], labels_Kep=[''], xlabel_text=r'$t_{\rm dur}/t_{\rm circ}$', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_tdur_tcirc_multis_compare.pdf', save_fig=savefigures)
+plot_fig_pdf_simple([sss['tdur_tcirc_1_obs']], [ssk['tdur_tcirc_1_obs']], x_min=0., x_max=1.5, n_bins=n_bins, lw=lw, labels_sim=['Singles'], labels_Kep=[''], xlabel_text=r'$t_{\rm dur}/t_{\rm circ}$', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_tdur_tcirc_singles_compare.pdf', save_fig=savefigures)
+plot_fig_pdf_simple([sss['tdur_tcirc_2p_obs']], [ssk['tdur_tcirc_2p_obs']], x_min=0., x_max=1.5, n_bins=n_bins, lw=lw, labels_sim=['Multis'], labels_Kep=[''], xlabel_text=r'$t_{\rm dur}/t_{\rm circ}$', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_tdur_tcirc_multis_compare.pdf', save_fig=savefigures)
 
 # Periods:
 P_1 = sss_per_sys['P_obs'][sss_per_sys['Mtot_obs'] == 1, 0] # observed singles
@@ -320,8 +320,8 @@ P_2p = sss_per_sys['P_obs'][sss_per_sys['Mtot_obs'] > 1] # observed multis
 P_2p = P_2p[P_2p > 0]
 P_Kep_2p = ssk_per_sys['P_obs'][ssk_per_sys['Mtot_obs'] > 1]
 P_Kep_2p = P_Kep_2p[P_Kep_2p > 0]
-plot_fig_pdf_simple(fig_size, [P_1], [P_Kep_1], x_min=3., x_max=300., n_bins=n_bins, log_x=True, log_y=False, lw=lw, xticks_custom=[3,10,30,100,300], labels_sim=['Singles'], labels_Kep=[''], xlabel_text=r'$P$ (days)', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_periods_singles_compare.pdf', save_fig=savefigures)
-plot_fig_pdf_simple(fig_size, [P_2p], [P_Kep_2p], x_min=3., x_max=300., n_bins=n_bins, log_x=True, log_y=False, lw=lw, xticks_custom=[3,10,30,100,300], labels_sim=['Multis'], labels_Kep=[''], xlabel_text=r'$P$ (days)', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_periods_multis_compare.pdf', save_fig=savefigures)
+plot_fig_pdf_simple([P_1], [P_Kep_1], x_min=3., x_max=300., n_bins=n_bins, log_x=True, log_y=False, lw=lw, xticks_custom=[3,10,30,100,300], labels_sim=['Singles'], labels_Kep=[''], xlabel_text=r'$P$ (days)', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_periods_singles_compare.pdf', save_fig=savefigures)
+plot_fig_pdf_simple([P_2p], [P_Kep_2p], x_min=3., x_max=300., n_bins=n_bins, log_x=True, log_y=False, lw=lw, xticks_custom=[3,10,30,100,300], labels_sim=['Multis'], labels_Kep=[''], xlabel_text=r'$P$ (days)', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_periods_multis_compare.pdf', save_fig=savefigures)
 
 # Transit depths:
 D_1 = sss_per_sys['D_obs'][sss_per_sys['Mtot_obs'] == 1, 0] # observed singles
@@ -330,8 +330,8 @@ D_2p = sss_per_sys['D_obs'][sss_per_sys['Mtot_obs'] > 1] # observed multis
 D_2p = D_2p[D_2p > 0]
 D_Kep_2p = ssk_per_sys['D_obs'][ssk_per_sys['Mtot_obs'] > 1]
 D_Kep_2p = D_Kep_2p[D_Kep_2p > 0]
-plot_fig_pdf_simple(fig_size, [D_1], [D_Kep_1], n_bins=n_bins, log_x=True, lw=lw, labels_sim=['Singles'], labels_Kep=[''], xlabel_text=r'$\delta$', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_depths_singles_compare.pdf', save_fig=savefigures)
-plot_fig_pdf_simple(fig_size, [D_2p], [D_Kep_2p], n_bins=n_bins, log_x=True, lw=lw, labels_sim=['Multis'], labels_Kep=[''], xlabel_text=r'$\delta$', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_depths_multis_compare.pdf', save_fig=savefigures)
+plot_fig_pdf_simple([D_1], [D_Kep_1], n_bins=n_bins, log_x=True, lw=lw, labels_sim=['Singles'], labels_Kep=[''], xlabel_text=r'$\delta$', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_depths_singles_compare.pdf', save_fig=savefigures)
+plot_fig_pdf_simple([D_2p], [D_Kep_2p], n_bins=n_bins, log_x=True, lw=lw, labels_sim=['Multis'], labels_Kep=[''], xlabel_text=r'$\delta$', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_depths_multis_compare.pdf', save_fig=savefigures)
 
 plt.show()
 #'''
@@ -352,12 +352,12 @@ logxi_3 = np.log10(sss_per_sys['xi_obs'][sss_per_sys['Mtot_obs'] == 3, :2].flatt
 xi_4p = sss_per_sys['xi_obs'][sss_per_sys['Mtot_obs'] >= 4]
 logxi_4p = np.log10(xi_4p[xi_4p != -1])
 
-plot_fig_pdf_simple(fig_size, [logxi_2, logxi_3, logxi_4p], [np.log10(ssk['xi_obs'])], x_min=-0.5, x_max=0.5, n_bins=n_bins, c_sim=['r','b','g'], c_Kep=['k'], ls_sim=['-','-','-'], ls_Kep=['-'], lw=lw, labels_sim=[r'$m=2$', r'$m=3$', r'$m=4+$'], labels_Kep=[None], xlabel_text=r'$\log{\xi}$', legend=True, afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_logxi_per_mult_compare.pdf', save_fig=savefigures)
-plot_fig_cdf_simple(fig_size, [logxi_2, logxi_3, logxi_4p], [logxi_Kep_2, logxi_Kep_3, logxi_Kep_4p], x_min=-0.5, x_max=0.5, c_sim=['r','b','g'], c_Kep=['r','b','g'], ls_sim=['-','-','-'], ls_Kep=[':',':',':'], lw=1, labels_sim=[r'$m=2$', r'$m=3$', r'$m=4+$'], labels_Kep=[None,None,None], xlabel_text=r'$\log{\xi}$', legend=True, afs=afs, tfs=tfs, lfs=lfs, label_dist=False, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_logxi_per_mult_CDFs.pdf', save_fig=savefigures)
+plot_fig_pdf_simple([logxi_2, logxi_3, logxi_4p], [np.log10(ssk['xi_obs'])], x_min=-0.5, x_max=0.5, n_bins=n_bins, c_sim=['r','b','g'], c_Kep=['k'], ls_sim=['-','-','-'], ls_Kep=['-'], lw=lw, labels_sim=[r'$m=2$', r'$m=3$', r'$m=4+$'], labels_Kep=[None], xlabel_text=r'$\log{\xi}$', legend=True, afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_logxi_per_mult_compare.pdf', save_fig=savefigures)
+plot_fig_cdf_simple([logxi_2, logxi_3, logxi_4p], [logxi_Kep_2, logxi_Kep_3, logxi_Kep_4p], x_min=-0.5, x_max=0.5, c_sim=['r','b','g'], c_Kep=['r','b','g'], ls_sim=['-','-','-'], ls_Kep=[':',':',':'], lw=1, labels_sim=[r'$m=2$', r'$m=3$', r'$m=4+$'], labels_Kep=[None,None,None], xlabel_text=r'$\log{\xi}$', legend=True, afs=afs, tfs=tfs, lfs=lfs, label_dist=False, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_logxi_per_mult_CDFs.pdf', save_fig=savefigures)
 
 # Just Kepler data:
-plot_fig_pdf_simple(fig_size, [logxi_Kep_2, logxi_Kep_3, logxi_Kep_4p], [], x_min=-0.5, x_max=0.5, n_bins=n_bins, c_sim=['r','b','g'], ls_sim=['-','-','-'], lw=lw, labels_sim=[r'$m=2$', r'$m=3$', r'$m=4+$'], labels_Kep=[None], xlabel_text=r'$\log{\xi}$', legend=True, afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_logxi_per_mult_Kepler.pdf', save_fig=savefigures)
-plot_fig_cdf_simple(fig_size, [logxi_Kep_2, logxi_Kep_3, logxi_Kep_4p], [], x_min=-0.5, x_max=0.5, c_sim=['r','b','g'], ls_sim=[':',':',':'], lw=1, labels_sim=[r'$m=2$', r'$m=3$', r'$m=4+$'], xlabel_text=r'$\log{\xi}$', legend=True, afs=afs, tfs=tfs, lfs=lfs, label_dist=True, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_logxi_per_mult_CDFs_Kepler.pdf', save_fig=savefigures)
+plot_fig_pdf_simple([logxi_Kep_2, logxi_Kep_3, logxi_Kep_4p], [], x_min=-0.5, x_max=0.5, n_bins=n_bins, c_sim=['r','b','g'], ls_sim=['-','-','-'], lw=lw, labels_sim=[r'$m=2$', r'$m=3$', r'$m=4+$'], labels_Kep=[None], xlabel_text=r'$\log{\xi}$', legend=True, afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_logxi_per_mult_Kepler.pdf', save_fig=savefigures)
+plot_fig_cdf_simple([logxi_Kep_2, logxi_Kep_3, logxi_Kep_4p], [], x_min=-0.5, x_max=0.5, c_sim=['r','b','g'], ls_sim=[':',':',':'], lw=1, labels_sim=[r'$m=2$', r'$m=3$', r'$m=4+$'], xlabel_text=r'$\log{\xi}$', legend=True, afs=afs, tfs=tfs, lfs=lfs, label_dist=True, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_logxi_per_mult_CDFs_Kepler.pdf', save_fig=savefigures)
 
 
 
@@ -365,7 +365,7 @@ plot_fig_cdf_simple(fig_size, [logxi_Kep_2, logxi_Kep_3, logxi_Kep_4p], [], x_mi
 
 ##### For proposals:
 
-plot_fig_pdf_simple((8,4), [sss['Rm_obs'][sss['Rm_obs'] < R_max_cut]], [ssk['Rm_obs'][ssk['Rm_obs'] < R_max_cut]], x_min=1., x_max=10., n_bins=n_bins, log_x=True, lw=lw, xticks_custom=[1,2,3,4,5,10], xlabel_text=r'Period ratio $P_{i+1}/P_i$', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_periodratios_compare.pdf', save_fig=savefigures)
+plot_fig_pdf_simple([sss['Rm_obs'][sss['Rm_obs'] < R_max_cut]], [ssk['Rm_obs'][ssk['Rm_obs'] < R_max_cut]], x_min=1., x_max=10., n_bins=n_bins, log_x=True, lw=lw, xticks_custom=[1,2,3,4,5,10], xlabel_text=r'Period ratio $P_{i+1}/P_i$', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_periodratios_compare.pdf', save_fig=savefigures)
 plt.minorticks_off()
 plt.fill_betweenx(np.array([0,1]), 1.5, 1.5*1.05, alpha=0.2, color='r')
 plt.fill_betweenx(np.array([0,1]), 2., 2.*1.05, alpha=0.2, color='r')
@@ -394,11 +394,11 @@ for m in [1,2,3,4]:
         tdur_tcirc_Kep_m = ssk_per_sys['tdur_tcirc_obs'][ssk_per_sys['Mtot_obs'] == m, :m]
         label = r'$m = %s$' % m
 
-    plot_fig_pdf_simple(fig_size, [tdur_tcirc_m.flatten()], [tdur_tcirc_Kep_m.flatten()], x_min=0., x_max=1.5, n_bins=n_bins, lw=lw, labels_sim=[label], labels_Kep=[''], xlabel_text=r'$t_{\rm dur}/t_{\rm circ}$', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_tdur_tcirc_m%s_compare.pdf' % m, save_fig=savefigures)
+    plot_fig_pdf_simple([tdur_tcirc_m.flatten()], [tdur_tcirc_Kep_m.flatten()], x_min=0., x_max=1.5, n_bins=n_bins, lw=lw, labels_sim=[label], labels_Kep=[''], xlabel_text=r'$t_{\rm dur}/t_{\rm circ}$', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_tdur_tcirc_m%s_compare.pdf' % m, save_fig=savefigures)
 
     tdur_tcirc_Kep_per_m.append(tdur_tcirc_Kep_m.flatten())
 
-plot_fig_cdf_simple(fig_size, [], tdur_tcirc_Kep_per_m, x_min=0., x_max=1.5, lw=lw, c_Kep=['k','b','g','r'], ls_Kep=['--','--','--','--'], labels_Kep=[r'$m=1$',r'$m=2$',r'$m=3$',r'$m=4+$'], xlabel_text=r'$t_{\rm dur}/t_{\rm circ}$', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_tdur_tcirc_per_mult_CDFs.pdf', save_fig=savefigures)
+plot_fig_cdf_simple([], tdur_tcirc_Kep_per_m, x_min=0., x_max=1.5, lw=lw, c_Kep=['k','b','g','r'], ls_Kep=['--','--','--','--'], labels_Kep=[r'$m=1$',r'$m=2$',r'$m=3$',r'$m=4+$'], xlabel_text=r'$t_{\rm dur}/t_{\rm circ}$', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_tdur_tcirc_per_mult_CDFs.pdf', save_fig=savefigures)
 
 
 

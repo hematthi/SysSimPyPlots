@@ -99,7 +99,7 @@ figsize, fig_lbrt = (8,4), [0.15, 0.2, 0.95, 0.95]
 afs, tfs, lfs = 20, 20, 16
 bins = 100
 
-plot_fig_pdf_simple(figsize, [fswp_diff1, fswp_diff2], [], x_min=-0.1, x_max=0.7, n_bins=bins, normalize=False, c_sim=['k','k'], ls_sim=['-','--'], lw=1, labels_sim=['KS','AD'], xlabel_text=r'$f_{\rm swpa,redder} - f_{\rm swpa,bluer}$', ylabel_text='Points', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_lbrt=fig_lbrt)
+plot_fig_pdf_simple([fswp_diff1, fswp_diff2], [], x_min=-0.1, x_max=0.7, n_bins=bins, normalize=False, c_sim=['k','k'], ls_sim=['-','--'], lw=1, labels_sim=['KS','AD'], xlabel_text=r'$f_{\rm swpa,redder} - f_{\rm swpa,bluer}$', ylabel_text='Points', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_size=fig_size, fig_lbrt=fig_lbrt)
 plt.axvline(x=0., color='r', ls='--', lw=1)
 #plt.savefig(savefigures_directory + model_name + '_KS_AD.pdf')
 plt.show()

@@ -365,7 +365,7 @@ if savefigures == True:
     plt.close()
 
 # Multiplicities:
-plot_fig_counts_hist_simple(fig_size, [sss_per_sys['Mtot_obs']], [ssk_per_sys['Mtot_obs']], x_min=0, x_llim=0.5, normalize=True, N_sim_Kep_factor=float(N_sim)/N_Kep, log_y=True, lw=lw, xlabel_text='Observed planets per system', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt)
+plot_fig_counts_hist_simple([sss_per_sys['Mtot_obs']], [ssk_per_sys['Mtot_obs']], x_min=0, x_llim=0.5, normalize=True, N_sim_Kep_factor=float(N_sim)/N_Kep, log_y=True, lw=lw, xlabel_text='Observed planets per system', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 plt.plot(Mtot_bins_mid, Mtot_counts_qtls[:,0], drawstyle='steps-mid', color='r', lw=1, ls='--', label=r'16% and 84%')
 plt.plot(Mtot_bins_mid, Mtot_counts_qtls[:,2], drawstyle='steps-mid', color='r', lw=1, ls='--')
 plt.legend(loc='lower left', bbox_to_anchor=(0.01,0.01), ncol=1, frameon=False, fontsize=lfs) #show the legend
@@ -374,7 +374,7 @@ if savefigures:
     plt.close()
 
 # Periods:
-plot_fig_pdf_simple(fig_size, [sss['P_obs']], [ssk['P_obs']], x_min=P_min, x_max=P_max, y_min=1e-3, y_max=0.1, n_bins=n_bins, log_x=True, log_y=True, lw=lw, xticks_custom=[3,10,30,100,300], xlabel_text=r'$P$ (days)', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_lbrt=fig_lbrt)
+plot_fig_pdf_simple([sss['P_obs']], [ssk['P_obs']], x_min=P_min, x_max=P_max, y_min=1e-3, y_max=0.1, n_bins=n_bins, log_x=True, log_y=True, lw=lw, xticks_custom=[3,10,30,100,300], xlabel_text=r'$P$ (days)', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_size=fig_size, fig_lbrt=fig_lbrt)
 plt.plot(P_bins_mid, P_counts_qtls[:,0], drawstyle='steps-mid', color='r', lw=1, ls='--', label='16')
 plt.plot(P_bins_mid, P_counts_qtls[:,2], drawstyle='steps-mid', color='r', lw=1, ls='--', label='84')
 if savefigures:
@@ -383,7 +383,7 @@ if savefigures:
 
 # Period ratios (all, with some upper cut-off):
 R_max_cut = 30. #upper cut-off for plotting period ratios; np.max(sss['Rm_obs'])
-plot_fig_pdf_simple(fig_size, [sss['Rm_obs'][sss['Rm_obs'] < R_max_cut]], [ssk['Rm_obs'][ssk['Rm_obs'] < R_max_cut]], x_min=1., x_max=R_max_cut, n_bins=n_bins, log_x=True, lw=lw, xticks_custom=[1,2,3,4,5,10,20], xlabel_text=r'$P_{i+1}/P_i$', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt)
+plot_fig_pdf_simple([sss['Rm_obs'][sss['Rm_obs'] < R_max_cut]], [ssk['Rm_obs'][ssk['Rm_obs'] < R_max_cut]], x_min=1., x_max=R_max_cut, n_bins=n_bins, log_x=True, lw=lw, xticks_custom=[1,2,3,4,5,10,20], xlabel_text=r'$P_{i+1}/P_i$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 plt.plot(Rm_bins_mid, Rm_counts_qtls[:,0], drawstyle='steps-mid', color='r', lw=1, ls='--', label='16')
 plt.plot(Rm_bins_mid, Rm_counts_qtls[:,2], drawstyle='steps-mid', color='r', lw=1, ls='--', label='84')
 if savefigures:
@@ -391,7 +391,7 @@ if savefigures:
     plt.close()
 
 # Transit durations:
-plot_fig_pdf_simple(fig_size, [sss['tdur_obs']], [ssk['tdur_obs']], x_min=0., x_max=15., n_bins=n_bins, lw=lw, xlabel_text=r'$t_{\rm dur}$ (hrs)', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt)
+plot_fig_pdf_simple([sss['tdur_obs']], [ssk['tdur_obs']], x_min=0., x_max=15., n_bins=n_bins, lw=lw, xlabel_text=r'$t_{\rm dur}$ (hrs)', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 plt.plot(tdur_bins_mid, tdur_counts_qtls[:,0], drawstyle='steps-mid', color='r', lw=1, ls='--', label='16')
 plt.plot(tdur_bins_mid, tdur_counts_qtls[:,2], drawstyle='steps-mid', color='r', lw=1, ls='--', label='84')
 if savefigures:
@@ -399,14 +399,14 @@ if savefigures:
     plt.close()
 
 # Circular normalized transit durations (separate singles and multis):
-plot_fig_pdf_simple(fig_size, [sss['tdur_tcirc_1_obs']], [ssk['tdur_tcirc_1_obs']], x_min=np.min(tdur_tcirc_bins), x_max=np.max(tdur_tcirc_bins), n_bins=n_bins, lw=lw, extra_text='Observed singles', xlabel_text=r'$t_{\rm dur}/t_{\rm circ}$', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt)
+plot_fig_pdf_simple([sss['tdur_tcirc_1_obs']], [ssk['tdur_tcirc_1_obs']], x_min=np.min(tdur_tcirc_bins), x_max=np.max(tdur_tcirc_bins), n_bins=n_bins, lw=lw, extra_text='Observed singles', xlabel_text=r'$t_{\rm dur}/t_{\rm circ}$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 plt.plot(tdur_tcirc_bins_mid, tdur_tcirc_1_counts_qtls[:,0], drawstyle='steps-mid', color='r', lw=1, ls='--', label='16')
 plt.plot(tdur_tcirc_bins_mid, tdur_tcirc_1_counts_qtls[:,2], drawstyle='steps-mid', color='r', lw=1, ls='--', label='84')
 if savefigures:
     plt.savefig(savefigures_directory + subdirectory + model_name + '_tdur_tcirc_singles_compare.pdf')
     plt.close()
 
-plot_fig_pdf_simple(fig_size, [sss['tdur_tcirc_2p_obs']], [ssk['tdur_tcirc_2p_obs']], x_min=np.min(tdur_tcirc_bins), x_max=np.max(tdur_tcirc_bins), n_bins=n_bins, lw=lw, extra_text='Observed multis', xlabel_text=r'$t_{\rm dur}/t_{\rm circ}$', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt)
+plot_fig_pdf_simple([sss['tdur_tcirc_2p_obs']], [ssk['tdur_tcirc_2p_obs']], x_min=np.min(tdur_tcirc_bins), x_max=np.max(tdur_tcirc_bins), n_bins=n_bins, lw=lw, extra_text='Observed multis', xlabel_text=r'$t_{\rm dur}/t_{\rm circ}$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 plt.plot(tdur_tcirc_bins_mid, tdur_tcirc_2p_counts_qtls[:,0], drawstyle='steps-mid', color='r', lw=1, ls='--', label='16')
 plt.plot(tdur_tcirc_bins_mid, tdur_tcirc_2p_counts_qtls[:,2], drawstyle='steps-mid', color='r', lw=1, ls='--', label='84')
 if savefigures:
@@ -414,7 +414,7 @@ if savefigures:
     plt.close()
 
 # Transit depths:
-plot_fig_pdf_simple(fig_size, [sss['D_obs']], [ssk['D_obs']], x_min=np.min(D_bins), x_max=np.max(D_bins), log_x=True, lw=lw, xlabel_text=r'$\delta$', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt)
+plot_fig_pdf_simple([sss['D_obs']], [ssk['D_obs']], x_min=np.min(D_bins), x_max=np.max(D_bins), log_x=True, lw=lw, xlabel_text=r'$\delta$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 plt.plot(D_bins_mid, D_counts_qtls[:,0], drawstyle='steps-mid', color='r', lw=1, ls='--', label='16')
 plt.plot(D_bins_mid, D_counts_qtls[:,2], drawstyle='steps-mid', color='r', lw=1, ls='--', label='84')
 if savefigures:
@@ -422,7 +422,7 @@ if savefigures:
     plt.close()
 
 # Planet radii:
-plot_fig_pdf_simple(fig_size, [sss['radii_obs']], [ssk['radii_obs']], x_min=radii_min, x_max=radii_max, n_bins=n_bins, lw=lw, xlabel_text=r'$R_p (R_\oplus)$', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt)
+plot_fig_pdf_simple([sss['radii_obs']], [ssk['radii_obs']], x_min=radii_min, x_max=radii_max, n_bins=n_bins, lw=lw, xlabel_text=r'$R_p (R_\oplus)$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 plt.plot(radii_bins_mid, radii_counts_qtls[:,0], drawstyle='steps-mid', color='r', lw=1, ls='--', label='16')
 plt.plot(radii_bins_mid, radii_counts_qtls[:,2], drawstyle='steps-mid', color='r', lw=1, ls='--', label='84')
 if savefigures:
@@ -430,7 +430,7 @@ if savefigures:
     plt.close()
 
 # Stellar radii:
-plot_fig_pdf_simple(fig_size, [sss['Rstar_obs']], [ssk['Rstar_obs']], x_min=0.5, x_max=2.5, n_bins=n_bins, lw=lw, xlabel_text=r'$R_\star (R_\odot)$', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt)
+plot_fig_pdf_simple([sss['Rstar_obs']], [ssk['Rstar_obs']], x_min=0.5, x_max=2.5, n_bins=n_bins, lw=lw, xlabel_text=r'$R_\star (R_\odot)$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 plt.plot(Rstar_bins_mid, Rstar_counts_qtls[:,0], drawstyle='steps-mid', color='r', lw=1, ls='--', label='16')
 plt.plot(Rstar_bins_mid, Rstar_counts_qtls[:,2], drawstyle='steps-mid', color='r', lw=1, ls='--', label='84')
 if savefigures:
@@ -438,7 +438,7 @@ if savefigures:
     plt.close()
 
 # Transit depth ratios:
-plot_fig_pdf_simple(fig_size, [sss['D_ratio_obs']], [ssk['D_ratio_obs']], x_min=np.min(D_ratio_bins), x_max=np.max(D_ratio_bins), n_bins=n_bins, log_x=True, lw=lw, xlabel_text=r'$\delta_{i+1}/\delta_i$', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt)
+plot_fig_pdf_simple([sss['D_ratio_obs']], [ssk['D_ratio_obs']], x_min=np.min(D_ratio_bins), x_max=np.max(D_ratio_bins), n_bins=n_bins, log_x=True, lw=lw, xlabel_text=r'$\delta_{i+1}/\delta_i$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 plt.plot(D_ratio_bins_mid, D_ratio_counts_qtls[:,0], drawstyle='steps-mid', color='r', lw=1, ls='--', label='16')
 plt.plot(D_ratio_bins_mid, D_ratio_counts_qtls[:,2], drawstyle='steps-mid', color='r', lw=1, ls='--', label='84')
 if savefigures:
@@ -446,7 +446,7 @@ if savefigures:
     plt.close()
 
 # Log(xi):
-plot_fig_pdf_simple(fig_size, [np.log10(sss['xi_obs'])], [np.log10(ssk['xi_obs'])], x_min=np.min(xi_bins), x_max=np.max(xi_bins), n_bins=n_bins, lw=lw, xlabel_text=r'$\log{\xi}$', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt)
+plot_fig_pdf_simple([np.log10(sss['xi_obs'])], [np.log10(ssk['xi_obs'])], x_min=np.min(xi_bins), x_max=np.max(xi_bins), n_bins=n_bins, lw=lw, xlabel_text=r'$\log{\xi}$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 plt.plot(xi_bins_mid, xi_counts_qtls[:,0], drawstyle='steps-mid', color='r', lw=1, ls='--', label='16')
 plt.plot(xi_bins_mid, xi_counts_qtls[:,2], drawstyle='steps-mid', color='r', lw=1, ls='--', label='84')
 if savefigures:
@@ -454,7 +454,7 @@ if savefigures:
     plt.close()
 
 # Log(xi) by res/non-res:
-plot_fig_pdf_simple(fig_size, [np.log10(sss['xi_res_obs']), np.log10(sss['xi_nonres_obs'])], [np.log10(ssk['xi_res_obs']), np.log10(ssk['xi_nonres_obs'])], x_min=np.min(xi_bins), x_max=np.max(xi_bins), n_bins=n_bins, c_sim=['m','g'], c_Kep=['m','g'], ls_sim=['-','-'], ls_Kep=['-','-'], lw=lw, labels_sim=['Near MMR', 'Not near MMR'], labels_Kep=[None, None], xlabel_text=r'$\log{\xi}$', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_lbrt=fig_lbrt)
+plot_fig_pdf_simple([np.log10(sss['xi_res_obs']), np.log10(sss['xi_nonres_obs'])], [np.log10(ssk['xi_res_obs']), np.log10(ssk['xi_nonres_obs'])], x_min=np.min(xi_bins), x_max=np.max(xi_bins), n_bins=n_bins, c_sim=['m','g'], c_Kep=['m','g'], ls_sim=['-','-'], ls_Kep=['-','-'], lw=lw, labels_sim=['Near MMR', 'Not near MMR'], labels_Kep=[None, None], xlabel_text=r'$\log{\xi}$', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_size=fig_size, fig_lbrt=fig_lbrt)
 plt.plot(xi_bins_mid, xi_res_counts_qtls[:,0], drawstyle='steps-mid', color='m', lw=1, ls='--', label='16')
 plt.plot(xi_bins_mid, xi_res_counts_qtls[:,2], drawstyle='steps-mid', color='m', lw=1, ls='--', label='84')
 plt.plot(xi_bins_mid, xi_nonres_counts_qtls[:,0], drawstyle='steps-mid', color='g', lw=1, ls='--', label='16')
@@ -532,7 +532,7 @@ plot_panel_pdf_simple(ax, [ssk['Rm_obs']/pr - 1. for pr in pr_mmrs], [], x_min=-
 ##### To plot period ratio distribution again but with MMRs marked:
 
 R_max_cut = 30. #upper cut-off for plotting period ratios; np.max(sss['Rm_obs'])
-plot_fig_pdf_simple(fig_size, [sss['Rm_obs'][sss['Rm_obs'] < R_max_cut]], [ssk['Rm_obs'][ssk['Rm_obs'] < R_max_cut]], x_min=1., x_max=R_max_cut, n_bins=n_bins, log_x=True, lw=lw, xticks_custom=[1,2,3,4,5,10,20], labels_sim=['Simulated'], labels_Kep=['Kepler'], xlabel_text=r'Period ratio $P_{i+1}/P_i$', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_lbrt=fig_lbrt)
+plot_fig_pdf_simple([sss['Rm_obs'][sss['Rm_obs'] < R_max_cut]], [ssk['Rm_obs'][ssk['Rm_obs'] < R_max_cut]], x_min=1., x_max=R_max_cut, n_bins=n_bins, log_x=True, lw=lw, xticks_custom=[1,2,3,4,5,10,20], labels_sim=['Simulated'], labels_Kep=['Kepler'], xlabel_text=r'Period ratio $P_{i+1}/P_i$', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_size=fig_size, fig_lbrt=fig_lbrt)
 #plt.plot(Rm_bins_mid, Rm_counts_qtls[:,0], drawstyle='steps-mid', color='r', lw=1, ls='--', label='16')
 #plt.plot(Rm_bins_mid, Rm_counts_qtls[:,2], drawstyle='steps-mid', color='r', lw=1, ls='--', label='84')
 for pr in [1.5, 2.]:
@@ -558,7 +558,7 @@ tfs = 20 #text labels font size
 lfs = 16 #legend labels font size
 
 # Periods:
-plot_fig_pdf_simple(fig_size, [ssk['P_obs']], [], x_min=P_min, x_max=P_max, y_min=1e-3, y_max=0.1, n_bins=n_bins, log_x=True, log_y=True, lw=lw, xticks_custom=[3,10,30,100,300], xlabel_text=r'$P$ (days)', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_lbrt=fig_lbrt)
+plot_fig_pdf_simple([ssk['P_obs']], [], x_min=P_min, x_max=P_max, y_min=1e-3, y_max=0.1, n_bins=n_bins, log_x=True, log_y=True, lw=lw, xticks_custom=[3,10,30,100,300], xlabel_text=r'$P$ (days)', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_size=fig_size, fig_lbrt=fig_lbrt)
 plt.fill_between(P_bins_mid, P_counts_qtls[:,0], P_counts_qtls[:,2], step='mid', color='k', alpha=alpha, label=r'Simulated 16-84%')
 if savefigures:
     plt.savefig(directory + model_name + '_periods_compare.pdf')
@@ -566,56 +566,56 @@ if savefigures:
 
 # Period ratios (all, with some upper cut-off):
 R_max_cut = 30. #upper cut-off for plotting period ratios; np.max(sss['Rm_obs'])
-plot_fig_pdf_simple(fig_size, [ssk['Rm_obs'][ssk['Rm_obs'] < R_max_cut]], [], x_min=1., x_max=R_max_cut, n_bins=n_bins, log_x=True, lw=lw, xticks_custom=[1,2,3,4,5,10,20], xlabel_text=r'$P_{i+1}/P_i$', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt)
+plot_fig_pdf_simple([ssk['Rm_obs'][ssk['Rm_obs'] < R_max_cut]], [], x_min=1., x_max=R_max_cut, n_bins=n_bins, log_x=True, lw=lw, xticks_custom=[1,2,3,4,5,10,20], xlabel_text=r'$P_{i+1}/P_i$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 plt.fill_between(Rm_bins_mid, Rm_counts_qtls[:,0], Rm_counts_qtls[:,2], step='mid', color='k', alpha=alpha)
 if savefigures:
     plt.savefig(directory + model_name + '_periodratios_compare.pdf')
     plt.close()
 
 # Transit durations:
-plot_fig_pdf_simple(fig_size, [ssk['tdur_obs']], [], x_min=0., x_max=15., n_bins=n_bins, lw=lw, xlabel_text=r'$t_{\rm dur}$ (hrs)', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt)
+plot_fig_pdf_simple([ssk['tdur_obs']], [], x_min=0., x_max=15., n_bins=n_bins, lw=lw, xlabel_text=r'$t_{\rm dur}$ (hrs)', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 plt.fill_between(tdur_bins_mid, tdur_counts_qtls[:,0], tdur_counts_qtls[:,2], step='mid', color='k', alpha=alpha)
 if savefigures:
     plt.savefig(directory + model_name + '_durations_compare.pdf')
     plt.close()
 
 # Transit depths:
-plot_fig_pdf_simple(fig_size, [ssk['D_obs']], [], x_min=np.min(D_bins), x_max=np.max(D_bins), log_x=True, lw=lw, xlabel_text=r'$\delta$', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt)
+plot_fig_pdf_simple([ssk['D_obs']], [], x_min=np.min(D_bins), x_max=np.max(D_bins), log_x=True, lw=lw, xlabel_text=r'$\delta$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 plt.fill_between(D_bins_mid, D_counts_qtls[:,0], D_counts_qtls[:,2], step='mid', color='k', alpha=alpha)
 if savefigures:
     plt.savefig(directory + model_name + '_depths_compare.pdf')
     plt.close()
 
 # Transit depth ratios:
-plot_fig_pdf_simple(fig_size, [ssk['D_ratio_obs']], [], x_min=np.min(D_ratio_bins), x_max=np.max(D_ratio_bins), n_bins=n_bins, log_x=True, lw=lw, xlabel_text=r'Transit depth ratios, $\delta_{i+1}/\delta_i$', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt)
+plot_fig_pdf_simple([ssk['D_ratio_obs']], [], x_min=np.min(D_ratio_bins), x_max=np.max(D_ratio_bins), n_bins=n_bins, log_x=True, lw=lw, xlabel_text=r'Transit depth ratios, $\delta_{i+1}/\delta_i$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 plt.fill_between(D_ratio_bins_mid, D_ratio_counts_qtls[:,0], D_ratio_counts_qtls[:,2], step='mid', color='k', alpha=alpha)
 if savefigures:
     plt.savefig(directory + model_name + '_depthratios_compare.pdf')
     plt.close()
 
 # Log(xi):
-plot_fig_pdf_simple(fig_size, [np.log10(ssk['xi_obs'])], [], x_min=np.min(xi_bins), x_max=np.max(xi_bins), n_bins=n_bins, lw=lw, xlabel_text=r'$\log{\xi}$', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt)
+plot_fig_pdf_simple([np.log10(ssk['xi_obs'])], [], x_min=np.min(xi_bins), x_max=np.max(xi_bins), n_bins=n_bins, lw=lw, xlabel_text=r'$\log{\xi}$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 plt.fill_between(xi_bins_mid, xi_counts_qtls[:,0], xi_counts_qtls[:,2], step='mid', color='k', alpha=alpha)
 if savefigures:
     plt.savefig(directory + model_name + '_logxi_all_compare.pdf')
     plt.close()
 
 # Radius partitioning:
-plot_fig_pdf_simple(fig_size, [ssk_per_sys['radii_partitioning']], [], x_min=np.min(radii_partitioning_bins), x_max=np.max(radii_partitioning_bins), n_bins=n_bins_sys, log_x=True, lw=lw, xlabel_text=r'Radius partitioning, $\mathcal{Q}_R$', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt)
+plot_fig_pdf_simple([ssk_per_sys['radii_partitioning']], [], x_min=np.min(radii_partitioning_bins), x_max=np.max(radii_partitioning_bins), n_bins=n_bins_sys, log_x=True, lw=lw, xlabel_text=r'Radius partitioning, $\mathcal{Q}_R$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 plt.fill_between(radii_partitioning_bins_mid, radii_partitioning_counts_qtls[:,0], radii_partitioning_counts_qtls[:,2], step='mid', color='k', alpha=alpha)
 if savefigures:
     plt.savefig(directory + model_name + '_radii_partitioning_compare.pdf')
     plt.close()
 
 # Radius monotonicity:
-plot_fig_pdf_simple(fig_size, [ssk_per_sys['radii_monotonicity']], [], x_min=np.min(radii_monotonicity_bins), x_max=np.max(radii_monotonicity_bins), n_bins=n_bins_sys, log_x=False, lw=lw, xlabel_text=r'Radius monotonicity, $\mathcal{M}_R$', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt)
+plot_fig_pdf_simple([ssk_per_sys['radii_monotonicity']], [], x_min=np.min(radii_monotonicity_bins), x_max=np.max(radii_monotonicity_bins), n_bins=n_bins_sys, log_x=False, lw=lw, xlabel_text=r'Radius monotonicity, $\mathcal{M}_R$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 plt.fill_between(radii_monotonicity_bins_mid, radii_monotonicity_counts_qtls[:,0], radii_monotonicity_counts_qtls[:,2], step='mid', color='k', alpha=alpha)
 if savefigures:
     plt.savefig(directory + model_name + '_radii_monotonicity_compare.pdf')
     plt.close()
 
 # Gap complexity:
-plot_fig_pdf_simple(fig_size, [ssk_per_sys['gap_complexity']], [], x_min=np.min(gap_complexity_bins), x_max=np.max(gap_complexity_bins), n_bins=n_bins_sys, log_x=False, lw=lw, xlabel_text=r'Gap complexity, $\mathcal{C}$', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt)
+plot_fig_pdf_simple([ssk_per_sys['gap_complexity']], [], x_min=np.min(gap_complexity_bins), x_max=np.max(gap_complexity_bins), n_bins=n_bins_sys, log_x=False, lw=lw, xlabel_text=r'Gap complexity, $\mathcal{C}$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 plt.fill_between(gap_complexity_bins_mid, gap_complexity_counts_qtls[:,0], gap_complexity_counts_qtls[:,2], step='mid', color='k', alpha=alpha)
 if savefigures:
     plt.savefig(directory + model_name + '_gap_complexity_compare.pdf')

@@ -193,7 +193,7 @@ dist_symbols_AD = {
 #'''
 # Total weighted distances:
 dtot_w = [np.array([sum(dw_KS['all'][i]) + sum(dw_KS['bluer'][i]) + sum(dw_KS['redder'][i]) for i in range(len(dw_KS['all']))]) for dw_KS in model_dw_KS]
-plot_fig_pdf_simple((12,4), dtot_w, [], n_bins=n_bins, normalize=False, c_sim=['k']*n_models, ls_sim=model_linestyles, lw=3, labels_sim=model_names, xlabel_text=r'$\mathcal{D}_{W,3} (\rm KS)$', ylabel_text='Number', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt)
+plot_fig_pdf_simple(dtot_w, [], n_bins=n_bins, normalize=False, c_sim=['k']*n_models, ls_sim=model_linestyles, lw=3, labels_sim=model_names, xlabel_text=r'$\mathcal{D}_{W,3} (\rm KS)$', ylabel_text='Number', afs=afs, tfs=tfs, lfs=lfs, fig_size=(12,4), fig_lbrt=fig_lbrt)
 plt.legend(loc='upper left', bbox_to_anchor=(0.01,0.99), ncol=1, frameon=False, fontsize=20)
 if savefigures:
     plt.savefig(savefigures_directory + save_name + '_sum_dtot_w.pdf')
@@ -239,7 +239,7 @@ plt.show()
 '''
 # Total weighted distances:
 dtot_w = [np.array([sum(dw_AD['all'][i]) + sum(dw_AD['bluer'][i]) + sum(dw_AD['redder'][i]) for i in range(len(dw_AD['all']))]) for dw_AD in model_dw_AD]
-plot_fig_pdf_simple((12,4), dtot_w, [], n_bins=n_bins, normalize=False, c_sim=['k']*n_models, ls_sim=model_linestyles, lw=3, labels_sim=model_names, xlabel_text=r'$\mathcal{D}_{W,1} (\rm AD^\prime)$', ylabel_text='Number', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_lbrt=fig_lbrt)
+plot_fig_pdf_simple(dtot_w, [], n_bins=n_bins, normalize=False, c_sim=['k']*n_models, ls_sim=model_linestyles, lw=3, labels_sim=model_names, xlabel_text=r'$\mathcal{D}_{W,1} (\rm AD^\prime)$', ylabel_text='Number', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_size=(12,4), fig_lbrt=fig_lbrt)
 plt.legend(loc='upper left', bbox_to_anchor=(0.01,0.99), ncol=1, frameon=False, fontsize=lfs)
 if savefigures:
     plt.savefig(savefigures_directory + save_name + '_sum_dtot_w.pdf')

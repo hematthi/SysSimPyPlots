@@ -512,7 +512,7 @@ if savefigures:
     plt.close()
 
 # Periods:
-plot_fig_pdf_simple(fig_size, [sssp['P_all'] for sssp in model_sssp], [], x_min=P_min, x_max=P_max, n_bins=n_bins, log_x=True, log_y=True, c_sim=model_colors, lw=lw, ls_sim=model_linestyles, labels_sim=model_names, xticks_custom=[3,10,30,100,300], xlabel_text=r'$P$ (days)', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt)
+plot_fig_pdf_simple([sssp['P_all'] for sssp in model_sssp], [], x_min=P_min, x_max=P_max, n_bins=n_bins, log_x=True, log_y=True, c_sim=model_colors, lw=lw, ls_sim=model_linestyles, labels_sim=model_names, xticks_custom=[3,10,30,100,300], xlabel_text=r'$P$ (days)', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 for m in range(models):
     label_this = r'16%-84%' if m==0 else ''
     plt.fill_between(P_bins_mid, P_counts_qtls[m][:,0], P_counts_qtls[m][:,2], color=model_colors[m], alpha=alpha, label=label_this)
@@ -522,7 +522,7 @@ if savefigures:
     plt.close()
 
 # Period ratios (all):
-plot_fig_pdf_simple(fig_size, [sssp['Rm_all'] for sssp in model_sssp], [], x_min=Rm_bins[0], x_max=Rm_bins[-1], y_max=0.07, n_bins=n_bins, log_x=True, c_sim=model_colors, lw=lw, ls_sim=model_linestyles, labels_sim=model_names, xticks_custom=[1,2,3,4,5,10,20], xlabel_text=r'$P_{i+1}/P_i$', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt)
+plot_fig_pdf_simple([sssp['Rm_all'] for sssp in model_sssp], [], x_min=Rm_bins[0], x_max=Rm_bins[-1], y_max=0.07, n_bins=n_bins, log_x=True, c_sim=model_colors, lw=lw, ls_sim=model_linestyles, labels_sim=model_names, xticks_custom=[1,2,3,4,5,10,20], xlabel_text=r'$P_{i+1}/P_i$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 for m in range(models):
     plt.fill_between(Rm_bins_mid, Rm_counts_qtls[m][:,0], Rm_counts_qtls[m][:,2], color=model_colors[m], alpha=alpha)
 plt.minorticks_off()
@@ -531,11 +531,11 @@ if savefigures:
     plt.close()
 
 # Eccentricities:
-#plot_fig_pdf_simple(fig_size, [sssp['e_all'] for sssp in model_sssp], [], x_min=e_bins[0], x_max=e_bins[-1], log_x=True, n_bins=n_bins, c_sim=model_colors, lw=lw, ls_sim=model_linestyles, labels_sim=model_names, xlabel_text=r'$e$', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt)
+#plot_fig_pdf_simple([sssp['e_all'] for sssp in model_sssp], [], x_min=e_bins[0], x_max=e_bins[-1], log_x=True, n_bins=n_bins, c_sim=model_colors, lw=lw, ls_sim=model_linestyles, labels_sim=model_names, xlabel_text=r'$e$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 #for m in range(models):
 #    plt.fill_between(e_bins_mid, e_counts_qtls[m][:,0], e_counts_qtls[m][:,2], color=model_colors[m], alpha=alpha)
 #'''
-plot_fig_pdf_simple(fig_size, [sssp2['e_all']], [], x_min=e_bins[0], x_max=e_bins[-1], log_x=True, n_bins=n_bins, c_sim=[model_colors[1]], lw=lw, ls_sim=[model_linestyles[1]], labels_sim=[''], xlabel_text=r'$e$', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt)
+plot_fig_pdf_simple([sssp2['e_all']], [], x_min=e_bins[0], x_max=e_bins[-1], log_x=True, n_bins=n_bins, c_sim=[model_colors[1]], lw=lw, ls_sim=[model_linestyles[1]], labels_sim=[''], xlabel_text=r'$e$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 plt.fill_between(e_bins_mid, e_counts_qtls[1][:,0], e_counts_qtls[1][:,2], color=model_colors[1], alpha=alpha)
 e1 = sssp_per_sys1['e_all'][sssp_per_sys1['Mtot_all'] == 1, 0]
 e2p = sssp_per_sys1['e_all'][sssp_per_sys1['Mtot_all'] > 1]
@@ -551,7 +551,7 @@ if savefigures:
     plt.close()
 
 # Mutual inclinations:
-plot_fig_pdf_simple(fig_size, [sssp['inclmut_all']*(180./np.pi) for sssp in model_sssp], [], x_min=im_bins[0], x_max=im_bins[-1], y_max=0.06, log_x=True, n_bins=n_bins, c_sim=model_colors, lw=lw, ls_sim=model_linestyles, labels_sim=model_names, xlabel_text=r'$i_m$ (deg)', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt)
+plot_fig_pdf_simple([sssp['inclmut_all']*(180./np.pi) for sssp in model_sssp], [], x_min=im_bins[0], x_max=im_bins[-1], y_max=0.06, log_x=True, n_bins=n_bins, c_sim=model_colors, lw=lw, ls_sim=model_linestyles, labels_sim=model_names, xlabel_text=r'$i_m$ (deg)', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 for m in range(models):
     plt.fill_between(im_bins_mid, im_counts_qtls[m][:,0], im_counts_qtls[m][:,2], color=model_colors[m], alpha=alpha)
 if savefigures:
@@ -559,7 +559,7 @@ if savefigures:
     plt.close()
 
 # Planet masses:
-plot_fig_pdf_simple(fig_size, [sssp['mass_all'] for sssp in model_sssp], [], x_min=mass_bins[0], x_max=mass_bins[-1], n_bins=n_bins, log_x=True, c_sim=model_colors, lw=lw, ls_sim=model_linestyles, labels_sim=model_names, xlabel_text=r'$M_p$ ($M_\oplus$)', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt)
+plot_fig_pdf_simple([sssp['mass_all'] for sssp in model_sssp], [], x_min=mass_bins[0], x_max=mass_bins[-1], n_bins=n_bins, log_x=True, c_sim=model_colors, lw=lw, ls_sim=model_linestyles, labels_sim=model_names, xlabel_text=r'$M_p$ ($M_\oplus$)', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 for m in range(models):
     plt.fill_between(mass_bins_mid, mass_counts_qtls[m][:,0], mass_counts_qtls[m][:,2], color=model_colors[m], alpha=alpha)
 if savefigures:
@@ -567,7 +567,7 @@ if savefigures:
     plt.close()
 
 # Planet radii:
-plot_fig_pdf_simple(fig_size, [sssp['radii_all'] for sssp in model_sssp], [], x_min=radii_min, x_max=radii_max, y_max=0.025, n_bins=n_bins, log_x=True, c_sim=model_colors, lw=lw, ls_sim=model_linestyles, labels_sim=model_names, xticks_custom=[0.5,1,2,4,10], xlabel_text=r'$R_p$ ($R_\oplus$)', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt)
+plot_fig_pdf_simple([sssp['radii_all'] for sssp in model_sssp], [], x_min=radii_min, x_max=radii_max, y_max=0.025, n_bins=n_bins, log_x=True, c_sim=model_colors, lw=lw, ls_sim=model_linestyles, labels_sim=model_names, xticks_custom=[0.5,1,2,4,10], xlabel_text=r'$R_p$ ($R_\oplus$)', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 for m in range(models):
     plt.fill_between(radii_bins_mid, radii_counts_qtls[m][:,0], radii_counts_qtls[m][:,2], color=model_colors[m], alpha=alpha)
 if savefigures:
@@ -575,7 +575,7 @@ if savefigures:
     plt.close()
 
 # Planet radii ratios:
-plot_fig_pdf_simple(fig_size, [sssp['radii_ratio_all'] for sssp in model_sssp], [], x_min=radii_ratio_bins[0], x_max=radii_ratio_bins[-1], y_max=0.06, n_bins=n_bins, log_x=True, c_sim=model_colors, lw=lw, ls_sim=model_linestyles, labels_sim=model_names, xlabel_text=r'$R_{p,i+1}/R_{p,i}$', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt)
+plot_fig_pdf_simple([sssp['radii_ratio_all'] for sssp in model_sssp], [], x_min=radii_ratio_bins[0], x_max=radii_ratio_bins[-1], y_max=0.06, n_bins=n_bins, log_x=True, c_sim=model_colors, lw=lw, ls_sim=model_linestyles, labels_sim=model_names, xlabel_text=r'$R_{p,i+1}/R_{p,i}$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 for m in range(models):
     plt.fill_between(radii_ratio_bins_mid, radii_ratio_counts_qtls[m][:,0], radii_ratio_counts_qtls[m][:,2], color=model_colors[m], alpha=alpha)
 if savefigures:
@@ -583,7 +583,7 @@ if savefigures:
     plt.close()
 
 # Separations in mutual Hill radii:
-plot_fig_pdf_simple(fig_size, [sssp['N_mH_all'] for sssp in model_sssp], [], x_min=N_mH_bins[0], x_max=N_mH_bins[-1], y_max=0.05, n_bins=n_bins, log_x=True, c_sim=model_colors, lw=lw, ls_sim=model_linestyles, labels_sim=model_names, xlabel_text=r'$\Delta$', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt)
+plot_fig_pdf_simple([sssp['N_mH_all'] for sssp in model_sssp], [], x_min=N_mH_bins[0], x_max=N_mH_bins[-1], y_max=0.05, n_bins=n_bins, log_x=True, c_sim=model_colors, lw=lw, ls_sim=model_linestyles, labels_sim=model_names, xlabel_text=r'$\Delta$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 for m in range(models):
     plt.fill_between(N_mH_bins_mid, N_mH_counts_qtls[m][:,0], N_mH_counts_qtls[m][:,2], color=model_colors[m], alpha=alpha)
 if savefigures:
@@ -591,7 +591,7 @@ if savefigures:
     plt.close()
 
 # Stellar radii:
-plot_fig_pdf_simple(fig_size, [sssp['Rstar_all'] for sssp in model_sssp], [], x_min=Rstar_bins[0], x_max=Rstar_bins[-1], n_bins=n_bins, c_sim=model_colors, lw=lw, ls_sim=model_linestyles, labels_sim=model_names, xlabel_text=r'$R_\star (R_\odot)$', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt)
+plot_fig_pdf_simple([sssp['Rstar_all'] for sssp in model_sssp], [], x_min=Rstar_bins[0], x_max=Rstar_bins[-1], n_bins=n_bins, c_sim=model_colors, lw=lw, ls_sim=model_linestyles, labels_sim=model_names, xlabel_text=r'$R_\star (R_\odot)$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 for m in range(models):
     plt.fill_between(Rstar_bins_mid, Rstar_counts_qtls[m][:,0], Rstar_counts_qtls[m][:,2], color=model_colors[m], alpha=alpha)
 if savefigures:
@@ -600,7 +600,7 @@ if savefigures:
 
 ### GF2020 metrics, but for the underlying systems:
 # Dynamical masses CDFs:
-plot_fig_pdf_simple(fig_size, [sssp_per_sys['dynamical_mass'] for sssp_per_sys in model_sssp_per_sys], [], x_min=dynamical_mass_bins[0], x_max=dynamical_mass_bins[-1], y_max=0.05, n_bins=n_bins, log_x=True, c_sim=model_colors, lw=lw, ls_sim=model_linestyles, labels_sim=model_names, xlabel_text=r'$\mu$', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt)
+plot_fig_pdf_simple([sssp_per_sys['dynamical_mass'] for sssp_per_sys in model_sssp_per_sys], [], x_min=dynamical_mass_bins[0], x_max=dynamical_mass_bins[-1], y_max=0.05, n_bins=n_bins, log_x=True, c_sim=model_colors, lw=lw, ls_sim=model_linestyles, labels_sim=model_names, xlabel_text=r'$\mu$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 for m in range(models):
     plt.fill_between(dynamical_mass_bins_mid, dynamical_mass_counts_qtls[m][:,0], dynamical_mass_counts_qtls[m][:,2], color=model_colors[m], alpha=alpha)
 if savefigures:
@@ -608,7 +608,7 @@ if savefigures:
     plt.close()
 
 # Planet radii partitioning CDFs:
-plot_fig_pdf_simple(fig_size, [sssp_per_sys['radii_partitioning'] for sssp_per_sys in model_sssp_per_sys], [], x_min=radii_partitioning_bins[0], x_max=radii_partitioning_bins[-1], y_max=0.05, n_bins=n_bins, log_x=True, c_sim=model_colors, lw=lw, ls_sim=model_linestyles, labels_sim=model_names, xlabel_text=r'$\mathcal{Q}_R$', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt)
+plot_fig_pdf_simple([sssp_per_sys['radii_partitioning'] for sssp_per_sys in model_sssp_per_sys], [], x_min=radii_partitioning_bins[0], x_max=radii_partitioning_bins[-1], y_max=0.05, n_bins=n_bins, log_x=True, c_sim=model_colors, lw=lw, ls_sim=model_linestyles, labels_sim=model_names, xlabel_text=r'$\mathcal{Q}_R$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 for m in range(models):
     plt.fill_between(radii_partitioning_bins_mid, radii_partitioning_counts_qtls[m][:,0], radii_partitioning_counts_qtls[m][:,2], color=model_colors[m], alpha=alpha)
 if savefigures:
@@ -616,7 +616,7 @@ if savefigures:
     plt.close()
 
 # Planet radii monotonicity CDFs:
-plot_fig_pdf_simple(fig_size, [sssp_per_sys['radii_monotonicity'] for sssp_per_sys in model_sssp_per_sys], [], x_min=radii_monotonicity_bins[0], x_max=radii_monotonicity_bins[-1], y_max=0.03, n_bins=n_bins, c_sim=model_colors, lw=lw, ls_sim=model_linestyles, labels_sim=model_names, xlabel_text=r'$\mathcal{M}_R$', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt)
+plot_fig_pdf_simple([sssp_per_sys['radii_monotonicity'] for sssp_per_sys in model_sssp_per_sys], [], x_min=radii_monotonicity_bins[0], x_max=radii_monotonicity_bins[-1], y_max=0.03, n_bins=n_bins, c_sim=model_colors, lw=lw, ls_sim=model_linestyles, labels_sim=model_names, xlabel_text=r'$\mathcal{M}_R$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 for m in range(models):
     plt.fill_between(radii_monotonicity_bins_mid, radii_monotonicity_counts_qtls[m][:,0], radii_monotonicity_counts_qtls[m][:,2], color=model_colors[m], alpha=alpha)
 if savefigures:
@@ -624,7 +624,7 @@ if savefigures:
     plt.close()
 
 # Gap complexity CDFs:
-plot_fig_pdf_simple(fig_size, [sssp_per_sys['gap_complexity'] for sssp_per_sys in model_sssp_per_sys], [], x_min=gap_complexity_bins[0], x_max=gap_complexity_bins[-1], y_max=0.06, n_bins=n_bins, log_x=False, c_sim=model_colors, lw=lw, ls_sim=model_linestyles, labels_sim=model_names, xlabel_text=r'$\mathcal{C}$', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt)
+plot_fig_pdf_simple([sssp_per_sys['gap_complexity'] for sssp_per_sys in model_sssp_per_sys], [], x_min=gap_complexity_bins[0], x_max=gap_complexity_bins[-1], y_max=0.06, n_bins=n_bins, log_x=False, c_sim=model_colors, lw=lw, ls_sim=model_linestyles, labels_sim=model_names, xlabel_text=r'$\mathcal{C}$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 for m in range(models):
     plt.fill_between(gap_complexity_bins_mid, gap_complexity_counts_qtls[m][:,0], gap_complexity_counts_qtls[m][:,2], color=model_colors[m], alpha=alpha)
 if savefigures:
@@ -931,7 +931,7 @@ if savefigures:
     plt.close()
 
 # Periods:
-plot_fig_pdf_simple(fig_size, [sssp['P_all'] for sssp in model_sssp], [], x_min=P_min, x_max=P_max, n_bins=n_bins, log_x=True, log_y=True, c_sim=model_colors, lw=lw, ls_sim=model_linestyles, labels_sim=model_names, xticks_custom=[3,10,30,100,300], xlabel_text=r'$P$ (days)', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt)
+plot_fig_pdf_simple([sssp['P_all'] for sssp in model_sssp], [], x_min=P_min, x_max=P_max, n_bins=n_bins, log_x=True, log_y=True, c_sim=model_colors, lw=lw, ls_sim=model_linestyles, labels_sim=model_names, xticks_custom=[3,10,30,100,300], xlabel_text=r'$P$ (days)', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 for m in range(models):
     label_this = r'16%-84%' if m==0 else ''
     plt.fill_between(P_bins_mid, P_counts_qtls[m][:,0], P_counts_qtls[m][:,2], color=model_colors[m], alpha=alpha, label=label_this)
@@ -941,7 +941,7 @@ if savefigures:
     plt.close()
 
 # Period ratios (all):
-plot_fig_pdf_simple(fig_size, [sssp['Rm_all'] for sssp in model_sssp], [], x_min=Rm_bins[0], x_max=Rm_bins[-1], y_max=0.07, n_bins=n_bins, log_x=True, c_sim=model_colors, lw=lw, ls_sim=model_linestyles, labels_sim=model_names, xticks_custom=[1,2,3,4,5,10,20], xlabel_text=r'$P_{i+1}/P_i$', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt)
+plot_fig_pdf_simple([sssp['Rm_all'] for sssp in model_sssp], [], x_min=Rm_bins[0], x_max=Rm_bins[-1], y_max=0.07, n_bins=n_bins, log_x=True, c_sim=model_colors, lw=lw, ls_sim=model_linestyles, labels_sim=model_names, xticks_custom=[1,2,3,4,5,10,20], xlabel_text=r'$P_{i+1}/P_i$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 for m in range(models):
     plt.fill_between(Rm_bins_mid, Rm_counts_qtls[m][:,0], Rm_counts_qtls[m][:,2], color=model_colors[m], alpha=alpha)
 plt.minorticks_off()
@@ -950,7 +950,7 @@ if savefigures:
     plt.close()
 
 # Planet radii:
-plot_fig_pdf_simple(fig_size, [sssp['radii_all'] for sssp in model_sssp], [], x_min=radii_min, x_max=radii_max, y_max=0.025, n_bins=n_bins, log_x=True, c_sim=model_colors, lw=lw, ls_sim=model_linestyles, labels_sim=model_names, xticks_custom=[0.5,1,2,4,10], xlabel_text=r'$R_p$ ($R_\oplus$)', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt)
+plot_fig_pdf_simple([sssp['radii_all'] for sssp in model_sssp], [], x_min=radii_min, x_max=radii_max, y_max=0.025, n_bins=n_bins, log_x=True, c_sim=model_colors, lw=lw, ls_sim=model_linestyles, labels_sim=model_names, xticks_custom=[0.5,1,2,4,10], xlabel_text=r'$R_p$ ($R_\oplus$)', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 for m in range(models):
     plt.fill_between(radii_bins_mid, radii_counts_qtls[m][:,0], radii_counts_qtls[m][:,2], color=model_colors[m], alpha=alpha)
 if savefigures:
@@ -958,7 +958,7 @@ if savefigures:
     plt.close()
 
 # Planet radii ratios:
-plot_fig_pdf_simple(fig_size, [sssp['radii_ratio_all'] for sssp in model_sssp], [], x_min=radii_ratio_bins[0], x_max=radii_ratio_bins[-1], y_max=0.06, n_bins=n_bins, log_x=True, c_sim=model_colors, lw=lw, ls_sim=model_linestyles, labels_sim=model_names, xlabel_text=r'$R_{p,i+1}/R_{p,i}$', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt)
+plot_fig_pdf_simple([sssp['radii_ratio_all'] for sssp in model_sssp], [], x_min=radii_ratio_bins[0], x_max=radii_ratio_bins[-1], y_max=0.06, n_bins=n_bins, log_x=True, c_sim=model_colors, lw=lw, ls_sim=model_linestyles, labels_sim=model_names, xlabel_text=r'$R_{p,i+1}/R_{p,i}$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 for m in range(models):
     plt.fill_between(radii_ratio_bins_mid, radii_ratio_counts_qtls[m][:,0], radii_ratio_counts_qtls[m][:,2], color=model_colors[m], alpha=alpha)
 if savefigures:

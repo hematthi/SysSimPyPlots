@@ -235,7 +235,7 @@ for b in range(n_bins):
 # To compare different cuts in the Kepler catalog:
 
 # All on the same plot:
-plot_fig_pdf_simple((16,8), [], [], x_min=5., x_max=1e4, y_max=0.03, n_bins=100, normalize=False, log_x=True, xlabel_text='SNR', ylabel_text='Fraction', legend=False, fig_lbrt=[0.1, 0.125, 0.95, 0.95])
+plot_fig_pdf_simple([], [], x_min=5., x_max=1e4, y_max=0.03, n_bins=100, normalize=False, log_x=True, xlabel_text='SNR', ylabel_text='Fraction', legend=False, fig_size=(16,8), fig_lbrt=[0.1, 0.125, 0.95, 0.95])
 colors = ['r','g','b','k']
 labels = ['No cuts', 'P-R cuts only', 'Star cuts only', 'All H2020b cuts']
 labels_totals = []
@@ -276,11 +276,11 @@ if savefigures:
 
 ##### To compare SNRs of singles vs multis for Kepler vs a simulated catalog:
 '''
-plot_fig_pdf_simple((16,8), [snr_sim['singles'], snr_sim['multis'], snr_sim['multis_weakest']], [], x_min=5., x_max=1e4, n_bins=100, normalize=False, log_x=True, c_sim=['b','r','r'], ls_sim=['-','-','--'], labels_sim=['Observed singles','Observed multis','Weakest in observed multis'], xlabel_text='SNR', ylabel_text='Counts', legend=True, fig_lbrt=[0.1, 0.15, 0.95, 0.95], save_name='snr_singles_multis_sim.pdf', save_fig=False)
+plot_fig_pdf_simple([snr_sim['singles'], snr_sim['multis'], snr_sim['multis_weakest']], [], x_min=5., x_max=1e4, n_bins=100, normalize=False, log_x=True, c_sim=['b','r','r'], ls_sim=['-','-','--'], labels_sim=['Observed singles','Observed multis','Weakest in observed multis'], xlabel_text='SNR', ylabel_text='Counts', legend=True, fig_size=(16,8), fig_lbrt=[0.1, 0.15, 0.95, 0.95], save_name='snr_singles_multis_sim.pdf', save_fig=False)
 
-plot_fig_pdf_simple((16,8), [], [snr_kep['singles'], snr_kep['multis'], snr_kep['multis_weakest']], x_min=5., x_max=1e4, n_bins=100, normalize=False, log_x=True, c_Kep=['b','r','m'], ls_Kep=['-','-','--'], labels_Kep=['Observed singles','Observed multis','Weakest in observed multis'], xlabel_text='SNR', ylabel_text='Counts', legend=True, fig_lbrt=[0.1, 0.15, 0.95, 0.95], save_name='snr_singles_multis_kepler.pdf', save_fig=False)
+plot_fig_pdf_simple([], [snr_kep['singles'], snr_kep['multis'], snr_kep['multis_weakest']], x_min=5., x_max=1e4, n_bins=100, normalize=False, log_x=True, c_Kep=['b','r','m'], ls_Kep=['-','-','--'], labels_Kep=['Observed singles','Observed multis','Weakest in observed multis'], xlabel_text='SNR', ylabel_text='Counts', legend=True, fig_size=(16,8), fig_lbrt=[0.1, 0.15, 0.95, 0.95], save_name='snr_singles_multis_kepler.pdf', save_fig=False)
 
-plot_fig_pdf_simple((16,8), [snr_sim['singles'], snr_sim['multis'], snr_sim['multis_weakest']], [snr_kep['singles'], snr_kep['multis'], snr_kep['multis_weakest']], x_min=5., x_max=1e4, n_bins=100, normalize=False, log_x=True, c_sim=['b','r','r'], c_Kep=['b','r','m'], ls_sim=['-','-','--'], ls_Kep=['-','-','--'], labels_sim=['Observed singles','Observed multis','Weakest in observed multis'], labels_Kep=['Observed singles (Kepler)','Observed multis (Kepler)','Weakest in observed multis (Kepler)'], xlabel_text='SNR', ylabel_text='Counts', legend=True, fig_lbrt=[0.1, 0.15, 0.95, 0.95], save_name='snr_singles_multis_compare.pdf', save_fig=False)
+plot_fig_pdf_simple([snr_sim['singles'], snr_sim['multis'], snr_sim['multis_weakest']], [snr_kep['singles'], snr_kep['multis'], snr_kep['multis_weakest']], x_min=5., x_max=1e4, n_bins=100, normalize=False, log_x=True, c_sim=['b','r','r'], c_Kep=['b','r','m'], ls_sim=['-','-','--'], ls_Kep=['-','-','--'], labels_sim=['Observed singles','Observed multis','Weakest in observed multis'], labels_Kep=['Observed singles (Kepler)','Observed multis (Kepler)','Weakest in observed multis (Kepler)'], xlabel_text='SNR', ylabel_text='Counts', legend=True, fig_size=(16,8), fig_lbrt=[0.1, 0.15, 0.95, 0.95], save_name='snr_singles_multis_compare.pdf', save_fig=False)
 
 plt.show()
 '''
@@ -320,7 +320,7 @@ if savefigures:
     plt.close()
 
 # All on the same figure:
-plot_fig_pdf_simple((16,8), [snr_kep['singles'], snr_kep['multis'], snr_kep['multis_weakest']], [], x_min=5., x_max=1e4, n_bins=100, normalize=False, N_sim_Kep_factor=len(snr_kep['singles']) + len(snr_kep['multis']), log_x=True, c_sim=['b','r','m'], ls_sim=['-','-','-'], labels_sim=['Observed singles','Observed multis','Weakest in observed multis'], xlabel_text='SNR', ylabel_text='Fraction', legend=True, fig_lbrt=[0.1, 0.15, 0.95, 0.95], save_name='snr_singles_multis_kepler.pdf', save_fig=False)
+plot_fig_pdf_simple([snr_kep['singles'], snr_kep['multis'], snr_kep['multis_weakest']], [], x_min=5., x_max=1e4, n_bins=100, normalize=False, N_sim_Kep_factor=len(snr_kep['singles']) + len(snr_kep['multis']), log_x=True, c_sim=['b','r','m'], ls_sim=['-','-','-'], labels_sim=['Observed singles','Observed multis','Weakest in observed multis'], xlabel_text='SNR', ylabel_text='Fraction', legend=True, fig_size=(16,8), fig_lbrt=[0.1, 0.15, 0.95, 0.95], save_name='snr_singles_multis_kepler.pdf', save_fig=False)
 plt.fill_between(snr_bins_mid, snr_counts_singles_qtls[:,0], snr_counts_singles_qtls[:,2], step='mid', color='b', alpha=0.2)
 plt.fill_between(snr_bins_mid, snr_counts_multis_qtls[:,0], snr_counts_multis_qtls[:,2], step='mid', color='r', alpha=0.2)
 plt.fill_between(snr_bins_mid, snr_counts_multis_weakest_qtls[:,0], snr_counts_multis_weakest_qtls[:,2], step='mid', color='m', alpha=0.2)
@@ -331,7 +331,7 @@ if savefigures:
 plt.show()
 
 # All simulated catalogs combined:
-plot_fig_pdf_simple((16,8), [snr_singles_all, snr_multis_all, snr_multis_weakest_all], [snr_kep['singles'], snr_kep['multis'], snr_kep['multis_weakest']], x_min=5., x_max=1e4, n_bins=100, normalize=False, N_sim_Kep_factor=100, log_x=True, c_sim=['b','r','m'], c_Kep=['b','r','m'], ls_sim=['-','-','--'], ls_Kep=['-','-','--'], labels_sim=['Observed singles','Observed multis','Weakest in observed multis'], labels_Kep=['Observed singles (Kepler)','Observed multis (Kepler)','Weakest in observed multis (Kepler)'], xlabel_text='SNR', ylabel_text='Counts', legend=True, fig_lbrt=[0.1, 0.15, 0.95, 0.95], save_name='snr_singles_multis_compare.pdf', save_fig=False)
+plot_fig_pdf_simple([snr_singles_all, snr_multis_all, snr_multis_weakest_all], [snr_kep['singles'], snr_kep['multis'], snr_kep['multis_weakest']], x_min=5., x_max=1e4, n_bins=100, normalize=False, N_sim_Kep_factor=100, log_x=True, c_sim=['b','r','m'], c_Kep=['b','r','m'], ls_sim=['-','-','--'], ls_Kep=['-','-','--'], labels_sim=['Observed singles','Observed multis','Weakest in observed multis'], labels_Kep=['Observed singles (Kepler)','Observed multis (Kepler)','Weakest in observed multis (Kepler)'], xlabel_text='SNR', ylabel_text='Counts', legend=True, fig_size=(16,8), fig_lbrt=[0.1, 0.15, 0.95, 0.95], save_name='snr_singles_multis_compare.pdf', save_fig=False)
 
 print('p-val for singles: ', ks_2samp(snr_singles_all, snr_kep['singles']).pvalue)
 print('p-val for multis: ', ks_2samp(snr_multis_all, snr_kep['multis']).pvalue)
@@ -340,7 +340,7 @@ print('p-val for weakest multis: ', ks_2samp(snr_multis_weakest_all, snr_kep['mu
 plt.show()
 
 # SNRs of multis as a function of observed multiplicity:
-plot_fig_pdf_simple((16,8), [snr_kep['multis'], snr_kep['multis_2'], snr_kep['multis_3'], snr_kep['multis_4p']], [], x_min=5., x_max=1e4, n_bins=100, normalize=False, N_sim_Kep_factor=len(snr_kep['singles']) + len(snr_kep['multis']), log_x=True, c_sim=['k','b','r','m'], ls_sim=['-','-','-','-'], labels_sim=['All observed multis','Observed doubles','Observed triples','Observed 4+'], xlabel_text='SNR', ylabel_text='Fraction', legend=True, fig_lbrt=[0.1, 0.15, 0.95, 0.95], save_name='snr_multis_per_mult_kepler.pdf', save_fig=False)
+plot_fig_pdf_simple([snr_kep['multis'], snr_kep['multis_2'], snr_kep['multis_3'], snr_kep['multis_4p']], [], x_min=5., x_max=1e4, n_bins=100, normalize=False, N_sim_Kep_factor=len(snr_kep['singles']) + len(snr_kep['multis']), log_x=True, c_sim=['k','b','r','m'], ls_sim=['-','-','-','-'], labels_sim=['All observed multis','Observed doubles','Observed triples','Observed 4+'], xlabel_text='SNR', ylabel_text='Fraction', legend=True, fig_size=(16,8), fig_lbrt=[0.1, 0.15, 0.95, 0.95], save_name='snr_multis_per_mult_kepler.pdf', save_fig=False)
 plt.fill_between(snr_bins_mid, snr_counts_multis_qtls[:,0], snr_counts_multis_qtls[:,2], step='mid', color='k', alpha=0.2)
 plt.fill_between(snr_bins_mid, snr_counts_multis_2_qtls[:,0], snr_counts_multis_2_qtls[:,2], step='mid', color='b', alpha=0.2)
 plt.fill_between(snr_bins_mid, snr_counts_multis_3_qtls[:,0], snr_counts_multis_3_qtls[:,2], step='mid', color='r', alpha=0.2)
@@ -358,7 +358,7 @@ plt.show()
 ##### To plot SNR ratios for Kepler vs many simulated catalogs:
 
 # All SNR ratios (adjacent vs all pairs):
-plot_fig_pdf_simple((16,8), [snr_kep['ratios_adj'], snr_kep['ratios_all']], [], x_min=2e-2, x_max=10., n_bins=100, normalize=True, log_x=True, c_sim=['b','k'], ls_sim=['-','-'], labels_sim=['Adjacent pairs','All pairs'], xlabel_text='SNR ratio', ylabel_text='Fraction', legend=True, fig_lbrt=[0.1, 0.15, 0.95, 0.95], save_name='snr_ratios_compare.pdf', save_fig=False)
+plot_fig_pdf_simple([snr_kep['ratios_adj'], snr_kep['ratios_all']], [], x_min=2e-2, x_max=10., n_bins=100, normalize=True, log_x=True, c_sim=['b','k'], ls_sim=['-','-'], labels_sim=['Adjacent pairs','All pairs'], xlabel_text='SNR ratio', ylabel_text='Fraction', legend=True, fig_size=(16,8), fig_lbrt=[0.1, 0.15, 0.95, 0.95], save_name='snr_ratios_compare.pdf', save_fig=False)
 plt.fill_between(snr_ratios_bins_mid, snr_ratios_adj_counts_qtls[:,0], snr_ratios_adj_counts_qtls[:,2], step='mid', color='b', alpha=0.2)
 plt.fill_between(snr_ratios_bins_mid, snr_ratios_all_counts_qtls[:,0], snr_ratios_all_counts_qtls[:,2], step='mid', color='k', alpha=0.2)
 if savefigures:
@@ -367,7 +367,7 @@ if savefigures:
 plt.show()
 
 # SNR ratios as a function of observed multiplicity:
-plot_fig_pdf_simple((16,8), [snr_kep['ratios_adj'], snr_kep['ratios_adj_2'], snr_kep['ratios_adj_3'], snr_kep['ratios_adj_4p']], [], x_min=2e-2, x_max=10., n_bins=100, normalize=True, log_x=True, c_sim=['k','b','r','m'], ls_sim=['-','-','-','-'], labels_sim=['All adjacent pairs','Observed doubles','Observed triples','Observed 4+'], xlabel_text='SNR ratio', ylabel_text='Fraction', legend=True, fig_lbrt=[0.1, 0.15, 0.95, 0.95], save_name='snr_ratios_per_mult.pdf', save_fig=False)
+plot_fig_pdf_simple([snr_kep['ratios_adj'], snr_kep['ratios_adj_2'], snr_kep['ratios_adj_3'], snr_kep['ratios_adj_4p']], [], x_min=2e-2, x_max=10., n_bins=100, normalize=True, log_x=True, c_sim=['k','b','r','m'], ls_sim=['-','-','-','-'], labels_sim=['All adjacent pairs','Observed doubles','Observed triples','Observed 4+'], xlabel_text='SNR ratio', ylabel_text='Fraction', legend=True, fig_size=(16,8), fig_lbrt=[0.1, 0.15, 0.95, 0.95], save_name='snr_ratios_per_mult.pdf', save_fig=False)
 #plt.fill_between(snr_ratios_bins_mid, snr_ratios_adj_counts_qtls[:,0], snr_ratios_adj_counts_qtls[:,2], step='mid', color='b', alpha=0.2)
 #plt.fill_between(snr_ratios_bins_mid, snr_ratios_all_counts_qtls[:,0], snr_ratios_all_counts_qtls[:,2], step='mid', color='k', alpha=0.2)
 if savefigures:

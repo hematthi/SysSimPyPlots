@@ -72,62 +72,62 @@ lfs = 16 #legend labels font size
 #'''
 # Multiplicities:
 x = np.concatenate((sssp_per_sys['Mtot_all'], np.zeros(N_sim - len(sssp_per_sys['Mtot_all']), dtype='int')))
-plot_fig_counts_hist_simple(fig_size, [x], [], x_min=-1, x_llim=-0.5, x_ulim=10.5, normalize=True, lw=lw, xlabel_text='Intrinsic planet multiplicity', ylabel_text='Fraction', afs=afs, tfs=tfs, lfs=lfs, show_counts_sim=False, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_underlying_multiplicities.pdf', save_fig=savefigures)
+plot_fig_counts_hist_simple([x], [], x_min=-1, x_llim=-0.5, x_ulim=10.5, normalize=True, lw=lw, xlabel_text='Intrinsic planet multiplicity', ylabel_text='Fraction', afs=afs, tfs=tfs, lfs=lfs, show_counts_sim=False, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_underlying_multiplicities.pdf', save_fig=savefigures)
 
 # Clusters per system:
-plot_fig_counts_hist_simple(fig_size, [sssp['clustertot_all']], [], x_llim=0.5, x_ulim=5.5, normalize=True, lw=lw, xlabel_text=r'Clusters per system $N_c$', ylabel_text='Fraction', afs=afs, tfs=tfs, lfs=lfs, show_counts_sim=False, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_underlying_clusters_per_system.pdf', save_fig=savefigures)
+plot_fig_counts_hist_simple([sssp['clustertot_all']], [], x_llim=0.5, x_ulim=5.5, normalize=True, lw=lw, xlabel_text=r'Clusters per system $N_c$', ylabel_text='Fraction', afs=afs, tfs=tfs, lfs=lfs, show_counts_sim=False, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_underlying_clusters_per_system.pdf', save_fig=savefigures)
 
 # Planets per cluster:
-plot_fig_counts_hist_simple(fig_size, [sssp['pl_per_cluster_all']], [], x_llim=0.5, x_ulim=7.5, normalize=True, lw=lw, xlabel_text=r'Planets per cluster $N_p$', ylabel_text='Fraction', afs=afs, tfs=tfs, lfs=lfs, show_counts_sim=False, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_underlying_planets_per_cluster.pdf', save_fig=savefigures)
+plot_fig_counts_hist_simple([sssp['pl_per_cluster_all']], [], x_llim=0.5, x_ulim=7.5, normalize=True, lw=lw, xlabel_text=r'Planets per cluster $N_p$', ylabel_text='Fraction', afs=afs, tfs=tfs, lfs=lfs, show_counts_sim=False, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_underlying_planets_per_cluster.pdf', save_fig=savefigures)
 
 # Periods:
-plot_fig_pdf_simple(fig_size, [sssp['P_all']], [], x_min=P_min, x_max=P_max, n_bins=n_bins, normalize=True, log_x=True, log_y=True, lw=lw, xticks_custom=[3,10,30,100,300], xlabel_text=r'$P$ (days)', ylabel_text='Fraction', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_underlying_periods.pdf', save_fig=savefigures)
+plot_fig_pdf_simple([sssp['P_all']], [], x_min=P_min, x_max=P_max, n_bins=n_bins, normalize=True, log_x=True, log_y=True, lw=lw, xticks_custom=[3,10,30,100,300], xlabel_text=r'$P$ (days)', ylabel_text='Fraction', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_underlying_periods.pdf', save_fig=savefigures)
 
 # Period ratios (all):
-plot_fig_pdf_simple(fig_size, [sssp['Rm_all']], [], x_min=1., x_max=20., n_bins=n_bins, normalize=True, log_x=True, lw=lw, xticks_custom=[1,2,3,4,5,10,20,50,100], xlabel_text=r'$P_{i+1}/P_i$', ylabel_text='Fraction', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_underlying_periodratios.pdf', save_fig=savefigures)
+plot_fig_pdf_simple([sssp['Rm_all']], [], x_min=1., x_max=20., n_bins=n_bins, normalize=True, log_x=True, lw=lw, xticks_custom=[1,2,3,4,5,10,20,50,100], xlabel_text=r'$P_{i+1}/P_i$', ylabel_text='Fraction', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_underlying_periodratios.pdf', save_fig=savefigures)
 
 # Period ratios (< 5):
-plot_fig_pdf_simple(fig_size, [sssp['Rm_all'][sssp['Rm_all'] < 5]], [], x_min=1., x_max=5., n_bins=n_bins, normalize=True, log_x=True, lw=lw, xticks_custom=[1,2,3,4,5], xlabel_text=r'$P_{i+1}/P_i$', ylabel_text='Fraction', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_underlying_periodratios_less5.pdf', save_fig=savefigures)
+plot_fig_pdf_simple([sssp['Rm_all'][sssp['Rm_all'] < 5]], [], x_min=1., x_max=5., n_bins=n_bins, normalize=True, log_x=True, lw=lw, xticks_custom=[1,2,3,4,5], xlabel_text=r'$P_{i+1}/P_i$', ylabel_text='Fraction', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_underlying_periodratios_less5.pdf', save_fig=savefigures)
 
 # Eccentricities:
-plot_fig_pdf_simple(fig_size, [sssp['e_all']], [], x_min=1e-3, x_max=1., n_bins=n_bins, normalize=True, log_x=True, lw=lw, xticks_custom=[1e-3,1e-2,1e-1,1.], xlabel_text=r'$e$', ylabel_text='Fraction', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_underlying_eccentricities.pdf', save_fig=savefigures)
+plot_fig_pdf_simple([sssp['e_all']], [], x_min=1e-3, x_max=1., n_bins=n_bins, normalize=True, log_x=True, lw=lw, xticks_custom=[1e-3,1e-2,1e-1,1.], xlabel_text=r'$e$', ylabel_text='Fraction', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_underlying_eccentricities.pdf', save_fig=savefigures)
 
 # Mutual inclinations:
-plot_fig_pdf_simple(fig_size, [sssp['inclmut_all']*(180./np.pi)], [], x_min=1e-2, x_max=90., n_bins=n_bins, normalize=True, log_x=True, lw=lw, xticks_custom=[1e-2,1e-1,1.,10.,1e2], xlabel_text=r'$i_m$ (deg)', ylabel_text='Fraction', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_underlying_mutualinclinations.pdf', save_fig=savefigures)
+plot_fig_pdf_simple([sssp['inclmut_all']*(180./np.pi)], [], x_min=1e-2, x_max=90., n_bins=n_bins, normalize=True, log_x=True, lw=lw, xticks_custom=[1e-2,1e-1,1.,10.,1e2], xlabel_text=r'$i_m$ (deg)', ylabel_text='Fraction', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_underlying_mutualinclinations.pdf', save_fig=savefigures)
 
 # Planet masses:
-plot_fig_pdf_simple(fig_size, [sssp['mass_all']], [], x_min=0.09, x_max=1e2, n_bins=n_bins, normalize=True, log_x=True, lw=lw, xlabel_text=r'$M_p$ ($M_\oplus$)', ylabel_text='Fraction', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_underlying_masses.pdf', save_fig=savefigures)
+plot_fig_pdf_simple([sssp['mass_all']], [], x_min=0.09, x_max=1e2, n_bins=n_bins, normalize=True, log_x=True, lw=lw, xlabel_text=r'$M_p$ ($M_\oplus$)', ylabel_text='Fraction', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_underlying_masses.pdf', save_fig=savefigures)
 
 # Planet radii:
-plot_fig_pdf_simple(fig_size, [sssp['radii_all']], [], x_min=0.5, x_max=10., n_bins=n_bins, normalize=True, log_x=True, lw=lw, xticks_custom=[0.5,1,2,4,10], xlabel_text=r'$R_p$ ($R_\oplus$)', ylabel_text='Fraction', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_underlying_radii.pdf', save_fig=savefigures)
+plot_fig_pdf_simple([sssp['radii_all']], [], x_min=0.5, x_max=10., n_bins=n_bins, normalize=True, log_x=True, lw=lw, xticks_custom=[0.5,1,2,4,10], xlabel_text=r'$R_p$ ($R_\oplus$)', ylabel_text='Fraction', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_underlying_radii.pdf', save_fig=savefigures)
 
 # Planet radii (above and below the photoevaporation boundary):
-plot_fig_pdf_simple(fig_size, [sssp['radii_above_all'], sssp['radii_below_all']], [], x_min=0.5, x_max=10., n_bins=n_bins, normalize=True, log_x=True, c_sim=['b','r'], ls_sim=['-','-'], lw=lw, labels_sim=['Above','Below'], xticks_custom=[0.5,1,2,4,10], xlabel_text=r'$R_p$ ($R_\oplus$)', ylabel_text='Fraction', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt, legend=True, save_name=savefigures_directory + subdirectory + model_name + '_underlying_radii_photoevap.pdf', save_fig=savefigures)
+plot_fig_pdf_simple([sssp['radii_above_all'], sssp['radii_below_all']], [], x_min=0.5, x_max=10., n_bins=n_bins, normalize=True, log_x=True, c_sim=['b','r'], ls_sim=['-','-'], lw=lw, labels_sim=['Above','Below'], xticks_custom=[0.5,1,2,4,10], xlabel_text=r'$R_p$ ($R_\oplus$)', ylabel_text='Fraction', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt, legend=True, save_name=savefigures_directory + subdirectory + model_name + '_underlying_radii_photoevap.pdf', save_fig=savefigures)
 
 # Planet radii ratios:
-plot_fig_pdf_simple(fig_size, [sssp['radii_ratio_all']], [], x_min=0.1, x_max=10., n_bins=n_bins, normalize=True, log_x=True, lw=lw, xlabel_text=r'$R_{p,i+1}/R_{p,i}$', ylabel_text='Fraction', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_underlying_radii_ratios.pdf', save_fig=savefigures)
+plot_fig_pdf_simple([sssp['radii_ratio_all']], [], x_min=0.1, x_max=10., n_bins=n_bins, normalize=True, log_x=True, lw=lw, xlabel_text=r'$R_{p,i+1}/R_{p,i}$', ylabel_text='Fraction', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_underlying_radii_ratios.pdf', save_fig=savefigures)
 
 # Planet radii ratios (above, below, and across the photoevaporation boundary):
-plot_fig_pdf_simple(fig_size, [sssp['radii_ratio_above_all'], sssp['radii_ratio_below_all'], sssp['radii_ratio_across_all']], [], x_min=0.1, x_max=10., n_bins=n_bins, normalize=True, log_x=True, c_sim=['b','r','k'], ls_sim=['-','-','-'], lw=lw, labels_sim=['Above','Below','Across'], xlabel_text=r'$R_{p,i+1}/R_{p,i}$', ylabel_text='Fraction', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt, legend=True, save_name=savefigures_directory + subdirectory + model_name + '_underlying_radii_photoevap.pdf', save_fig=savefigures)
+plot_fig_pdf_simple([sssp['radii_ratio_above_all'], sssp['radii_ratio_below_all'], sssp['radii_ratio_across_all']], [], x_min=0.1, x_max=10., n_bins=n_bins, normalize=True, log_x=True, c_sim=['b','r','k'], ls_sim=['-','-','-'], lw=lw, labels_sim=['Above','Below','Across'], xlabel_text=r'$R_{p,i+1}/R_{p,i}$', ylabel_text='Fraction', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt, legend=True, save_name=savefigures_directory + subdirectory + model_name + '_underlying_radii_photoevap.pdf', save_fig=savefigures)
 
 # Separations in mutual Hill radii:
-plot_fig_pdf_simple(fig_size, [sssp['N_mH_all']], [], x_min=1., x_max=200., n_bins=n_bins, normalize=True, log_x=True, lw=lw, xlabel_text=r'$\Delta$', ylabel_text='Fraction', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_underlying_deltas.pdf', save_fig=savefigures)
+plot_fig_pdf_simple([sssp['N_mH_all']], [], x_min=1., x_max=200., n_bins=n_bins, normalize=True, log_x=True, lw=lw, xlabel_text=r'$\Delta$', ylabel_text='Fraction', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_underlying_deltas.pdf', save_fig=savefigures)
 
 # Stellar radii:
-plot_fig_pdf_simple(fig_size, [sssp['Rstar_all']], [], n_bins=n_bins, normalize=True, lw=lw, xlabel_text=r'$R_\star (R_\odot)$', ylabel_text='Fraction', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_underlying_stellar_radii.pdf', save_fig=savefigures)
+plot_fig_pdf_simple([sssp['Rstar_all']], [], n_bins=n_bins, normalize=True, lw=lw, xlabel_text=r'$R_\star (R_\odot)$', ylabel_text='Fraction', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_underlying_stellar_radii.pdf', save_fig=savefigures)
 
 ### GF2020 metrics, but for the underlying systems:
-# Dynamical masses CDFs:
-plot_fig_pdf_simple(fig_size, [sssp_per_sys['dynamical_mass']], [], x_min=2e-7, x_max=1e-3, n_bins=n_bins, normalize=True, log_x=True, lw=lw, xlabel_text=r'$\mu$', ylabel_text='Fraction', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_underlying_dynamical_masses.pdf', save_fig=savefigures)
+# Dynamical masses:
+plot_fig_pdf_simple([sssp_per_sys['dynamical_mass']], [], x_min=2e-7, x_max=1e-3, n_bins=n_bins, normalize=True, log_x=True, lw=lw, xlabel_text=r'$\mu$', ylabel_text='Fraction', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_underlying_dynamical_masses.pdf', save_fig=savefigures)
 
-# Planet radii partitioning CDFs:
-plot_fig_pdf_simple(fig_size, [sssp_per_sys['radii_partitioning']], [], x_min=1e-5, x_max=1., n_bins=n_bins, normalize=True, log_x=True, lw=lw, xlabel_text=r'$\mathcal{Q}_R$', ylabel_text='Fraction', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_underlying_radii_partitioning.pdf', save_fig=savefigures)
+# Planet radii partitioning:
+plot_fig_pdf_simple([sssp_per_sys['radii_partitioning']], [], x_min=1e-5, x_max=1., n_bins=n_bins, normalize=True, log_x=True, lw=lw, xlabel_text=r'$\mathcal{Q}_R$', ylabel_text='Fraction', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_underlying_radii_partitioning.pdf', save_fig=savefigures)
 
-# Planet radii monotonicity CDFs:
-plot_fig_pdf_simple(fig_size, [sssp_per_sys['radii_monotonicity']], [], x_min=-0.6, x_max=0.6, n_bins=n_bins, normalize=True, lw=lw, xlabel_text=r'$\mathcal{M}_R$', ylabel_text='Fraction', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_underlying_radii_monotonicity.pdf', save_fig=savefigures)
+# Planet radii monotonicity:
+plot_fig_pdf_simple([sssp_per_sys['radii_monotonicity']], [], x_min=-0.6, x_max=0.6, n_bins=n_bins, normalize=True, lw=lw, xlabel_text=r'$\mathcal{M}_R$', ylabel_text='Fraction', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_underlying_radii_monotonicity.pdf', save_fig=savefigures)
 
-# Gap complexity CDFs:
-plot_fig_pdf_simple(fig_size, [sssp_per_sys['gap_complexity']], [], x_min=0., x_max=1., n_bins=n_bins, normalize=True, log_x=False, lw=lw, xlabel_text=r'$\mathcal{C}$', ylabel_text='Fraction', afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_underlying_gap_complexity.pdf', save_fig=savefigures)
+# Gap complexity:
+plot_fig_pdf_simple([sssp_per_sys['gap_complexity']], [], x_min=0., x_max=1., n_bins=n_bins, normalize=True, log_x=False, lw=lw, xlabel_text=r'$\mathcal{C}$', ylabel_text='Fraction', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_underlying_gap_complexity.pdf', save_fig=savefigures)
 
 plt.show()
 plt.close()
@@ -243,7 +243,7 @@ assert len(Mtot_2p) == len(sssp_per_sys['radii_monotonicity'])
 #n = 2
 for n in range(2,10):
     radii_mon_n = sssp_per_sys['radii_monotonicity'][Mtot_2p == n]
-    plot_fig_pdf_simple(fig_size, [sssp_per_sys['radii_monotonicity'], radii_mon_n], [], x_min=-0.6, x_max=0.6, n_bins=n_bins, normalize=True, c_sim=['b','r'], ls_sim=['-','-'], lw=lw, labels_sim=['All',r'$n = %s$' % n], xlabel_text=r'$\mathcal{M}_R$', ylabel_text='Fraction', legend=True, afs=afs, tfs=tfs, lfs=lfs, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_underlying_radii_monotonicity_%s.pdf' % n, save_fig=savefigures)
+    plot_fig_pdf_simple([sssp_per_sys['radii_monotonicity'], radii_mon_n], [], x_min=-0.6, x_max=0.6, n_bins=n_bins, normalize=True, c_sim=['b','r'], ls_sim=['-','-'], lw=lw, labels_sim=['All',r'$n = %s$' % n], xlabel_text=r'$\mathcal{M}_R$', ylabel_text='Fraction', legend=True, afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_underlying_radii_monotonicity_%s.pdf' % n, save_fig=savefigures)
 '''
 
 
