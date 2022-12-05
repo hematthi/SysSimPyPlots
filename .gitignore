@@ -5,3 +5,4 @@ docs/build
 dist
 *.egg-info
 *.key
+Src/syssimpyplots/data/q1_q17_dr25_gaia_berger_fgk_H2020_koi_cleaned_P0-400_R0-10.csv
