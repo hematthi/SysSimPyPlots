@@ -112,16 +112,16 @@ def plot_panel_counts_hist_simple(ax, x_sim, x_Kep, x_min=0, x_max=None, y_min=N
     show_counts_Kep : bool, default=True
         Whether to show the individual bin counts for the Kepler data.
     """
-    if y_min == None:
+    if y_min is None:
         y_min = 1e-4 if normalize==True else 1
-    if x_max == None:
+    if x_max is None:
         #x_max = np.nanmax([np.max(x) if len(x) > 0 else np.nan for x in x_sim+x_Kep])
         x_max = max([np.max(x) for x in x_sim+x_Kep])
     bins = np.histogram([], bins=(x_max - x_min)+1, range=(x_min-0.5, x_max+0.5))[1]
     bins_mid = (bins[:-1] + bins[1:])/2.
-    if x_llim == None:
+    if x_llim is None:
         x_llim = x_min # x_min is the minimum for the bins, while x_llim is the minimum of the x-axis for plotting
-    if x_ulim == None:
+    if x_ulim is None:
         x_ulim = x_max+0.5 # x_max is the minimum for the bins, while x_ulim is the maximum of the x-axis for plotting
 
     for i,x in enumerate(x_sim):
@@ -259,9 +259,9 @@ def plot_panel_pdf_simple(ax, x_sim, x_Kep, x_min=None, x_max=None, y_min=None, 
     legend : bool, default=False
         Whether to show the legend.
     """
-    if x_min == None:
+    if x_min is None:
         x_min = np.nanmin([np.min(x) if len(x) > 0 else np.nan for x in x_sim+x_Kep])
-    if x_max == None:
+    if x_max is None:
         x_max = np.nanmax([np.max(x) if len(x) > 0 else np.nan for x in x_sim+x_Kep])
 
     if log_x:
@@ -269,18 +269,23 @@ def plot_panel_pdf_simple(ax, x_sim, x_Kep, x_min=None, x_max=None, y_min=None, 
     else:
         bins = np.linspace(x_min, x_max, n_bins+1)
 
+    bin_maxes = [] # to be filled with the maximum bin counts in each histogram
     for i,x in enumerate(x_sim):
         if normalize:
             weights = np.ones(len(x))/len(x)
         else:
             weights = np.ones(len(x))/N_sim_Kep_factor
-        plt.hist(x, bins=bins, histtype='step', weights=weights, log=log_y, color=c_sim[i], ls=ls_sim[i], lw=lw, label=labels_sim[i])
+        ht = plt.hist(x, bins=bins, histtype='step', weights=weights, log=log_y, color=c_sim[i], ls=ls_sim[i], lw=lw, label=labels_sim[i])
+        bin_maxes.append(np.max(ht[0]))
     for i,x in enumerate(x_Kep):
         if normalize:
             weights = np.ones(len(x))/len(x)
         else:
             weights = np.ones(len(x))
-        plt.hist(x, bins=bins, histtype='stepfilled', weights=weights, log=log_y, color=c_Kep[i], ls=ls_Kep[i], alpha=alpha, label=labels_Kep[i])
+        ht = plt.hist(x, bins=bins, histtype='stepfilled', weights=weights, log=log_y, color=c_Kep[i], ls=ls_Kep[i], alpha=alpha, label=labels_Kep[i])
+        bin_maxes.append(np.max(ht[0]))
+    if y_max is None:
+        y_max = 1.1*max(bin_maxes)
 
     if log_x:
         plt.gca().set_xscale("log")
@@ -386,9 +391,9 @@ def plot_panel_cdf_simple(ax, x_sim, x_Kep, x_min=None, x_max=None, y_min=0., y_
     label_dist : bool, default=False
         Whether to compute and show the distances between the simulated and Kepler CDFs on the lower-right corner of the plot. If True, will compute the KS distance (using :py:func:`syssimpyplots.compare_kepler.KS_dist`) and the modified AD distance (using :py:func:`syssimpyplots.compare_kepler.AD_mod_dist`) between each pair of `x_sim` and `x_Kep` arrays.
     """
-    if x_min == None:
+    if x_min is None:
         x_min = np.nanmin([np.min(x) if len(x) > 0 else np.nan for x in x_sim+x_Kep])
-    if x_max == None:
+    if x_max is None:
         x_max = np.nanmax([np.max(x) if len(x) > 0 else np.nan for x in x_sim+x_Kep])
 
     for i,x in enumerate(x_sim):
@@ -472,7 +477,7 @@ def plot_fig_mult_cdf_simple(x_sim, x_Kep, x_min=1, x_max=None, y_min=0., y_max=
     left, bottom, right, top = fig_lbrt
     ax = setup_fig_single(fig_size, left=left, bottom=bottom, right=right, top=top)
 
-    if x_max == None:
+    if x_max is None:
         #x_max = np.nanmax([np.max(x) if len(x) > 0 else np.nan for x in x_sim+x_Kep])
         x_max = max([np.max(x) for x in x_sim+x_Kep])
 
