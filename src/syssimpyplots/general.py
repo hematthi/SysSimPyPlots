@@ -25,8 +25,6 @@ Rjup = 6.991*10.**9. # Jupiter radius in cm
 
 res_ratios, res_width = [2.0, 1.5, 4/3., 5/4.], 0.05 # NOTE: in the model, the near-resonant planets have period ratios between X and (1+w)*X where X = [2/1, 3/2, 4/3, 5/4] and w = 0.05
 
-bounds_3rd_order_mmr_neighborhoods_of_1st_order_mmr = [[(3*i+2)/(3*i-1), (3*i+4)/(3*i+1)] for i in range(1,6)] # neighborhoods of the 1st order MMRs (i+1)/i, defined as bounded by the nearest 3rd order MMRs
-
 
 
 
