@@ -25,6 +25,8 @@ Rjup = 6.991*10.**9. # Jupiter radius in cm
 
 res_ratios, res_width = [2.0, 1.5, 4/3., 5/4.], 0.05 # NOTE: in the model, the near-resonant planets have period ratios between X and (1+w)*X where X = [2/1, 3/2, 4/3, 5/4] and w = 0.05
 
+bounds_3rd_order_mmr_neighborhoods_of_1st_order_mmr = [[(3*i+2)/(3*i-1), (3*i+4)/(3*i+1)] for i in range(1,6)] # neighborhoods of the 1st order MMRs (i+1)/i, defined as bounded by the nearest 3rd order MMRs
+
 
 
 
@@ -413,9 +415,79 @@ def compute_ratios_all(x, inverse=False, avoid_div_zeros=False):
         ratios_all += list(x[i+1]/x[i+2:]) if inverse else list(x[i+2:]/x[i+1])
     return np.array(ratios_all)
 
-def zeta1(pratios):
-    """Compute the zeta statistic for each period ratio in ``pratios`` as defined in Fabrycky et al. (2014)."""
-    return 3.*((1./(pratios - 1.)) - np.round(1./(pratios - 1.)))
+def bounds_3rd_order_mmr_neighborhood_of_1st_order_mmr(i):
+    """
+    Calculate the 'neighborhood' of a 1st order MMR (``(i+1)/i``), as bounded by the nearest 3rd order MMRs.
+    
+    Parameters
+    ----------
+    i : int
+        The index specifying the 1st order MMR (``i`` in ``(i+1)/i``; where ``i=1,2,3...``).
+        
+    Returns
+    -------
+    bounds : list
+        The lower and upper bounds corresponding to the nearest 3rd order MMRs.
+    """
+    assert isinstance(i, int) and i >= 1, 'i must be an integer >= 1'
+    bounds = [(3*i+4)/(3*i+1), (3*i+2)/(3*i-1)] # nearest 3rd order MMRs
+    return bounds
+
+def pratio_is_in_1st_order_mmr_neighborhood(pratios, i_max=5):
+    """
+    Calculate which period ratios in ``pratios`` are within a 'neighborhood' of a 1st order MMR.
+    
+    Parameters
+    ----------
+    pratios : array[floats]
+        The period ratios (must be all greater than or equal to 1).
+    i_max : int, default=5
+        The highest 1st order MMR index to consider (i.e. ``i`` in ``(i+1)/i``).
+    
+    Returns
+    -------
+    bools_in_1st_order_mmr_neighborhood : array[bool]
+        A boolean array indicating which period ratios are within the neighborhood of a 1st order MMR.
+    i_of_1st_order_mmr : array[ints]
+        An array indicating the 1st order MMR index (i.e. ``i`` in ``(i+1)/i``) each period ratio is within the neighborhood of, if any (otherwise 0).
+    """
+    bools_in_1st_order_mmr_neighborhood = np.full(len(pratios), False) # to be filled with booleans indicating which period ratios are within the neighborhood of a 1st order MMR
+    i_of_1st_order_mmr = np.zeros(len(pratios), dtype=int) # to be filled with 'i' values indicating which 1st order MMR (i.e. (i+1)/i) each period ratio is in the neighborhood of, if any (will be 0 for those not in any neighborhood)
+    for i in range(1,i_max+1):
+        bounds = bounds_3rd_order_mmr_neighborhood_of_1st_order_mmr(i)
+        bools_in_bounds = (pratios >= bounds[0]) & (pratios <= bounds[1])
+        bools_in_1st_order_mmr_neighborhood[bools_in_bounds] = True
+        i_of_1st_order_mmr[bools_in_bounds] = i
+    return bools_in_1st_order_mmr_neighborhood, i_of_1st_order_mmr
+
+def zeta(pratios, n=2, order=1):
+    """
+    Compute the 'zeta_{n,order}' statistic (proximity to any MMR of a given order) for each period ratio in ``pratios`` as defined in Lissauer et al. (2011) and Fabrycky et al. (2014).
+    
+    Parameters
+    ----------
+    pratios : array[floats]
+        The period ratios (must be all greater than or equal to 1).
+    n : int, default=2
+        The number of MMR orders being simultaneously considered. For example, ``n=2`` indicates that the 1st and 2nd order MMRs are being considered, with their neighborhood boundaries set by the 3rd order MMRs.
+    order : int, default=1
+        The MMR order for which 'zeta' is computed. For example, ``order=1`` will compute 'zeta' as the proximity to any 1st order MMR.
+    
+    Returns
+    -------
+    zeta_n_order : array[floats]
+        The 'zeta_{n,order}' values corresponding to the period ratios in ``pratios``.
+    
+    
+    Note
+    ----
+    The output values of 'zeta_{n,order}' are always bounded by [-1,1] assuming the period ratios are all within a 'neighborhood' of an MMR for the order being considered.
+    """
+    # NOTE: this is designed only for 1st order (i.e. zeta_1) and 2nd order (i.e. zeta_2) resonances, and such that any period ratio can only belong in the "neighborhood" of one such 1st or 2nd order resonance (see Figure 10 of Lissauer et al. (2011); the curves never overlap as a function of period ratio).
+    # COROLLARY 1: Providing any arbitrary period ratios to compute zeta with order=1 results in some values outside the range [-1,1], which correspond to period ratios in the neighborhood of a 2nd order resonance.
+    # COROLLARY 2: Providing any arbitrary period ratios to compute zeta with order=2 results in some values INSIDE the range [-1,1] which actually do NOT belong to a neighborhood of a 2nd order resonance! => TODO: must first check/filter 'pratios' to only include those in the neighborhood of the corresponding order of resonance.
+    zeta_n_order = (n+1.)*((order/(pratios - 1.)) - np.round(order/(pratios - 1.)))
+    return zeta_n_order
 
 def split_colors_per_cdpp_bin(stars_cleaned, nbins=10):
     # Compute a histogram of combined differential photometric precision (CDPP) values, and then split each bin by `bp-rp` color into a bluer half (smaller `bp-rp`) and a redder half (larger `bp-rp`).
