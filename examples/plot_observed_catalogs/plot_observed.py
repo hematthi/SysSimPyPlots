@@ -27,9 +27,10 @@ from syssimpyplots.plot_params import *
 
 
 savefigures = False
-loadfiles_directory = '/Users/hematthi/Documents/GradSchool/Research/ACI/Simulated_Data/AMD_system/Split_stars/Singles_ecc/Params11_KS/Distribute_AMD_per_mass/durations_norm_circ_singles_multis_GF2020_KS/GP_med/' #Extrapolate_P1000d/AMD_in_out/' #Extra_outputs/' #'/Users/hematthi/Documents/GradSchool/Research/ACI/Simulated_Data/AMD_system/Split_stars/Singles_ecc/Params11_KS/Distribute_AMD_per_mass/durations_norm_circ_singles_multis_GF2020_KS/GP_med/' #'/Users/hematthi/Documents/GradSchool/Research/ACI/Simulated_Data/Split_stars/Clustered_P_R_fswp_bprp/Params13_KS/durations_KS/GP_med/' #'/Users/hematthi/Documents/GradSchool/Research/ExoplanetsSysSim_Clusters/SysSimExClusters_plotting/examples/'
+#loadfiles_directory = '/Users/hematthi/Documents/GradSchool/Research/ACI/Simulated_Data/AMD_system/Split_stars/Singles_ecc/Params11_KS/Distribute_AMD_per_mass/durations_norm_circ_singles_multis_GF2020_KS/GP_med/' #Extrapolate_P1000d/AMD_in_out/' #Extra_outputs/' #'/Users/hematthi/Documents/GradSchool/Research/ACI/Simulated_Data/AMD_system/Split_stars/Singles_ecc/Params11_KS/Distribute_AMD_per_mass/durations_norm_circ_singles_multis_GF2020_KS/GP_med/' #'/Users/hematthi/Documents/GradSchool/Research/ACI/Simulated_Data/Split_stars/Clustered_P_R_fswp_bprp/Params13_KS/durations_KS/GP_med/' #'/Users/hematthi/Documents/GradSchool/Research/ExoplanetsSysSim_Clusters/SysSimExClusters_plotting/examples/'
+loadfiles_directory = '/Users/hematthi/Documents/GradSchool/Research/SysSim/SysSimExClusters/examples/test/'
 #savefigures_directory = '/Users/hematthi/Documents/GradSchool/Research/ExoplanetsSysSim_Clusters/Figures/Model_Optimization/AMD_system/Split_stars/Singles_ecc/Params11_KS/Distribute_AMD_per_mass/durations_norm_circ_singles_multis_GF2020_KS/Best_models/GP_med/' #'/Users/hematthi/Documents/GradSchool/Research/ExoplanetsSysSim_Clusters/Figures/Model_Optimization/AMD_system/Split_stars/Singles_ecc/Params11_KS/Distribute_AMD_per_mass/durations_norm_circ_singles_multis_GF2020_KS/Best_models/GP_med/Underlying/' #'/Users/hematthi/Documents/GradSchool/Research/ExoplanetsSysSim_Clusters/Figures/Model_Optimization/Split_stars/Clustered_P_R_fswp_bprp/Params13_KS/durations_KS/Best_models/GP_med/Underlying/'
-savefigures_directory = '/Users/hematthi/Documents/GradSchool/Misc_Presentations/PhD_Thesis_Defense/Figures/'
+savefigures_directory = loadfiles_directory #'/Users/hematthi/Documents/GradSchool/Misc_Presentations/PhD_Thesis_Defense/Figures/'
 run_number = ''
 model_name = 'Maximum_AMD_Model' + run_number
 
@@ -224,19 +225,6 @@ compute_pratio_in_out_and_plot_fig_pdf([sss_per_sys['P_obs'], ssk_per_sys['P_obs
 plt.show()
 plt.close()
 '''
-
-
-
-
-##### To plot a histogram of the zeta statistic (similar to Fig 5 in Fabrycky et al. 2014):
-
-pratios_small_sim = sss['Rm_obs'][sss['Rm_obs'] < 2.5]
-pratios_small_Kep = ssk['Rm_obs'][ssk['Rm_obs'] < 2.5]
-zeta1_small_sim = zeta1(pratios_small_sim)
-zeta1_small_Kep = zeta1(pratios_small_Kep)
-plot_fig_pdf_simple([zeta1_small_sim], [zeta1_small_Kep], x_min=-1., x_max=1., n_bins=30, normalize=True, lw=lw, labels_Kep=['Period ratios < 2.5'], xlabel_text=r'$\zeta_1$', ylabel_text='Number', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_zeta1_small_compare.pdf', save_fig=savefigures)
-plt.show()
-#plt.close()
 
 
 

@@ -119,10 +119,13 @@ plt.show()
 
 ##### To plot a histogram of the zeta statistic:
 
-zeta1_all = zeta1(ssk['Rm_obs'])
+zeta1_all = zeta(ssk['Rm_obs'])
+zeta2_all = zeta(ssk['Rm_obs'], order=2) # DON'T TRUST THESE YET!
 pratios_small = ssk['Rm_obs'][ssk['Rm_obs'] < 2.5]
-zeta1_small = zeta1(pratios_small)
-plot_fig_pdf_simple([], [zeta1_all, zeta1_small], x_min=-1., x_max=1., n_bins=30, normalize=True, c_Kep=['b','r'], ls_Kep=['-','-'], lw=lw, labels_Kep=['All period ratios', 'Period ratios < 2.5'], xlabel_text=r'$\zeta_1$', ylabel_text='Number', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + 'Kepler_zeta1.pdf', save_fig=savefigures)
+zeta1_small = zeta(pratios_small)
+zeta2_small = zeta(pratios_small, order=2) # DON'T TRUST THESE YET!
+plot_fig_pdf_simple([], [zeta1_all, zeta1_small], x_min=-1., x_max=1., n_bins=40, normalize=True, c_Kep=['b','r'], ls_Kep=['-','-'], lw=lw, labels_Kep=['All period ratios', 'Period ratios < 2.5'], xlabel_text=r'$\zeta_1$', ylabel_text='Number', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + 'Kepler_zeta1.pdf', save_fig=savefigures)
+plot_fig_pdf_simple([], [zeta2_all, zeta2_small], x_min=-1., x_max=1., n_bins=40, normalize=True, c_Kep=['b','r'], ls_Kep=['-','-'], lw=lw, labels_Kep=['All period ratios', 'Period ratios < 2.5'], xlabel_text=r'$\zeta_2$', ylabel_text='Number', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + 'Kepler_zeta2.pdf', save_fig=savefigures)
 #plot_fig_pdf_simple([], [zeta1_all], x_min=-1., x_max=1., n_bins=30, normalize=True, c_Kep=['b'], lw=lw, labels_Kep=['All period ratios'], xlabel_text=r'$\zeta_1$', ylabel_text='Number', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + 'Kepler_zeta1_all.pdf', save_fig=savefigures)
 #plot_fig_pdf_simple([], [zeta1_small], x_min=-1., x_max=1., n_bins=30, normalize=True, c_Kep=['r'], lw=lw, labels_Kep=['Period ratios < 2.5'], xlabel_text=r'$\zeta_1$', ylabel_text='Number', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + 'Kepler_zeta1_small.pdf', save_fig=savefigures)
 plt.show()
