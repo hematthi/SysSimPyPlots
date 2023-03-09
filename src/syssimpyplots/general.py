@@ -510,7 +510,7 @@ def zeta(pratios, n=2, order=1):
     Parameters
     ----------
     pratios : array[floats]
-        The period ratios (must be all greater than or equal to 1).
+        The period ratios (must be all greater than 1).
     n : int, default=2
         The number of MMR orders being simultaneously considered. For example, ``n=2`` indicates that the 1st and 2nd order MMRs are being considered, with their neighborhood boundaries set by the 3rd order MMRs.
     order : int, default=1
@@ -524,7 +524,7 @@ def zeta(pratios, n=2, order=1):
     
     Note
     ----
-    The output values of 'zeta_{n,order}' are always bounded by [-1,1] assuming the period ratios are all within a 'neighborhood' of an MMR for the ``n`` and ``order`` being considered (use :py:func:`syssimpyplots.general.pratio_is_in_any_1st_order_mmr_neighborhood` and :py:func:`syssimpyplots.general.pratio_is_in_any_2nd_order_mmr_neighborhood` to figure out which period ratios are within the relevant neighborhoods).
+    The output values of 'zeta_{n,order}' are always bounded by [-1,1] assuming the period ratios are all within a 'neighborhood' of an MMR for the ``n`` and ``order`` being considered. For ``n=1``, all period ratios in (1,3] (for ``order=1``) and all period ratios in (1,5] (for ``order=2``) belong to a neighorhood. For ``n=2``, use :py:func:`syssimpyplots.general.pratio_is_in_any_1st_order_mmr_neighborhood` and :py:func:`syssimpyplots.general.pratio_is_in_any_2nd_order_mmr_neighborhood` to figure out which period ratios are within the relevant neighborhoods.
     """
     zeta_n_order = (n+1.)*((order/(pratios - 1.)) - np.round(order/(pratios - 1.)))
     return zeta_n_order
