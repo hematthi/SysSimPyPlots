@@ -529,6 +529,37 @@ def zeta(pratios, n=2, order=1):
     zeta_n_order = (n+1.)*((order/(pratios - 1.)) - np.round(order/(pratios - 1.)))
     return zeta_n_order
 
+# TODO: write unit tests
+def zeta_2_order(pratios):
+    """
+    Compute the 'zeta_{2,order}' statistic (proximity to any 1st or 2nd order MMR) for each period ratio in ``pratios``.
+    
+    Wrapper for the function :py:func:`syssimpyplots.general.zeta`.
+    
+    Note
+    ----
+    Will first calculate whether each period ratio in ``pratios`` belongs to a neighborhood of a 1st or 2nd order MMR (as bounded by the 3rd order MMRs), and then calculate either 'zeta_{2,1}' or 'zeta_{2,2}', respectively. Will consider up to ``i_max=20`` indices of each of the 1st and 2nd order MMRs; for even higher orders, will return NaN.
+    
+    Parameters
+    ----------
+    pratios : array[floats]
+        The period ratios (must all be in the range (1,4]).
+    
+    Returns
+    -------
+    zeta_2_order : array[floats]
+        The 'zeta_{2,order}' values corresponding to the period ratios in ``pratios``, where order = 1 or 2.
+    """
+    assert all(pratios > 1.) and all(pratios <= 4.)
+    bools_in_1st, i_of_1st = pratio_is_in_any_1st_order_mmr_neighborhood(pratios, i_max=20)
+    bools_in_2nd, i_of_2nd = pratio_is_in_any_2nd_order_mmr_neighborhood(pratios, i_max=20)
+    assert ~np.any(bools_in_1st & bools_in_2nd) # check that no perio ratios are counted in both a 1st and 2nd order MMR
+    
+    zeta_2_order = np.full(len(pratios), np.nan) # to be filled with zeta_{2,1} and zeta_{2,2} values corresponding to the period ratios, where appropriate
+    zeta_2_order[bools_in_1st] = zeta(pratios[bools_in_1st], n=2, order=1) # zeta_{2,1}
+    zeta_2_order[bools_in_2nd] = zeta(pratios[bools_in_2nd], n=2, order=2) # zeta_{2,2}
+    return zeta_2_order
+
 def split_colors_per_cdpp_bin(stars_cleaned, nbins=10):
     # Compute a histogram of combined differential photometric precision (CDPP) values, and then split each bin by `bp-rp` color into a bluer half (smaller `bp-rp`) and a redder half (larger `bp-rp`).
     """
