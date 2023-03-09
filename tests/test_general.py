@@ -91,27 +91,51 @@ def test_mmrs_bounds_zeta(i_max=20):
         assert bounds[0] < (i+1)/i < bounds[1]
         # Check that the neighboring bounds do not overlap, and bracket the correct 2nd order MMR:
         bounds_next = bounds_3rd_order_mmr[idx+1]
-        n_2nd = 2*i+1 # the relevant index for the 2nd order MMR just interior, i.e. n in (n+2)/n
+        n_2nd = 2*i+1 # the relevant index for the 2nd order MMR just interior, i.e. n in (n+2)/n (NOTE: skips n=1 though since that is exterior to the 2:1 MMR)
         assert bounds_next[1] < (n_2nd+2)/n_2nd < bounds[0]
     assert bounds_next[0] > 1 # check that the smallest inner bound is still greater than 1
     
-    # Testing 'pratio_is_in_1st_order_mmr_neighborhood()':
-    pratios = np.linspace(1.00001, 4., 10000)
-    bools_all, i_all = pratio_is_in_1st_order_mmr_neighborhood(pratios, i_max=i_max)
-    assert np.sum(bools_all) == np.sum(i_all != 0)
-    assert np.min(i_all[bools_all]) == 1
-    assert np.max(i_all[bools_all]) == i_max
+    # Testing 'bounds_3rd_order_mmr_neighborhood_of_2nd_order_mmr()':
+    bounds_3rd_order_mmr = [bounds_3rd_order_mmr_neighborhood_of_2nd_order_mmr(i) for i in range(1,i_max+1)]
+    for idx,bounds in enumerate(bounds_3rd_order_mmr[:-1]):
+        i = idx+1
+        n = 2*i-1
+        # Check that the bounds are valid and bracket the correct 2nd order MMR:
+        assert bounds[0] < (n+2)/n < bounds[1]
+        # Check that the neighboring bounds do not overlap, and bracket the correct 1st order MMR:
+        bounds_next = bounds_3rd_order_mmr[idx+1]
+        assert bounds_next[1] < (i+1)/i < bounds[0]
+    assert bounds_next[0] > 1 # check that the smallest inner bound is still greater than 1
+    
+    pratios = np.linspace(1.00001, 5., 10000)
+    
+    # Testing 'pratio_is_in_any_1st_order_mmr_neighborhood()':
+    bools_1st_all, i_all = pratio_is_in_any_1st_order_mmr_neighborhood(pratios, i_max=i_max)
+    assert np.sum(bools_1st_all) == np.sum(i_all != 0)
+    assert np.min(i_all[bools_1st_all]) == 1
+    assert np.max(i_all[bools_1st_all]) == i_max
     assert np.all(i_all[pratios > 2.5] == 0)
-    bools_all_double_imax, i_all_double_imax = pratio_is_in_1st_order_mmr_neighborhood(pratios, i_max=2*i_max)
-    assert np.sum(bools_all) <= np.sum(bools_all_double_imax)
+    bools_1st_all_double_imax, i_all_double_imax = pratio_is_in_any_1st_order_mmr_neighborhood(pratios, i_max=2*i_max)
+    assert np.sum(bools_1st_all) <= np.sum(bools_1st_all_double_imax)
+    
+    # Testing 'pratio_is_in_any_2nd_order_mmr_neighborhood()':
+    bools_2nd_all, i_all = pratio_is_in_any_2nd_order_mmr_neighborhood(pratios, i_max=i_max)
+    assert np.sum(bools_2nd_all) == np.sum(i_all != 0)
+    assert np.min(i_all[bools_2nd_all]) == 1
+    assert np.max(i_all[bools_2nd_all]) == i_max
+    assert np.all(i_all[pratios > 4.] == 0)
+    bools_2nd_all_double_imax, i_all_double_imax = pratio_is_in_any_2nd_order_mmr_neighborhood(pratios, i_max=2*i_max)
+    assert np.sum(bools_2nd_all) <= np.sum(bools_2nd_all_double_imax)
     
     # Testing 'zeta()':
     zetas_1_1 = zeta(pratios, n=1, order=1)
-    zetas_2_1 = zeta(pratios[bools_all], n=2, order=1)
-    zetas_1_2 = zeta(pratios, n=1, order=2) # will contain contamination from 1st order MMRs, but should still be bounded by [-1,1]
+    zetas_2_1 = zeta(pratios[bools_1st_all], n=2, order=1)
+    zetas_1_2 = zeta(pratios, n=1, order=2)
+    zetas_2_2 = zeta(pratios[bools_2nd_all], n=2, order=2)
     assert np.all(np.abs(zetas_1_1) <= 1.)
     assert np.all(np.abs(zetas_2_1) <= 1.)
     assert np.all(np.abs(zetas_1_2) <= 1.)
+    assert np.all(np.abs(zetas_2_2) <= 1.)
 
 def test_linear_fswp_bprp(seed=42):
     np.random.seed(seed)
