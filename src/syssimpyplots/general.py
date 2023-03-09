@@ -451,7 +451,7 @@ def bounds_3rd_order_mmr_neighborhood_of_2nd_order_mmr(i):
 
 def pratio_is_in_any_1st_order_mmr_neighborhood(pratios, i_max=5):
     """
-    Calculate which period ratios in ``pratios`` are within any 'neighborhood' of a 1st order MMR.
+    Calculate which period ratios in ``pratios`` are within any 'neighborhood' of a 1st order MMR, as bounded by the 3rd order MMRs.
     
     Parameters
     ----------
@@ -478,7 +478,7 @@ def pratio_is_in_any_1st_order_mmr_neighborhood(pratios, i_max=5):
 
 def pratio_is_in_any_2nd_order_mmr_neighborhood(pratios, i_max=5):
     """
-    Calculate which period ratios in ``pratios`` are within any 'neighborhood' of a 2nd order MMR.
+    Calculate which period ratios in ``pratios`` are within any 'neighborhood' of a 2nd order MMR, as bounded by the 3rd order MMRs.
     
     Parameters
     ----------
