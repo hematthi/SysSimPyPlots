@@ -127,6 +127,8 @@ def test_mmrs_bounds_zeta(i_max=20):
     bools_2nd_all_double_imax, i_all_double_imax = pratio_is_in_any_2nd_order_mmr_neighborhood(pratios, i_max=2*i_max)
     assert np.sum(bools_2nd_all) <= np.sum(bools_2nd_all_double_imax)
     
+    assert ~np.any(bools_1st_all & bools_2nd_all) # check that no period ratios are counted in both a 1st and 2nd order MMR
+    
     # Testing 'zeta()':
     zetas_1_1 = zeta(pratios, n=1, order=1)
     zetas_2_1 = zeta(pratios[bools_1st_all], n=2, order=1)
@@ -136,6 +138,13 @@ def test_mmrs_bounds_zeta(i_max=20):
     assert np.all(np.abs(zetas_2_1) <= 1.)
     assert np.all(np.abs(zetas_1_2) <= 1.)
     assert np.all(np.abs(zetas_2_2) <= 1.)
+    
+    # Testing 'zeta_2_order()':
+    zetas_2_1or2, bools_in_1st, bools_in_2nd = zeta_2_order(pratios[bools_1st_all | bools_2nd_all])
+    assert ~np.any(bools_in_1st & bools_in_2nd) # check that no period ratios are counted in both a 1st and 2nd order MMR
+    assert np.all(np.abs(zetas_2_1or2) <= 1.)
+    assert np.all(np.isclose(zetas_2_1, zetas_2_1or2[bools_in_1st]))
+    assert np.all(np.isclose(zetas_2_2, zetas_2_1or2[bools_in_2nd]))
 
 def test_linear_fswp_bprp(seed=42):
     np.random.seed(seed)
