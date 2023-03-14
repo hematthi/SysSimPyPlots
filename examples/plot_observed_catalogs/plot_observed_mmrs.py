@@ -29,8 +29,7 @@ from syssimpyplots.plot_params import *
 savefigures = False
 loadfiles_directory = '/Users/hematthi/Documents/GradSchool/Research/ACI/Simulated_Data/AMD_system/Split_stars/Singles_ecc/Params11_KS/Distribute_AMD_per_mass/durations_norm_circ_singles_multis_GF2020_KS/GP_med/' #'/Users/hematthi/Documents/GradSchool/Research/ACI/Simulated_Data/AMD_system/Split_stars/Singles_ecc/Params11_KS/Distribute_AMD_per_mass/durations_norm_circ_singles_multis_GF2020_KS/GP_med/' #'/Users/hematthi/Documents/GradSchool/Research/ACI/Simulated_Data/Split_stars/Clustered_P_R_fswp_bprp/Params13_KS/durations_KS/GP_med/'
 #loadfiles_directory = '/Users/hematthi/Documents/GradSchool/Research/SysSim/SysSimExClusters/examples/test/'
-#savefigures_directory = '/Users/hematthi/Documents/GradSchool/Research/ExoplanetsSysSim_Clusters/Figures/Model_Optimization/AMD_system/Split_stars/Singles_ecc/Params11_KS/Distribute_AMD_per_mass/durations_norm_circ_singles_multis_GF2020_KS/Best_models/GP_med/'
-savefigures_directory = loadfiles_directory
+savefigures_directory = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Figures/H20_model/Observed/'
 run_number = ''
 model_name = 'Maximum_AMD_Model' + run_number
 
@@ -80,8 +79,6 @@ dists, dists_w = compute_distances_sim_Kepler(sss_per_sys, sss, ssk_per_sys, ssk
 
 ##### To plot the simulated and Kepler catalogs:
 
-subdirectory = ''
-
 fig_size = (8,3) #size of each panel (figure)
 fig_lbrt = [0.15, 0.3, 0.95, 0.925]
 
@@ -112,8 +109,8 @@ zeta1_small_Kep = zeta(pratios_small_Kep[bools_in_1st_Kep])
 zeta2_small_sim = zeta(pratios_small_sim[bools_in_2nd_sim], order=2)
 zeta2_small_Kep = zeta(pratios_small_Kep[bools_in_2nd_Kep], order=2)
 
-plot_fig_pdf_simple([zeta1_small_sim], [zeta1_small_Kep], x_min=-1., x_max=1., n_bins=40, normalize=True, lw=lw, labels_sim=[r'Simulated (all $\mathcal{P} < %s$)' % pratio_max_1], labels_Kep=[r'Kepler (all $\mathcal{P} < %s$)' % pratio_max_1], xlabel_text=r'$\zeta_1$', ylabel_text='Normalized fraction', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_size=(8,5), fig_lbrt=[0.15,0.2,0.95,0.925], save_name=savefigures_directory + subdirectory + model_name + '_zeta1_small_compare.pdf', save_fig=savefigures)
-plot_fig_pdf_simple([zeta2_small_sim], [zeta2_small_Kep], x_min=-1., x_max=1., n_bins=40, normalize=True, lw=lw, labels_sim=[r'Simulated (all $\mathcal{P} < %s$)' % pratio_max_2], labels_Kep=[r'Kepler (all $\mathcal{P} < %s$)' % pratio_max_2], xlabel_text=r'$\zeta_2$', ylabel_text='Normalized fraction', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_size=(8,5), fig_lbrt=[0.15,0.2,0.95,0.925], save_name=savefigures_directory + subdirectory + model_name + '_zeta2_small_compare.pdf', save_fig=savefigures)
+plot_fig_pdf_simple([zeta1_small_sim], [zeta1_small_Kep], x_min=-1., x_max=1., n_bins=40, normalize=True, lw=lw, labels_sim=[r'Simulated (all $\mathcal{P} < %s$)' % pratio_max_1], labels_Kep=[r'Kepler (all $\mathcal{P} < %s$)' % pratio_max_1], xlabel_text=r'$\zeta_1$', ylabel_text='Normalized fraction', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_size=(8,5), fig_lbrt=[0.15,0.2,0.95,0.925], save_name=savefigures_directory + model_name + '_zeta2_1_small_compare.pdf', save_fig=savefigures)
+plot_fig_pdf_simple([zeta2_small_sim], [zeta2_small_Kep], x_min=-1., x_max=1., n_bins=40, normalize=True, lw=lw, labels_sim=[r'Simulated (all $\mathcal{P} < %s$)' % pratio_max_2], labels_Kep=[r'Kepler (all $\mathcal{P} < %s$)' % pratio_max_2], xlabel_text=r'$\zeta_2$', ylabel_text='Normalized fraction', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_size=(8,5), fig_lbrt=[0.15,0.2,0.95,0.925], save_name=savefigures_directory + model_name + '_zeta2_2_small_compare.pdf', save_fig=savefigures)
 plt.show()
 #plt.close()
 
@@ -125,7 +122,7 @@ plt.show()
 
 ss_per_sys = ssk_per_sys # sss_per_sys, ssk_per_sys
 
-n_mmr = 1 # 1 => only consider the 1st order MMRs; 2 => consider both 1st and 2nd order MMRs
+n_mmr = 2 # 1 => only consider the 1st order MMRs; 2 => consider both 1st and 2nd order MMRs
 pratio_max = 3. if n_mmr==1 else 4.
 
 zeta_in_mmr_lim = 0.25 # all |zeta1| <= zeta_in_mmr_lim are considered "in a 1st order MMR"
@@ -174,10 +171,6 @@ for n in range(n_figs):
             zeta_sys = zeta(Pr_sys, n=1, order=1) # zeta_{1,1}
         elif n_mmr == 2:
             zeta_sys, in_1st, in_2nd = zeta_2_order(Pr_sys) # zeta_{2,1} or zeta_{2,2}; can also be NaN if did not check enough indices for period ratios -> 1
-        #c_sys = np.array(['k']*len(P_sys))
-        #for i,zeta1 in enumerate(zeta_sys):
-        #    if np.abs(zeta1) <= 0.25:
-        #        c_sys[i:i+2] = 'r'
         c_sys = 'k'
         if np.abs(zeta_sys[0]) <= zeta_in_mmr_lim:
             if n_mmr == 1:
@@ -222,6 +215,11 @@ for n in range(n_figs):
     plt.xlim([x_min, x_max])
     plt.ylim([0., sys_per_fig+3])
     plt.xlabel('Period (days)', fontsize=16)
+    
+    if savefigures:
+        file_name = model_name + '_gallery_2pl_mmr%s_sortby_zeta_%s.pdf' % (n_mmr, n)
+        plt.savefig(savefigures_directory + file_name)
+        plt.close()
 plt.show()
 
 
@@ -286,16 +284,18 @@ for n in range(n_figs):
                     assert ~(in_1st_sys[i] & in_2nd_sys[i]) # one must be True and the other is False
                     if in_1st_sys[i]:
                         c_pair = 'r'
+                        c_sys[i:i+2] = c_pair
                         _, i_1st = pratio_is_in_any_1st_order_mmr_neighborhood(Pr_sys[i:i+1])
                         i_1st = i_1st[0]
                         mmr = '%s:%s' % (i_1st+1,i_1st)
                     elif in_2nd_sys[i]:
                         c_pair = 'b'
+                        c_sys[i:i+2] = c_pair
                         _, i_2nd = pratio_is_in_any_2nd_order_mmr_neighborhood(Pr_sys[i:i+1])
                         n_2nd = 2*i_2nd[0] - 1
                         mmr = '%s:%s' % (n_2nd+2,n_2nd)
                 plt.text(x=np.mean(P_sys[i:i+2]), y=j+1.2, s=mmr, va='center', ha='center', c=c_pair, fontsize=8)
-        c_wholesys = 'r' if np.any(c_sys=='r') else 'k' # if want a single color for the whole system
+        c_wholesys = 'r' if np.any(c_sys!='k') else 'k' # if want a single color for the whole system
         if num_mmr == 2:
             c_wholesys = 'orange'
         elif num_mmr == 3:
@@ -303,7 +303,7 @@ for n in range(n_figs):
         sc = plt.scatter(P_sys, np.ones(len(P_sys))+j, s=s_norm*Rp_sys**2., c=c_sys)
         #<[1] Display one of the following left-labels:
         #plt.text(x=x_min, y=j+1, s='{:.2f}'.format(np.mean(Pr_sys)), va='center', ha='right', c=c_wholesys, fontsize=8) # display mean period ratio
-        plt.text(x=x_min, y=j+1, s='%s (%s)' % (len(c_sys), np.sum(c_sys=='r')), va='center', ha='right', c=c_wholesys, fontsize=8) # display multiplicity (total vs. near MMR)
+        plt.text(x=x_min, y=j+1, s='%s (%s)' % (len(c_sys), np.sum(c_sys!='k')), va='center', ha='right', c=c_wholesys, fontsize=8) # display multiplicity (total vs. near MMR)
         #plt.text(x=x_min, y=j+1, s='{:.2f}'.format(gen.gap_complexity_GF2020(P_sys)), va='center', ha='right', c=c_wholesys, fontsize=8) # display gap complexity
         #plt.text(x=x_min, y=j+1, s='{:.3f}'.format(gen.dispersion_W2022(Rp_sys)), va='center', ha='right', c=c_wholesys, fontsize=8) # display radius dispersion
         #[1]>
@@ -333,6 +333,11 @@ for n in range(n_figs):
     plt.xlim([x_min, x_max])
     plt.ylim([0., sys_per_fig+3])
     plt.xlabel('Period (days)', fontsize=16)
+
+    if savefigures:
+        file_name = model_name + '_gallery_3pluspl_mmr%s_sortby_minabszeta_%s.pdf' % (n_mmr, n)
+        plt.savefig(savefigures_directory + file_name)
+        plt.close()
 plt.show()
 
 
@@ -364,4 +369,4 @@ for i in range(1,i_max+1):
     mmr2_i = (n+2)/n
     print('%s:%s =' % (n+2, n), mmr2_i)
     plt.axvline(mmr2_i, color='b')
-plt.show()
+plt.show(block=False)
