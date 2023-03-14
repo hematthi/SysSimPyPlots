@@ -882,6 +882,31 @@ def Cmax_approx_GF2020(n):
     Cmax = 0.262*np.log(0.766*n)
     return Cmax
 
+# TODO: write unit tests
+def dispersion_W2022(x, x_norm=1.):
+    """
+    Compute the 'dispersion' of a quantity 'x' for the system, defined as the variance of the log10(x) values (Weiss et al. 2022).
+
+    For example, if ``x`` is an array of planet radii, this is the 'radius dispersion' quantity.
+
+    Parameters
+    ----------
+    x : array[floats]
+        The quantities (must be all positive).
+    x_norm : float
+        The normalization unit for 'x'.
+
+    Returns
+    -------
+    σ_sq : float
+        The 'dispersion' of the quantity.
+    """
+    assert len(x) >= 2
+    assert all(x > 0)
+    assert x_norm > 0
+    var = np.var(np.log10(x/x_norm))
+    return var
+
 
 
 
