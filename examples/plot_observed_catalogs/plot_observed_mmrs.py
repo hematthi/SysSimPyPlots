@@ -94,35 +94,13 @@ lfs = 16 #legend labels font size
 
 
 
-##### To plot a histogram of the zeta statistic (similar to Fig 5 in Fabrycky et al. 2014):
-
-pratio_max_1, pratio_max_2 = 2.5, 4. # should be 2.5 for zeta_{2,1} and 4 for zeta_{2,2}
-pratios_small_sim = sss['Rm_obs'][sss['Rm_obs'] < pratio_max_2]
-pratios_small_Kep = ssk['Rm_obs'][ssk['Rm_obs'] < pratio_max_2]
-
-bools_in_1st_sim, _ = pratio_is_in_any_1st_order_mmr_neighborhood(pratios_small_sim)
-bools_in_1st_Kep, _ = pratio_is_in_any_1st_order_mmr_neighborhood(pratios_small_Kep)
-bools_in_2nd_sim, _ = pratio_is_in_any_2nd_order_mmr_neighborhood(pratios_small_sim)
-bools_in_2nd_Kep, _ = pratio_is_in_any_2nd_order_mmr_neighborhood(pratios_small_Kep)
-zeta1_small_sim = zeta(pratios_small_sim[bools_in_1st_sim])
-zeta1_small_Kep = zeta(pratios_small_Kep[bools_in_1st_Kep])
-zeta2_small_sim = zeta(pratios_small_sim[bools_in_2nd_sim], order=2)
-zeta2_small_Kep = zeta(pratios_small_Kep[bools_in_2nd_Kep], order=2)
-
-plot_fig_pdf_simple([zeta1_small_sim], [zeta1_small_Kep], x_min=-1., x_max=1., n_bins=40, normalize=True, lw=lw, labels_sim=[r'Simulated (all $\mathcal{P} < %s$)' % pratio_max_1], labels_Kep=[r'Kepler (all $\mathcal{P} < %s$)' % pratio_max_1], xlabel_text=r'$\zeta_1$', ylabel_text='Normalized fraction', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_size=(8,5), fig_lbrt=[0.15,0.2,0.95,0.925], save_name=savefigures_directory + model_name + '_zeta2_1_small_compare.pdf', save_fig=savefigures)
-plot_fig_pdf_simple([zeta2_small_sim], [zeta2_small_Kep], x_min=-1., x_max=1., n_bins=40, normalize=True, lw=lw, labels_sim=[r'Simulated (all $\mathcal{P} < %s$)' % pratio_max_2], labels_Kep=[r'Kepler (all $\mathcal{P} < %s$)' % pratio_max_2], xlabel_text=r'$\zeta_2$', ylabel_text='Normalized fraction', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_size=(8,5), fig_lbrt=[0.15,0.2,0.95,0.925], save_name=savefigures_directory + model_name + '_zeta2_2_small_compare.pdf', save_fig=savefigures)
-plt.show()
-#plt.close()
-
-
-
-
-
 ##### To plot galleries marking the planets near resonances:
 
 ss_per_sys = ssk_per_sys # sss_per_sys, ssk_per_sys
 
-n_mmr = 2 # 1 => only consider the 1st order MMRs; 2 => consider both 1st and 2nd order MMRs
+model_name = 'Kepler'
+
+n_mmr = 1 # 1 => only consider the 1st order MMRs; 2 => consider both 1st and 2nd order MMRs
 pratio_max = 3. if n_mmr==1 else 4.
 
 zeta_in_mmr_lim = 0.25 # all |zeta1| <= zeta_in_mmr_lim are considered "in a 1st order MMR"
@@ -141,14 +119,20 @@ bools_pr = ss_per_sys['Rm_obs'][:,0] <= pratio_max # <-- this works only for 2-p
 idx_sys_selected = np.where(bools_mult & bools_pr)[0]
 
 # Sort by zeta:
+'''
+sortby = 'zeta'
 if n_mmr == 1:
     zeta_selected = zeta(ss_per_sys['Rm_obs'][idx_sys_selected,0]) # zeta_{1,1}
 elif n_mmr == 2:
     zeta_selected, _1, _2 = zeta_2_order(ss_per_sys['Rm_obs'][idx_sys_selected,0]) # zeta_{2,1} and zeta_{2,2}
 else:
     print('ERROR: must set n_mmr = 1 or 2')
-
 idx_sys_selected = idx_sys_selected[np.argsort(zeta_selected)]
+'''
+
+# Sort by period ratio:
+sortby = 'pratio'
+idx_sys_selected = idx_sys_selected[np.argsort(ss_per_sys['Rm_obs'][idx_sys_selected,0])]
 
 n_figs = 4 # divide the total number of systems into this many figures as evenly as possible
 sys_per_fig = int(np.ceil(len(idx_sys_selected)/n_figs))
@@ -217,7 +201,7 @@ for n in range(n_figs):
     plt.xlabel('Period (days)', fontsize=16)
     
     if savefigures:
-        file_name = model_name + '_gallery_2pl_mmr%s_sortby_zeta_%s.pdf' % (n_mmr, n)
+        file_name = model_name + '_gallery_2pl_mmr%s_sortby_%s_%s.pdf' % (n_mmr, sortby, n)
         plt.savefig(savefigures_directory + file_name)
         plt.close()
 plt.show()
@@ -227,20 +211,26 @@ plt.show()
 ### For 3+ planet systems:
 
 bools_mult = ss_per_sys['Mtot_obs'] >= 3
-bools_pr = [True if any((ss_per_sys['Rm_obs'][i] > 1.) & (ss_per_sys['Rm_obs'][i] < pratio_max)) else False for i in range(len(ss_per_sys['Rm_obs']))] # select small period ratios
+bools_pr = [any((ss_per_sys['Rm_obs'][i] > 1.) & (ss_per_sys['Rm_obs'][i] < pratio_max)) for i in range(len(ss_per_sys['Rm_obs']))] # select small period ratios
 idx_sys_selected = np.where(bools_mult & bools_pr)[0]
-pratios_per_sys_selected = [ss_per_sys['Rm_obs'][idx, ss_per_sys['Rm_obs'][idx] > 1] for idx in idx_sys_selected]
+pratios_per_sys_selected = [ss_per_sys['Rm_obs'][idx, ss_per_sys['Rm_obs'][idx] > 1] for idx in idx_sys_selected] # filter out the filler -1's
 
 # Sort by the smallest |zeta| (i.e. pair closest to an MMR) in each system:
 # NOTE: must only consider period ratios less than 'pratio_max', as larger period ratios can also lead to small values of zeta_{1,1}
+'''
+sortby = 'minabszeta'
 if n_mmr == 1:
     abs_zeta_min_selected = [np.min(np.abs(zeta(pratios_sys[pratios_sys < pratio_max]))) for pratios_sys in pratios_per_sys_selected] # min|zeta_{1,1}|
 elif n_mmr == 2:
     abs_zeta_min_selected = [np.min(np.abs(zeta_2_order(pratios_sys[pratios_sys < pratio_max])[0])) for pratios_sys in pratios_per_sys_selected] # min of any |zeta_{2,1}| or |zeta_{2,2}|
 else:
     print('ERROR: must set n_mmr = 1 or 2')
-
 idx_sys_selected = idx_sys_selected[np.argsort(abs_zeta_min_selected)]
+'''
+
+# Sort by smallest period ratio:
+sortby = 'minpratio'
+idx_sys_selected = idx_sys_selected[np.argsort([np.min(pratios_sys) for pratios_sys in pratios_per_sys_selected])]
 
 n_figs = 3 # divide the total number of systems into this many figures as evenly as possible
 sys_per_fig = int(np.ceil(len(idx_sys_selected)/n_figs))
@@ -261,6 +251,7 @@ for n in range(n_figs):
         
         if n_mmr == 1:
             zeta_sys = zeta(Pr_sys, n=1, order=1) # zeta_{1,1}
+            zeta_sys[Pr_sys > pratio_max] = np.nan
         elif n_mmr == 2:
             zeta_sys, in_1st_sys, in_2nd_sys = np.full(len(Pr_sys), np.nan), np.full(len(Pr_sys), False), np.full(len(Pr_sys), False)
             zeta_sys_small, in_1st_sys_small, in_2nd_sys_small = zeta_2_order(Pr_sys[Pr_sys < pratio_max]) # zeta_{2,1} or zeta_{2,2}; can also be NaN if did not check enough indices for period ratios -> 1
@@ -303,7 +294,8 @@ for n in range(n_figs):
         sc = plt.scatter(P_sys, np.ones(len(P_sys))+j, s=s_norm*Rp_sys**2., c=c_sys)
         #<[1] Display one of the following left-labels:
         #plt.text(x=x_min, y=j+1, s='{:.2f}'.format(np.mean(Pr_sys)), va='center', ha='right', c=c_wholesys, fontsize=8) # display mean period ratio
-        plt.text(x=x_min, y=j+1, s='%s (%s)' % (len(c_sys), np.sum(c_sys!='k')), va='center', ha='right', c=c_wholesys, fontsize=8) # display multiplicity (total vs. near MMR)
+        plt.text(x=x_min, y=j+1, s='{:.2f}'.format(np.min(Pr_sys)), va='center', ha='right', c=c_wholesys, fontsize=8) # display min period ratio
+        #plt.text(x=x_min, y=j+1, s='%s (%s)' % (len(c_sys), np.sum(c_sys!='k')), va='center', ha='right', c=c_wholesys, fontsize=8) # display multiplicity (total vs. near MMR)
         #plt.text(x=x_min, y=j+1, s='{:.2f}'.format(gen.gap_complexity_GF2020(P_sys)), va='center', ha='right', c=c_wholesys, fontsize=8) # display gap complexity
         #plt.text(x=x_min, y=j+1, s='{:.3f}'.format(gen.dispersion_W2022(Rp_sys)), va='center', ha='right', c=c_wholesys, fontsize=8) # display radius dispersion
         #[1]>
@@ -317,7 +309,8 @@ for n in range(n_figs):
     plt.fill_between([x_min, x_max], j+2, j+4, color='b', alpha=0.2)
     #<[1] Display the appropriate left-label legend:
     #plt.text(x=0.9*x_min, y=j+2, s=r'$\bar{\mathcal{P}}$', va='center', ha='right', fontsize=8) # for displaying mean period ratio
-    plt.text(x=1.*x_min, y=j+2, s=r'$n$ ($n_{\rm MMR}$)', va='center', ha='right', fontsize=8) # for displaying multiplicity (total vs. near MMR)
+    plt.text(x=0.9*x_min, y=j+2, s=r'$\mathcal{P}_{\rm min}$', va='center', ha='right', fontsize=8) # for displaying min period ratio
+    #plt.text(x=1.*x_min, y=j+2, s=r'$n$ ($n_{\rm MMR}$)', va='center', ha='right', fontsize=8) # for displaying multiplicity (total vs. near MMR)
     #plt.text(x=0.9*x_min, y=j+2, s=r'$\mathcal{C}$', va='center', ha='right', fontsize=8) # for displaying gap complexity
     #plt.text(x=0.9*x_min, y=j+2, s=r'$\sigma_R^2$', va='center', ha='right', fontsize=8) # for displaying radius partitioning
     #[1]>
@@ -335,7 +328,7 @@ for n in range(n_figs):
     plt.xlabel('Period (days)', fontsize=16)
 
     if savefigures:
-        file_name = model_name + '_gallery_3pluspl_mmr%s_sortby_minabszeta_%s.pdf' % (n_mmr, n)
+        file_name = model_name + '_gallery_3pluspl_mmr%s_sortby_%s_%s.pdf' % (n_mmr, sortby, n)
         plt.savefig(savefigures_directory + file_name)
         plt.close()
 plt.show()
@@ -344,29 +337,136 @@ plt.show()
 
 
 
-##### TESTING PURPOSES: visualizing the 1st and 2nd order MMRs and their neighborhoods (3rd order MMRs)
+##### To plot zeta vs. size-similarity metrics for planet pairs (motivated by Goyal, Dai, & Wang paper (Enhanced size uniformity for near-resonant planets) in prep.):
 
-pr_all = np.linspace(1.001, 5., 1000)
-i_max = 5
-bools_in_1st, i_of_1st = pratio_is_in_any_1st_order_mmr_neighborhood(pr_all, i_max=i_max)
-bools_in_2nd, i_of_2nd = pratio_is_in_any_2nd_order_mmr_neighborhood(pr_all, i_max=i_max)
-colors_all = np.array(['k']*len(pr_all))
-colors_all[bools_in_1st] = 'r'
-colors_all[bools_in_2nd] = 'b'
+bools_mult = ss_per_sys['Mtot_obs'] >= 2
+bools_pr = [any((ss_per_sys['Rm_obs'][i] > 1.) & (ss_per_sys['Rm_obs'][i] < pratio_max)) for i in range(len(ss_per_sys['Rm_obs']))] # select small period ratios
+idx_sys_selected = np.where(bools_mult & bools_pr)[0]
 
-fig = plt.figure(figsize=(8,5))
-plot = GridSpec(1,1,left=0.1,bottom=0.1,right=0.9,top=0.95,wspace=0,hspace=0)
+n_mmr = 1 # 1 => only consider the 1st order MMRs; 2 => consider both 1st and 2nd order MMRs
+pratio_max = 3. if n_mmr==1 else 4.
+
+zeta_sizesim_pairs = [] # to be filled with zeta, size similarity metrics, and other properties for each pair of adjacent planets in multis
+for idx in idx_sys_selected:
+    P_sys = ss_per_sys['P_obs'][idx]
+    Pr_sys = ss_per_sys['Rm_obs'][idx]
+    Rp_sys = ss_per_sys['radii_obs'][idx]
+    
+    Rp_sys = Rp_sys[P_sys > 0]
+    P_sys = P_sys[P_sys > 0]
+    Pr_sys = Pr_sys[Pr_sys > 0]
+
+    if n_mmr == 1:
+        zeta_sys = zeta(Pr_sys, n=1, order=1) # zeta_{1,1}
+        zeta_sys[Pr_sys > pratio_max] = np.nan
+    elif n_mmr == 2:
+        zeta_sys, in_1st_sys, in_2nd_sys = np.full(len(Pr_sys), np.nan), np.full(len(Pr_sys), False), np.full(len(Pr_sys), False)
+        zeta_sys_small, in_1st_sys_small, in_2nd_sys_small = zeta_2_order(Pr_sys[Pr_sys < pratio_max]) # zeta_{2,1} or zeta_{2,2}; can also be NaN if did not check enough indices for period ratios -> 1
+        zeta_sys[Pr_sys < pratio_max] = zeta_sys_small
+        in_1st_sys[Pr_sys < pratio_max] = in_1st_sys_small
+        in_2nd_sys[Pr_sys < pratio_max] = in_2nd_sys_small
+    
+    # Loop through each pair and compute other metrics:
+    for i,zeta_i in enumerate(zeta_sys):
+        # Radius similarity metrics:
+        Q_Rp = gen.partitioning(Rp_sys[i:i+2])
+        disp_Rp = gen.dispersion_W2022(Rp_sys[i:i+2])
+        Rp_ratio = Rp_sys[i+1]/Rp_sys[i]
+        Rp_ratio_lgsm = Rp_ratio if Rp_ratio > 1. else 1/Rp_ratio # ratio of larger/smaller planet
+        
+        # Index (i in (i+1)/i) of MMR:
+        in_1st, i_1st = pratio_is_in_any_1st_order_mmr_neighborhood(Pr_sys[i:i+1])
+        in_1st, i_1st = in_1st[0], i_1st[0]
+        mmr = '%s:%s' % (i_1st+1,i_1st)
+        
+        # Append all of the properties:
+        # (idx, system mult, zeta, pratio, mmr, Q_Rp, disp_Rp, Rp_ratio_lgsm)
+        zeta_sizesim_pairs.append((idx, len(P_sys), zeta_i, Pr_sys[i], mmr, Q_Rp, disp_Rp, Rp_ratio_lgsm))
+
+zeta_sizesim_pairs = np.array(zeta_sizesim_pairs, dtype=[('idx_sys', 'u8'), ('Mtot_obs', 'u4'), ('zeta', 'f8'), ('pratio', 'f8'), ('mmr', 'U3'), ('Q_Rp', 'f8'), ('disp_Rp', 'f8'), ('Rp_ratio_lgsm', 'f8')])
+
+med_in_zeta_mmr_lim = np.median(zeta_sizesim_pairs['Q_Rp'][np.abs(zeta_sizesim_pairs['zeta']) <= zeta_in_mmr_lim])
+med_out_zeta_mmr_lim = np.median(zeta_sizesim_pairs['Q_Rp'][np.abs(zeta_sizesim_pairs['zeta']) > zeta_in_mmr_lim])
+
+# Plot size similarity metric vs. zeta:
+fig = plt.figure(figsize=(8,8))
+plot = GridSpec(1,1,left=0.15,bottom=0.1,right=0.95,top=0.95,wspace=0,hspace=0)
 ax = plt.subplot(plot[0,0])
-plt.scatter(pr_all, np.ones(len(pr_all)), marker='.', c=colors_all)
+plt.scatter(zeta_sizesim_pairs['zeta'], zeta_sizesim_pairs['Q_Rp'], marker='.', c=zeta_sizesim_pairs['Mtot_obs'])
+plt.axhline(y=med_out_zeta_mmr_lim, xmin=0., xmax=0.75/2., c='k')
+plt.axhline(y=med_out_zeta_mmr_lim, xmin=1.25/2., xmax=1., c='k')
+plt.axhline(y=med_in_zeta_mmr_lim, xmin=0.75/2., xmax=1.25/2., c='r')
+plt.gca().set_yscale("log")
+ax.tick_params(axis='both', labelsize=afs)
+#ax.get_xaxis().set_major_formatter(matplotlib.ticker.ScalarFormatter())
+plt.xlim([-1., 1.])
+#plt.ylim([0., 1.])
+plt.xlabel(r'$\zeta_{1,1}$' if n_mmr==1 else r'$\zeta_{2,i}$', fontsize=tfs)
+plt.ylabel(r'$Q_{R}$', fontsize=tfs)
+if savefigures:
+    plt.savefig(savefigures_directory + model_name + '_radii_partitioning_vs_zeta1_1_pairs.pdf')
+    plt.close()
+plt.show(block=False)
+
+
+
+
+
+##### To plot a histogram of the zeta statistic (similar to Fig 5 in Fabrycky et al. 2014):
+
+pratio_max_1, pratio_max_2 = 2.5, 4. # should be 2.5 for zeta_{2,1} and 4 for zeta_{2,2}
+pratios_small_sim = sss['Rm_obs'][sss['Rm_obs'] < pratio_max_2]
+pratios_small_Kep = ssk['Rm_obs'][ssk['Rm_obs'] < pratio_max_2]
+
+bools_in_1st_sim, _ = pratio_is_in_any_1st_order_mmr_neighborhood(pratios_small_sim)
+bools_in_1st_Kep, _ = pratio_is_in_any_1st_order_mmr_neighborhood(pratios_small_Kep)
+bools_in_2nd_sim, _ = pratio_is_in_any_2nd_order_mmr_neighborhood(pratios_small_sim)
+bools_in_2nd_Kep, _ = pratio_is_in_any_2nd_order_mmr_neighborhood(pratios_small_Kep)
+zeta1_small_sim = zeta(pratios_small_sim[bools_in_1st_sim])
+zeta1_small_Kep = zeta(pratios_small_Kep[bools_in_1st_Kep])
+zeta2_small_sim = zeta(pratios_small_sim[bools_in_2nd_sim], order=2)
+zeta2_small_Kep = zeta(pratios_small_Kep[bools_in_2nd_Kep], order=2)
+
+plot_fig_pdf_simple([zeta1_small_sim], [zeta1_small_Kep], x_min=-1., x_max=1., n_bins=40, normalize=True, lw=lw, labels_sim=[r'Simulated (all $\mathcal{P} < %s$)' % pratio_max_1], labels_Kep=[r'Kepler (all $\mathcal{P} < %s$)' % pratio_max_1], xlabel_text=r'$\zeta_1$', ylabel_text='Normalized fraction', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_size=(8,5), fig_lbrt=[0.15,0.2,0.95,0.925], save_name=savefigures_directory + model_name + '_zeta2_1_small_compare.pdf', save_fig=savefigures)
+plot_fig_pdf_simple([zeta2_small_sim], [zeta2_small_Kep], x_min=-1., x_max=1., n_bins=40, normalize=True, lw=lw, labels_sim=[r'Simulated (all $\mathcal{P} < %s$)' % pratio_max_2], labels_Kep=[r'Kepler (all $\mathcal{P} < %s$)' % pratio_max_2], xlabel_text=r'$\zeta_2$', ylabel_text='Normalized fraction', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_size=(8,5), fig_lbrt=[0.15,0.2,0.95,0.925], save_name=savefigures_directory + model_name + '_zeta2_2_small_compare.pdf', save_fig=savefigures)
+plt.show()
+#plt.close()
+
+
+
+
+
+##### To plot zeta vs. period ratio (similar to Figure 10 of Lissauer et al. 2011), and also visualize the 1st and 2nd order MMR neighborhoods:
+
+zeta2_1or2, _, _ = zeta_2_order(pratios_small_Kep)
+
+ax_main, ax_top, ax_side = plot_2d_points_and_contours_with_histograms(pratios_small_Kep, zeta2_1or2, x_min=1., x_max=pratio_max_2, y_min=-1., y_max=1., log_x=True, bins_hist=50, points_sizes=5, points_only=True, xlabel_text=r'$\mathcal{P} = P_{i+1}/P_i$', ylabel_text=r'$\zeta_{2,j}$', plot_qtls=False, afs=afs, tfs=tfs, lfs=lfs, fig_size=(8,6))
+ax_main.axhline(0., color='k')
+# Plot the MMRs and their neighborhoods:
+i_max = 6
+pratio_min = np.round(bounds_3rd_order_mmr_neighborhood_of_1st_order_mmr(6)[0], 3) # round to prevent it from being 'exactly' at the 3rd order MMR/boundary, which might be counted as being part of both a 1st and 2nd order MMR neighborhood
+pratio_array_fine = np.logspace(np.log10(pratio_min), np.log10(pratio_max_2), 10000)
+ax_main.plot(np.log10(pratio_array_fine), zeta_2_order(pratio_array_fine)[0], ls='-', color='0.5', zorder=-1)
 for i in range(1,i_max+1):
     # 1st order MMRs:
     mmr1_i = (i+1)/i
     print('%s:%s =' % (i+1, i), mmr1_i)
-    plt.axvline(mmr1_i, color='r')
+    log_bounds_mmr1_i = np.log10(bounds_3rd_order_mmr_neighborhood_of_1st_order_mmr(i))
+    ax_main.axvline(np.log10(mmr1_i), color='r', zorder=-1)
+    #ax_top.axvline(np.log10(mmr1_i), color='r', zorder=-1)
+    ax_main.fill_betweenx([-1.,1.], x1=log_bounds_mmr1_i[0], x2=log_bounds_mmr1_i[1], color='r', alpha=0.2, zorder=-2)
     
     # 2nd order MMRs:
     n = 2*i-1
     mmr2_i = (n+2)/n
     print('%s:%s =' % (n+2, n), mmr2_i)
-    plt.axvline(mmr2_i, color='b')
-plt.show(block=False)
+    log_bounds_mmr2_i = np.log10(bounds_3rd_order_mmr_neighborhood_of_2nd_order_mmr(i))
+    ax_main.axvline(np.log10(mmr2_i), color='b', zorder=-1)
+    #ax_top.axvline(np.log10(mmr2_i), color='b', zorder=-1)
+    ax_main.fill_betweenx([-1.,1.], x1=log_bounds_mmr2_i[0], x2=log_bounds_mmr2_i[1], color='b', alpha=0.2, zorder=-2)
+pratio_ticks = [1.,1.5,2.,2.5,3.,4.]
+ax_main.set_xticks(np.log10(pratio_ticks), pratio_ticks)
+if savefigures:
+    plt.savefig(savefigures_directory + model_name + '_zeta2_j_vs_pratio_with_hists.pdf')
+    plt.close()
+plt.show()
