@@ -425,6 +425,10 @@ def plot_2d_points_and_contours_with_histograms(x, y, x_min=None, x_max=None, y_
     -------
     ax_main : matplotlib.axes._subplots.AxesSubplot
         The plotting axes for the main panel (scatter plot/contour map).
+    ax_top : matplotlib.axes._subplots.AxesSubplot
+        The plotting axes for the top panel (histogram of `x`).
+    ax_side : matplotlib.axes._subplots.AxesSubplot
+        The plotting axes for the side panel (histogram of `y`).
 
 
     Note
