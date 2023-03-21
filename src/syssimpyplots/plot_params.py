@@ -356,7 +356,7 @@ def plot_contours_and_points_corner(x_symbols, xlower, xupper, contour_2d_grids,
         plt.savefig(save_name)
         plt.close()
 
-def plot_2d_points_and_contours_with_histograms(x, y, x_min=None, x_max=None, y_min=None, y_max=None, log_x=False, log_y=False, bins_hist=50, bins_cont=50, points_only=False, xlabel_text='x', ylabel_text='y', extra_text=None, plot_qtls=True, log_x_qtls=False, log_y_qtls=False, x_str_format='{:0.2f}', y_str_format='{:0.2f}', x_symbol=r'$x$', y_symbol=r'$y$', afs=20, tfs=20, lfs=16, fig_size=(8,8), fig_lbrtwh=[0.15,0.15,0.95,0.95,0.,0.], save_name='no_name_fig.pdf', save_fig=False):
+def plot_2d_points_and_contours_with_histograms(x, y, x_min=None, x_max=None, y_min=None, y_max=None, log_x=False, log_y=False, bins_hist=50, bins_cont=50, points_sizes=1., points_colors='k', points_only=False, xlabel_text='x', ylabel_text='y', extra_text=None, plot_qtls=True, log_x_qtls=False, log_y_qtls=False, x_str_format='{:0.2f}', y_str_format='{:0.2f}', x_symbol=r'$x$', y_symbol=r'$y$', afs=20, tfs=20, lfs=16, fig_size=(8,8), fig_lbrtwh=[0.15,0.15,0.95,0.95,0.,0.], save_name='no_name_fig.pdf', save_fig=False):
     """
     Plot a pair of parameters as a 2-d scatter plot with attached histograms of each parameter.
 
@@ -380,8 +380,12 @@ def plot_2d_points_and_contours_with_histograms(x, y, x_min=None, x_max=None, y_
         The number of bins to use for the histograms.
     bins_cont : int, default=50
         The number of bins to use for the contour maps (along each parameter).
+    points_sizes : float or array[float], default=1.
+        The point size(s) for plotting the scatter points.
+    points_colors : float or array[float], default='k'
+        The point color(s) for plotting the scatter points.
     points_only : bool, default=False
-        Whether to plot only the parameter points instead of their contour maps.
+        Whether to plot only the scatter points instead of their contour maps.
     xlabel_text : str, default='x'
         The x-axis label.
     ylabel_text : str, default='y'
@@ -441,7 +445,7 @@ def plot_2d_points_and_contours_with_histograms(x, y, x_min=None, x_max=None, y_
 
     ax_main = plt.subplot(plot[1:,:4])
     if points_only:
-        plt.scatter(x, y, color='k')
+        plt.scatter(x, y, s=points_sizes, color=points_colors)
     else:
         corner.hist2d(x, y, bins=bins_cont, plot_datapoints=True, plot_density=False, fill_contours=True, contour_kwargs={'colors': ['0.6','0.4','0.2','0']}, data_kwargs={'color': 'k'})
     plt.text(x=0.05, y=0.95, s=extra_text, ha='left', va='top', fontsize=lfs, transform=ax_main.transAxes)
@@ -451,7 +455,7 @@ def plot_2d_points_and_contours_with_histograms(x, y, x_min=None, x_max=None, y_
     plt.xlabel(xlabel_text, fontsize=tfs)
     plt.ylabel(ylabel_text, fontsize=tfs)
 
-    ax = plt.subplot(plot[0,:4]) # top histogram
+    ax_top = plt.subplot(plot[0,:4]) # top histogram
     xhist = plt.hist(x, bins=np.linspace(x_min, x_max, bins_hist+1), histtype='step', color='k', ls='-')
     if plot_qtls:
         x_qtls = np.quantile(x, q=[0.16,0.5,0.84])
@@ -469,7 +473,7 @@ def plot_2d_points_and_contours_with_histograms(x, y, x_min=None, x_max=None, y_
     plt.xticks([])
     plt.yticks([])
 
-    ax = plt.subplot(plot[1:,4]) # side histogram
+    ax_side = plt.subplot(plot[1:,4]) # side histogram
     yhist = plt.hist(y, bins=np.linspace(y_min, y_max, bins_hist+1), histtype='step', orientation='horizontal', color='k', ls='-')
     if plot_qtls:
         y_qtls = np.quantile(y, q=[0.16,0.5,0.84])
@@ -481,7 +485,7 @@ def plot_2d_points_and_contours_with_histograms(x, y, x_min=None, x_max=None, y_
         q_m_str = y_str_format.format(y_qtls[1]-y_qtls[0])
         q_p_str = y_str_format.format(y_qtls[2]-y_qtls[1])
         print('%s = %s_{-%s}^{+%s}' % (y_symbol, qmed_str, q_m_str, q_p_str))
-        plt.text(x=0.95, y=0.98, s=y_symbol + r'$= %s_{-%s}^{+%s}$' % (qmed_str, q_m_str, q_p_str), rotation=270, ha='right', va='top', fontsize=lfs, transform=ax.transAxes)
+        plt.text(x=0.95, y=0.98, s=y_symbol + r'$= %s_{-%s}^{+%s}$' % (qmed_str, q_m_str, q_p_str), rotation=270, ha='right', va='top', fontsize=lfs, transform=ax_side.transAxes)
     plt.xlim([0., 1.1*np.max(yhist[0])])
     plt.ylim([y_min, y_max])
     plt.xticks([])
@@ -490,7 +494,7 @@ def plot_2d_points_and_contours_with_histograms(x, y, x_min=None, x_max=None, y_
     if save_fig:
         plt.savefig(save_name)
         plt.close()
-    return ax_main
+    return ax_main, ax_top, ax_side
 
 def plot_function_heatmap_contours_given_irregular_points_corner(x_symbols, xpoints, fpoints, xlower=None, xupper=None, show_points=True, points_size=1., points_alpha=1., afs=10, tfs=12, lfs=10, fig_size=(16,16), fig_lbrtwh=[0.05, 0.05, 0.98, 0.98, 0.05, 0.05], save_name='no_name_fig.pdf', save_fig=False):
     """
