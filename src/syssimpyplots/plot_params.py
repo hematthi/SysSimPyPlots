@@ -471,7 +471,7 @@ def plot_2d_points_and_contours_with_histograms(x, y, x_min=None, x_max=None, y_
         q_m_str = x_str_format.format(x_qtls[1]-x_qtls[0])
         q_p_str = x_str_format.format(x_qtls[2]-x_qtls[1])
         print('%s = %s_{-%s}^{+%s}' % (x_symbol, qmed_str, q_m_str, q_p_str))
-        plt.text(x=0.02, y=0.95, s=x_symbol + r'$= %s_{-%s}^{+%s}$' % (qmed_str, q_m_str, q_p_str), ha='left', va='top', fontsize=lfs, transform=ax.transAxes)
+        plt.text(x=0.02, y=0.95, s=x_symbol + r'$= %s_{-%s}^{+%s}$' % (qmed_str, q_m_str, q_p_str), ha='left', va='top', fontsize=lfs, transform=ax_top.transAxes)
     plt.xlim([x_min, x_max])
     plt.ylim([0., 1.1*np.max(xhist[0])])
     plt.xticks([])
