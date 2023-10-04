@@ -729,18 +729,16 @@ def load_cat_obs_and_plot_fig_pdf_composite_simple(load_dir, weights, run_number
         plt.text(x=0.98, y=0.6, s=r'$\mathcal{D}_{\rm AD} = %1.4f$ ($%1.2f$)' % (dists['durations_AD'], dists_w['durations_AD']), ha='right', fontsize=lfs, transform = ax.transAxes)
 
     ax = plt.subplot(plot[3,1])
-    plot_panel_pdf_simple(ax, [np.log10(sss['xi_res_obs'])], [np.log10(ssk['xi_res_obs'])], x_min=-0.5, x_max=0.5, y_max=0.1, n_bins=n_bins, c_sim=c_sim, lw=lw, labels_sim=['Near MMR'], labels_Kep=[None], alpha=alpha, xlabel_text=r'$\log{\xi}$', ylabel_text='', afs=afs, tfs=tfs, lfs=lfs)
-    plt.legend(loc='upper left', bbox_to_anchor=(0.01,0.99), ncol=1, frameon=False, fontsize=lfs)
+    plot_panel_pdf_simple(ax, [np.log10(sss['xi_obs'])], [np.log10(ssk['xi_obs'])], x_min=-0.5, x_max=0.5, y_max=0.1, n_bins=n_bins, c_sim=c_sim, lw=lw, alpha=alpha, xlabel_text=r'$\log{\xi}$', ylabel_text='', afs=afs, tfs=tfs, lfs=lfs)
     if label_dist:
-        plt.text(x=0.98, y=0.8, s=r'$\mathcal{D}_{\rm KS} = %1.4f$ ($%1.2f$)' % (dists['duration_ratios_mmr_KS'], dists_w['duration_ratios_mmr_KS']), ha='right', fontsize=lfs, transform = ax.transAxes)
-        plt.text(x=0.98, y=0.6, s=r'$\mathcal{D}_{\rm AD} = %1.4f$ ($%1.2f$)' % (dists['duration_ratios_mmr_AD'], dists_w['duration_ratios_mmr_AD']), ha='right', fontsize=lfs, transform = ax.transAxes)
+        plt.text(x=0.98, y=0.8, s=r'$\mathcal{D}_{\rm KS} = %1.4f$ ($%1.2f$)' % (dists['duration_ratios_KS'], dists_w['duration_ratios_KS']), ha='right', fontsize=lfs, transform = ax.transAxes)
+        plt.text(x=0.98, y=0.6, s=r'$\mathcal{D}_{\rm AD} = %1.4f$ ($%1.2f$)' % (dists['duration_ratios_AD'], dists_w['duration_ratios_AD']), ha='right', fontsize=lfs, transform = ax.transAxes)
 
     ax = plt.subplot(plot[3,2])
-    plot_panel_pdf_simple(ax, [np.log10(sss['xi_nonres_obs'])], [np.log10(ssk['xi_nonres_obs'])], x_min=-0.5, x_max=0.5, y_max=0.1, n_bins=n_bins, c_sim=c_sim, lw=lw, labels_sim=['Not near MMR'], labels_Kep=[None], alpha=alpha, xlabel_text=r'$\log{\xi}$', ylabel_text='', afs=afs, tfs=tfs, lfs=lfs)
-    plt.legend(loc='upper left', bbox_to_anchor=(0.01,0.99), ncol=1, frameon=False, fontsize=lfs)
+    plot_panel_pdf_simple(ax, [sss['radii_obs']], [ssk['radii_obs']], x_min=radii_min, x_max=radii_max, n_bins=n_bins, c_sim=c_sim, lw=lw, alpha=alpha, xlabel_text=r'$R_p$ ($R_\oplus$)', ylabel_text='', afs=afs, tfs=tfs, lfs=lfs)
     if label_dist:
-        plt.text(x=0.98, y=0.8, s=r'$\mathcal{D}_{\rm KS} = %1.4f$ ($%1.2f$)' % (dists['duration_ratios_nonmmr_KS'], dists_w['duration_ratios_nonmmr_KS']), ha='right', fontsize=lfs, transform = ax.transAxes)
-        plt.text(x=0.98, y=0.6, s=r'$\mathcal{D}_{\rm AD} = %1.4f$ ($%1.2f$)' % (dists['duration_ratios_nonmmr_AD'], dists_w['duration_ratios_nonmmr_AD']), ha='right', fontsize=lfs, transform = ax.transAxes)
+        plt.text(x=0.98, y=0.8, s=r'$\mathcal{D}_{\rm KS} = %1.4f$ ($%1.2f$)' % (dists['radii_KS'], dists_w['radii_KS']), ha='right', fontsize=lfs, transform = ax.transAxes)
+        plt.text(x=0.98, y=0.6, s=r'$\mathcal{D}_{\rm AD} = %1.4f$ ($%1.2f$)' % (dists['radii_AD'], dists_w['radii_AD']), ha='right', fontsize=lfs, transform = ax.transAxes)
 
     ax = plt.subplot(plot[0,2])
     plot_panel_pdf_simple(ax, [sss['tdur_tcirc_obs']], [ssk['tdur_tcirc_obs']], x_min=0., x_max=1.5, n_bins=n_bins, c_sim=c_sim, lw=lw, alpha=alpha, xlabel_text=r'$t_{\rm dur}/t_{\rm circ}$', ylabel_text='', afs=afs, tfs=tfs, lfs=lfs)
