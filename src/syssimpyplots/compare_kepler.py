@@ -43,7 +43,7 @@ def load_Kepler_planets_cleaned():
     """
     # q1_q17_dr25_gaia_fgk_HFR2021a_koi_cleaned.csv for Paper II
     # q1_q17_dr25_gaia_berger_fgk_H2020_koi_cleaned.csv for Paper III
-    planets_cleaned = np.genfromtxt(os.path.join(path_data, 'q1_q17_dr25_gaia_berger_fgk_H2020_koi_cleaned.csv'), dtype={'names': ('kepid', 'KOI', 'koi_disposition', 'koi_pdisposition', 'koi_score', 'P', 't_D', 'depth', 'Rp', 'teff', 'logg', 'Rstar', 'Mstar'), 'formats': ('i8', 'S9', 'S15', 'S15', 'f8', 'f8', 'f8', 'f8', 'f8', 'f8', 'f8', 'f8', 'f8',)}, delimiter=',') #orbit periods 'P' are in days; transit durations 't_D' are in hrs; transit depths 'depth' are in ppm; planetary radii 'Rp' are in Rearth; stellar radii 'Rstar' are in Rsolar
+    planets_cleaned = np.genfromtxt(os.path.join(path_data, 'q1_q17_dr25_gaia_berger_fgk_H2020_koi_cleaned_P0-400_R0-10.csv'), dtype={'names': ('kepid', 'KOI', 'koi_disposition', 'koi_pdisposition', 'koi_score', 'P', 't_D', 'depth', 'Rp', 'teff', 'logg', 'Rstar', 'Mstar'), 'formats': ('i8', 'S9', 'S15', 'S15', 'f8', 'f8', 'f8', 'f8', 'f8', 'f8', 'f8', 'f8', 'f8',)}, delimiter=',') #orbit periods 'P' are in days; transit durations 't_D' are in hrs; transit depths 'depth' are in ppm; planetary radii 'Rp' are in Rearth; stellar radii 'Rstar' are in Rsolar
     planets_cleaned = planets_cleaned[1:]
     return planets_cleaned
 
@@ -728,7 +728,7 @@ def load_split_stars_weights_only():
 
     Wrapper to return just the weights from the function :py:func:`syssimpyplots.compare_kepler.load_split_stars_model_evaluations_and_weights`.
     """
-    Nmult_evals, d_all_keys_evals, d_all_vals_evals, weights_all = load_split_stars_model_evaluations_and_weights(os.path.join(path_data, 'Clustered_P_R_split_stars_weights_ADmod_true_targs88912_evals100_all_pairs.txt'))
+    Nmult_evals, d_all_keys_evals, d_all_vals_evals, weights_all = load_split_stars_model_evaluations_and_weights(os.path.join(path_data, 'Maximum_AMD_model_split_stars_weights_ADmod_true_targs86760_evals100_all_pairs.txt'))
     return weights_all
 
 def compute_total_weighted_dist(weights, dists, dists_w, dists_include=[]):
@@ -840,6 +840,7 @@ def compute_distances_sim_Kepler(sss_per_sys, sss, ssk_per_sys, ssk, weights, di
     dists['depths_KS'] = KS_dist(sss['D_obs'], ssk['D_obs'])[0]
     dists['depths_above_KS'] = KS_dist(sss['D_above_obs'], ssk['D_above_obs'])[0]
     dists['depths_below_KS'] = KS_dist(sss['D_below_obs'], ssk['D_below_obs'])[0]
+    dists['radii_KS'] = KS_dist(sss['radii_obs'], ssk['radii_obs'])[0]
     dists['radius_ratios_KS'] = KS_dist(sss['D_ratio_obs'], ssk['D_ratio_obs'])[0]
     dists['radius_ratios_above_KS'] = KS_dist(sss['D_ratio_above_obs'], ssk['D_ratio_above_obs'])[0]
     dists['radius_ratios_below_KS'] = KS_dist(sss['D_ratio_below_obs'], ssk['D_ratio_below_obs'])[0]
@@ -863,6 +864,7 @@ def compute_distances_sim_Kepler(sss_per_sys, sss, ssk_per_sys, ssk, weights, di
     dists['depths_AD'] = AD_stat(sss['D_obs'], ssk['D_obs'])
     dists['depths_above_AD'] = AD_stat(sss['D_above_obs'], ssk['D_above_obs'])
     dists['depths_below_AD'] = AD_stat(sss['D_below_obs'], ssk['D_below_obs'])
+    dists['radii_AD'] = AD_stat(sss['radii_obs'], ssk['radii_obs'])
     dists['radius_ratios_AD'] = AD_stat(sss['D_ratio_obs'], ssk['D_ratio_obs'])
     dists['radius_ratios_above_AD'] = AD_stat(sss['D_ratio_above_obs'], ssk['D_ratio_above_obs'])
     dists['radius_ratios_below_AD'] = AD_stat(sss['D_ratio_below_obs'], ssk['D_ratio_below_obs'])
@@ -877,7 +879,7 @@ def compute_distances_sim_Kepler(sss_per_sys, sss, ssk_per_sys, ssk, weights, di
         dists_w[key] = dists[key]*weights[key]
 
     # To compute the total weighted KS and AD distances assuming default terms:
-    dists_default = ['periods', 'period_ratios', 'durations', 'duration_ratios_nonmmr', 'duration_ratios_mmr', 'depths', 'radius_ratios']
+    dists_default = ['periods', 'period_ratios', 'durations', 'duration_ratios', 'depths', 'radii', 'radius_ratios']
     tot_dist_w_KS = dists_w['delta_f'] + dists_w['mult_CRPD_r']
     tot_dist_w_AD = dists_w['delta_f'] + dists_w['mult_CRPD_r']
     for key in dists_default:
