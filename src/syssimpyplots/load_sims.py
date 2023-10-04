@@ -971,6 +971,8 @@ def load_planets_stars_obs_separate(file_name_path, run_number):
             if line[0] != '#':
                 line = line[1:-2]
                 line_per_sys = line.split('; ')
+                if line_per_sys[-1][-1] == ';': # treat a special bug in Julia's outputs
+                    line_per_sys[-1] = line_per_sys[-1][:-2]
                 #print(len(line_per_sys))
                 for x in line_per_sys:
                     P_sys = x.split()
@@ -983,6 +985,8 @@ def load_planets_stars_obs_separate(file_name_path, run_number):
             if line[0] != '#':
                 line = line[1:-2]
                 line_per_sys = line.split('; ')
+                if line_per_sys[-1][-1] == ';': # treat a special bug in Julia's outputs
+                    line_per_sys[-1] = line_per_sys[-1][:-2]
                 #print(len(line_per_sys))
                 for x in line_per_sys:
                     D_sys = x.split()
@@ -995,6 +999,8 @@ def load_planets_stars_obs_separate(file_name_path, run_number):
             if line[0] != '#':
                 line = line[1:-2]
                 line_per_sys = line.split('; ')
+                if line_per_sys[-1][-1] == ';': # treat a special bug in Julia's outputs
+                    line_per_sys[-1] = line_per_sys[-1][:-2]
                 #print(len(line_per_sys))
                 for x in line_per_sys:
                     tdur_sys = x.split()
