@@ -28,7 +28,8 @@ for js in job_seeds:
     d_all_vals_evals_jobs.append(d_all_vals_evals)
     weights_all_jobs.append(weights_all)
 '''
-Nmult_evals, d_all_keys_evals, d_all_vals_evals, weights_all = load_split_stars_model_evaluations_and_weights('../../src/syssimpyplots/data/Clustered_P_R_split_stars_weights_ADmod_true_targs88912_evals100_all_pairs.txt')
+Nmult_evals, d_all_keys_evals, d_all_vals_evals, weights_all = load_split_stars_model_evaluations_and_weights('../../../SysSimExClusters/src/Maximum_AMD_model_split_stars_weights_ADmod_true_targs86760_evals100_all_pairs.txt')
+#Nmult_evals, d_all_keys_evals, d_all_vals_evals, weights_all = load_split_stars_model_evaluations_and_weights('../../src/syssimpyplots/data/Clustered_P_R_split_stars_weights_ADmod_true_targs88912_evals100_all_pairs.txt')
 #Nmult_evals, d_all_keys_evals, d_all_vals_evals, weights_all = load_split_stars_model_evaluations_and_weights('../../ACI/Clustered_P_R_split_stars_weights_ADmod_true_targs79935_evals100_all_pairs.txt')
 Nmult_evals_jobs.append(Nmult_evals)
 d_all_vals_evals_jobs.append(d_all_vals_evals)
@@ -42,8 +43,8 @@ jobs = len(Nmult_evals_jobs)
 
 ##### To plot the weights:
 
-dists_keys_KS = ["delta_f", "mult_CRPD", "mult_CRPD_r", "periods_KS", "period_ratios_KS", "depths_KS", "radius_ratios_KS", "durations_KS", "durations_norm_circ_KS", "durations_norm_circ_singles_KS", "durations_norm_circ_multis_KS", "duration_ratios_KS", "duration_ratios_nonmmr_KS", "duration_ratios_mmr_KS", "radii_partitioning_KS", "radii_monotonicity_KS", "gap_complexity_KS"]
-dists_keys_AD = ["delta_f", "mult_CRPD", "mult_CRPD_r", "periods_AD", "period_ratios_AD", "depths_AD", "radius_ratios_AD", "durations_AD", "durations_norm_circ_AD", "durations_norm_circ_singles_AD", "durations_norm_circ_multis_AD", "duration_ratios_AD", "duration_ratios_nonmmr_AD", "duration_ratios_mmr_AD", "radii_partitioning_AD", "radii_monotonicity_AD", "gap_complexity_AD"]
+dists_keys_KS = ["delta_f", "mult_CRPD", "mult_CRPD_r", "periods_KS", "period_ratios_KS", "depths_KS", "radii_KS", "radius_ratios_KS", "durations_KS", "durations_norm_circ_KS", "durations_norm_circ_singles_KS", "durations_norm_circ_multis_KS", "duration_ratios_KS", "duration_ratios_nonmmr_KS", "duration_ratios_mmr_KS", "radii_partitioning_KS", "radii_monotonicity_KS", "gap_complexity_KS"]
+dists_keys_AD = ["delta_f", "mult_CRPD", "mult_CRPD_r", "periods_AD", "period_ratios_AD", "depths_AD", "radii_AD", "radius_ratios_AD", "durations_AD", "durations_norm_circ_AD", "durations_norm_circ_singles_AD", "durations_norm_circ_multis_AD", "duration_ratios_AD", "duration_ratios_nonmmr_AD", "duration_ratios_mmr_AD", "radii_partitioning_AD", "radii_monotonicity_AD", "gap_complexity_AD"]
 
 fig = plt.figure(figsize=(16,8))
 plot = GridSpec(1,1,left=0.075,bottom=0.3,right=0.95,top=0.95,wspace=0.,hspace=0.)
@@ -73,7 +74,7 @@ plt.show()
 
 ##### To plot the individual distance terms (weighted and unweighted) from the model evaluations used to compute the weights:
 
-dists_keys_plot = ["delta_f", "mult_CRPD", "mult_CRPD_r", "periods_KS", "period_ratios_KS", "depths_KS", "radius_ratios_KS", "durations_KS", "durations_norm_circ_KS", "durations_norm_circ_singles_KS", "durations_norm_circ_multis_KS", "duration_ratios_KS", "duration_ratios_nonmmr_KS", "duration_ratios_mmr_KS", "radii_partitioning_KS", "radii_monotonicity_KS", "gap_complexity_KS", "periods_AD", "period_ratios_AD", "depths_AD", "radius_ratios_AD", "durations_AD", "durations_norm_circ_AD", "durations_norm_circ_singles_AD", "durations_norm_circ_multis_AD", "duration_ratios_AD", "duration_ratios_nonmmr_AD", "duration_ratios_mmr_AD", "radii_partitioning_AD", "radii_monotonicity_AD", "gap_complexity_AD"]
+dists_keys_plot = ["delta_f", "mult_CRPD", "mult_CRPD_r", "periods_KS", "period_ratios_KS", "depths_KS", "radii_KS", "radius_ratios_KS", "durations_KS", "durations_norm_circ_KS", "durations_norm_circ_singles_KS", "durations_norm_circ_multis_KS", "duration_ratios_KS", "duration_ratios_nonmmr_KS", "duration_ratios_mmr_KS", "radii_partitioning_KS", "radii_monotonicity_KS", "gap_complexity_KS", "periods_AD", "period_ratios_AD", "depths_AD", "radii_AD", "radius_ratios_AD", "durations_AD", "durations_norm_circ_AD", "durations_norm_circ_singles_AD", "durations_norm_circ_multis_AD", "duration_ratios_AD", "duration_ratios_nonmmr_AD", "duration_ratios_mmr_AD", "radii_partitioning_AD", "radii_monotonicity_AD", "gap_complexity_AD"]
 
 # To first print the rms and weights in an easy to read format:
 print('{:<30}: {:<8}, {:<8}; {:<8}, {:<8}; {:<8}, {:<8}'.format('Distance term', 'rms_all', 'w_all', 'rms_blue', 'w_blue', 'rms_red', 'w_red'))
