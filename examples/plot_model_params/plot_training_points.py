@@ -13,12 +13,10 @@ import scipy.misc #for factorial function
 from scipy.special import erf #error function, used in computing CDF of normal distribution
 import scipy.interpolate #for interpolation functions
 import corner #corner.py package for corner plots
+import copy
 #matplotlib.rc('text', usetex=True)
 
-from syssimpyplots.general import *
-from syssimpyplots.compare_kepler import *
-from syssimpyplots.load_sims import *
-from syssimpyplots.plot_catalogs import *
+
 from syssimpyplots.plot_params import *
 
 
@@ -28,36 +26,29 @@ from syssimpyplots.plot_params import *
 ##### To load the files with the GP evaluated points:
 
 savefigures = False
-run_directory = 'Model_Optimization/AMD_system/Split_stars/Singles_ecc/Params11_KS/Distribute_AMD_equal/durations_norm_circ_singles_multis_GF2020_KS/GP_files/'
-loadfiles_directory = '/Users/hematthi/Documents/GradSchool/Research/ACI/' + run_directory
-sub_directory = ''
-savefigures_directory = '/Users/hematthi/Documents/GradSchool/Research/ExoplanetsSysSim_Clusters/Figures/' + run_directory + sub_directory
-model_name = 'Clustered_P_R_Model'
+run_directory = 'Hybrid_NR20_AMD_model1/Fit_split_KS/Params12/GP_files/' #'Hybrid_NR20_AMD_model1/Fit_all_KS/Params13_alpha1_100/GP_files/'
+loadfiles_directory = '/Users/hematthi/Documents/NotreDame_Postdoc/CRC/Files/SysSim/Model_Optimization/' + run_directory
+savefigures_directory = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Figures/Model_Optimization/' + run_directory
+model_name = 'Hybrid_NR20_AMD_model1'
 
-active_params_symbols = [#r'$f_{\sigma_{i,\rm high}}$',
-                         #r'$f_{\rm swpa}$',
-                         #r'$f_{\rm swpa,bluer}$',
-                         #r'$f_{\rm swpa,redder}$',
-                         r'$f_{\rm swpa,med}$',
-                         r'$df_{\rm swpa}/d(b_p-r_p-E^*)$',
+active_params_symbols = [r'$M_{\rm break,1}$',
                          r'$\ln{(\lambda_c)}$',
                          r'$\ln{(\lambda_p)}$',
-                         r'$\Delta_c$',
+                         r'$\mu_M$',
+                         r'$R_{p,\rm norm}$',
                          r'$\alpha_P$',
-                         #r'$\alpha_{P,\rm med}$',
-                         #r'$d\alpha_P/d(b_p-r_p-E^*)$',
-                         r'$\alpha_{R1}$',
-                         r'$\alpha_{R2}$',
-                         r'$\sigma_{e,1}$',
-                         #r'$\sigma_{i,\rm high}$ ($^\circ$)',
-                         #r'$\sigma_{i,\rm low}$ ($^\circ$)',
-                         r'$\sigma_R$',
-                         r'$\sigma_P$'
-                         ] #this list of parameter symbols must match the order of parameters in the loaded table!
+                         r'$\gamma_0$',
+                         r'$\gamma_1$',
+                         r'$\sigma_0$',
+                         r'$\sigma_1$',
+                         r'$\sigma_M$',
+                         r'$\sigma_P$',
+                         #r'$\alpha_{\rm ret}$',
+                         ] # this list of parameter symbols must match the order of parameters in 'active_params_names'!
 dims = len(active_params_symbols)
 
-active_params_transformed_symbols = np.copy(active_params_symbols)
-i_transformed, j_transformed = 2, 3
+active_params_transformed_symbols = copy.deepcopy(np.array(active_params_symbols, dtype=object))
+i_transformed, j_transformed = 1, 2
 active_params_transformed_symbols[i_transformed] = r'$\ln{(\lambda_c \lambda_p)}$'
 active_params_transformed_symbols[j_transformed] = r'$\ln{(\lambda_p/\lambda_c)}$'
 
@@ -79,8 +70,10 @@ ax.tick_params(axis='both', labelsize=20)
 plt.xlabel('Total weighted distance', fontsize=20)
 plt.ylabel('Points', fontsize=20)
 plt.legend(loc='upper right', ncol=1, frameon=False, fontsize=16)
-plt.savefig(savefigures_directory + model_name + '_distances.pdf')
-#plt.show()
+if savefigures:
+    plt.savefig(savefigures_directory + model_name + '_distances.pdf')
+    plt.close()
+plt.show()
 
 ##### If we want to compute and plot the un-logged rates (i.e. lambda_c, lambda_p):
 #data_train['xtrain'][:,[1,2]] = np.exp(data_train['xtrain'][:,[1,2]])
@@ -91,7 +84,7 @@ plt.savefig(savefigures_directory + model_name + '_distances.pdf')
 
 plot_cornerpy_wrapper(active_params_symbols, data_train['xtrain'], save_name=savefigures_directory + model_name + '_training_corner.pdf', save_fig=savefigures)
 plot_cornerpy_wrapper(active_params_transformed_symbols, transform_sum_diff_params(data_train['xtrain'], i_transformed, j_transformed), save_name=savefigures_directory + model_name + '_training_transformed_corner.pdf', save_fig=savefigures)
-plt.close()
+plt.show()
 
 
 
@@ -101,7 +94,7 @@ plt.close()
 '''
 n_points_min = 100
 file_name = 'GP_train%s_meanf%s_sigmaf%s_lscales%s_minimize_mean_iterations%s.csv' % (n_train, mean_f, sigma_f, lscales, n_points_min)
-xmin_table = load_table_points_min_GP(file_name, file_name_path=loadfiles_directory + sub_directory)
+xmin_table = load_table_points_min_GP(file_name, file_name_path=loadfiles_directory)
 xmins = xmin_table[active_params_names].view((float, dims))
 
 plot_cornerpy_wrapper(active_params_symbols, data_train['xtrain'], xpoints_extra=xmins, save_name=savefigures_directory + model_name + '_training_corner.pdf', save_fig=savefigures)
