@@ -26,7 +26,7 @@ from syssimpyplots.plot_params import *
 ##### To load the files with the GP evaluated points:
 
 savefigures = False
-run_directory = 'Hybrid_NR20_AMD_model1/Fit_split_KS/Params12/GP_files/' #'Hybrid_NR20_AMD_model1/Fit_all_KS/Params13_alpha1_100/GP_files/'
+run_directory = 'Hybrid_NR20_AMD_model1/Fit_all_KS/Params13_alpha1_100/GP_files/' #'Hybrid_NR20_AMD_model1/Fit_all_KS/Params13_alpha1_100/GP_files/'
 loadfiles_directory = '/Users/hematthi/Documents/NotreDame_Postdoc/CRC/Files/SysSim/Model_Optimization/' + run_directory
 savefigures_directory = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Figures/Model_Optimization/' + run_directory
 model_name = 'Hybrid_NR20_AMD_model1'
@@ -43,7 +43,7 @@ active_params_symbols = [r'$M_{\rm break,1}$',
                          r'$\sigma_1$',
                          r'$\sigma_M$',
                          r'$\sigma_P$',
-                         #r'$\alpha_{\rm ret}$',
+                         r'$\alpha_{\rm ret}$',
                          ] # this list of parameter symbols must match the order of parameters in 'active_params_names'!
 dims = len(active_params_symbols)
 
