@@ -28,11 +28,14 @@ from syssimpyplots.optim import *
 savefigures = False
 plt.ioff()
 
-run_directory = 'Hybrid_NR20_AMD_model1/Fit_all_KS/Params12/' #'Hybrid_NR20_AMD_model1/Fit_all_KS/Params13_alpha1_100/'
+run_directory = 'Hybrid_NR20_AMD_model1/Fit_split_KS/Params12/' #'Hybrid_NR20_AMD_model1/Fit_all_KS/Params13_alpha1_100/'
 loadfiles_directory = '/Users/hematthi/Documents/NotreDame_Postdoc/CRC/Files/SysSim/Model_Optimization/' + run_directory
 savefigures_directory = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Figures/Model_Optimization/' + run_directory
 
-run_numbers = range(51,101) #range(1,51) #np.loadtxt(loadfiles_directory + 'run_numbers.txt', dtype='i4')
+run_numbers = range(1,51) #np.loadtxt(loadfiles_directory + 'run_numbers.txt', dtype='i4')
+
+sample_names = ['all', 'bluer', 'redder']
+sample_colors = ['k', 'b', 'r']
 
 model_name = 'Hybrid_NR20_AMD_model1'
 
@@ -54,10 +57,9 @@ active_params_symbols = [r'$M_{\rm break,1}$',
                          r'$\sigma_1$',
                          r'$\sigma_M$',
                          r'$\sigma_P$',
-                         #r'$\alpha_{\rm ret}$',
                          ] # this list of parameter symbols must match the order of parameters in 'active_params_names'!
 
-results = analyze_bboptimize_runs(loadfiles_directory, run_numbers=run_numbers)
+results = analyze_bboptimize_split_stars_runs(loadfiles_directory, run_numbers=run_numbers)
 
 N_best = 100
 
@@ -139,7 +141,9 @@ for i,pair in enumerate(active_params_pairs):
 
 if savefigures:
     plt.savefig(savefigures_directory + model_name + '_2D_summary_best_per_run.pdf')
-    plt.close()
+else:
+    plt.show()
+#plt.close()
 
 #To plot the best N total weighted distances found by all the runs in aggregate:
 N_best = 100
@@ -165,8 +169,9 @@ for i,pair in enumerate(active_params_pairs):
 
 if savefigures:
     plt.savefig(savefigures_directory + model_name + '_2D_summary_best_N.pdf')
-    plt.close()
-plt.show()
+else:
+    plt.show()
+#plt.close()
 #'''
 
 
@@ -191,47 +196,62 @@ for i in range(len(keep_ranked)):
 N_best_save, keep_every = 1000, 1
 i_best_N = np.argsort(results['dtot_w_all'])[0:N_best_save:keep_every]
 
-N_panels = len(results['d_used_vals_w_all'][0]) + 1
+N_panels = len(results['d_used_vals_w_all']['all'][0]) + 1
 cols = int(np.ceil(np.sqrt(N_panels))) #number of columns
 rows = int(np.sqrt(N_panels)) if float(int(np.sqrt(N_panels)))*float(cols) >= N_panels else cols #number of rows, such that rows*cols >= N_panels
 
 fig = plt.figure(figsize=(16,8))
 plot = GridSpec(rows,cols,left=0.05,bottom=0.1,right=0.975,top=0.975,wspace=0.3,hspace=0.4)
-for i,d_key in enumerate(results['d_used_vals_all'].dtype.names):
+for i,d_key in enumerate(results['d_used_vals_all']['all'].dtype.names):
     i_row, i_col = i//cols, i%cols
     ax = plt.subplot(plot[i_row,i_col])
 
-    plt.hist([results['d_used_vals_all'][d_key][i_best_N]], bins=50, histtype='step', color='k')
+    plt.hist([results['d_used_vals_all'][sample][d_key][i_best_N] for sample in sample_names], bins=50, histtype='step', color=sample_colors)
     plt.xlabel(d_key, fontsize=12)
     plt.ylabel('')
+# For total distance of each sample:
+i += 1
+i_row, i_col = i//cols, i%cols
+ax = plt.subplot(plot[i_row,i_col])
+plt.hist([results['dtot_samples_all'][sample][i_best_N] for sample in sample_names], bins=50, histtype='step', color=sample_colors)
+plt.xlabel('Sum of distance terms', fontsize=12)
+plt.ylabel('')
 # For total distance overall: (still selecting best N by total weighted distance)
 i += 1
 i_row, i_col = i//cols, i%cols
 ax = plt.subplot(plot[i_row,i_col])
 plt.hist(results['dtot_all'][i_best_N], bins=50, histtype='step', linewidth=3, color='k')
-plt.xlabel('Sum of distance terms', fontsize=12)
+plt.xlabel('Total sum of distance terms', fontsize=12)
 plt.ylabel('')
 if savefigures:
     plt.savefig(savefigures_directory + model_name + '_dists_best%s_every%s.pdf' % (N_best_save, keep_every))
-    plt.close()
+else:
+    plt.show()
 
 fig = plt.figure(figsize=(16,8))
 plot = GridSpec(rows,cols,left=0.05,bottom=0.1,right=0.975,top=0.975,wspace=0.3,hspace=0.4)
-for i,d_key in enumerate(results['d_used_vals_w_all'].dtype.names):
+for i,d_key in enumerate(results['d_used_vals_w_all']['all'].dtype.names):
     i_row, i_col = i//cols, i%cols
     ax = plt.subplot(plot[i_row,i_col])
 
-    plt.hist([results['d_used_vals_w_all'][d_key][i_best_N]], bins=50, histtype='step', color='k')
+    plt.hist([results['d_used_vals_w_all'][sample][d_key][i_best_N] for sample in sample_names], bins=50, histtype='step', color=sample_colors)
     plt.xlabel(d_key, fontsize=12)
     plt.ylabel('')
+# For total weighted distance of each sample:
+i += 1
+i_row, i_col = i//cols, i%cols
+ax = plt.subplot(plot[i_row,i_col])
+plt.hist([results['dtot_w_samples_all'][sample][i_best_N] for sample in sample_names], bins=50, histtype='step', color=sample_colors)
+plt.xlabel('Weighted sum of distance terms', fontsize=12)
+plt.ylabel('')
 # For total weighted distance overall:
 i += 1
 i_row, i_col = i//cols, i%cols
 ax = plt.subplot(plot[i_row,i_col])
 plt.hist(results['dtot_w_all'][i_best_N], bins=50, histtype='step', linewidth=3, color='k')
-plt.xlabel('Weighted sum of distance terms', fontsize=12)
+plt.xlabel('Total weighted sum of distance terms', fontsize=12)
 plt.ylabel('')
 if savefigures:
     plt.savefig(savefigures_directory + model_name + '_dists_w_best%s_every%s.pdf' % (N_best_save, keep_every))
-    plt.close()
-plt.show()
+else:
+    plt.show()
