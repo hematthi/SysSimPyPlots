@@ -48,12 +48,13 @@ ssk_per_sys, ssk = compute_summary_stats_from_Kepler_catalog(P_min, P_max, radii
 #'''
 ##### To plot the Kepler catalog as marginal distributions:
 
-subdirectory = 'Stellar_samples/Kepler_data/E_BP_MIN_RP/Interpolate_e_bp_min_rp/e_bp_min_rp_dist/' #'Paper_Figures/'; 'Talk_Figures/'
+#subdirectory = 'Stellar_samples/Kepler_data/E_BP_MIN_RP/Interpolate_e_bp_min_rp/e_bp_min_rp_dist/' #'Paper_Figures/'; 'Talk_Figures/'
+subdirectory = '/Users/hematthi/Documents/NotreDame_Postdoc/Other_Travel/IU_Tea_Talk/Figures/'
 
-fig_size = (8,3) #size of each panel (figure)
-fig_lbrt = [0.15, 0.3, 0.95, 0.925]
+fig_size = (6,3) #(8,3) #size of each panel (figure)
+fig_lbrt = [0.2, 0.3, 0.95, 0.925] #[0.15, 0.3, 0.95, 0.925]
 
-n_bins = 100
+n_bins = 50 #100
 lw = 1 #linewidth
 #alpha = 0.2 #transparency of histograms
 
@@ -68,6 +69,7 @@ plot_fig_counts_hist_simple([], [ssk_per_sys['Mtot_obs']], x_min=0, y_max=1e4, x
 
 # Periods:
 plot_fig_pdf_simple([], [ssk['P_obs']], x_min=P_min, x_max=P_max, n_bins=n_bins, normalize=False, log_x=True, log_y=True, lw=lw, xticks_custom=[3,10,30,100,300], xlabel_text=r'$P$ (days)', ylabel_text='Number', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + 'Kepler_periods.pdf', save_fig=savefigures)
+#plot_fig_pdf_simple([], [ssk['P_obs']], x_min=0.5, x_max=300., n_bins=n_bins, normalize=False, log_x=True, log_y=False, lw=lw, xticks_custom=[1,3,10,30,100,300], xlabel_text=r'$P$ (days)', ylabel_text='Number', afs=afs, tfs=tfs, lfs=lfs, legend=False, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + 'Kepler_periods.pdf', save_fig=savefigures)
 
 # Period ratios (all, with some upper cut-off):
 R_max_cut = 30. #upper cut-off for plotting period ratios; np.max(sss['Rm_obs'])
@@ -77,13 +79,13 @@ plot_fig_pdf_simple([], [ssk['Rm_obs'][ssk['Rm_obs'] < R_max_cut]], x_min=1., x_
 plot_fig_pdf_simple([], [ssk['Rm_obs'][ssk['Rm_obs'] < 5.]], x_min=1., x_max=5., n_bins=n_bins, normalize=False, lw=lw, xlabel_text=r'$P_{i+1}/P_i$', ylabel_text='Number', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + 'Kepler_periodratios_less5.pdf', save_fig=savefigures)
 
 # Transit durations:
-plot_fig_pdf_simple([], [ssk['tdur_obs']], x_max=15., n_bins=n_bins, normalize=False, lw=lw, xlabel_text=r'$t_{\rm dur}$ (hrs)', ylabel_text='Number', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + 'Kepler_durations.pdf', save_fig=savefigures)
+plot_fig_pdf_simple([], [ssk['tdur_obs']], x_max=12., n_bins=n_bins, normalize=False, lw=lw, xlabel_text=r'$t_{\rm dur}$ (hrs)', ylabel_text='Number', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + 'Kepler_durations.pdf', save_fig=savefigures)
 
 # Transit durations (for singles and multis):
 plot_fig_pdf_simple([], [ssk['tdur_tcirc_1_obs'], ssk['tdur_tcirc_2p_obs']], x_max=1.5, n_bins=n_bins, normalize=False, c_Kep=['b','r'], ls_Kep=['-','-'], lw=lw, labels_Kep=['Singles', 'Multis'], xlabel_text=r'$t_{\rm dur}/t_{\rm circ}$', ylabel_text='Number', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + 'Kepler_durations_norm_circ_singles_multis.pdf', save_fig=savefigures)
 
 # Transit depths:
-plot_fig_pdf_simple([], [ssk['D_obs']], x_min=1e-5, x_max=10.**-1.5, n_bins=n_bins, normalize=False, log_x=True, lw=lw, xlabel_text=r'$\delta$', ylabel_text='Number', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + 'Kepler_depths.pdf', save_fig=savefigures)
+plot_fig_pdf_simple([], [ssk['D_obs']], x_min=2e-5, x_max=1e-2, n_bins=n_bins, normalize=False, log_x=True, lw=lw, xlabel_text=r'$\delta$', ylabel_text='Number', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + 'Kepler_depths.pdf', save_fig=savefigures)
 
 # Transit depths (above and below the photoevaporation boundary):
 plot_fig_pdf_simple([], [ssk['D_above_obs'], ssk['D_below_obs']], x_min=1e-5, x_max=10.**-1.5, n_bins=n_bins, normalize=False, log_x=True, c_Kep=['b','r'], ls_Kep=['-','-'], lw=lw, labels_Kep=['Above', 'Below'], xlabel_text=r'$\delta$', ylabel_text='Number', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + 'Kepler_depths_photoevap.pdf', save_fig=savefigures)
@@ -95,13 +97,13 @@ plot_fig_pdf_simple([], [ssk['radii_obs']], x_min=radii_min, x_max=radii_max, n_
 plot_fig_pdf_simple([], [ssk['Rstar_obs']], n_bins=n_bins, normalize=False, lw=lw, xlabel_text=r'$R_\star (R_\odot)$', ylabel_text='Number', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + 'Kepler_stellar_radii.pdf', save_fig=savefigures)
 
 # Transit depth ratios:
-plot_fig_pdf_simple([], [ssk['D_ratio_obs']], x_min=10.**-1.5, x_max=10.**1.5, n_bins=n_bins, normalize=False, log_x=True, lw=lw, xlabel_text=r'$\delta_{i+1}/\delta_i$', ylabel_text='Number', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + 'Kepler_depthratios.pdf', save_fig=savefigures)
+plot_fig_pdf_simple([], [ssk['D_ratio_obs']], x_min=10.**-1.2, x_max=10.**1.2, n_bins=n_bins, normalize=False, log_x=True, lw=lw, xlabel_text=r'$\delta_{i+1}/\delta_i$', ylabel_text='Number', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + 'Kepler_depthratios.pdf', save_fig=savefigures)
 
 # Transit depth ratios (above, below, and across the photoevaporation boundary):
 plot_fig_pdf_simple([], [ssk['D_ratio_above_obs'], ssk['D_ratio_below_obs'], ssk['D_ratio_across_obs']], x_min=10.**-1.5, x_max=10.**1.5, n_bins=n_bins, normalize=False, log_x=True, c_Kep=['b','r','k'], ls_Kep=['-','-','-'], lw=lw, labels_Kep=['Above', 'Below', 'Across'], xlabel_text=r'$\delta_{i+1}/\delta_i$', ylabel_text='Number', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + 'Kepler_depthratios_photoevap.pdf', save_fig=savefigures)
 
 # Log(xi):
-plot_fig_pdf_simple([], [np.log10(ssk['xi_obs'])], x_min=-0.5, x_max=0.5, n_bins=n_bins, normalize=False, lw=lw, xlabel_text=r'$\log{\xi}$', ylabel_text='Number', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + 'Kepler_logxi_all.pdf', save_fig=savefigures)
+plot_fig_pdf_simple([], [np.log10(ssk['xi_obs'])], x_min=-0.4, x_max=0.4, n_bins=n_bins, normalize=False, lw=lw, xlabel_text=r'$\log{\xi}$', ylabel_text='Number', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + 'Kepler_logxi_all.pdf', save_fig=savefigures)
 
 # Log(xi) by res/non-res:
 plot_fig_pdf_simple([], [np.log10(ssk['xi_res_obs']), np.log10(ssk['xi_nonres_obs'])], x_min=-0.5, x_max=0.5, n_bins=n_bins, normalize=False, c_Kep=['m','g'], ls_Kep=['-','-'], lw=lw, labels_Kep=['Near MMR', 'Not near MMR'], xlabel_text=r'$\log{\xi}$', ylabel_text='Number', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + 'Kepler_logxi.pdf', save_fig=savefigures)
