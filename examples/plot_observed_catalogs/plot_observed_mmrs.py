@@ -27,8 +27,8 @@ from syssimpyplots.plot_params import *
 
 
 savefigures = False
-loadfiles_directory = '/Users/hematthi/Documents/GradSchool/Research/ACI/Simulated_Data/AMD_system/Split_stars/Singles_ecc/Params11_KS/Distribute_AMD_per_mass/durations_norm_circ_singles_multis_GF2020_KS/GP_med/' #'/Users/hematthi/Documents/GradSchool/Research/ACI/Simulated_Data/AMD_system/Split_stars/Singles_ecc/Params11_KS/Distribute_AMD_per_mass/durations_norm_circ_singles_multis_GF2020_KS/GP_med/' #'/Users/hematthi/Documents/GradSchool/Research/ACI/Simulated_Data/Split_stars/Clustered_P_R_fswp_bprp/Params13_KS/durations_KS/GP_med/'
-#loadfiles_directory = '/Users/hematthi/Documents/GradSchool/Research/SysSim/SysSimExClusters/examples/test/'
+#loadfiles_directory = '/Users/hematthi/Documents/GradSchool/Research/ACI/Simulated_Data/AMD_system/Split_stars/Singles_ecc/Params11_KS/Distribute_AMD_per_mass/durations_norm_circ_singles_multis_GF2020_KS/GP_med/' #'/Users/hematthi/Documents/GradSchool/Research/ACI/Simulated_Data/AMD_system/Split_stars/Singles_ecc/Params11_KS/Distribute_AMD_per_mass/durations_norm_circ_singles_multis_GF2020_KS/GP_med/' #'/Users/hematthi/Documents/GradSchool/Research/ACI/Simulated_Data/Split_stars/Clustered_P_R_fswp_bprp/Params13_KS/durations_KS/GP_med/'
+loadfiles_directory = '/Users/hematthi/Documents/GradSchool/Research/SysSim/SysSimExClusters/examples/test/f_resonant_chains_10/'
 savefigures_directory = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Figures/H20_model/Observed/'
 run_number = ''
 model_name = 'Maximum_AMD_Model' + run_number
@@ -79,8 +79,8 @@ dists, dists_w = compute_distances_sim_Kepler(sss_per_sys, sss, ssk_per_sys, ssk
 
 ##### To plot the simulated and Kepler catalogs:
 
-fig_size = (8,3) #size of each panel (figure)
-fig_lbrt = [0.15, 0.3, 0.95, 0.925]
+fig_size = (8,5) #size of each panel (figure)
+fig_lbrt = [0.15, 0.2, 0.95, 0.925]
 
 n_bins = 100
 lw = 3 #linewidth
@@ -103,7 +103,7 @@ model_name = 'Kepler'
 n_mmr = 1 # 1 => only consider the 1st order MMRs; 2 => consider both 1st and 2nd order MMRs
 pratio_max = 3. if n_mmr==1 else 4.
 
-zeta_in_mmr_lim = 0.25 # all |zeta1| <= zeta_in_mmr_lim are considered "in a 1st order MMR"
+zeta_in_mmr_lim = 0.25 # all |zeta1| <= zeta_in_mmr_lim are considered "near a 1st order MMR"
 
 x_min, x_max = 0.5*P_min, P_max
 s_norm = 2.
@@ -343,9 +343,6 @@ bools_mult = ss_per_sys['Mtot_obs'] >= 2
 bools_pr = [any((ss_per_sys['Rm_obs'][i] > 1.) & (ss_per_sys['Rm_obs'][i] < pratio_max)) for i in range(len(ss_per_sys['Rm_obs']))] # select small period ratios
 idx_sys_selected = np.where(bools_mult & bools_pr)[0]
 
-n_mmr = 1 # 1 => only consider the 1st order MMRs; 2 => consider both 1st and 2nd order MMRs
-pratio_max = 3. if n_mmr==1 else 4.
-
 zeta_sizesim_pairs = [] # to be filled with zeta, size similarity metrics, and other properties for each pair of adjacent planets in multis
 for idx in idx_sys_selected:
     P_sys = ss_per_sys['P_obs'][idx]
@@ -427,10 +424,121 @@ zeta1_small_Kep = zeta(pratios_small_Kep[bools_in_1st_Kep])
 zeta2_small_sim = zeta(pratios_small_sim[bools_in_2nd_sim], order=2)
 zeta2_small_Kep = zeta(pratios_small_Kep[bools_in_2nd_Kep], order=2)
 
-plot_fig_pdf_simple([zeta1_small_sim], [zeta1_small_Kep], x_min=-1., x_max=1., n_bins=40, normalize=True, lw=lw, labels_sim=[r'Simulated (all $\mathcal{P} < %s$)' % pratio_max_1], labels_Kep=[r'Kepler (all $\mathcal{P} < %s$)' % pratio_max_1], xlabel_text=r'$\zeta_1$', ylabel_text='Normalized fraction', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_size=(8,5), fig_lbrt=[0.15,0.2,0.95,0.925], save_name=savefigures_directory + model_name + '_zeta2_1_small_compare.pdf', save_fig=savefigures)
-plot_fig_pdf_simple([zeta2_small_sim], [zeta2_small_Kep], x_min=-1., x_max=1., n_bins=40, normalize=True, lw=lw, labels_sim=[r'Simulated (all $\mathcal{P} < %s$)' % pratio_max_2], labels_Kep=[r'Kepler (all $\mathcal{P} < %s$)' % pratio_max_2], xlabel_text=r'$\zeta_2$', ylabel_text='Normalized fraction', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_size=(8,5), fig_lbrt=[0.15,0.2,0.95,0.925], save_name=savefigures_directory + model_name + '_zeta2_2_small_compare.pdf', save_fig=savefigures)
+plot_fig_pdf_simple([zeta1_small_sim], [zeta1_small_Kep], x_min=-1., x_max=1., n_bins=40, normalize=True, lw=lw, labels_sim=[r'Simulated (all $\mathcal{P} < %s$)' % pratio_max_1], labels_Kep=[r'Kepler (all $\mathcal{P} < %s$)' % pratio_max_1], xlabel_text=r'$\zeta_1$', ylabel_text='Normalized fraction', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + model_name + '_zeta2_1_small_compare.pdf', save_fig=savefigures)
+plot_fig_pdf_simple([zeta2_small_sim], [zeta2_small_Kep], x_min=-1., x_max=1., n_bins=40, normalize=True, lw=lw, labels_sim=[r'Simulated (all $\mathcal{P} < %s$)' % pratio_max_2], labels_Kep=[r'Kepler (all $\mathcal{P} < %s$)' % pratio_max_2], xlabel_text=r'$\zeta_2$', ylabel_text='Normalized fraction', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + model_name + '_zeta2_2_small_compare.pdf', save_fig=savefigures)
 plt.show()
 #plt.close()
+
+
+
+
+
+##### To plot the multiplicity distribution for systems with vs. without planets near a resonance:
+
+def compute_mult_obs_with_and_without_mmrs(ss_per_sys, n_mmr=n_mmr, pratio_max=pratio_max, zeta_in_mmr_lim=zeta_in_mmr_lim):
+    
+    bools_mult = ss_per_sys['Mtot_obs'] >= 2
+    bools_pr = [any((ss_per_sys['Rm_obs'][i] > 1.) & (ss_per_sys['Rm_obs'][i] < pratio_max)) for i in range(len(ss_per_sys['Rm_obs']))] # select small period ratios
+    idx_sys_selected = np.where(bools_mult & bools_pr)[0]
+
+    mult_obs_all = [] # to be filled with the observed multiplicity of each system with at least 2 observed planets; should be similar to the overall multiplicity distribution (without singles), but excluding some systems that don't have any small period ratios (mostly 2-planet systems)
+    mult_obs_mmr = [] # to be filled with the observed multiplicity of each system with at least one period ratio near an MMR
+    mult_obs_no_mmr = [] # to be filled with the observed multiplicity of each system with no period ratios near any MMRs
+    for idx in idx_sys_selected:
+        P_sys = ss_per_sys['P_obs'][idx]
+        Pr_sys = ss_per_sys['Rm_obs'][idx]
+        Rp_sys = ss_per_sys['radii_obs'][idx]
+        
+        Rp_sys = Rp_sys[P_sys > 0]
+        P_sys = P_sys[P_sys > 0]
+        Pr_sys = Pr_sys[Pr_sys > 0]
+        
+        mult = len(P_sys)
+        assert mult == ss_per_sys['Mtot_obs'][idx]
+
+        if n_mmr == 1:
+            zeta_sys = zeta(Pr_sys, n=1, order=1) # zeta_{1,1}
+            zeta_sys[Pr_sys > pratio_max] = np.nan
+        elif n_mmr == 2:
+            zeta_sys, in_1st_sys, in_2nd_sys = np.full(len(Pr_sys), np.nan), np.full(len(Pr_sys), False), np.full(len(Pr_sys), False)
+            zeta_sys_small, in_1st_sys_small, in_2nd_sys_small = zeta_2_order(Pr_sys[Pr_sys < pratio_max]) # zeta_{2,1} or zeta_{2,2}; can also be NaN if did not check enough indices for period ratios -> 1
+            zeta_sys[Pr_sys < pratio_max] = zeta_sys_small
+            in_1st_sys[Pr_sys < pratio_max] = in_1st_sys_small
+            in_2nd_sys[Pr_sys < pratio_max] = in_2nd_sys_small
+        
+        abs_zeta_min = np.nanmin(np.abs(zeta_sys))
+        
+        mult_obs_all.append(mult)
+        if abs_zeta_min <= zeta_in_mmr_lim:
+            mult_obs_mmr.append(mult)
+        else:
+            mult_obs_no_mmr.append(mult)
+
+    mult_obs_all = np.array(mult_obs_all)
+    mult_obs_mmr = np.array(mult_obs_mmr)
+    mult_obs_no_mmr = np.array(mult_obs_no_mmr)
+
+    # Perform some checks/print some values:
+    for n in range(2,8):
+        N_mmr_n = np.sum(mult_obs_mmr == n)
+        N_no_mmr_n = np.sum(mult_obs_no_mmr == n)
+        assert N_mmr_n + N_no_mmr_n == np.sum(mult_obs_all == n)
+        print('{:1}: {:<3} | {:<3} | {:<3}'.format(n, N_no_mmr_n, N_mmr_n, N_mmr_n/(N_mmr_n + N_no_mmr_n)))
+        #print(n, ':', N_no_mmr_n, ' | ', N_mmr_n)
+
+    # Put and return all results in a dict:
+    mult_obs_dict = {'all': mult_obs_all, 'mmr': mult_obs_mmr, 'no_mmr': mult_obs_no_mmr}
+    return mult_obs_dict
+
+def compute_Nmult_obs_with_and_without_mmrs(mult_obs_dict, mult_max=None, m_geq=5):
+    if mult_max is None:
+        mult_max = np.max(mult_obs_dict['all'])
+    
+    Nmult_obs_dict = {}
+    Nmult_obs_dict['all'] = bin_Nmult(np.array([np.sum(mult_obs_dict['all'] == x) for x in range(1,mult_max+1)]), m_geq=m_geq)[1:] # must apply 'bin_Nmult' before getting rid of first bin (number of ones)
+    Nmult_obs_dict['mmr'] = bin_Nmult(np.array([np.sum(mult_obs_dict['mmr'] == x) for x in range(1,mult_max+1)]), m_geq=m_geq)[1:]
+    Nmult_obs_dict['no_mmr'] = bin_Nmult(np.array([np.sum(mult_obs_dict['no_mmr'] == x) for x in range(1,mult_max+1)]), m_geq=m_geq)[1:]
+    return Nmult_obs_dict
+
+mult_obs_dict_Kep = compute_mult_obs_with_and_without_mmrs(ssk_per_sys)
+mult_obs_dict_sim = compute_mult_obs_with_and_without_mmrs(sss_per_sys)
+
+m_geq = 5
+Nmult_obs_dict_Kep = compute_Nmult_obs_with_and_without_mmrs(mult_obs_dict_Kep, m_geq=m_geq)
+Nmult_obs_dict_sim = compute_Nmult_obs_with_and_without_mmrs(mult_obs_dict_sim, m_geq=m_geq)
+
+# Plot the multiplicity distributions:
+plot_fig_counts_hist_simple([mult_obs_dict_Kep['mmr'], mult_obs_dict_Kep['no_mmr']], [mult_obs_dict_Kep['all']], x_min=1, x_max=7, y_max=200, x_llim=1.5, normalize=False, log_y=False, c_sim=['r','b'], ls_sim=['-','-'], lines_Kep=True, lw=lw, labels_sim=['With MMR', 'No MMR'], labels_Kep=['All 2+ systems'], xlabel_text='Observed planets per system', afs=afs, tfs=tfs, lfs=lfs, legend=True, show_counts_sim=False, show_counts_Kep=False, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + model_name + '_multiplicities_mmr.pdf', save_fig=savefigures)
+plot_fig_counts_hist_simple([mult_obs_dict_sim['mmr'], mult_obs_dict_sim['no_mmr']], [mult_obs_dict_sim['all']], x_min=1, x_max=7, y_max=1000, x_llim=1.5, normalize=False, log_y=False, c_sim=['r','b'], ls_sim=['-','-'], lines_Kep=True, lw=lw, labels_sim=['With MMR', 'No MMR'], labels_Kep=['All 2+ systems'], xlabel_text='Observed planets per system', afs=afs, tfs=tfs, lfs=lfs, legend=True, show_counts_sim=False, show_counts_Kep=False, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + model_name + '_multiplicities_mmr.pdf', save_fig=savefigures)
+plt.show(block=False)
+
+# Plot the fraction of systems with resonances:
+f_Nmult_obs_mmr_Kep = Nmult_obs_dict_Kep['mmr']/Nmult_obs_dict_Kep['all']
+f_Nmult_obs_mmr_sim = Nmult_obs_dict_sim['mmr']/Nmult_obs_dict_sim['all']
+
+mult_edges = np.arange(1.5,len(f_Nmult_obs_mmr_Kep)+1+1.5)
+mults = (mult_edges[1:]+mult_edges[:-1])/2
+
+fig = plt.figure(figsize=(8,8))
+plot = GridSpec(1,1,left=0.15,bottom=0.1,right=0.95,top=0.95,wspace=0,hspace=0)
+ax = plt.subplot(plot[0,0])
+plt.stairs(f_Nmult_obs_mmr_Kep, mult_edges, color='k', label='Kepler')
+plt.stairs(f_Nmult_obs_mmr_sim, mult_edges, color='r', label='SysSim')
+for i,mult in enumerate(mults):
+    plt.text(mult, 1.02*f_Nmult_obs_mmr_Kep[i], '%s/%s' % (Nmult_obs_dict_Kep['mmr'][i], Nmult_obs_dict_Kep['all'][i]), color='k', ha='center', fontsize=12)
+    plt.text(mult, 1.02*f_Nmult_obs_mmr_sim[i], '%s/%s' % (Nmult_obs_dict_sim['mmr'][i], Nmult_obs_dict_sim['all'][i]), color='r', ha='center', fontsize=12)
+ax.tick_params(axis='both', labelsize=afs)
+#ax.get_xaxis().set_major_formatter(matplotlib.ticker.ScalarFormatter())
+plt.xlim([1.5, 5.5])
+plt.xticks([2,3,4,5], [2,3,4,'5+'])
+plt.ylim([0., 1.])
+plt.xlabel('Observed planets per system', fontsize=tfs)
+plt.ylabel('Fraction of systems with MMRs', fontsize=tfs)
+plt.legend(loc='upper left', bbox_to_anchor=(0,1), ncol=1, frameon=False, fontsize=lfs)
+if savefigures:
+    plt.savefig(savefigures_directory + model_name + '_multiplicities_fraction_with_mmr_compare.pdf')
+    plt.close()
+plt.show()
 
 
 
@@ -440,7 +548,9 @@ plt.show()
 
 zeta2_1or2, _, _ = zeta_2_order(pratios_small_Kep)
 
-ax_main, ax_top, ax_side = plot_2d_points_and_contours_with_histograms(pratios_small_Kep, zeta2_1or2, x_min=1., x_max=pratio_max_2, y_min=-1., y_max=1., log_x=True, bins_hist=50, points_sizes=5, points_only=True, xlabel_text=r'$\mathcal{P} = P_{i+1}/P_i$', ylabel_text=r'$\zeta_{2,j}$', plot_qtls=False, afs=afs, tfs=tfs, lfs=lfs, fig_size=(8,6))
+pratio_min_plot = 1.1
+
+ax_main, ax_top, ax_side = plot_2d_points_and_contours_with_histograms(pratios_small_Kep, zeta2_1or2, x_min=pratio_min_plot, x_max=pratio_max_2, y_min=-1., y_max=1., log_x=True, bins_hist=50, points_sizes=5, points_only=True, xlabel_text=r'$\mathcal{P} = P_{i+1}/P_i$', ylabel_text=r'$\zeta_{2,j}$', plot_qtls=False, afs=afs, tfs=tfs, lfs=lfs, fig_size=(16,6), fig_lbrtwh=[0.1,0.15,0.95,0.95,0.,0.])
 ax_main.axhline(0., color='k')
 # Plot the MMRs and their neighborhoods:
 i_max = 6
@@ -466,7 +576,26 @@ for i in range(1,i_max+1):
     ax_main.fill_betweenx([-1.,1.], x1=log_bounds_mmr2_i[0], x2=log_bounds_mmr2_i[1], color='b', alpha=0.2, zorder=-2)
 pratio_ticks = [1.,1.5,2.,2.5,3.,4.]
 ax_main.set_xticks(np.log10(pratio_ticks), pratio_ticks)
+ax_main.axis(xmin=np.log10(pratio_min_plot), xmax=np.log10(pratio_max_2))
 if savefigures:
     plt.savefig(savefigures_directory + model_name + '_zeta2_j_vs_pratio_with_hists.pdf')
     plt.close()
 plt.show()
+
+
+
+
+
+##### Some other random tests:
+
+# Kepler-80 system:
+P_kepler80 = np.array([0.98678, 3.0723, 4.6447, 7.0534, 9.5231, 14.651])
+Pr_kepler80 = gen.compute_ratios_adjacent(P_kepler80)
+
+zeta2_1or2, _, _ = zeta_2_order(Pr_kepler80)
+
+# TRAPPIST-1 system:
+P_trappist1 = np.array([1.510826, 2.421937, 4.049219, 6.101013, 9.207540, 12.352446, 18.772866])
+Pr_trappist1 = gen.compute_ratios_adjacent(P_trappist1)
+
+zeta2_1or2, _, _ = zeta_2_order(Pr_trappist1)
