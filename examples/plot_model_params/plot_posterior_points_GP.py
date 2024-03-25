@@ -15,10 +15,6 @@ import scipy.interpolate #for interpolation functions
 import corner #corner.py package for corner plots
 #matplotlib.rc('text', usetex=True)
 
-from syssimpyplots.general import *
-from syssimpyplots.compare_kepler import *
-from syssimpyplots.load_sims import *
-from syssimpyplots.plot_catalogs import *
 from syssimpyplots.plot_params import *
 
 
@@ -29,57 +25,49 @@ from syssimpyplots.plot_params import *
 
 savefigures = False
 transformed_rates = True
-run_directory = 'Model_Optimization/AMD_system/Split_stars/Singles_ecc/Params11_KS/Distribute_AMD_per_mass/durations_norm_circ_singles_multis_GF2020_KS/GP_files/'
-loadfiles_directory = '/Users/hematthi/Documents/GradSchool/Research/ACI/' + run_directory
-sub_directory = ''
-savefigures_directory = '/Users/hematthi/Documents/GradSchool/Research/ExoplanetsSysSim_Clusters/Figures/' + run_directory + sub_directory
-model_name = 'AMD_Model'
+run_directory = 'Hybrid_NR20_AMD_model1/Fit_all_KS/Params13_alpha1_100/GP_files/'
+loadfiles_directory = '/Users/hematthi/Documents/NotreDame_Postdoc/CRC/Files/SysSim/Model_Optimization/' + run_directory
+savefigures_directory = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Figures/Model_Optimization/' + run_directory
+model_name = 'Hybrid_NR20_AMD_model1'
 
-active_params_symbols = [#r'$f_{\sigma_{i,\rm high}}$',
-                         #r'$f_{\rm swpa}$',
-                         #r'$f_{\rm swpa,bluer}$',
-                         #r'$f_{\rm swpa,redder}$',
-                         r'$f_{\rm swpa,med}$',
-                         r'$df_{\rm swpa}/d(b_p-r_p-E^*)$',
+active_params_symbols = [r'$M_{\rm break,1}$',
                          r'$\ln{(\lambda_c)}$',
                          r'$\ln{(\lambda_p)}$',
-                         r'$\Delta_c$',
+                         r'$\mu_M$',
+                         r'$R_{p,\rm norm}$',
                          r'$\alpha_P$',
-                         #r'$\alpha_{P,\rm med}$',
-                         #r'$d\alpha_P/d(b_p-r_p-E^*)$',
-                         r'$\alpha_{R1}$',
-                         r'$\alpha_{R2}$',
-                         r'$\sigma_{e,1}$', #'$\sigma_{e,1}$'
-                         #r'$\sigma_{i,\rm high}$ ($^\circ$)', # '\n',
-                         #r'$\sigma_{i,\rm low}$ ($^\circ$)', # '\n',
-                         r'$\sigma_R$',
-                         r'$\sigma_P$'
-                         ] #this list of parameter symbols must match the order of parameters in the loaded table!
+                         r'$\gamma_0$',
+                         r'$\gamma_1$',
+                         r'$\sigma_0$',
+                         r'$\sigma_1$',
+                         r'$\sigma_M$',
+                         r'$\sigma_P$',
+                         r'$\alpha_{\rm ret}$',
+                         ] # this list of parameter symbols must match the order of parameters in 'active_params_names'!
 
-long_symbols = [False, True, False, False, False, False, False, False, False, False, False] # Clustered_P_R_fswp_bprp_AMD_sys with Delta_c + sigma_{e,1}
-#long_symbols = [False, True, False, False, False, False, False, False, False] # Clustered_P_R_fswp_bprp_AMD_sys
-
-#long_symbols = [False, True, True, True, True, True, True, True, True, True, True, True, False, False] # Clustered_P_R_fswp_alphaP_bprp
-#long_symbols = [False, True, True, True, True, True, True, True, True, True, True, False, False] # Clustered_P_R_alphaP_bprp
-#long_symbols = [False, True, True, True, True, False, True, True, True, True, True, False, False] # Clustered_P_R_fswp_bprp
-#long_symbols = [False, True, True, True, False, True, True, True, True, True, False, False] # Clustered_P_R_fswp
 dims = len(active_params_symbols)
 
+#long_symbols = [False, True, False, False, False, False, False, False, False, False, False] # Clustered_P_R_fswp_bprp_AMD_sys with Delta_c + sigma_{e,1}
+long_symbols = [False]*dims # Hybrid_NR20_AMD_model1
+
+transformed_rates = True
+
 active_params_transformed_symbols = np.copy(active_params_symbols)
-i_transformed, j_transformed = 2, 3
+i_transformed, j_transformed = 1, 2
 if transformed_rates:
     active_params_transformed_symbols[i_transformed] = r'$\ln{(\lambda_c \lambda_p)}$' #'\n'
     active_params_transformed_symbols[j_transformed] = r'$\ln{(\lambda_p/\lambda_c)}$' #'\n'
 
 # To load the training points:
-data_train = load_training_points(dims, file_name_path=loadfiles_directory, file_name='Active_params_recomputed_distances_table_best90000_every9.txt')
+data_train = load_training_points(dims, file_name_path=loadfiles_directory, file_name='Active_params_recomputed_distances_table_best100000_every10.txt')
 active_params_names = np.array(data_train['active_params_names'])
 
 # To load the tables of points drawn from the prior based on the GP model:
-n_train, mean_f, sigma_f, lscales, vol = 2000, 100.0, 2.7, 9.7, 109.18
-n_points, max_mean, max_std, max_post = 50000, 'Inf', 'Inf', -35.0 #100000, 'Inf', 'Inf', 'Inf'
+#n_train, mean_f, sigma_f, lscales, vol = 2000, 35.0, 2.7, 37.65, 1425.6
+n_train, mean_f, sigma_f, lscales, vol = 2000, 35.0, 2.7, 67.65, 141134.4
+n_points, max_mean, max_std, max_post = 100000, 'Inf', 'Inf', -10.0 #100000, 'Inf', 'Inf', 'Inf'
 file_name = 'GP_train%s_meanf%s_sigmaf%s_lscales%s_vol%s_points%s_mean%s_std%s_post%s.csv' % (n_train, mean_f, sigma_f, lscales, vol, n_points, max_mean, max_std, max_post)
-xprior_accepted_table = load_GP_table_prior_draws(file_name, file_name_path=loadfiles_directory + sub_directory)
+xprior_accepted_table = load_GP_table_prior_draws(file_name, file_name_path=loadfiles_directory)
 active_params_transformed_names = np.array(xprior_accepted_table.dtype.names[:dims])
 
 GP_model_name = '_GP_train%s_meanf%s_sigmaf%s_lscales%s' % (n_train, mean_f, sigma_f, lscales)
@@ -96,7 +84,7 @@ plt.show()
 
 ##### To make cuts for the posterior:
 
-mean_cut, std_cut, post_cut = np.inf, np.inf, -30.0 #-90.0
+mean_cut, std_cut, post_cut = np.inf, np.inf, -11.0
 #xprior_accepts = make_cuts_GP_mean_std_post(active_params_transformed_names, xprior_accepted_table, max_mean=mean_cut, max_std=std_cut, max_post=post_cut)
 if transformed_rates:
     xprior_accepts_transformed = make_cuts_GP_mean_std_post(active_params_transformed_names, xprior_accepted_table, max_mean=mean_cut, max_std=std_cut, max_post=post_cut)

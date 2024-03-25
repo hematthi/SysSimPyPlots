@@ -80,8 +80,9 @@ else:
 #'''
 plot_function_heatmap_averaged_grid_given_irregular_points_corner(active_params_symbols, results['active_params_evals'], results['dtot_w_evals'], flabel=r'$\mathcal{D}_W$', show_points=False, save_name=savefigures_directory + model_name + '_recomputed_best%s_every%s_corner_cmap_dtot_w.pdf' % (N_best_save, keep_every), save_fig=savefigures)
 
-dist_terms = ['radii_partitioning_KS', 'radii_monotonicity_KS', 'gap_complexity_KS']
+#dist_terms = ['radii_partitioning_KS', 'radii_monotonicity_KS', 'gap_complexity_KS']
 #dist_terms = ['radii_partitioning_AD', 'radii_monotonicity_AD', 'gap_complexity_AD']
+dist_terms = ['delta_f', 'mult_CRPD_r', 'periods_KS', 'period_ratios_KS', 'durations_KS', 'duration_ratios_KS', 'depths_KS', 'radii_KS', 'radius_ratios_KS']
 for (i,key) in enumerate(dist_terms):
     results_cmap_key = results['d_used_vals_w_evals']['all'][key] if split_stars else results['d_used_vals_w_evals'][key] # still the weighted distances for the full sample, but this is in a dictionary if split_stars=True
     plot_function_heatmap_averaged_grid_given_irregular_points_corner(active_params_symbols, results['active_params_evals'], results_cmap_key, flabel=key, show_points=False, save_name=savefigures_directory + model_name + '_recomputed_best%s_every%s_corner_cmap_%s.pdf' % (N_best_save, keep_every, key), save_fig=savefigures)
