@@ -271,17 +271,11 @@ def plot_panel_pdf_simple(ax, x_sim, x_Kep, x_min=None, x_max=None, y_min=None, 
 
     bin_maxes = [] # to be filled with the maximum bin counts in each histogram
     for i,x in enumerate(x_sim):
-        if normalize:
-            weights = np.ones(len(x))/len(x)
-        else:
-            weights = np.ones(len(x))/N_sim_Kep_factor
+        weights = np.ones(len(x))/len(x) if normalize else np.ones(len(x))/N_sim_Kep_factor
         ht = plt.hist(x, bins=bins, histtype='step', weights=weights, log=log_y, color=c_sim[i], ls=ls_sim[i], lw=lw, label=labels_sim[i])
         bin_maxes.append(np.max(ht[0]))
     for i,x in enumerate(x_Kep):
-        if normalize:
-            weights = np.ones(len(x))/len(x)
-        else:
-            weights = np.ones(len(x))
+        weights = np.ones(len(x))/len(x) if normalize else np.ones(len(x))
         ht = plt.hist(x, bins=bins, histtype='stepfilled', weights=weights, log=log_y, color=c_Kep[i], ls=ls_Kep[i], alpha=alpha, label=labels_Kep[i])
         bin_maxes.append(np.max(ht[0]))
     if y_max is None:
@@ -334,6 +328,180 @@ def plot_fig_pdf_simple(x_sim, x_Kep, x_min=None, x_max=None, y_min=None, y_max=
     else:
         return ax
 
+def plot_panel_pdf_credible(ax, x_sim1, x_sim2, x_Kep, x_min=None, x_max=None, y_min=None, y_max=None, n_bins=100, qtls=[0.16,0.5,0.84], plot_median=False, normalize=True, N_sim_Kep_factor=1., log_x=False, log_y=False, c_sim1='k', c_sim2='g', c_Kep=['k'], ls_sim1='--', ls_sim2='--', ls_Kep=['-'], lw=1, alpha=0.2, label_sim1='Simulated 1', label_sim2='Simulated 2', labels_Kep=['Kepler'], extra_text=None, xticks_custom=None, xlabel_text='x', ylabel_text='Fraction', afs=20, tfs=20, lfs=16, legend=False):
+    """
+    Plot credible regions for the histograms of continuous distributions on a given panel.
+
+    Parameters
+    ----------
+    ax : matplotlib.axes._subplots.AxesSubplot
+        The axes to plot on.
+    x_sim1, x_sim2 : list[array[float]]
+        The lists with sample(s) of values (e.g. simulated data). Each list should contain enough samples (e.g. ~100) to compute reliable credible regions.
+    x_Kep : list[array[float]]
+        A list with sample(s) of values (e.g. Kepler data). Each sample in this list will be plotted as a histogram.
+    x_min : float, optional
+        The minimum value to include. All histograms will share this value for the minimum bin edge.
+    x_max : float, optional
+        The maximum value to include. All histograms will share this value for the maximum bin edge.
+    y_min : float, optional
+        The lower y-axis limit.
+    y_max : float, optional
+        The upper y-axis limit.
+    n_bins : int, default=100
+        The number of bins.
+    qtls : list[float], default=[0.16,0.5,0.84]
+        The quantiles for the credible regions of the CDFs in `x_sim1` and `x_sim2`.
+    plot_median : bool, default=False
+        Whether to plot the medians of the histograms in `x_sim1` and `x_sim2`.
+    normalize : bool, default=True
+        Whether to normalize the histograms. If True, each histogram will sum to one.
+    N_sim_Kep_factor : float, default=1.
+        The number of simulated targets divided by the number of Kepler targets. If `normalize=False`, will divide the bin counts for each sample in `x_sim1` and `x_sim2` by this value to provide an equivalent comparison to the Kepler counts.
+    log_x : bool, default=False
+        Whether to plot the x-axis on a log-scale and use log-uniform bins.
+    log_y : bool, default=False
+        Whether to plot the y-axis on a log-scale.
+    c_sim1, c_sim2 : str, default='k'
+        The plotting colors for the credible region of each set of `x_sim1` and `x_sim2`.
+    c_Kep : list[str], default=['k']
+        A list of plotting colors for the histograms of each sample in `x_Kep1`.
+    ls_sim1, ls_sim2 : str, default='-'
+        The line styles for the median histograms of each set of `x_sim1` and `x_sim2`.
+    ls_Kep : list[str], default=['-']
+        A list of line styles for the histograms of each sample in `x_Kep1`.
+    lw : float, default=1
+        The line width for the histograms.
+    alpha : float, default=0.2
+        The transparency of the shading for the histograms of Kepler data (between 0 and 1).
+    label_sim1, label_sim2 : str, default='Simulated 1','Simulated 2'
+        The legend labels for the credible regions of each set of `x_sim1` and `x_sim2`.
+    labels_Kep : list[str], default=['Kepler']
+        A list of legend labels for the histograms of each sample in `x_Kep1`.
+    extra_text : str, optional
+        Extra text to be displayed on the figure.
+    xticks_custom : list or array[float], optional
+        The x-values at which to plot ticks.
+    xlabel_text : str, default='x'
+        The x-axis label.
+    ylabel_text : str, default='Fraction'
+        The y-axis label.
+    afs : int, default=20
+        The axes fontsize.
+    tfs : int, default=20
+        The text fontsize.
+    lfs : int, default=16
+        The legend fontsize.
+    legend : bool, default=False
+        Whether to show the legend.
+    """
+    if x_min is None:
+        x_min = np.nanmin([np.min(x) if len(x) > 0 else np.nan for x in x_sim1+x_sim2+x_Kep])
+    if x_max is None:
+        x_max = np.nanmax([np.max(x) if len(x) > 0 else np.nan for x in x_sim1+x_sim2+x_Kep])
+
+    if log_x:
+        bins = np.logspace(np.log10(x_min), np.log10(x_max), n_bins+1)
+        bins_mid = (bins[:-1] + bins[1:])/2. # TODO: double check
+    else:
+        bins = np.linspace(x_min, x_max, n_bins+1)
+        bins_mid = (bins[:-1] + bins[1:])/2.
+    
+    bin_maxes = [] # to be filled with the maximum bin counts (or quantiles) in each histogram
+    
+    # To compute and plot the credible region of the histograms for 'x_sim1':
+    if len(x_sim1) > 1:
+        if len(x_sim1) < 100:
+            print('CAUTION: fewer than 100 samples provided for `x_sim1`. Computed credible regions may be unreliable.')
+        counts_all = [] # to be filled with the (fractional) counts in each bin for each sample
+        for xs in x_sim1:
+            counts, bins = np.histogram(xs, bins=bins)
+            counts_all.append(counts/float(np.sum(counts)) if normalize else counts/N_sim_Kep_factor)
+        counts_all = np.array(counts_all)
+        
+        counts_qtls = np.zeros((len(bins)-1,len(qtls)))
+        for b in range(n_bins):
+            counts_qtls[b] = np.quantile(counts_all[:,b], qtls)
+        bin_maxes.append(np.nanmax(counts_qtls[:,2]))
+        
+        if plot_median:
+            plt.plot(bins_mid, counts_qtls[:,1], ls=ls_sim1, label='Median', color=c_sim1)
+        plt.fill_between(bins_mid, counts_qtls[:,0], counts_qtls[:,2], step='mid', color=c_sim1, alpha=alpha, label=label_sim1)
+
+    # To compute and plot the credible region of the histograms for 'x_sim2':
+    if len(x_sim2) > 1:
+        if len(x_sim2) < 100:
+            print('CAUTION: fewer than 100 samples provided for `x_sim2`. Computed credible regions may be unreliable.')
+        counts_all = [] # to be filled with the (fractional) counts in each bin for each sample
+        for xs in x_sim2:
+            counts, bins = np.histogram(xs, bins=bins)
+            counts_all.append(counts/float(np.sum(counts)) if normalize else counts/N_sim_Kep_factor)
+        counts_all = np.array(counts_all)
+        
+        counts_qtls = np.zeros((len(bins)-1,len(qtls)))
+        for b in range(n_bins):
+            counts_qtls[b] = np.quantile(counts_all[:,b], qtls)
+        bin_maxes.append(np.nanmax(counts_qtls[:,2]))
+        
+        if plot_median:
+            plt.plot(bins_mid, counts_qtls[:,1], ls=ls_sim2, label='Median', color=c_sim2)
+        plt.fill_between(bins_mid, counts_qtls[:,0], counts_qtls[:,2], step='mid', color=c_sim2, alpha=alpha, label=label_sim2)
+    
+    # To compute and plot the histograms in 'x_Kep':
+    for i,x in enumerate(x_Kep):
+        weights = np.ones(len(x))/len(x) if normalize else np.ones(len(x))
+        ht = plt.hist(x, bins=bins, histtype='step', weights=weights, log=log_y, color=c_Kep[i], ls=ls_Kep[i], lw=lw, label=labels_Kep[i])
+        bin_maxes.append(np.nanmax(ht[0]))
+    
+    if y_max is None:
+        y_max = 1.1*max(bin_maxes)
+    if log_x:
+        plt.gca().set_xscale("log")
+    ax.tick_params(axis='both', labelsize=afs)
+    if xticks_custom is not None:
+        ax.set_xticks(xticks_custom)
+        ax.get_xaxis().set_major_formatter(matplotlib.ticker.ScalarFormatter())
+    plt.xlim([x_min, x_max])
+    plt.ylim([y_min, y_max])
+    plt.xlabel(xlabel_text, fontsize=tfs)
+    plt.ylabel(ylabel_text, fontsize=tfs)
+    plt.text(x=0.02, y=0.8, s=extra_text, ha='left', fontsize=lfs, transform=ax.transAxes)
+    if legend:
+        plt.legend(loc='upper right', bbox_to_anchor=(0.99,0.99), ncol=1, frameon=False, fontsize=lfs) #show the legend
+
+def plot_fig_pdf_credible(x_sim1, x_sim2, x_Kep, x_min=None, x_max=None, y_min=None, y_max=None, n_bins=100, qtls=[0.16,0.5,0.84], plot_median=False, normalize=True, N_sim_Kep_factor=1., log_x=False, log_y=False, c_sim1='k', c_sim2='g', c_Kep=['k'], ls_sim1='--', ls_sim2='--', ls_Kep=['-'], lw=1, alpha=0.2, label_sim1='Simulated 1', label_sim2='Simulated 2', labels_Kep=['Kepler'], extra_text=None, xticks_custom=None, xlabel_text='x', ylabel_text='Fraction', afs=20, tfs=20, lfs=16, legend=False, fig_size=(8,4), fig_lbrt=[0.15, 0.2, 0.95, 0.925], save_name='no_name_fig.pdf', save_fig=False):
+    """
+    Plot a figure with credible regions of the histograms of continuous distributions.
+
+    Wrapper for the function :py:func:`syssimpyplots.plot_catalogs.plot_panel_pdf_credible`. Includes all of the parameters of that function, with the following additional parameters:
+
+    Parameters
+    ----------
+    fig_size : tuple, default=(8,4)
+        The figure size (width, height).
+    fig_lbrt : list[float], default=[0.15, 0.2, 0.95, 0.925]
+        The positions of the (left, bottom, right, and top) margins of the plotting panel (all values must be between 0 and 1).
+    save_name : str, default='no_name_fig.pdf'
+        The file name for saving the figure.
+    save_fig : bool, default=False
+        Whether to save the figure. If True, will save the figure in the working directory with the file name given by `save_name`.
+
+    Returns
+    -------
+    ax : matplotlib.axes._subplots.AxesSubplot
+        The plotting axes, if `save_fig=False`.
+    """
+    left, bottom, right, top = fig_lbrt
+    ax = setup_fig_single(fig_size, left=left, bottom=bottom, right=right, top=top)
+
+    plot_panel_pdf_credible(ax, x_sim1, x_sim2, x_Kep, x_min=x_min, x_max=x_max, y_min=y_min, y_max=y_max, n_bins=n_bins, qtls=qtls, plot_median=plot_median, normalize=normalize, N_sim_Kep_factor=N_sim_Kep_factor, log_x=log_x, log_y=log_y, c_sim1=c_sim1, c_sim2=c_sim2, c_Kep=c_Kep, ls_sim1=ls_sim1, ls_sim2=ls_sim2, ls_Kep=ls_Kep, lw=lw, alpha=alpha, label_sim1=label_sim1, label_sim2=label_sim2, labels_Kep=labels_Kep, extra_text=extra_text, xticks_custom=xticks_custom, xlabel_text=xlabel_text, ylabel_text=ylabel_text, afs=afs, tfs=tfs, lfs=lfs, legend=legend)
+
+    if save_fig:
+        plt.savefig(save_name)
+        plt.close()
+    else:
+        return ax
+
 def plot_panel_cdf_simple(ax, x_sim, x_Kep, x_min=None, x_max=None, y_min=0., y_max=1., log_x=False, c_sim=['k'], c_Kep=['k'], ls_sim=['-'], ls_Kep=['--'], lw=1, labels_sim=['Simulated'], labels_Kep=['Kepler'], extra_text=None, xticks_custom=None, xlabel_text='x', ylabel_text='CDF', one_minus=False, afs=20, tfs=20, lfs=16, legend=False, label_dist=False):
     """
     Plot cumulative distribution functions (CDFs) for continuous distributions on a given panel.
@@ -347,9 +515,9 @@ def plot_panel_cdf_simple(ax, x_sim, x_Kep, x_min=None, x_max=None, y_min=0., y_
     x_Kep : list[array[float]]
         A list with sample(s) of values (e.g. Kepler data).
     x_min : float, optional
-        The minimum value to include.
+        The lower x-axis limit.
     x_max : float, optional
-        The maximum value to include.
+        The upper x-axis limit.
     y_min : float, default=0.
         The lower y-axis limit.
     y_max : float, default=1.
@@ -461,6 +629,186 @@ def plot_fig_cdf_simple(x_sim, x_Kep, x_min=None, x_max=None, y_min=0., y_max=1.
     ax = setup_fig_single(fig_size, left=left, bottom=bottom, right=right, top=top)
 
     plot_panel_cdf_simple(ax, x_sim, x_Kep, x_min=x_min, x_max=x_max, y_min=y_min, y_max=y_max, log_x=log_x, c_sim=c_sim, c_Kep=c_Kep, ls_sim=ls_sim, ls_Kep=ls_Kep, lw=lw, labels_sim=labels_sim, labels_Kep=labels_Kep, extra_text=extra_text, xticks_custom=xticks_custom, xlabel_text=xlabel_text, ylabel_text=ylabel_text, one_minus=one_minus, afs=afs, tfs=tfs, lfs=lfs, legend=legend, label_dist=label_dist)
+
+    if save_fig:
+        plt.savefig(save_name)
+        plt.close()
+    else:
+        return ax
+
+def plot_panel_cdf_credible(ax, x_sim1, x_sim2, x_Kep, x_min=None, x_max=None, y_min=0., y_max=1., log_x=False, eval_cdf_all_points=False, n_bins_cdf=100, qtls=[0.16,0.5,0.84], plot_median=False, c_sim1='k', c_sim2='g', c_Kep=['k'], ls_sim1='--', ls_sim2='--', ls_Kep=['-'], lw=1, alpha=0.2, label_sim1='Simulated 1', label_sim2='Simulated 2', labels_Kep=['Kepler'], extra_text=None, xticks_custom=None, xlabel_text='x', ylabel_text='CDF', one_minus=False, afs=20, tfs=20, lfs=16, legend=False):
+    """
+    Compute and plot the credible region of multiple cumulative distribution functions (CDFs) for continuous distributions on a given panel.
+
+    Parameters
+    ----------
+    ax : matplotlib.axes._subplots.AxesSubplot
+        The axes to plot on.
+    x_sim1, x_sim2 : list[array[float]]
+        The lists with sample(s) of values (e.g. simulated data). Each list should contain enough samples (e.g. ~100) to compute reliable credible regions.
+    x_Kep : list[array[float]]
+        A list with sample(s) of values (e.g. Kepler data). Each sample in this list will be plotted as a CDF.
+    x_min : float, optional
+        The lower x-axis limit.
+    x_max : float, optional
+        The upper x-axis limit.
+    y_min : float, default=0.
+        The lower y-axis limit.
+    y_max : float, default=1.
+        The upper y-axis limit.
+    log_x : bool, default=False
+        Whether to plot the x-axis on a log-scale.
+    eval_cdf_all_points : bool, default=False
+        Whether to evaluate the credible region of the CDFs at all points. If False, will just evaluate the credible region at a number of points (`n_bins_cdf`) on a linear/log-linear (for `log_x`=False/True) scale. WARNING: if True, will take a long time if there are many points in each sample (and this is likely overkill). The recommended option is to keep this False.
+    n_bins_cdf : int, default=100
+        The number of points to evaluate the credible region of the CDFs at, if `eval_cdf_all_points`=False.
+    qtls : list[float], default=[0.16,0.5,0.84]
+        The quantiles for the credible regions of the CDFs in `x_sim1` and `x_sim2`.
+    plot_median : bool, default=False
+        Whether to plot the medians of the CDFs in `x_sim1` and `x_sim2`.
+    c_sim1, c_sim2 : str, default='k'
+        The plotting colors for the credible region of each set of `x_sim1` and `x_sim2`.
+    c_Kep : list[str], default=['k']
+        A list of plotting colors for the CDFs of each sample in `x_Kep`.
+    ls_sim1, ls_sim2 : str, default='-'
+        The line styles for the median CDFs of each set of `x_sim1` and `x_sim2`.
+    ls_Kep : list[str], default=['--']
+        A list of line styles for the CDFs of each sample in `x_Kep`.
+    lw : float, default=1
+        The line width for the CDFs of each sample in `x_Kep`.
+    alpha : float, default=0.2
+        The transparency of the shading for the credible regions of the CDFs.
+    label_sim1, label_sim2 : str, default='Simulated 1','Simulated 2'
+        The legend labels for the credible regions of each set of `x_sim1` and `x_sim2`.
+    labels_Kep : list[str], default=['Kepler']
+        A list of legend labels for the CDFs of each sample in `x_Kep`.
+    extra_text : str, optional
+        Extra text to be displayed on the figure.
+    xticks_custom : list or array[float], optional
+        The x-values at which to plot ticks.
+    xlabel_text : str, default='x'
+        The x-axis label.
+    ylabel_text : str, default='CDF'
+        The y-axis label.
+    one_minus : bool, default=False
+        Whether to plot one minus the CDF.
+    afs : int, default=20
+        The axes fontsize.
+    tfs : int, default=20
+        The text fontsize.
+    lfs : int, default=16
+        The legend fontsize.
+    legend : bool, default=False
+        Whether to show the legend.
+    """
+    if x_min is None:
+        x_min = np.nanmin([np.min(x) if len(x) > 0 else np.nan for x in x_sim1+x_sim2])
+    if x_max is None:
+        x_max = np.nanmax([np.max(x) if len(x) > 0 else np.nan for x in x_sim1+x_sim2])
+    
+    # To compute and plot the credible region of the CDFs in 'x_sim1':
+    if len(x_sim1) > 1:
+        x_allsim1 = np.sort([x for xs in x_sim1 for x in xs]) # all the values in all the samples in 'x_sim1' sorted into one array
+        x_allsim1 = np.array([x for x in x_allsim1 if not np.isnan(x) and not np.isinf(x)]) # to remove any NaNs or Infs
+        x_min_sim1, x_max_sim1 = x_allsim1[0], x_allsim1[-1]
+        if eval_cdf_all_points:
+            x_eval1 = x_allsim1
+        else:
+            if log_x:
+                x_eval1 = np.logspace(np.log10(x_min_sim1), np.log10(x_max_sim1), n_bins_cdf+1)
+            else:
+                x_eval1 = np.linspace(x_min_sim1, x_max_sim1, n_bins_cdf+1)
+        
+        if len(x_sim1) < 100:
+            print('CAUTION: fewer than 100 samples provided for `x_sim1`. Computed credible regions may be unreliable.')
+        cdf_sim_qtls = np.zeros((len(x_eval1),len(qtls)))
+        for i,x in enumerate(x_eval1):
+            cdf_sim_at_x = [np.sum(xs <= x)/float(len(xs)) for xs in x_sim1]
+            cdf_sim_qtls[i] = np.quantile(cdf_sim_at_x, qtls)
+        if one_minus:
+            cdf_sim_qtls = 1. - cdf_sim_qtls
+        
+        if plot_median:
+            plt.plot(x_eval1, cdf_sim_qtls[:,1], ls=ls_sim1, label='Median', color=c_sim1)
+        plt.fill_between(x_eval1, cdf_sim_qtls[:,0], cdf_sim_qtls[:,2], color=c_sim1, alpha=alpha, label=label_sim1)
+
+    # To compute and plot the credible region of the CDFs in 'x_sim2':
+    if len(x_sim2) > 1:
+        x_allsim2 = np.sort([x for xs in x_sim2 for x in xs]) # all the values in all the samples in 'x_sim2' sorted into one array
+        x_allsim2 = np.array([x for x in x_allsim2 if not np.isnan(x) and not np.isinf(x)]) # to remove any NaNs or Infs
+        x_min_sim2, x_max_sim2 = x_allsim2[0], x_allsim2[-1]
+        if eval_cdf_all_points:
+            x_eval2 = x_allsim2
+        else:
+            if log_x:
+                x_eval2 = np.logspace(np.log10(x_min_sim2), np.log10(x_max_sim2), n_bins_cdf+1)
+            else:
+                x_eval2 = np.linspace(x_min_sim2, x_max_sim2, n_bins_cdf+1)
+        
+        if len(x_sim2) < 100:
+            print('CAUTION: fewer than 100 samples provided for `x_sim2`. Computed credible regions may be unreliable.')
+        cdf_sim_qtls = np.zeros((len(x_eval2),len(qtls)))
+        for i,x in enumerate(x_eval2):
+            cdf_sim_at_x = [np.sum(xs <= x)/float(len(xs)) for xs in x_sim2]
+            cdf_sim_qtls[i] = np.quantile(cdf_sim_at_x, qtls)
+        if one_minus:
+            cdf_sim_qtls = 1. - cdf_sim_qtls
+        
+        if plot_median:
+            plt.plot(x_eval2, cdf_sim_qtls[:,1], ls=ls_sim2, label='Median', color=c_sim2)
+        plt.fill_between(x_eval2, cdf_sim_qtls[:,0], cdf_sim_qtls[:,2], color=c_sim2, alpha=alpha, label=label_sim2)
+    
+    # To compute and plot the CDFs in 'x_Kep':
+    for i,xs in enumerate(x_Kep):
+        cdf = 1. - (np.arange(len(xs))+1.)/float(len(xs)) if one_minus else (np.arange(len(xs))+1.)/float(len(xs))
+        xs = np.sort(xs)
+        xs = np.insert(xs, 0, xs[0])
+        cdf = np.insert(cdf, 0, 1) if one_minus else np.insert(cdf, 0, 0) # to connect the first point to 0 (or 1 if 'one_minus' is True) so the CDF does not jump abruptly at the first data point
+        plt.plot(xs, cdf, drawstyle='steps-post', color=c_Kep[i], ls=ls_Kep[i], lw=lw, label=labels_Kep[i])
+    
+    if log_x:
+        plt.gca().set_xscale("log")
+    ax.tick_params(axis='both', labelsize=afs)
+    if xticks_custom is not None:
+        ax.set_xticks(xticks_custom)
+        ax.get_xaxis().set_major_formatter(matplotlib.ticker.ScalarFormatter())
+    plt.xlim([x_min, x_max])
+    plt.ylim([y_min, y_max])
+    plt.xlabel(xlabel_text, fontsize=tfs)
+    plt.ylabel(ylabel_text, fontsize=tfs)
+    plt.text(x=0.02, y=0.8, s=extra_text, ha='left', fontsize=lfs, transform=ax.transAxes)
+    if legend:
+        if one_minus:
+            plt.legend(loc='lower left', bbox_to_anchor=(0.01,0.01), ncol=1, frameon=False, fontsize=lfs) #show the legend
+        else:
+            plt.legend(loc='upper left', bbox_to_anchor=(0.01,0.99), ncol=1, frameon=False, fontsize=lfs) #show the legend
+
+def plot_fig_cdf_credible(x_sim1, x_sim2, x_Kep, x_min=None, x_max=None, y_min=0., y_max=1., log_x=False, eval_cdf_all_points=False, n_bins_cdf=100, qtls=[0.16,0.5,0.84], plot_median=False, c_sim1='k', c_sim2='g', c_Kep=['k'], ls_sim1='--', ls_sim2='--', ls_Kep=['-'], lw=1, alpha=0.2, label_sim1='Simulated 1', label_sim2='Simulated 2', labels_Kep=['Kepler'], extra_text=None, xticks_custom=None, xlabel_text='x', ylabel_text='CDF', one_minus=False, afs=20, tfs=20, lfs=16, legend=False, fig_size=(8,4), fig_lbrt=[0.15, 0.2, 0.95, 0.925], save_name='no_name_fig.pdf', save_fig=False):
+    """
+    Plot a figure with credible regions of the CDFs of continuous distributions.
+
+    Wrapper for the function :py:func:`syssimpyplots.plot_catalogs.plot_panel_cdf_credible`. Includes all of the parameters of that function, with the following additional parameters:
+
+    Parameters
+    ----------
+    fig_size : tuple, default=(8,4)
+        The figure size (width, height).
+    fig_lbrt : list[float], default=[0.15, 0.2, 0.95, 0.925]
+        The positions of the (left, bottom, right, and top) margins of the plotting panel (all values must be between 0 and 1).
+    save_name : str, default='no_name_fig.pdf'
+        The file name for saving the figure.
+    save_fig : bool, default=False
+        Whether to save the figure. If True, will save the figure in the working directory with the file name given by `save_name`.
+
+    Returns
+    -------
+    ax : matplotlib.axes._subplots.AxesSubplot
+        The plotting axes, if `save_fig=False`.
+    """
+    left, bottom, right, top = fig_lbrt
+    ax = setup_fig_single(fig_size, left=left, bottom=bottom, right=right, top=top)
+
+    plot_panel_cdf_credible(ax, x_sim1, x_sim2, x_Kep, x_min=x_min, x_max=x_max, y_min=y_min, y_max=y_max, log_x=log_x, eval_cdf_all_points=eval_cdf_all_points, n_bins_cdf=n_bins_cdf, qtls=qtls, plot_median=plot_median, c_sim1=c_sim1, c_sim2=c_sim2, c_Kep=c_Kep, ls_sim1=ls_sim1, ls_sim2=ls_sim2, ls_Kep=ls_Kep, lw=lw, alpha=alpha, label_sim1=label_sim1, label_sim2=label_sim2, labels_Kep=labels_Kep, extra_text=extra_text, xticks_custom=xticks_custom, xlabel_text=xlabel_text, ylabel_text=ylabel_text, one_minus=one_minus, afs=afs, tfs=tfs, lfs=lfs, legend=legend)
 
     if save_fig:
         plt.savefig(save_name)
