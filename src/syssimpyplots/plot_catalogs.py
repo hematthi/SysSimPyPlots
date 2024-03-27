@@ -378,7 +378,7 @@ def plot_panel_pdf_credible(ax, x_sim1, x_sim2, x_Kep, x_min=None, x_max=None, y
         The line width for the histograms.
     alpha : float, default=0.2
         The transparency of the shading for the histograms of Kepler data (between 0 and 1).
-    label_sim1, label_sim2 : str, default='Simulated 1'
+    label_sim1, label_sim2 : str, default='Simulated 1','Simulated 2'
         The legend labels for the credible regions of each set of `x_sim1` and `x_sim2`.
     labels_Kep : list[str], default=['Kepler']
         A list of legend labels for the histograms of each sample in `x_Kep1`.
@@ -667,9 +667,9 @@ def plot_panel_cdf_credible(ax, x_sim1, x_sim2, x_Kep, x_min=None, x_max=None, y
     log_x : bool, default=False
         Whether to plot the x-axis on a log-scale.
     eval_cdf_all_points : bool, default=False
-        Whether to evaluate the credible region of the CDFs at all points. If False, will just evaluate the credible region at a number of points (`n_bins_cdf`) on a linear/log-linear (for `log_x`=False/True) scale. WARNING: if True, will take a long time if there are many points in each sample (and this is likely overkill). The recommended option is to keep this False.
+        Whether to evaluate the credible region of the CDFs at all points. If False, will just evaluate the credible region at a number of points (`n_bins_cdf`) on a linear/log-linear (for `log_x` = False/True) scale. WARNING: if True, will take a long time if there are many points in each sample (and this is likely overkill). The recommended option is to keep this False.
     n_bins_cdf : int, default=100
-        The number of points to evaluate the credible region of the CDFs at, if `eval_cdf_all_points`=False.
+        The number of points to evaluate the credible region of the CDFs at, if `eval_cdf_all_points=False`.
     qtls : list[float], default=[0.16,0.5,0.84]
         The quantiles for the credible regions of the CDFs in `x_sim1` and `x_sim2`.
     plot_median : bool, default=False
@@ -686,7 +686,7 @@ def plot_panel_cdf_credible(ax, x_sim1, x_sim2, x_Kep, x_min=None, x_max=None, y
         The line width for the CDFs of each sample in `x_Kep`.
     alpha : float, default=0.2
         The transparency of the shading for the credible regions of the CDFs.
-    label_sim1, label_sim2 : str, default='Simulated 1'
+    label_sim1, label_sim2 : str, default='Simulated 1','Simulated 2'
         The legend labels for the credible regions of each set of `x_sim1` and `x_sim2`.
     labels_Kep : list[str], default=['Kepler']
         A list of legend labels for the CDFs of each sample in `x_Kep`.
