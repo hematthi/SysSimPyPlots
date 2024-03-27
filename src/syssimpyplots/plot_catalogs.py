@@ -339,7 +339,7 @@ def plot_panel_pdf_credible(ax, x_sim1, x_sim2, x_Kep, x_min=None, x_max=None, y
     ax : matplotlib.axes._subplots.AxesSubplot
         The axes to plot on.
     x_sim1, x_sim2 : list[array[float]]
-        The lists with sample(s) of values (e.g. simulated data). Each list should contain enough samples (e.g. ~100) to compute reliable credible regions.
+        The lists with sample(s) of values (e.g. simulated data). Each list should contain enough samples (e.g. 100) to compute reliable credible regions.
     x_Kep : list[array[float]]
         A list with sample(s) of values (e.g. Kepler data). Each sample in this list will be plotted as a histogram.
     x_min : float, optional
@@ -653,7 +653,7 @@ def plot_panel_cdf_credible(ax, x_sim1, x_sim2, x_Kep, x_min=None, x_max=None, y
     ax : matplotlib.axes._subplots.AxesSubplot
         The axes to plot on.
     x_sim1, x_sim2 : list[array[float]]
-        The lists with sample(s) of values (e.g. simulated data). Each list should contain enough samples (e.g. ~100) to compute reliable credible regions.
+        The lists with sample(s) of values (e.g. simulated data). Each list should contain enough samples (e.g. 100) to compute reliable credible regions.
     x_Kep : list[array[float]]
         A list with sample(s) of values (e.g. Kepler data). Each sample in this list will be plotted as a CDF.
     x_min : float, optional
