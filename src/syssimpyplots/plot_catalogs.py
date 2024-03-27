@@ -196,7 +196,7 @@ def plot_fig_counts_hist_simple(x_sim, x_Kep, x_min=0, x_max=None, y_min=None, y
     else:
         return ax
 
-def plot_panel_pdf_simple(ax, x_sim, x_Kep, x_min=None, x_max=None, y_min=None, y_max=None, n_bins=100, normalize=True, N_sim_Kep_factor=1., log_x=False, log_y=False, c_sim=['k'], c_Kep=['k'], ls_sim=['-'], ls_Kep=['-'], lw=1, alpha=0.2, labels_sim=['Simulated'], labels_Kep=['Kepler'], extra_text=None, xticks_custom=None, xlabel_text='x', ylabel_text='Fraction', afs=20, tfs=20, lfs=16, legend=False):
+def plot_panel_pdf_simple(ax, x_sim, x_Kep, x_min=None, x_max=None, y_min=0., y_max=None, n_bins=100, normalize=True, N_sim_Kep_factor=1., log_x=False, log_y=False, c_sim=['k'], c_Kep=['k'], ls_sim=['-'], ls_Kep=['-'], lw=1, alpha=0.2, labels_sim=['Simulated'], labels_Kep=['Kepler'], extra_text=None, xticks_custom=None, xlabel_text='x', ylabel_text='Fraction', afs=20, tfs=20, lfs=16, legend=False):
     """
     Plot histogram(s) of continuous distributions on a given panel.
 
@@ -212,7 +212,7 @@ def plot_panel_pdf_simple(ax, x_sim, x_Kep, x_min=None, x_max=None, y_min=None, 
         The minimum value to include.
     x_max : float, optional
         The maximum value to include.
-    y_min : float, optional
+    y_min : float, default=0.
         The lower y-axis limit.
     y_max : float, optional
         The upper y-axis limit.
@@ -278,6 +278,8 @@ def plot_panel_pdf_simple(ax, x_sim, x_Kep, x_min=None, x_max=None, y_min=None, 
         weights = np.ones(len(x))/len(x) if normalize else np.ones(len(x))
         ht = plt.hist(x, bins=bins, histtype='stepfilled', weights=weights, log=log_y, color=c_Kep[i], ls=ls_Kep[i], alpha=alpha, label=labels_Kep[i])
         bin_maxes.append(np.max(ht[0]))
+    if y_min <= 0. and log_y:
+        y_min = None
     if y_max is None:
         y_max = 1.1*max(bin_maxes)
 
@@ -295,7 +297,7 @@ def plot_panel_pdf_simple(ax, x_sim, x_Kep, x_min=None, x_max=None, y_min=None, 
     if legend:
         plt.legend(loc='upper right', bbox_to_anchor=(0.99,0.99), ncol=1, frameon=False, fontsize=lfs) #show the legend
 
-def plot_fig_pdf_simple(x_sim, x_Kep, x_min=None, x_max=None, y_min=None, y_max=None, n_bins=100, normalize=True, N_sim_Kep_factor=1., log_x=False, log_y=False, c_sim=['k'], c_Kep=['k'], ls_sim=['-'], ls_Kep=['-'], lw=1, alpha=0.2, labels_sim=['Simulated'], labels_Kep=['Kepler'], extra_text=None, xticks_custom=None, xlabel_text='x', ylabel_text='Fraction', afs=20, tfs=20, lfs=16, legend=False, fig_size=(8,4), fig_lbrt=[0.15, 0.2, 0.95, 0.925], save_name='no_name_fig.pdf', save_fig=False):
+def plot_fig_pdf_simple(x_sim, x_Kep, x_min=None, x_max=None, y_min=0., y_max=None, n_bins=100, normalize=True, N_sim_Kep_factor=1., log_x=False, log_y=False, c_sim=['k'], c_Kep=['k'], ls_sim=['-'], ls_Kep=['-'], lw=1, alpha=0.2, labels_sim=['Simulated'], labels_Kep=['Kepler'], extra_text=None, xticks_custom=None, xlabel_text='x', ylabel_text='Fraction', afs=20, tfs=20, lfs=16, legend=False, fig_size=(8,4), fig_lbrt=[0.15, 0.2, 0.95, 0.925], save_name='no_name_fig.pdf', save_fig=False):
     """
     Plot a figure with histogram(s) of continuous distributions.
 
@@ -328,7 +330,7 @@ def plot_fig_pdf_simple(x_sim, x_Kep, x_min=None, x_max=None, y_min=None, y_max=
     else:
         return ax
 
-def plot_panel_pdf_credible(ax, x_sim1, x_sim2, x_Kep, x_min=None, x_max=None, y_min=None, y_max=None, n_bins=100, qtls=[0.16,0.5,0.84], plot_median=False, normalize=True, N_sim_Kep_factor=1., log_x=False, log_y=False, c_sim1='k', c_sim2='g', c_Kep=['k'], ls_sim1='--', ls_sim2='--', ls_Kep=['-'], lw=1, alpha=0.2, label_sim1='Simulated 1', label_sim2='Simulated 2', labels_Kep=['Kepler'], extra_text=None, xticks_custom=None, xlabel_text='x', ylabel_text='Fraction', afs=20, tfs=20, lfs=16, legend=False):
+def plot_panel_pdf_credible(ax, x_sim1, x_sim2, x_Kep, x_min=None, x_max=None, y_min=0., y_max=None, n_bins=100, step='mid', qtls=[0.16,0.5,0.84], plot_median=False, normalize=True, N_sim_Kep_factor=1., log_x=False, log_y=False, c_sim1='k', c_sim2='g', c_Kep=['k'], ls_sim1='--', ls_sim2='--', ls_Kep=['-'], lw=1, alpha=0.2, label_sim1='Simulated 1', label_sim2='Simulated 2', labels_Kep=['Kepler'], extra_text=None, xticks_custom=None, xlabel_text='x', ylabel_text='Fraction', afs=20, tfs=20, lfs=16, legend=False):
     """
     Plot credible regions for the histograms of continuous distributions on a given panel.
 
@@ -344,14 +346,16 @@ def plot_panel_pdf_credible(ax, x_sim1, x_sim2, x_Kep, x_min=None, x_max=None, y
         The minimum value to include. All histograms will share this value for the minimum bin edge.
     x_max : float, optional
         The maximum value to include. All histograms will share this value for the maximum bin edge.
-    y_min : float, optional
+    y_min : float, default=0.
         The lower y-axis limit.
     y_max : float, optional
         The upper y-axis limit.
     n_bins : int, default=100
         The number of bins.
+    step : {'mid', 'pre', 'post', None}
+        The position to draw the steps for the credible regions of the histograms. Default is 'mid', but can also be set to 'None' if want to draw smooth curves.
     qtls : list[float], default=[0.16,0.5,0.84]
-        The quantiles for the credible regions of the CDFs in `x_sim1` and `x_sim2`.
+        The quantiles for the credible regions of the histograms in `x_sim1` and `x_sim2`.
     plot_median : bool, default=False
         Whether to plot the medians of the histograms in `x_sim1` and `x_sim2`.
     normalize : bool, default=True
@@ -425,8 +429,8 @@ def plot_panel_pdf_credible(ax, x_sim1, x_sim2, x_Kep, x_min=None, x_max=None, y
         bin_maxes.append(np.nanmax(counts_qtls[:,2]))
         
         if plot_median:
-            plt.plot(bins_mid, counts_qtls[:,1], ls=ls_sim1, label='Median', color=c_sim1)
-        plt.fill_between(bins_mid, counts_qtls[:,0], counts_qtls[:,2], step='mid', color=c_sim1, alpha=alpha, label=label_sim1)
+            plt.plot(bins_mid, counts_qtls[:,1], ls=ls_sim1, color=c_sim1)
+        plt.fill_between(bins_mid, counts_qtls[:,0], counts_qtls[:,2], step=step, color=c_sim1, alpha=alpha, label=label_sim1)
 
     # To compute and plot the credible region of the histograms for 'x_sim2':
     if len(x_sim2) > 1:
@@ -444,19 +448,23 @@ def plot_panel_pdf_credible(ax, x_sim1, x_sim2, x_Kep, x_min=None, x_max=None, y
         bin_maxes.append(np.nanmax(counts_qtls[:,2]))
         
         if plot_median:
-            plt.plot(bins_mid, counts_qtls[:,1], ls=ls_sim2, label='Median', color=c_sim2)
-        plt.fill_between(bins_mid, counts_qtls[:,0], counts_qtls[:,2], step='mid', color=c_sim2, alpha=alpha, label=label_sim2)
+            plt.plot(bins_mid, counts_qtls[:,1], ls=ls_sim2, color=c_sim2)
+        plt.fill_between(bins_mid, counts_qtls[:,0], counts_qtls[:,2], step=step, color=c_sim2, alpha=alpha, label=label_sim2)
     
     # To compute and plot the histograms in 'x_Kep':
     for i,x in enumerate(x_Kep):
         weights = np.ones(len(x))/len(x) if normalize else np.ones(len(x))
         ht = plt.hist(x, bins=bins, histtype='step', weights=weights, log=log_y, color=c_Kep[i], ls=ls_Kep[i], lw=lw, label=labels_Kep[i])
         bin_maxes.append(np.nanmax(ht[0]))
-    
+
+    if y_min <= 0. and log_y:
+        y_min = None
     if y_max is None:
         y_max = 1.1*max(bin_maxes)
     if log_x:
         plt.gca().set_xscale("log")
+    if log_y:
+        plt.gca().set_yscale("log")
     ax.tick_params(axis='both', labelsize=afs)
     if xticks_custom is not None:
         ax.set_xticks(xticks_custom)
@@ -469,7 +477,7 @@ def plot_panel_pdf_credible(ax, x_sim1, x_sim2, x_Kep, x_min=None, x_max=None, y
     if legend:
         plt.legend(loc='upper right', bbox_to_anchor=(0.99,0.99), ncol=1, frameon=False, fontsize=lfs) #show the legend
 
-def plot_fig_pdf_credible(x_sim1, x_sim2, x_Kep, x_min=None, x_max=None, y_min=None, y_max=None, n_bins=100, qtls=[0.16,0.5,0.84], plot_median=False, normalize=True, N_sim_Kep_factor=1., log_x=False, log_y=False, c_sim1='k', c_sim2='g', c_Kep=['k'], ls_sim1='--', ls_sim2='--', ls_Kep=['-'], lw=1, alpha=0.2, label_sim1='Simulated 1', label_sim2='Simulated 2', labels_Kep=['Kepler'], extra_text=None, xticks_custom=None, xlabel_text='x', ylabel_text='Fraction', afs=20, tfs=20, lfs=16, legend=False, fig_size=(8,4), fig_lbrt=[0.15, 0.2, 0.95, 0.925], save_name='no_name_fig.pdf', save_fig=False):
+def plot_fig_pdf_credible(x_sim1, x_sim2, x_Kep, x_min=None, x_max=None, y_min=0., y_max=None, n_bins=100, step='mid', qtls=[0.16,0.5,0.84], plot_median=False, normalize=True, N_sim_Kep_factor=1., log_x=False, log_y=False, c_sim1='k', c_sim2='g', c_Kep=['k'], ls_sim1='--', ls_sim2='--', ls_Kep=['-'], lw=1, alpha=0.2, label_sim1='Simulated 1', label_sim2='Simulated 2', labels_Kep=['Kepler'], extra_text=None, xticks_custom=None, xlabel_text='x', ylabel_text='Fraction', afs=20, tfs=20, lfs=16, legend=False, fig_size=(8,4), fig_lbrt=[0.15, 0.2, 0.95, 0.925], save_name='no_name_fig.pdf', save_fig=False):
     """
     Plot a figure with credible regions of the histograms of continuous distributions.
 
@@ -494,7 +502,7 @@ def plot_fig_pdf_credible(x_sim1, x_sim2, x_Kep, x_min=None, x_max=None, y_min=N
     left, bottom, right, top = fig_lbrt
     ax = setup_fig_single(fig_size, left=left, bottom=bottom, right=right, top=top)
 
-    plot_panel_pdf_credible(ax, x_sim1, x_sim2, x_Kep, x_min=x_min, x_max=x_max, y_min=y_min, y_max=y_max, n_bins=n_bins, qtls=qtls, plot_median=plot_median, normalize=normalize, N_sim_Kep_factor=N_sim_Kep_factor, log_x=log_x, log_y=log_y, c_sim1=c_sim1, c_sim2=c_sim2, c_Kep=c_Kep, ls_sim1=ls_sim1, ls_sim2=ls_sim2, ls_Kep=ls_Kep, lw=lw, alpha=alpha, label_sim1=label_sim1, label_sim2=label_sim2, labels_Kep=labels_Kep, extra_text=extra_text, xticks_custom=xticks_custom, xlabel_text=xlabel_text, ylabel_text=ylabel_text, afs=afs, tfs=tfs, lfs=lfs, legend=legend)
+    plot_panel_pdf_credible(ax, x_sim1, x_sim2, x_Kep, x_min=x_min, x_max=x_max, y_min=y_min, y_max=y_max, n_bins=n_bins, step=step, qtls=qtls, plot_median=plot_median, normalize=normalize, N_sim_Kep_factor=N_sim_Kep_factor, log_x=log_x, log_y=log_y, c_sim1=c_sim1, c_sim2=c_sim2, c_Kep=c_Kep, ls_sim1=ls_sim1, ls_sim2=ls_sim2, ls_Kep=ls_Kep, lw=lw, alpha=alpha, label_sim1=label_sim1, label_sim2=label_sim2, labels_Kep=labels_Kep, extra_text=extra_text, xticks_custom=xticks_custom, xlabel_text=xlabel_text, ylabel_text=ylabel_text, afs=afs, tfs=tfs, lfs=lfs, legend=legend)
 
     if save_fig:
         plt.savefig(save_name)
@@ -729,7 +737,7 @@ def plot_panel_cdf_credible(ax, x_sim1, x_sim2, x_Kep, x_min=None, x_max=None, y
             cdf_sim_qtls = 1. - cdf_sim_qtls
         
         if plot_median:
-            plt.plot(x_eval1, cdf_sim_qtls[:,1], ls=ls_sim1, label='Median', color=c_sim1)
+            plt.plot(x_eval1, cdf_sim_qtls[:,1], ls=ls_sim1, color=c_sim1)
         plt.fill_between(x_eval1, cdf_sim_qtls[:,0], cdf_sim_qtls[:,2], color=c_sim1, alpha=alpha, label=label_sim1)
 
     # To compute and plot the credible region of the CDFs in 'x_sim2':
@@ -755,7 +763,7 @@ def plot_panel_cdf_credible(ax, x_sim1, x_sim2, x_Kep, x_min=None, x_max=None, y
             cdf_sim_qtls = 1. - cdf_sim_qtls
         
         if plot_median:
-            plt.plot(x_eval2, cdf_sim_qtls[:,1], ls=ls_sim2, label='Median', color=c_sim2)
+            plt.plot(x_eval2, cdf_sim_qtls[:,1], ls=ls_sim2, color=c_sim2)
         plt.fill_between(x_eval2, cdf_sim_qtls[:,0], cdf_sim_qtls[:,2], color=c_sim2, alpha=alpha, label=label_sim2)
     
     # To compute and plot the CDFs in 'x_Kep':
