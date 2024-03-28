@@ -173,8 +173,10 @@ f_low_gap_complexity = np.array(f_low_gap_complexity)
 
 
 Mtot_counts_qtls = np.zeros((len(Mtot_bins_mid),3))
+Mtot_cdfs_qtls = np.zeros((len(Mtot_bins_mid),3))
 for b in range(len(Mtot_bins_mid)):
     Mtot_counts_qtls[b] = np.quantile(Mtot_counts_all[:,b], [0.16, 0.5, 0.84])
+    Mtot_cdfs_qtls[b] = np.quantile(np.cumsum(Mtot_counts_all, axis=1)[:,b], [0.16, 0.5, 0.84])
 
 xi_2_counts_qtls = np.zeros((n_bins,3))
 xi_3_counts_qtls = np.zeros((n_bins,3))
@@ -310,7 +312,13 @@ plt.show()
 
 ##### To plot the marginal distributions (CDFs):
 
-# Multiplicities: # TODO: plot CDF for this
+# Multiplicities:
+plot_fig_mult_cdf_simple([ssk_per_sys['Mtot_obs']], [], y_min=0.6, lw=lw, labels_sim=['Kepler'], xlabel_text='Observed multiplicity', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
+plt.fill_between(Mtot_bins_mid, Mtot_cdfs_qtls[:,0], Mtot_cdfs_qtls[:,2], step='post', color='k', alpha=alpha, label=r'Simulated 16-84%')
+plt.legend(loc='lower right', bbox_to_anchor=(1,0), ncol=1, frameon=False, fontsize=lfs)
+if savefigures:
+    plt.savefig(savefigures_directory + model_name + '_multiplicities_compare_CDFs.pdf')
+    plt.close()
 
 # Periods:
 plot_fig_cdf_credible([sss_i['P_obs'] for sss_i in sss_all], [], [ssk['P_obs']], x_min=P_min, x_max=P_max, log_x=True, lw=lw, alpha=alpha, label_sim1='Simulated', xticks_custom=[3,10,30,100,300], xlabel_text=r'Period, $P$ (days)', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_size=fig_size, fig_lbrt=fig_lbrt)
