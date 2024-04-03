@@ -262,7 +262,7 @@ if savefigures:
     plt.close()
 
 # Transit depth ratios:
-plot_fig_pdf_credible([sss_i['D_ratio_obs'] for sss_i in sss_all], [], [ssk['D_ratio_obs']], x_min=10**(-1.5), x_max=10**1.5, y_min=0, n_bins=n_bins, log_x=True, lw=lw, alpha=alpha, xlabel_text=r'Transit depth ratio, $\delta_{i+1}/\delta_i$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt) #xlabel_text=r'Transit depth ratio, $\delta_{i+1}/\delta_i$'
+plot_fig_pdf_credible([sss_i['D_ratio_obs'] for sss_i in sss_all], [], [ssk['D_ratio_obs']], x_min=10**(-1.5), x_max=10**1.5, y_min=0, n_bins=n_bins, log_x=True, lw=lw, alpha=alpha, xlabel_text=r'Transit depth ratio, $\delta_{i+1}/\delta_i$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 if savefigures:
     plt.savefig(savefigures_directory + model_name + '_depthratios_compare.pdf')
     plt.close()
