@@ -57,8 +57,8 @@ with open(MR_table_file, 'r') as file:
 # Li Zeng models:
 # https://www.cfa.harvard.edu/~lzeng/tables/massradiusEarthlikeRocky.txt
 # https://www.cfa.harvard.edu/~lzeng/tables/massradiusFe.txt
-MR_earthlike_rocky = np.genfromtxt('/Users/hematthi/Documents/GradSchool/Research/ExoplanetsSysSim_Clusters/Miscellaneous_data/MR_earthlike_rocky.txt', names=['mass','radius']) # mass and radius are in Earth units
-MR_pure_iron = np.genfromtxt('/Users/hematthi/Documents/GradSchool/Research/ExoplanetsSysSim_Clusters/Miscellaneous_data/MR_pure_iron.txt', names=['mass','radius']) # mass and radius are in Earth units
+MR_earthlike_rocky = np.genfromtxt('/Users/hematthi/Documents/GradSchool/Research/ExoplanetsSysSim_Clusters-select_files/Miscellaneous_data/MR_earthlike_rocky.txt', names=['mass','radius']) # mass and radius are in Earth units
+MR_pure_iron = np.genfromtxt('/Users/hematthi/Documents/GradSchool/Research/ExoplanetsSysSim_Clusters-select_files/Miscellaneous_data/MR_pure_iron.txt', names=['mass','radius']) # mass and radius are in Earth units
 
 # To construct an interpolation function for each MR relation:
 MR_NWG2018_interp = scipy.interpolate.interp1d(10.**MR_table['log_R'], 10.**MR_table['05'])
