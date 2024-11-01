@@ -415,7 +415,7 @@ plt.show()
 
 
 ##### To plot observed multiplicity vs. period:
-
+'''
 fig = plt.figure(figsize=(10,8)) # separations in mutual Hill radii vs. sum of masses
 plot = GridSpec(2,1,left=0.15,bottom=0.15,right=0.95,top=0.95,wspace=0,hspace=0)
 bins = np.logspace(np.log10(P_min), np.log10(P_max), 21)
@@ -464,6 +464,7 @@ if savefigures:
     plt.savefig(savefigures_directory + subdirectory + model_name + '_periods_per_mult_counts.pdf')
     plt.close()
 plt.show()
+'''
 
 
 
