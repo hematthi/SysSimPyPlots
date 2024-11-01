@@ -28,7 +28,7 @@ from syssimpyplots.plot_params import *
 
 savefigures = False
 #loadfiles_directory = '/Users/hematthi/Documents/GradSchool/Research/ACI/Simulated_Data/AMD_system/Split_stars/Singles_ecc/Params11_KS/Distribute_AMD_per_mass/durations_norm_circ_singles_multis_GF2020_KS/GP_med/' #Extrapolate_P1000d/
-loadfiles_directory = '/Users/hematthi/Documents/GradSchool/Research/SysSim/SysSimExClusters/examples/test/f_resonant_chains_05/'
+loadfiles_directory = '/Users/hematthi/Documents/GradSchool/Research/SysSim/SysSimExClusters/examples/test/'
 #savefigures_directory = '/Users/hematthi/Documents/GradSchool/Research/ExoplanetsSysSim_Clusters/Figures/Model_Optimization/AMD_system/Split_stars/Singles_ecc/Params11_KS/Distribute_AMD_per_mass/durations_norm_circ_singles_multis_GF2020_KS/Best_models/GP_med/Underlying/' #'/Users/hematthi/Documents/GradSchool/Research/ExoplanetsSysSim_Clusters/Figures/Model_Optimization/AMD_system/Split_stars/Singles_ecc/Params11_KS/Distribute_AMD_per_mass/durations_norm_circ_singles_multis_GF2020_KS/Best_models/GP_med/Underlying/' #'/Users/hematthi/Documents/GradSchool/Research/ExoplanetsSysSim_Clusters/Figures/Model_Optimization/Split_stars/Clustered_P_R_fswp_bprp/Params13_KS/durations_KS/Best_models/GP_med/Underlying/'
 savefigures_directory = loadfiles_directory
 run_number = ''
@@ -89,6 +89,11 @@ plot_fig_pdf_simple([sssp['Rm_all']], [], x_min=1., x_max=20., n_bins=n_bins, no
 
 # Period ratios (< 5):
 plot_fig_pdf_simple([sssp['Rm_all'][sssp['Rm_all'] < 5]], [], x_min=1., x_max=5., n_bins=n_bins, normalize=True, log_x=True, lw=lw, xticks_custom=[1,2,3,4,5], xlabel_text=r'$P_{i+1}/P_i$', ylabel_text='Fraction', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_underlying_periodratios_less5.pdf', save_fig=savefigures)
+
+# Period ratios (within clusters vs. between clusters):
+bools_pr_same_clusters = (sssp_per_sys['clusterids_all'][:,:-1] == sssp_per_sys['clusterids_all'][:,1:]) & (sssp_per_sys['clusterids_all'][:,1:] != 0)
+bools_pr_diff_clusters = (sssp_per_sys['clusterids_all'][:,:-1] != sssp_per_sys['clusterids_all'][:,1:]) & (sssp_per_sys['clusterids_all'][:,1:] != 0)
+plot_fig_pdf_simple([sssp_per_sys['Rm_all'][bools_pr_same_clusters], sssp_per_sys['Rm_all'][bools_pr_diff_clusters]], [], x_min=1., x_max=20., n_bins=n_bins, normalize=True, log_x=True, c_sim=['b','r'], ls_sim=['-','-'], lw=lw, labels_sim=['Same cluster', 'Different clusters'], xticks_custom=[1,2,3,4,5,10,20,50,100], xlabel_text=r'$P_{i+1}/P_i$', ylabel_text='Fraction', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt, legend=True, save_name=savefigures_directory + subdirectory + model_name + '_underlying_periodratios_in_vs_between_clusters.pdf', save_fig=savefigures)
 
 # Eccentricities:
 plot_fig_pdf_simple([sssp['e_all']], [], x_min=1e-3, x_max=1., n_bins=n_bins, normalize=True, log_x=True, lw=lw, xticks_custom=[1e-3,1e-2,1e-1,1.], xlabel_text=r'$e$', ylabel_text='Fraction', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_underlying_eccentricities.pdf', save_fig=savefigures)
