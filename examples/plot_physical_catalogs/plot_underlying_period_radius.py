@@ -31,8 +31,7 @@ savefigures = False
 loadfiles_directory = '/Users/hematthi/Documents/GradSchool/Research/SysSim/SysSimExClusters/examples/test/'
 savefigures_directory = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Figures/Hybrid_NR20_AMD_model1/Underlying/'
 run_number = ''
-model_name = 'Hybrid_NR20_AMD_model1' + run_number
-model_label, model_color = 'Hybrid model', 'b'
+model_name = 'Mock_Hybrid' #'Mock_NR20' #'Hybrid_NR20_AMD_model1' + run_number
 
 
 
@@ -135,9 +134,9 @@ plt.xlim([logP_min, logP_max])
 plt.ylim([logR_min, logR_max])
 plt.xlabel(r'Orbital period, $P$ [days]', fontsize=tfs)
 #plt.ylabel(r'Planet radius, $R_p$ [$R_\oplus$]', fontsize=tfs)
-plt.legend(loc='upper left', bbox_to_anchor=(0,0.9), ncol=1, frameon=False, fontsize=lfs)
+plt.legend(loc='upper left', bbox_to_anchor=(0,0.95), ncol=1, frameon=False, fontsize=lfs)
 
 if savefigures:
-    plt.savefig(savefigures_directory + model_name + '_period_radius.pdf')
+    plt.savefig(savefigures_directory + model_name + '_underlying_period_radius.pdf')
     plt.close()
 plt.show()

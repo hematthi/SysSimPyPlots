@@ -160,6 +160,6 @@ plt.yticks([])
 plt.legend(loc='upper right', bbox_to_anchor=(0.99,0.99), ncol=1, frameon=False, fontsize=lfs)
 
 if savefigures:
-    plt.savefig(savefigures_directory + 'radius_mass_models.pdf')
+    plt.savefig(savefigures_directory + 'Models_underlying_radius_mass.pdf')
     plt.close()
 plt.show()
