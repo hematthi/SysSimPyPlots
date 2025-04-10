@@ -38,6 +38,7 @@ param_symbols = {
     "power_law_σ1": r'$\sigma_1$',
     "power_law_r1": r'$\alpha_{R1}$',
     "power_law_r2": r'$\alpha_{R2}$',
+    "norm_radius (R_earth)": r'$R_{p,\rm norm}$ $(R_\oplus)$',
     #"break_radius (R_earth)": r'$R_{p,\rm break}$ $(R_\oplus)$',
     "min_radius (R_earth)": r'$R_{p,\rm min}$ $(R_\oplus)$',
     "max_radius (R_earth)": r'$R_{p,\rm max}$ $(R_\oplus)$',
@@ -253,6 +254,18 @@ def load_planets_stars_phys_separate(file_name_path, run_number):
         The stellar mass (solar masses) of each system.
     Rstar_all : array[float]
         The stellar radius (solar radii) of each system.
+    initial_radii_per_sys : list[list]
+        The initial planet radii (solar radii), before any mass-loss, of each system.
+    initial_masses_per_sys : list[list]
+        The initial planet masses (solar masses), before any mass-loss, of each system.
+    envelope_masses_per_sys : list[list]
+        The (initial) planet envelope masses (solar masses) of each system.
+    mass_loss_timescales_per_sys : list[list]
+        The mass-loss timescales (Gyrs) of each planet in each system.
+    prob_retained_per_sys : list[list]
+        The envelope retention probabilities (over the age of the system) of each planet in each system.
+    envelope_retained_per_sys : list[list]
+        The envelope retention booleans of each planet in each system.
     """
     start = time.time()
 
@@ -350,13 +363,83 @@ def load_planets_stars_phys_separate(file_name_path, run_number):
     except:
         Rstar_all = []
         print('No file with stellar radii found.')
+    
+    ##### To load extra planet properties (if they exist):
+    
+    initial_radii_per_sys = [] # list to be filled with lists of all initial planet radii per system (solar radii)
+    try:
+        with open(os.path.join(file_name_path, 'initial_radii_all%s.out' % run_number), 'r') as file:
+            for line in file:
+                if line[0] != '#':
+                    line = line[1:-2].split(', ')
+                    initial_radii_sys = [float(i) for i in line]
+                    initial_radii_per_sys.append(initial_radii_sys)
+    except:
+        print('No file with initial planet radii found.')
+    
+    initial_masses_per_sys = [] # list to be filled with lists of all initial planet masses per system (solar masses)
+    try:
+        with open(os.path.join(file_name_path, 'initial_masses_all%s.out' % run_number), 'r') as file:
+            for line in file:
+                if line[0] != '#':
+                    line = line[1:-2].split(', ')
+                    initial_masses_sys = [float(i) for i in line]
+                    initial_masses_per_sys.append(initial_masses_sys)
+    except:
+        print('No file with initial planet masses found.')
+
+    envelope_masses_per_sys = [] # list to be filled with lists of all planet envelope masses per system (solar masses)
+    try:
+        with open(os.path.join(file_name_path, 'envelope_masses_all%s.out' % run_number), 'r') as file:
+            for line in file:
+                if line[0] != '#':
+                    line = line[1:-2].split(', ')
+                    envelope_masses_sys = [float(i) for i in line]
+                    envelope_masses_per_sys.append(envelope_masses_sys)
+    except:
+        print('No file with planet envelope masses found.')
+
+    mass_loss_timescales_per_sys = [] # list to be filled with lists of all (per-planet) mass-loss timescales per system (Gyrs)
+    try:
+        with open(os.path.join(file_name_path, 'mass_loss_timescales_all%s.out' % run_number), 'r') as file:
+            for line in file:
+                if line[0] != '#':
+                    line = line[1:-2].split(', ')
+                    mass_loss_timescales_sys = [float(i) for i in line]
+                    mass_loss_timescales_per_sys.append(mass_loss_timescales_sys)
+    except:
+        print('No file with mass-loss timescales found.')
+    
+    prob_retained_per_sys = [] # list to be filled with lists of all planet envelope retention probabilities per system
+    try:
+        with open(os.path.join(file_name_path, 'prob_retained_all%s.out' % run_number), 'r') as file:
+            for line in file:
+                if line[0] != '#':
+                    line = line[1:-2].split(', ')
+                    prob_retained_sys = [float(i) for i in line]
+                    prob_retained_per_sys.append(prob_retained_sys)
+    except:
+        print('No file with envelope retention probabilities found.')
+
+    envelope_retained_per_sys = [] # list to be filled with lists of all planet envelope retention booleans per system
+    try:
+        with open(os.path.join(file_name_path, 'envelope_retained_all%s.out' % run_number), 'r') as file:
+            for line in file:
+                if line[0] != '#':
+                    line = line[5:-2].split(', ')
+                    envelope_retained_sys = [int(i)==1 for i in line]
+                    envelope_retained_per_sys.append(envelope_retained_sys)
+    except:
+        print('No file with envelope retention booleans found.')
+
+    #####
 
     stop = time.time()
     print('Time to load (separate files with planets and stars): %s s' % (stop - start))
 
-    return clusterids_per_sys, P_per_sys, radii_per_sys, mass_per_sys, e_per_sys, inclmut_per_sys, incl_per_sys, Mstar_all, Rstar_all
+    return clusterids_per_sys, P_per_sys, radii_per_sys, mass_per_sys, e_per_sys, inclmut_per_sys, incl_per_sys, Mstar_all, Rstar_all, initial_radii_per_sys, initial_masses_per_sys, envelope_masses_per_sys, mass_loss_timescales_per_sys, prob_retained_per_sys, envelope_retained_per_sys
 
-def compute_basic_summary_stats_per_sys_cat_phys(clusterids_per_sys, P_per_sys, radii_per_sys, mass_per_sys, e_per_sys, inclmut_per_sys, incl_per_sys, Mstar_all, Rstar_all):
+def compute_basic_summary_stats_per_sys_cat_phys(clusterids_per_sys, P_per_sys, radii_per_sys, mass_per_sys, e_per_sys, inclmut_per_sys, incl_per_sys, Mstar_all, Rstar_all, initial_radii_per_sys, initial_masses_per_sys, envelope_masses_per_sys, mass_loss_timescales_per_sys, prob_retained_per_sys, envelope_retained_per_sys):
     """
     Compute the basic summary statistics per system in a physical catalog.
 
@@ -384,6 +467,18 @@ def compute_basic_summary_stats_per_sys_cat_phys(clusterids_per_sys, P_per_sys, 
         The stellar mass (solar masses) for each system.
     Rstar_all : array[float]
         The stellar radius (solar radii) for each system.
+    initial_radii_per_sys : list[list]
+        The initial planet radii (solar radii), before any mass-loss, of each system.
+    initial_masses_per_sys : list[list]
+        The initial planet masses (solar masses), before any mass-loss, of each system.
+    envelope_masses_per_sys : list[list]
+        The (initial) planet envelope masses (solar masses) of each system.
+    mass_loss_timescales_per_sys : list[list]
+        The mass-loss timescales (Gyrs) of each planet in each system.
+    prob_retained_per_sys : list[list]
+        The envelope retention probabilities (over the age of the system) of each planet in each system.
+    envelope_retained_per_sys : list[list]
+        The envelope retention booleans of each planet in each system.
 
     Returns
     -------
@@ -410,12 +505,23 @@ def compute_basic_summary_stats_per_sys_cat_phys(clusterids_per_sys, P_per_sys, 
     - `a_all`: The semi-major axes (AU) of each system (2-d array).
     - `AMD_all`: The AMDs (units of G*Mstar=1) of each system (2-d array).
     - `AMD_tot_all`: The total AMD (units of G*Mstar=1) of each system (1-d array).
+    
+    And, if provided from the simulations:
+    
+    - `init_radii_all`: The initial planet radii (Earth radii), before any mass-loss, of each system (2-d array).
+    - `init_masses_all`: The initial planet masses (Earth masses), before any mass-loss, of each system (2-d array).
+    - `env_masses_all`: The (initial) planet envelope masses (Earth masses) of each system (2-d array).
+    - `t_loss_all`: The mass-loss timescales (Gyrs) of each planet in each system (2-d array).
+    - `p_ret_all`: The envelope retention probabilities (over the age of the system) of each planet in each system (2-d array).
+    - `bools_ret_all`: The envelope retention booleans of each planet in each system.
 
     Warning
     -------
     For the 2-d arrays, each row is padded with zeros (or negative ones), since different systems have different numbers of planets.
     """
     assert len(clusterids_per_sys) != 0
+    assert len(initial_radii_per_sys) == len(initial_masses_per_sys) == len(envelope_masses_per_sys) == len(mass_loss_timescales_per_sys) == len(prob_retained_per_sys) == len(envelope_retained_per_sys)
+    has_extra_params = len(initial_radii_per_sys) > 0 # bool indicating whether the extra planet properties exist
 
     clusterids_all = []
     P_all = []
@@ -424,6 +530,13 @@ def compute_basic_summary_stats_per_sys_cat_phys(clusterids_per_sys, P_per_sys, 
     incl_all = []
     radii_all = []
     mass_all = []
+    if has_extra_params:
+        init_radii_all = []
+        init_mass_all = []
+        env_mass_all = []
+        t_loss_all = []
+        p_ret_all = []
+        bools_ret_all = []
 
     Pmin = 0. # set a minimum period (days), discarding planets less than this period
 
@@ -470,6 +583,29 @@ def compute_basic_summary_stats_per_sys_cat_phys(clusterids_per_sys, P_per_sys, 
                 inclmut_sorted_cut = np.array(inclmut_per_sys[i])[i_sorted][P_sorted > Pmin]
                 inclmut_sys = list(inclmut_sorted_cut) + [0]*(Mmax - len(inclmut_sorted_cut))
                 inclmut_all.append(inclmut_sys)
+            
+            # Extra planet properties:
+            if has_extra_params:
+                init_radii_sorted_cut = np.array(initial_radii_per_sys[i])[i_sorted][P_sorted > Pmin]
+                init_mass_sorted_cut = np.array(initial_masses_per_sys[i])[i_sorted][P_sorted > Pmin]
+                env_mass_sorted_cut = np.array(envelope_masses_per_sys[i])[i_sorted][P_sorted > Pmin]
+                t_loss_sorted_cut = np.array(mass_loss_timescales_per_sys[i])[i_sorted][P_sorted > Pmin]
+                p_ret_sorted_cut = np.array(prob_retained_per_sys[i])[i_sorted][P_sorted > Pmin]
+                bools_ret_sorted_cut = np.array(envelope_retained_per_sys[i])[i_sorted][P_sorted > Pmin]
+                
+                init_radii_sys = list(init_radii_sorted_cut) + [0]*(Mmax - len(init_radii_sorted_cut))
+                init_mass_sys = list(init_mass_sorted_cut) + [0]*(Mmax - len(init_mass_sorted_cut))
+                env_mass_sys = list(env_mass_sorted_cut) + [0]*(Mmax - len(env_mass_sorted_cut))
+                t_loss_sys = list(t_loss_sorted_cut) + [0]*(Mmax - len(t_loss_sorted_cut))
+                p_ret_sys = list(p_ret_sorted_cut) + [0]*(Mmax - len(p_ret_sorted_cut))
+                bools_ret_sys = list(bools_ret_sorted_cut) + [False]*(Mmax - len(bools_ret_sorted_cut))
+                
+                init_radii_all.append(init_radii_sys)
+                init_mass_all.append(init_mass_sys)
+                env_mass_all.append(env_mass_sys)
+                t_loss_all.append(t_loss_sys)
+                p_ret_all.append(p_ret_sys)
+                bools_ret_all.append(bools_ret_sys)
     stop = time.time()
     print('Time to analyze (basic): %s s' % (stop-start))
 
@@ -484,6 +620,13 @@ def compute_basic_summary_stats_per_sys_cat_phys(clusterids_per_sys, P_per_sys, 
     inclmut_all = np.array(inclmut_all)
     radii_all = np.array(radii_all)
     mass_all = np.array(mass_all)
+    if has_extra_params:
+        init_radii_all = np.array(init_radii_all)
+        init_mass_all = np.array(init_mass_all)
+        env_mass_all = np.array(env_mass_all)
+        t_loss_all = np.array(t_loss_all)
+        p_ret_all = np.array(p_ret_all)
+        bools_ret_all = np.array(bools_ret_all)
 
     if len(inclmut_all) == 0:
         inclmut_all = np.zeros((len(Mtot_all), Mmax)) # need this to 'compute AMD' when mutual inclinations are not available
@@ -502,6 +645,10 @@ def compute_basic_summary_stats_per_sys_cat_phys(clusterids_per_sys, P_per_sys, 
     # To convert the radii and masses to Earth units:
     radii_all = radii_all*(gen.Rsun/gen.Rearth) # planet radii in Earth radii
     mass_all = mass_all*(gen.Msun/gen.Mearth) # planet masses in Earth masses
+    if has_extra_params:
+        init_radii_all = init_radii_all*(gen.Rsun/gen.Rearth) # initial planet radii in Earth radii
+        init_mass_all = init_mass_all*(gen.Msun/gen.Mearth) # initial planet masses in Earth masses
+        env_mass_all = env_mass_all*(gen.Msun/gen.Mearth) # planet envelope masses in Earth masses
 
     if len(P_all) != 0:
         Mtot_all = np.sum(P_all > 0, axis=1)
@@ -522,6 +669,13 @@ def compute_basic_summary_stats_per_sys_cat_phys(clusterids_per_sys, P_per_sys, 
     sssp_per_sys_basic['incl_all'] = incl_all
     sssp_per_sys_basic['radii_all'] = radii_all
     sssp_per_sys_basic['mass_all'] = mass_all
+    if has_extra_params:
+        sssp_per_sys_basic['init_radii_all'] = init_radii_all
+        sssp_per_sys_basic['init_mass_all'] = init_mass_all
+        sssp_per_sys_basic['env_mass_all'] = env_mass_all
+        sssp_per_sys_basic['t_loss_all'] = t_loss_all
+        sssp_per_sys_basic['p_ret_all'] = p_ret_all
+        sssp_per_sys_basic['bools_ret_all'] = bools_ret_all
     # Stellar dependent properties:
     sssp_per_sys_basic['Mstar_all'] = Mstar_all
     sssp_per_sys_basic['Rstar_all'] = Rstar_all
@@ -550,9 +704,9 @@ def load_cat_phys_separate_and_compute_basic_summary_stats_per_sys(file_name_pat
     sssp_per_sys_basic : dict
         A dictionary containing planetary and stellar properties for each system. See the documentation for :py:func:`syssimpyplots.load_sims.compute_basic_summary_stats_per_sys_cat_phys` for a description of the dictionary fields.
     """
-    clusterids_per_sys, P_per_sys, radii_per_sys, mass_per_sys, e_per_sys, inclmut_per_sys, incl_per_sys, Mstar_all, Rstar_all = load_planets_stars_phys_separate(file_name_path, run_number)
+    clusterids_per_sys, P_per_sys, radii_per_sys, mass_per_sys, e_per_sys, inclmut_per_sys, incl_per_sys, Mstar_all, Rstar_all, initial_radii_per_sys, initial_masses_per_sys, envelope_masses_per_sys, mass_loss_timescales_per_sys, prob_retained_per_sys, envelope_retained_per_sys = load_planets_stars_phys_separate(file_name_path, run_number)
 
-    sssp_per_sys_basic = compute_basic_summary_stats_per_sys_cat_phys(clusterids_per_sys, P_per_sys, radii_per_sys, mass_per_sys, e_per_sys, inclmut_per_sys, incl_per_sys, Mstar_all, Rstar_all)
+    sssp_per_sys_basic = compute_basic_summary_stats_per_sys_cat_phys(clusterids_per_sys, P_per_sys, radii_per_sys, mass_per_sys, e_per_sys, inclmut_per_sys, incl_per_sys, Mstar_all, Rstar_all, initial_radii_per_sys, initial_masses_per_sys, envelope_masses_per_sys, mass_loss_timescales_per_sys, prob_retained_per_sys, envelope_retained_per_sys)
     return sssp_per_sys_basic
 
 def compute_summary_stats_from_cat_phys(cat_phys=None, star_phys=None, file_name_path=None, run_number='', load_full_tables=False, compute_ratios=gen.compute_ratios_adjacent, match_observed=True):
@@ -678,12 +832,23 @@ def compute_summary_stats_from_cat_phys(cat_phys=None, star_phys=None, file_name
 
         stop = time.time()
         print('Time to sort planet table into systems: %s s' % (stop - start))
+        
+        # TODO: the full tables do not have the extra planet properties yet; setting to empty lists for now.
+        print('WARNING: loading the full tables which do not have the extra planet properties yet.')
+        initial_radii_per_sys = []
+        initial_masses_per_sys = []
+        envelope_masses_per_sys = []
+        mass_loss_timescales_per_sys = []
+        prob_retained_per_sys = []
+        envelope_retained_per_sys = []
     else:
-        clusterids_per_sys, P_per_sys, radii_per_sys, mass_per_sys, e_per_sys, inclmut_per_sys, incl_per_sys, Mstar_all, Rstar_all = load_planets_stars_phys_separate(file_name_path, run_number)
+        clusterids_per_sys, P_per_sys, radii_per_sys, mass_per_sys, e_per_sys, inclmut_per_sys, incl_per_sys, Mstar_all, Rstar_all, initial_radii_per_sys, initial_masses_per_sys, envelope_masses_per_sys, mass_loss_timescales_per_sys, prob_retained_per_sys, envelope_retained_per_sys = load_planets_stars_phys_separate(file_name_path, run_number)
 
 
 
-    sssp_per_sys_basic = compute_basic_summary_stats_per_sys_cat_phys(clusterids_per_sys, P_per_sys, radii_per_sys, mass_per_sys, e_per_sys, inclmut_per_sys, incl_per_sys, Mstar_all, Rstar_all)
+    sssp_per_sys_basic = compute_basic_summary_stats_per_sys_cat_phys(clusterids_per_sys, P_per_sys, radii_per_sys, mass_per_sys, e_per_sys, inclmut_per_sys, incl_per_sys, Mstar_all, Rstar_all, initial_radii_per_sys, initial_masses_per_sys, envelope_masses_per_sys, mass_loss_timescales_per_sys, prob_retained_per_sys, envelope_retained_per_sys)
+    
+    has_extra_params = 'init_radii_all' in sssp_per_sys_basic # bool indicating whether the extra planet properties exist
 
     # Total planet, cluster, and planets per cluster multiplicities:
     Mmax = sssp_per_sys_basic['Mmax']
@@ -699,6 +864,13 @@ def compute_summary_stats_from_cat_phys(cat_phys=None, star_phys=None, file_name
     incl_all = sssp_per_sys_basic['incl_all']
     radii_all = sssp_per_sys_basic['radii_all']
     mass_all = sssp_per_sys_basic['mass_all']
+    if has_extra_params:
+        init_radii_all = sssp_per_sys_basic['init_radii_all']
+        init_mass_all = sssp_per_sys_basic['init_mass_all']
+        env_mass_all = sssp_per_sys_basic['env_mass_all']
+        t_loss_all = sssp_per_sys_basic['t_loss_all']
+        p_ret_all = sssp_per_sys_basic['p_ret_all']
+        bools_ret_all = sssp_per_sys_basic['bools_ret_all']
 
     # Stellar dependent properties:
     mu_all = sssp_per_sys_basic['mu_all']
@@ -824,6 +996,13 @@ def compute_summary_stats_from_cat_phys(cat_phys=None, star_phys=None, file_name
     sssp_per_sys['inclmut_all'] = inclmut_all
     sssp_per_sys['incl_all'] = incl_all
     sssp_per_sys['AMD_all'] = AMD_all
+    if has_extra_params:
+        sssp_per_sys['init_radii_all'] = init_radii_all
+        sssp_per_sys['init_mass_all'] = init_mass_all
+        sssp_per_sys['env_mass_all'] = env_mass_all
+        sssp_per_sys['t_loss_all'] = t_loss_all
+        sssp_per_sys['p_ret_all'] = p_ret_all
+        sssp_per_sys['bools_ret_all'] = bools_ret_all
     # Planet property ratios:
     sssp_per_sys['Rm_all'] = Rm_all
     sssp_per_sys['radii_ratio_all'] = radii_ratio_all
@@ -840,11 +1019,18 @@ def compute_summary_stats_from_cat_phys(cat_phys=None, star_phys=None, file_name
     sssp['P_all'] = P_all[P_all > 0]
     sssp['radii_all'] = radii_all[radii_all > 0]
     sssp['mass_all'] = mass_all[mass_all > 0]
-    sssp['e_all'] = e_all[P_all > 0] # can be zero, so use periods to get real planets
+    sssp['e_all'] = e_all[P_all > 0] # zero values can be real or padded, so use periods to keep the real planets
     sssp['inclmut_all'] = inclmut_all_flat
     sssp['incl_all'] = incl_all[incl_all > 0]
     sssp['radii_above_all'] = radii_above_all_flat
     sssp['radii_below_all'] = radii_below_all_flat
+    if has_extra_params:
+        sssp['init_radii_all'] = init_radii_all[init_radii_all > 0]
+        sssp['init_mass_all'] = init_mass_all[init_mass_all > 0]
+        sssp['env_mass_all'] = env_mass_all[env_mass_all > 0]
+        sssp['t_loss_all'] = t_loss_all[t_loss_all > 0]
+        sssp['p_ret_all'] = p_ret_all[p_ret_all > 0]
+        sssp['bools_ret_all'] = bools_ret_all[P_all > 0] # False values can be real or padded, so use periods to keep the real planets
     # Planet property ratios:
     sssp['Rm_all'] = Rm_all[Rm_all > 0]
     sssp['radii_ratio_all'] = radii_ratio_all[radii_ratio_all > 0]
