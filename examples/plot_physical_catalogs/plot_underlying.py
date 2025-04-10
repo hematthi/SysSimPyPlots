@@ -35,6 +35,8 @@ run_number = ''
 model_name = 'Maximum_AMD_model' + run_number
 model_label, model_color = 'Maximum AMD model', 'g' #'Maximum AMD model', 'g' #'Two-Rayleigh model', 'b'
 
+has_extra_params = True # [NEW,TEMPORARY] whether the simulated catalog has extra planet params
+
 
 
 
@@ -48,7 +50,7 @@ N_sim, cos_factor, P_min, P_max, radii_min, radii_max = read_targets_period_radi
 param_vals_all = read_sim_params(loadfiles_directory + 'periods%s.out' % run_number)
 
 # To load and process the simulated physical catalog of stars and planets:
-sssp_per_sys, sssp = compute_summary_stats_from_cat_phys(file_name_path=loadfiles_directory, run_number=run_number, load_full_tables=True)
+sssp_per_sys, sssp = compute_summary_stats_from_cat_phys(file_name_path=loadfiles_directory, run_number=run_number, load_full_tables=False if has_extra_params else True)
 
 
 
@@ -134,6 +136,26 @@ plot_fig_pdf_simple([sssp_per_sys['radii_monotonicity']], [], x_min=-0.6, x_max=
 
 # Gap complexity:
 plot_fig_pdf_simple([sssp_per_sys['gap_complexity']], [], x_min=0., x_max=1., n_bins=n_bins, normalize=True, log_x=False, lw=lw, xlabel_text=r'$\mathcal{C}$', ylabel_text='Fraction', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_underlying_gap_complexity.pdf', save_fig=savefigures)
+
+### Additional planetary properties from the Hybrid model:
+if has_extra_params:
+    # Initial planet radii:
+    plot_fig_pdf_simple([sssp['init_radii_all'], sssp['radii_all']], [], x_min=0.5, x_max=10., n_bins=n_bins, normalize=True, log_x=True, c_sim=['k','k'], ls_sim=['--','-'], lw=lw, labels_sim=['Initial','Final'], xticks_custom=[0.5,1,2,4,10], xlabel_text=r'$R_p$ ($R_\oplus$)', ylabel_text='Fraction', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt, legend=True, save_name=savefigures_directory + subdirectory + model_name + '_underlying_initial_radii.pdf', save_fig=savefigures)
+    
+    # Initial planet masses:
+    plot_fig_pdf_simple([sssp['init_mass_all'], sssp['mass_all']], [], x_min=0.09, x_max=1e2, n_bins=n_bins, normalize=True, log_x=True, c_sim=['k','k'], ls_sim=['--','-'], lw=lw, labels_sim=['Initial','Final'], xlabel_text=r'$M_p$ ($M_\oplus$)', ylabel_text='Fraction', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_underlying_initial_masses.pdf', save_fig=savefigures)
+    
+    # Planet envelope masses:
+    plot_fig_pdf_simple([sssp['env_mass_all']], [], x_min=1e-2, x_max=1e2, n_bins=n_bins, normalize=True, log_x=True, ls_sim=['--'], lw=lw, xlabel_text=r'$M_{\rm env}$ ($M_\oplus$)', ylabel_text='Fraction', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_underlying_envelope_masses.pdf', save_fig=savefigures)
+    
+    # Mass-loss timescales:
+    plot_fig_pdf_simple([sssp['t_loss_all']], [], x_min=1e-5, x_max=1e5, n_bins=n_bins, normalize=True, log_x=True, ls_sim=['--'], lw=lw, xlabel_text=r'$t_{\rm loss}$ (Gyr)', ylabel_text='Fraction', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_underlying_massloss_timescales.pdf', save_fig=savefigures)
+    
+    # Probabilities of retaining envelope:
+    plot_fig_pdf_simple([sssp['p_ret_all']], [], x_min=0., x_max=1., n_bins=n_bins, normalize=True, log_x=False, ls_sim=['--'], lw=lw, xlabel_text=r'$p_{\rm ret}$', ylabel_text='Fraction', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_underlying_retention_probabilities.pdf', save_fig=savefigures)
+    
+    # Numbers of planets that have lost vs. retained their envelopes:
+    print('Numbers (fractions) of planets that have lost vs. retained their envelopes: {:d} ({:.2f}) vs. {:d} ({:.2f})'.format(np.sum(sssp['bools_ret_all']), np.sum(sssp['bools_ret_all'])/len(sssp['bools_ret_all']), np.sum(~sssp['bools_ret_all']), np.sum(~sssp['bools_ret_all'])/len(sssp['bools_ret_all'])))
 
 plt.show()
 plt.close()
