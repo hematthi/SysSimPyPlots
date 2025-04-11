@@ -126,25 +126,28 @@ def analyze_bboptimize_runs(loadfiles_directory, file_names=file_names, run_numb
     d_used_vals_w_all = np.array(d_used_vals_w_all, dtype=[(d_key, 'f8') for d_key in d_used_keys_runs[0][0]])
 
     # To compute the sums of weighted distances per iteration, for each sample:
-    dtot_runs = np.array([np.sum(run_2d, axis=1) for run_2d in d_used_vals_runs]) # will be a 2D array of size (runs, steps)
-    dtot_all = np.array([sum(x) for x in d_used_vals_all]) # will be a 1D array of length runs*steps
-    dtot_w_runs = np.array([np.sum(run_2d, axis=1) for run_2d in d_used_vals_w_runs]) # will be a 2D array of size (runs, steps)
-    dtot_w_all = np.array([sum(x) for x in d_used_vals_w_all]) #np.sum(d_used_vals_w_all[sample], axis=1) # will be a 1D array of length runs*steps
+    dtot_runs = np.array([np.sum(run_2d, axis=1) for run_2d in d_used_vals_runs]) # will be a 2D array of size (runs, evals)
+    dtot_all = np.array([sum(x) for x in d_used_vals_all]) # will be a 1D array of length runs*evals
+    dtot_w_runs = np.array([np.sum(run_2d, axis=1) for run_2d in d_used_vals_w_runs]) # will be a 2D array of size (runs, evals)
+    dtot_w_all = np.array([sum(x) for x in d_used_vals_w_all]) #np.sum(d_used_vals_w_all[sample], axis=1) # will be a 1D array of length runs*evals
 
     active_params_best_all = np.array([active_params_runs[n][np.argsort(dtot_w_runs[n])[0]] for n in range(len(run_numbers))])
     dtot_best_all = np.array([dtot_w_runs[n][np.argsort(dtot_w_runs[n])[0]] for n in range(len(run_numbers))])
 
     results = {}
     #results['d_used_keys_runs'] = d_used_keys_runs
+    results['t_optim_all'] = time_optimization_all
     results['d_used_vals_all'] = d_used_vals_all
     results['d_used_vals_w_all'] = d_used_vals_w_all
     results['dtot_all'] = dtot_all
-    results['dtot_w_all'] = dtot_w_all
+    results['dtot_w_all'] = dtot_w_all # 1D array (flattened)
+    results['dtot_w_runs'] = dtot_w_runs # 2D array of size (runs, evals)
     results['dtot_best_all'] = dtot_best_all
     results['i_sort_dtot_w_all'] = np.argsort(dtot_w_all) # indices that would sort all the model evaluations by the total weighted distance
     results['active_params_names_all'] = active_params_names_all
     results['active_params_bounds_all'] = active_params_bounds_all
-    results['active_params_all'] = active_params_all
+    results['active_params_all'] = active_params_all # 2D array of size (runs*evals, params)
+    results['active_params_runs'] = active_params_runs # 3D array of size (runs, evals, params)
     results['active_params_best_all'] = active_params_best_all
     return results
 
@@ -294,6 +297,7 @@ def analyze_bboptimize_split_stars_runs(loadfiles_directory, file_names=file_nam
 
     results = {}
     #results['d_used_keys_runs'] = d_used_keys_runs
+    results['t_optim_all'] = time_optimization_all
     results['d_used_vals_all'] = d_used_vals_all # dict of 2D structured arrays
     results['d_used_vals_w_all'] = d_used_vals_w_all # dict of 2D structured arrays
     results['dtot_samples_all'] = dtot_samples_all # dict of 1D arrays
