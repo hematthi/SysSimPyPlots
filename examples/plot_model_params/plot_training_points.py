@@ -26,31 +26,34 @@ from syssimpyplots.plot_params import *
 ##### To load the files with the GP evaluated points:
 
 savefigures = False
-run_directory = 'Hybrid_NR20_AMD_model1/Fit_all_KS/Params13_alpha1_100/GP_files/' #'Hybrid_NR20_AMD_model1/Fit_all_KS/Params13_alpha1_100/GP_files/'
-loadfiles_directory = '/Users/hematthi/Documents/NotreDame_Postdoc/CRC/Files/SysSim/Model_Optimization/' + run_directory
+
+#run_directory = 'Hybrid_NR20_AMD_model1/Fit_all_KS/Params12/GP_files/'
+#loadfiles_directory = '/Users/hematthi/Documents/NotreDame_Postdoc/CRC/Files/SysSim/Model_Optimization/' + run_directory
+run_directory = 'Hybrid_NR20_AMD_model1/Fit_all_KS/Params8/GP_files/'
+loadfiles_directory = '/Users/hematthi/Documents/NPP_ARC_Modernize_Kepler/Personal_research/SysSim/Model_Optimization/' + run_directory
 savefigures_directory = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Figures/Model_Optimization/' + run_directory
 model_name = 'Hybrid_NR20_AMD_model1'
 
 active_params_symbols = [r'$M_{\rm break,1}$',
-                         r'$\ln{(\lambda_c)}$',
-                         r'$\ln{(\lambda_p)}$',
+                         #r'$\ln{(\lambda_c)}$',
+                         #r'$\ln{(\lambda_p)}$',
                          r'$\mu_M$',
                          r'$R_{p,\rm norm}$',
-                         r'$\alpha_P$',
+                         #r'$\alpha_P$',
                          r'$\gamma_0$',
                          r'$\gamma_1$',
                          r'$\sigma_0$',
                          r'$\sigma_1$',
                          r'$\sigma_M$',
-                         r'$\sigma_P$',
-                         r'$\alpha_{\rm ret}$',
+                         #r'$\sigma_P$',
+                         #r'$\alpha_{\rm ret}$',
                          ] # this list of parameter symbols must match the order of parameters in 'active_params_names'!
 dims = len(active_params_symbols)
 
 active_params_transformed_symbols = copy.deepcopy(np.array(active_params_symbols, dtype=object))
-i_transformed, j_transformed = 1, 2
-active_params_transformed_symbols[i_transformed] = r'$\ln{(\lambda_c \lambda_p)}$'
-active_params_transformed_symbols[j_transformed] = r'$\ln{(\lambda_p/\lambda_c)}$'
+#i_transformed, j_transformed = 1, 2
+#active_params_transformed_symbols[i_transformed] = r'$\ln{(\lambda_c \lambda_p)}$'
+#active_params_transformed_symbols[j_transformed] = r'$\ln{(\lambda_p/\lambda_c)}$'
 
 # To load the training points:
 data_optim = load_training_points(dims, file_name_path=loadfiles_directory, file_name='Active_params_distances_table_best100000_every10.txt')
@@ -83,7 +86,7 @@ plt.show()
 # To make corner plots for the GP training points:
 
 plot_cornerpy_wrapper(active_params_symbols, data_train['xtrain'], save_name=savefigures_directory + model_name + '_training_corner.pdf', save_fig=savefigures)
-plot_cornerpy_wrapper(active_params_transformed_symbols, transform_sum_diff_params(data_train['xtrain'], i_transformed, j_transformed), save_name=savefigures_directory + model_name + '_training_transformed_corner.pdf', save_fig=savefigures)
+#plot_cornerpy_wrapper(active_params_transformed_symbols, transform_sum_diff_params(data_train['xtrain'], i_transformed, j_transformed), save_name=savefigures_directory + model_name + '_training_transformed_corner.pdf', save_fig=savefigures)
 plt.show()
 
 
