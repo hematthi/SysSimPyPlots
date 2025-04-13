@@ -24,33 +24,33 @@ from syssimpyplots.plot_params import *
 ##### To load the files with the GP evaluated points:
 
 savefigures = False
-transformed_rates = True
-run_directory = 'Hybrid_NR20_AMD_model1/Fit_all_KS/Params13_alpha1_100/GP_files/'
-loadfiles_directory = '/Users/hematthi/Documents/NotreDame_Postdoc/CRC/Files/SysSim/Model_Optimization/' + run_directory
+transformed_rates = False
+#run_directory = 'Hybrid_NR20_AMD_model1/Fit_all_KS/Params13_alpha1_100/GP_files/'
+#loadfiles_directory = '/Users/hematthi/Documents/NotreDame_Postdoc/CRC/Files/SysSim/Model_Optimization/' + run_directory
+run_directory = 'Hybrid_NR20_AMD_model1/Fit_all_KS/Params8/GP_files/'
+loadfiles_directory = '/Users/hematthi/Documents/NPP_ARC_Modernize_Kepler/Personal_research/SysSim/Model_Optimization/' + run_directory
 savefigures_directory = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Figures/Model_Optimization/' + run_directory
 model_name = 'Hybrid_NR20_AMD_model1'
 
 active_params_symbols = [r'$M_{\rm break,1}$',
-                         r'$\ln{(\lambda_c)}$',
-                         r'$\ln{(\lambda_p)}$',
+                         #r'$\ln{(\lambda_c)}$',
+                         #r'$\ln{(\lambda_p)}$',
                          r'$\mu_M$',
                          r'$R_{p,\rm norm}$',
-                         r'$\alpha_P$',
+                         #r'$\alpha_P$',
                          r'$\gamma_0$',
                          r'$\gamma_1$',
                          r'$\sigma_0$',
                          r'$\sigma_1$',
                          r'$\sigma_M$',
-                         r'$\sigma_P$',
-                         r'$\alpha_{\rm ret}$',
+                         #r'$\sigma_P$',
+                         #r'$\alpha_{\rm ret}$',
                          ] # this list of parameter symbols must match the order of parameters in 'active_params_names'!
 
 dims = len(active_params_symbols)
 
 #long_symbols = [False, True, False, False, False, False, False, False, False, False, False] # Clustered_P_R_fswp_bprp_AMD_sys with Delta_c + sigma_{e,1}
 long_symbols = [False]*dims # Hybrid_NR20_AMD_model1
-
-transformed_rates = True
 
 active_params_transformed_symbols = np.copy(active_params_symbols)
 i_transformed, j_transformed = 1, 2
@@ -63,8 +63,9 @@ data_train = load_training_points(dims, file_name_path=loadfiles_directory, file
 active_params_names = np.array(data_train['active_params_names'])
 
 # To load the tables of points drawn from the prior based on the GP model:
-#n_train, mean_f, sigma_f, lscales, vol = 2000, 35.0, 2.7, 37.65, 1425.6
-n_train, mean_f, sigma_f, lscales, vol = 2000, 35.0, 2.7, 67.65, 141134.4
+#n_train, mean_f, sigma_f, lscales, vol = 2000, 35.0, 2.7, 37.65, 1425.6 # 12 params
+#n_train, mean_f, sigma_f, lscales, vol = 2000, 35.0, 2.7, 67.65, 141134.4 # 13 params
+n_train, mean_f, sigma_f, lscales, vol = 2000, 35.0, 2.7, 16.05, 74.25 # 8 params
 n_points, max_mean, max_std, max_post = 100000, 'Inf', 'Inf', -10.0 #100000, 'Inf', 'Inf', 'Inf'
 file_name = 'GP_train%s_meanf%s_sigmaf%s_lscales%s_vol%s_points%s_mean%s_std%s_post%s.csv' % (n_train, mean_f, sigma_f, lscales, vol, n_points, max_mean, max_std, max_post)
 xprior_accepted_table = load_GP_table_prior_draws(file_name, file_name_path=loadfiles_directory)
@@ -84,7 +85,7 @@ plt.show()
 
 ##### To make cuts for the posterior:
 
-mean_cut, std_cut, post_cut = np.inf, np.inf, -11.0
+mean_cut, std_cut, post_cut = np.inf, np.inf, -10.0
 #xprior_accepts = make_cuts_GP_mean_std_post(active_params_transformed_names, xprior_accepted_table, max_mean=mean_cut, max_std=std_cut, max_post=post_cut)
 if transformed_rates:
     xprior_accepts_transformed = make_cuts_GP_mean_std_post(active_params_transformed_names, xprior_accepted_table, max_mean=mean_cut, max_std=std_cut, max_post=post_cut)
