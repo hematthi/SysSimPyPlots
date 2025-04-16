@@ -1,24 +1,8 @@
 # To import required modules:
 import numpy as np
-#import time
-#import os
-#import sys
-#import copy
-#import matplotlib
-#import matplotlib.cm as cm #for color maps
-#import matplotlib.pyplot as plt
-#from matplotlib.gridspec import GridSpec #for specifying plot attributes
-#from matplotlib import ticker #for setting contour plots to log scale
-#import scipy.integrate #for numerical integration
-#import scipy.misc #for factorial function
-#from scipy.special import erf #error function, used in computing CDF of normal distribution
-import scipy.interpolate #for interpolation functions
+import scipy.interpolate
 
 from syssimpyplots.general import *
-#from syssimpyplots.compare_kepler import *
-#from syssimpyplots.load_sims import *
-#from syssimpyplots.plot_catalogs import *
-#from syssimpyplots.plot_params import *
 
 
 
