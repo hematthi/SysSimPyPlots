@@ -22,6 +22,8 @@ from syssimpyplots.load_sims import *
 from syssimpyplots.plot_catalogs import *
 from syssimpyplots.plot_params import *
 
+from mass_radius_models import *
+
 ##### For calling Julia functions:
 # Import Julia:
 from julia.api import Julia
@@ -44,9 +46,52 @@ savefigures_directory = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Fi
 
 
 
-##### To load the model parameters for a large number of models drawn from the posterior distribution:
+##### To compute the credible regions for the median radius-mass relation from the model posterior distribution:
+##### This will call Julia functions from Python
 
-loadfiles_directory = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Simulated_catalogs/Hybrid_NR20_AMD_model1/Fit_all_KS/Params12/GP_best_models_100/'
+mass_min, mass_max = 0.1, 1e3
+radii_min, radii_max = 0.5, 10.
+
+M_array = np.logspace(np.log10(mass_min), np.log10(mass_max), 1000)
+qtls = [0.16,0.5,0.84] # for 1-sigma
+
+##### (1) From the model parameters drawn from the posterior distribution:
+
+#run_directory = 'Hybrid_NR20_AMD_model1/Fit_all_KS/Params12/GP_files/'
+#loadfiles_directory = '/Users/hematthi/Documents/NotreDame_Postdoc/CRC/Files/SysSim/Model_Optimization/' + run_directory
+run_directory = 'Hybrid_NR20_AMD_model1/Fit_all_KS/Params8/GP_files/'
+loadfiles_directory = '/Users/hematthi/Documents/NPP_ARC_Modernize_Kepler/Personal_research/SysSim/Model_Optimization/' + run_directory
+
+n_params = 8
+#n_train, mean_f, sigma_f, lscales, vol = 2000, 35.0, 2.7, 37.65, 1425.6 # 12 params
+#n_train, mean_f, sigma_f, lscales, vol = 2000, 35.0, 2.7, 67.65, 141134.4 # 13 params
+n_train, mean_f, sigma_f, lscales, vol = 2000, 35.0, 2.7, 16.05, 14.26 # 8 params
+n_points, max_mean, max_std, max_post = 100000, 'Inf', 'Inf', -10.0 #100000, 'Inf', 'Inf', 'Inf'
+file_name = 'GP_train%s_meanf%s_sigmaf%s_lscales%s_vol%s_points%s_mean%s_std%s_post%s.csv' % (n_train, mean_f, sigma_f, lscales, vol, n_points, max_mean, max_std, max_post)
+xprior_accepted_table = load_GP_table_prior_draws(file_name, file_name_path=loadfiles_directory)
+active_params_names = np.array(xprior_accepted_table.dtype.names[:n_params])
+
+# To compute the median radius-mass prediction for each set of model parameters:
+points_to_use = min(1000, len(xprior_accepted_table))
+μ_R_array_all = np.zeros((points_to_use, len(M_array)))
+σ_R_array_all = np.zeros((points_to_use, len(M_array)))
+for i in range(points_to_use):
+    params = xprior_accepted_table[i]
+    
+    C = params['norm_radius']
+    M_break1 = params['break1_mass']
+    γ0, γ1 = params['power_law_γ0'], params['power_law_γ1']
+    σ0, σ1 = params['power_law_σ0'], params['power_law_σ1']
+    
+    μσ_R_array = np.array([Main.mean_radius_and_scatter_given_mass_neil_rogers2020(M, C=C, M_break1=M_break1, M_break2=1e4, γ0=γ0, γ1=γ1, γ2=0., σ0=σ0, σ1=σ1, σ2=0.1) for M in M_array])
+    μ_R_array_all[i] = np.array([μσ_R[0] for μσ_R in μσ_R_array])
+    σ_R_array_all[i] = np.array([μσ_R[1] for μσ_R in μσ_R_array])
+
+μ_R_array_qtls = np.quantile(μ_R_array_all, qtls, axis=0)
+
+##### (2) From the model parameters drawn from the posterior distribution that have simulated catalogs (that still pass the distance threshold after simulation):
+
+loadfiles_directory = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Simulated_catalogs/Hybrid_NR20_AMD_model1/Fit_all_KS/Params8/GP_best_models_100/'
 
 params_all = []
 
@@ -56,16 +101,9 @@ for i in range(runs):
     params_i = read_sim_params(loadfiles_directory + 'periods%s.out' % run_number)
     params_all.append(params_i)
 
-##### To compute the median radius-mass prediction for each set of model parameters:
-##### This will call Julia functions from Python
-
-mass_min, mass_max = 0.1, 1e3
-radii_min, radii_max = 0.5, 10.
-
-M_array = np.logspace(np.log10(mass_min), np.log10(mass_max), 1000)
-μ_R_array_all = np.zeros((runs, len(M_array)))
-σ_R_array_all = np.zeros((runs, len(M_array)))
-
+# To compute the median radius-mass prediction for each set of model parameters:
+μ_R_array_all_sim = np.zeros((runs, len(M_array)))
+σ_R_array_all_sim = np.zeros((runs, len(M_array)))
 for i,params in enumerate(params_all):
     C = params['norm_radius (R_earth)']
     M_break1 = params['break_mass (M_earth)']
@@ -73,58 +111,14 @@ for i,params in enumerate(params_all):
     σ0, σ1 = params['power_law_σ0'], params['power_law_σ1']
     
     μσ_R_array = np.array([Main.mean_radius_and_scatter_given_mass_neil_rogers2020(M, C=C, M_break1=M_break1, M_break2=1e4, γ0=γ0, γ1=γ1, γ2=0., σ0=σ0, σ1=σ1, σ2=0.1) for M in M_array])
-    μ_R_array_all[i] = np.array([μσ_R[0] for μσ_R in μσ_R_array])
-    σ_R_array_all[i] = np.array([μσ_R[1] for μσ_R in μσ_R_array])
+    μ_R_array_all_sim[i] = np.array([μσ_R[0] for μσ_R in μσ_R_array])
+    σ_R_array_all_sim[i] = np.array([μσ_R[1] for μσ_R in μσ_R_array])
 
-μ_R_array_qtls = np.quantile(μ_R_array_all, [0.16,0.5,0.84], axis=0)
+μ_R_array_qtls_sim = np.quantile(μ_R_array_all_sim, qtls, axis=0)
+
+
 
 R_S07_silicate_array = np.array([Main.radius_given_mass_pure_silicate_fit_seager2007(M) for M in M_array])
-
-
-
-
-
-##### To load some mass-radius tables:
-
-# NWG-2018 model:
-MR_table_file = '../../src/syssimpyplots/data/MRpredict_table_weights3025_R1001_Q1001.txt'
-with open(MR_table_file, 'r') as file:
-    lines = (line for line in file if not line.startswith('#'))
-    MR_table = np.genfromtxt(lines, names=True, delimiter=', ')
-
-# Li Zeng models:
-# https://www.cfa.harvard.edu/~lzeng/tables/massradiusEarthlikeRocky.txt
-# https://www.cfa.harvard.edu/~lzeng/tables/massradiusFe.txt
-MR_earthlike_rocky = np.genfromtxt('/Users/hematthi/Documents/GradSchool/Research/ExoplanetsSysSim_Clusters-select_files/Miscellaneous_data/MR_earthlike_rocky.txt', names=['mass','radius']) # mass and radius are in Earth units
-MR_pure_iron = np.genfromtxt('/Users/hematthi/Documents/GradSchool/Research/ExoplanetsSysSim_Clusters-select_files/Miscellaneous_data/MR_pure_iron.txt', names=['mass','radius']) # mass and radius are in Earth units
-
-# To construct an interpolation function for each MR relation:
-MR_NWG2018_interp = scipy.interpolate.interp1d(10.**MR_table['log_R'], 10.**MR_table['05'])
-MR_earthlike_rocky_interp = scipy.interpolate.interp1d(MR_earthlike_rocky['radius'], MR_earthlike_rocky['mass'])
-MR_pure_iron_interp = scipy.interpolate.interp1d(MR_pure_iron['radius'], MR_pure_iron['mass'])
-
-# To find where the Earth-like rocky relation intersects with the NWG2018 mean relation (between 1.4-1.5 R_earth):
-def diff_MR(R):
-    M_NWG2018 = MR_NWG2018_interp(R)
-    M_earthlike_rocky = MR_earthlike_rocky_interp(R)
-    return np.abs(M_NWG2018 - M_earthlike_rocky)
-# The intersection is approximately 1.472 R_earth
-radii_switch = 1.472
-
-# H20 modification below 'radii_switch: Lognormal distribution for mass centered around Earth-like rocky, with a sigma_log_M that grows with radius
-# To define sigma_log_M as a linear function of radius:
-sigma_log_M_at_radii_switch = 0.3 # std of log_M (Earth masses) at radii_switch
-sigma_log_M_at_radii_min = 0.04 # std of log_M (Earth masses) at radii_min
-sigma_log_M_radius_slope = (sigma_log_M_at_radii_switch - sigma_log_M_at_radii_min) / (radii_switch - radii_min)
-sigma_log_M = sigma_log_M_radius_slope*(MR_earthlike_rocky['radius'] - radii_min) + sigma_log_M_at_radii_min
-
-# H20 model:
-end_ELR = 27-1
-start_NWG = 284-1 # index closest to log10(R=1.472)
-radius_evals_H20 = np.concatenate((MR_earthlike_rocky['radius'][:end_ELR], 10.**MR_table['log_R'][start_NWG:]))
-mass_evals_med_H20 = np.concatenate((MR_earthlike_rocky['mass'][:end_ELR], 10.**MR_table['05'][start_NWG:]))
-mass_evals_016_H20 = np.concatenate((10.**(np.log10(MR_earthlike_rocky['mass'])-sigma_log_M)[:end_ELR], 10.**MR_table['016'][start_NWG:]))
-mass_evals_084_H20 = np.concatenate((10.**(np.log10(MR_earthlike_rocky['mass'])+sigma_log_M)[:end_ELR], 10.**MR_table['084'][start_NWG:]))
 
 
 
@@ -149,8 +143,10 @@ ax = plt.subplot(plot[:,:])
 # Plot the mass-radius/radius-mass relations:
 plt.plot(mass_evals_med_H20, radius_evals_H20, '--', color='k') #, label='H20, mean prediction'
 plt.fill_betweenx(radius_evals_H20, mass_evals_016_H20, mass_evals_084_H20, color='k', alpha=0.2, label=r'H20 model, 1$\sigma$ scatter around median') # 16%-84% region of H20 model
-plt.plot(M_array, μ_R_array_qtls[1], '-', color='b') #, label='NR20, Model 2, mean'
-plt.fill_between(M_array, μ_R_array_qtls[2], μ_R_array_qtls[0], color='b', alpha=0.2, label='Hybrid model, 16%-84% region of median')
+plt.plot(M_array, μ_R_array_qtls[1], '-', color='m')
+plt.fill_between(M_array, μ_R_array_qtls[2], μ_R_array_qtls[0], color='m', alpha=0.2, label='Hybrid model, 16%-84% region of median (posterior draws)')
+plt.plot(M_array, μ_R_array_qtls_sim[1], '-', color='b')
+plt.fill_between(M_array, μ_R_array_qtls_sim[2], μ_R_array_qtls_sim[0], color='b', alpha=0.2, label='Hybrid model, 16%-84% region of median (posterior draws + simulated)')
 plt.plot(M_array, R_S07_silicate_array, color='g') #, label='S07, pure-silicate'
 plt.fill_between(M_array, 0.95*R_S07_silicate_array, 1.05*R_S07_silicate_array, color='g', alpha=0.2, label='S07 pure-silicate model with 5% scatter') #, label='NR20, 5% scatter around S07 pure-silicate (final)'
 ax.set_xscale('log')
