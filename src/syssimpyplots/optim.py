@@ -116,7 +116,11 @@ def analyze_bboptimize_runs(loadfiles_directory, file_names=file_names, run_numb
     steps_tot_all = np.array(steps_tot_all)
     time_optimization_all = np.array(time_optimization_all)
 
-    active_params_runs = np.array(active_params_runs)
+    if np.min(steps_tot_all) != np.max(steps_tot_all):
+        print('Warning: not all runs have the same number of iterations.')
+        active_params_runs = [np.array(x) for x in active_params_runs] # list of 2d arrays
+    else:
+        active_params_runs = np.array(active_params_runs) # 3d array
     active_params_all = np.array(active_params_all)
 
     d_used_keys_runs = np.array(d_used_keys_runs)
