@@ -30,7 +30,7 @@ plt.ioff()
 
 #run_directory = 'Hybrid_NR20_AMD_model1/Fit_all_KS/Params12/'
 #loadfiles_directory = '/Users/hematthi/Documents/NotreDame_Postdoc/CRC/Files/SysSim/Model_Optimization/' + run_directory
-run_directory = 'Hybrid_NR20_AMD_model1/Fit_some_KS/Params8_fix_highM/' #Fit_all_KS/Params8/
+run_directory = 'Hybrid_NR20_AMD_model1/Fit_some8_KS/Params9_fix_highM/'
 loadfiles_directory = '/Users/hematthi/Documents/NPP_ARC_Modernize_Kepler/Personal_research/SysSim/Model_Optimization/' + run_directory
 savefigures_directory = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Figures/Model_Optimization/' + run_directory
 
@@ -50,7 +50,7 @@ active_params_symbols = [#r'$M_{\rm break,1}$',
                          r'$\ln{(\alpha_{\rm ret})}$',
                          r'$\mu_M$',
                          r'$R_{p,\rm norm}$',
-                         #r'$\alpha_P$',
+                         r'$\alpha_P$',
                          r'$\gamma_0$',
                          #r'$\gamma_1$',
                          r'$\sigma_0$',
@@ -80,7 +80,7 @@ np.savetxt('/Users/hematthi/Documents/GradSchool/Research/ACI/Simulated_Data/' +
 ##### To save the best parameter values and the distances for training a GP emulator:
 '''
 #N_best_save, keep_every = 100000, 10
-N_best_save, keep_every = 10000, 1 # NOTE: may want to use this for runs that stop early due to reaching the target distance
+N_best_save, keep_every = 10000, 1 # NOTE: may want to use this if many runs stop early due to reaching the target distance
 i_best_N = np.argsort(results['dtot_w_all'])[0:N_best_save:keep_every]
 active_params_distances_table = np.concatenate((results['active_params_all'][i_best_N], np.array([results['dtot_w_all'][i_best_N]]).transpose()), axis=1)
 table_header = ' '.join(results['active_params_names_all'][0]) + ' dist_tot_weighted'
@@ -143,6 +143,25 @@ active_params_pairs = [("log_rate_clusters", "log_rate_planets_per_cluster"),
                        ("power_law_γ0", "power_law_σ0"),
                        ("sigma_ln_mass", "power_law_σ0"),
                        ] # for Hybrid1 model with 8 active parameters (fix break mass and power-law above, free lambdas and alpha_pret)
+#'''
+#'''
+active_params_pairs = [("log_rate_clusters", "log_rate_planets_per_cluster"),
+                       ("log_rate_clusters", "power_law_P"),
+                       ("log_rate_planets_per_cluster", "power_law_P"),
+                       ("power_law_P", "log_α_pret"),
+                       ("log_α_pret", "mean_ln_mass"),
+                       ("log_α_pret", "sigma_ln_mass"),
+                       ("log_α_pret", "norm_radius"),
+                       ("log_α_pret", "power_law_γ0"),
+                       ("mean_ln_mass", "log_rate_clusters"),
+                       ("mean_ln_mass", "log_rate_planets_per_cluster"),
+                       ("mean_ln_mass", "sigma_ln_mass"),
+                       ("mean_ln_mass", "norm_radius"),
+                       ("norm_radius", "power_law_γ0"),
+                       ("norm_radius", "power_law_σ0"),
+                       ("power_law_γ0", "power_law_σ0"),
+                       ("sigma_ln_mass", "power_law_σ0"),
+                       ] # for Hybrid1 model with 9 active parameters (fix break mass and power-law above, free lambdas, alpha_pret, and alpha_P)
 #'''
 
 
@@ -210,14 +229,14 @@ plt.show()
 
 
 
-'''
+#'''
 keep_ranked = [(100000, 10), (10000, 1)]
 for i in range(len(keep_ranked)):
     N_best_save, keep_every = keep_ranked[i][0], keep_ranked[i][1]
     i_best_N = np.argsort(results['dtot_w_all'])[0:N_best_save:keep_every]
 
     plot_cornerpy_wrapper(active_params_symbols, results['active_params_all'][i_best_N], title_kwargs={'fontsize':20}, save_name=savefigures_directory + model_name + '_best%s_every%s_corner.pdf' % (N_best_save, keep_every), save_fig=savefigures)
-'''
+#'''
 
 
 
@@ -342,7 +361,7 @@ for i_param in range(N_params):
     ax = plt.subplot(plot[i_param,0])
     for i_run in range(N_runs):
         dtot_w_evals = results['dtot_w_runs'][i_run]
-        i_evals_best_uptoeval = np.array([np.nanargmin(dtot_w_evals[:i+1]) for i in range(len(dtot_w_evals))])
+        i_evals_best_uptoeval = np.array([np.nanargmin(dtot_w_evals[:i+1]) if not all(np.isnan(dtot_w_evals[:i+1])) else 0 for i in range(len(dtot_w_evals))])
         
         param_best_uptoeval = results['active_params_runs'][i_run][i_evals_best_uptoeval, i_param]
         plt.plot(range(len(param_best_uptoeval)), param_best_uptoeval, lw=1)
@@ -362,7 +381,7 @@ plt.show()
 
 ##### To plot histograms of the parameters for distances below various thresholds:
 
-dtot_cuts = [20., 15., 10.] #[20., 15., 10.] #[30., 25., 22.]
+dtot_cuts = [30., 20., 15.] #[20., 15., 10.] #[30., 25., 22.]
 i_evals_all_pass_cuts = [results['dtot_w_all'] <= dtot for dtot in dtot_cuts]
 for i,dtot in enumerate(dtot_cuts):
     i_evals_all_pass = i_evals_all_pass_cuts[i]
