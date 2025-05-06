@@ -30,7 +30,7 @@ transformed_rates = False
 
 #run_directory = 'Hybrid_NR20_AMD_model1/Fit_all_KS/Params12/GP_files/'
 #loadfiles_directory = '/Users/hematthi/Documents/NotreDame_Postdoc/CRC/Files/SysSim/Model_Optimization/' + run_directory
-run_directory = 'Hybrid_NR20_AMD_model1/Fit_some_KS/Params8_fix_highM/GP_files/' #'Fit_all_KS/Params8/'
+run_directory = 'Hybrid_NR20_AMD_model1/Fit_some8_KS/Params9_fix_highM/GP_files/'
 loadfiles_directory = '/Users/hematthi/Documents/NPP_ARC_Modernize_Kepler/Personal_research/SysSim/Model_Optimization/' + run_directory
 savefigures_directory = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Figures/Model_Optimization/' + run_directory
 model_name = 'Hybrid_NR20_AMD_model1'
@@ -41,7 +41,7 @@ active_params_symbols = [#r'$M_{\rm break,1}$',
                          r'$\ln{(\alpha_{\rm ret})}$',
                          r'$\mu_M$',
                          r'$R_{p,\rm norm}$',
-                         #r'$\alpha_P$',
+                         r'$\alpha_P$',
                          r'$\gamma_0$',
                          #r'$\gamma_1$',
                          r'$\sigma_0$',
