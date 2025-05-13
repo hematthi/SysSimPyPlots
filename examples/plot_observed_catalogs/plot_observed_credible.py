@@ -30,7 +30,7 @@ savefigures = False
 loadfiles_directory = '/Users/hematthi/Documents/GradSchool/Research/SysSim/SysSimExClusters/examples/test/'
 #loadfiles_directory = '/Users/hematthi/Documents/GradSchool/Research/ACI/Simulated_Data/AMD_system/Split_stars/Singles_ecc/Params11_KS/Distribute_AMD_per_mass/durations_norm_circ_singles_multis_GF2020_KS/GP_med/'
 #loadfiles_directory = '/Users/hematthi/Documents/GradSchool/Research/ACI/Simulated_Data/Split_stars/Clustered_P_R_fswp_bprp/Params13_KS/durations_KS/GP_med/'
-savefigures_directory = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Figures/Hybrid_NR20_AMD_model1/Observed/'
+savefigures_directory = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Figures/Hybrid_NR20_AMD_model1/Observed/' + 'Fit_some8_KS_params9/'
 #savefigures_directory = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Figures/H20_model/Observed/'
 run_number = ''
 model_name = 'Hybrid_NR20_AMD_model1' + run_number #'Non_Clustered_Model', 'Clustered_P_Model', 'Clustered_P_R_Model', 'Maximum_AMD_model', 'Hybrid_NR20_AMD_model1'
@@ -102,9 +102,9 @@ lfs = 16 # legend labels font size
 
 ##### To load and compute the same statistics for a large number of models, computing the confidence intervals for each bin:
 
-loadfiles_directory = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Simulated_catalogs/Hybrid_NR20_AMD_model1/Fit_all_KS/Params12/GP_best_models_100/'
-#loadfiles_directory = '/Users/hematthi/Documents/GradSchool/Research/ACI/Simulated_Data/AMD_system/Split_stars/Singles_ecc/Params11_KS/Distribute_AMD_per_mass/durations_norm_circ_singles_multis_GF2020_KS/GP_best_models/'
 #loadfiles_directory = '../../ACI/Simulated_Data/Split_stars/Clustered_P_R_fswp_bprp/Params13_KS/durations_KS/GP_best_models/'
+#loadfiles_directory = '/Users/hematthi/Documents/GradSchool/Research/ACI/Simulated_Data/AMD_system/Split_stars/Singles_ecc/Params11_KS/Distribute_AMD_per_mass/durations_norm_circ_singles_multis_GF2020_KS/GP_best_models/'
+loadfiles_directory = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Simulated_catalogs/Hybrid_NR20_AMD_model1/Fit_some8_KS/Params9_fix_highM/GP_best_models_100/'
 runs = 100
 
 sss_all = []
@@ -196,6 +196,7 @@ for b in range(n_bins):
 overplot_sss = False # TODO: whether to also plot a single catalog
 
 # To make a 'plot' listing the model parameters:
+'''
 fig = plt.figure(figsize=fig_size)
 plot = GridSpec(1,1,left=fig_lbrt[0],bottom=fig_lbrt[1],right=fig_lbrt[2],top=fig_lbrt[3],wspace=0.1,hspace=0.1)
 nrows = 10
@@ -210,7 +211,7 @@ for p,param in enumerate(params):
 if savefigures == True:
     plt.savefig(savefigures_directory + model_name + '_sim_params.pdf')
     plt.close()
-
+'''
 # Multiplicities:
 plot_fig_counts_hist_simple([ssk_per_sys['Mtot_obs']], [], x_min=0, x_llim=0.5, normalize=True, N_sim_Kep_factor=float(N_sim)/N_Kep, log_y=True, lw=lw, xlabel_text='Observed multiplicity', ylabel_text='Fraction', labels_sim=['Kepler'], afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 plt.fill_between(Mtot_bins_mid, Mtot_counts_qtls[:,0], Mtot_counts_qtls[:,2], step='mid', color='k', alpha=alpha, label=r'Simulated 16-84%')
@@ -305,6 +306,30 @@ if savefigures:
 
 plt.show()
 #plt.close()
+
+
+
+
+
+##### To plot the planet radius distribution in more detail:
+
+plot_fig_pdf_credible([sss_i['radii_obs'] for sss_i in sss_all], [], [ssk['radii_obs']], x_min=radii_min, x_max=6., lw=lw, label_sim1=r'Simulated 16-84%', alpha=alpha, xlabel_text=r'Planet radius, $R_p$ ($R_\oplus$)', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_size=(10,6), fig_lbrt=[0.15,0.15,0.95,0.95])
+if savefigures:
+    plt.savefig(savefigures_directory + model_name + '_radii_compare_enlarged.pdf')
+    plt.close()
+
+# To plot several individual catalogs:
+N_plot = 10
+norm = matplotlib.colors.Normalize(vmin=0., vmax=1.)
+cmap = cm.ScalarMappable(norm=norm, cmap='Blues_r')
+cmap.set_array([])
+
+plot_fig_pdf_simple([sss_i['radii_obs'] for sss_i in sss_all[:N_plot]] + [ssk['radii_obs']], [], x_min=radii_min, x_max=6., c_sim=[cmap.to_rgba(i) for i in np.linspace(0.1,0.6,N_plot)] + ['k'], ls_sim=[(0,(1,1))]*N_plot + ['-'], lw=lw, labels_sim=['Simulated catalogs'] + [None]*(N_plot-1) + ['Kepler'], xlabel_text=r'Planet radius, $R_p$ ($R_\oplus$)', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_size=(10,6), fig_lbrt=[0.15,0.15,0.95,0.95])
+if savefigures:
+    plt.savefig(savefigures_directory + model_name + '_radii_compare_enlarged_draws.pdf')
+    plt.close()
+
+plt.show()
 
 
 
