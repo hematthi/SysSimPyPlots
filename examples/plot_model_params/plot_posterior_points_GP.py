@@ -27,7 +27,7 @@ savefigures = False
 transformed_rates = False
 #run_directory = 'Hybrid_NR20_AMD_model1/Fit_all_KS/Params13_alpha1_100/GP_files/'
 #loadfiles_directory = '/Users/hematthi/Documents/NotreDame_Postdoc/CRC/Files/SysSim/Model_Optimization/' + run_directory
-run_directory = 'Hybrid_NR20_AMD_model1/Fit_some_KS/Params8_fix_highM/GP_files/' #'Fit_all_KS/Params8/'
+run_directory = 'Hybrid_NR20_AMD_model1/Fit_some8_KS/Params9_fix_highM/GP_files/' #'Fit_all_KS/Params8/'
 loadfiles_directory = '/Users/hematthi/Documents/NPP_ARC_Modernize_Kepler/Personal_research/SysSim/Model_Optimization/' + run_directory
 savefigures_directory = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Figures/Model_Optimization/' + run_directory
 model_name = 'Hybrid_NR20_AMD_model1'
@@ -38,7 +38,7 @@ active_params_symbols = [#r'$M_{\rm break,1}$',
                          r'$\ln{(\alpha_{\rm ret})}$',
                          r'$\mu_M$',
                          r'$R_{p,\rm norm}$',
-                         #r'$\alpha_P$',
+                         r'$\alpha_P$',
                          r'$\gamma_0$',
                          #r'$\gamma_1$',
                          r'$\sigma_0$',
@@ -66,8 +66,9 @@ active_params_names = np.array(data_train['active_params_names'])
 #n_train, mean_f, sigma_f, lscales, vol = 2000, 35.0, 2.7, 37.65, 1425.6 # 12 params
 #n_train, mean_f, sigma_f, lscales, vol = 2000, 35.0, 2.7, 67.65, 141134.4 # 13 params
 #n_train, mean_f, sigma_f, lscales, vol = 2000, 35.0, 2.7, 16.05, 74.25 # 8 params
-n_train, mean_f, sigma_f, lscales, vol = 2000, 25.0, 2.7, 2.45, 112.9 # fit some, 8 params
-n_points, max_mean, max_std, max_post = 100000, 'Inf', 'Inf', -13.0 #100000, 'Inf', 'Inf', 'Inf'
+#n_train, mean_f, sigma_f, lscales, vol = 2000, 25.0, 2.7, 2.45, 112.9 # fit some, 8 params
+n_train, mean_f, sigma_f, lscales, vol = 2000, 30.0, 2.7, 3.03, 240.84 # fit some+1, 9 params
+n_points, max_mean, max_std, max_post = 10000, 'Inf', 'Inf', -13.0 #100000, 'Inf', 'Inf', 'Inf'
 file_name = 'GP_train%s_meanf%s_sigmaf%s_lscales%s_vol%s_points%s_mean%s_std%s_post%s.csv' % (n_train, mean_f, sigma_f, lscales, vol, n_points, max_mean, max_std, max_post)
 xprior_accepted_table = load_GP_table_prior_draws(file_name, file_name_path=loadfiles_directory)
 active_params_transformed_names = np.array(xprior_accepted_table.dtype.names[:dims])
