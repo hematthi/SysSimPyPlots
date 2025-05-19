@@ -43,7 +43,8 @@ param_symbols = {
     "min_radius (R_earth)": r'$R_{p,\rm min}$ $(R_\oplus)$',
     "max_radius (R_earth)": r'$R_{p,\rm max}$ $(R_\oplus)$',
     "system_age (Gyr)": r'$t_{\rm age}$ (Gyr)',
-    "α_pret": r'$\alpha_{\rm ret}$',
+    "α_pret": r'$\alpha_{\rm ret}$', # NOTE: either reading 'α_pret' or 'log_α_pret' (for backwards compatibility)
+    "log_α_pret": r'$\alpha_{\rm ret}$', # See note above.
     #"f_high_incl": r'$f_{\sigma_{i,\rm high}}$',
     #"sigma_incl": r'$\sigma_{i,\rm high}$',
     #"sigma_incl_near_mmr": r'$\sigma_{i,\rm low}$',
@@ -54,7 +55,7 @@ param_symbols = {
     "sigma_log_radius_in_cluster": r'$\sigma_R$',
     "sigma_logperiod_per_pl_in_cluster": r'$\sigma_N$',
     "f_amd_crit": r'$f_{\rm crit}$',
-} # dictionary of the symbols and names for all the model parameters; NOTE: although the params are named log rate of clusters and planets per cluster, we use the symbols and values for the rates
+} # dictionary of the symbols and names for all the model parameters; NOTE: although the params are named log rate of clusters and planets per cluster (and 'log_α_pret'), we use the symbols and values for the rates
 
 def read_targets_period_radius_bounds(file_name):
     """
