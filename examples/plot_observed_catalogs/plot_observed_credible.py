@@ -313,7 +313,10 @@ plt.show()
 
 ##### To plot the planet radius distribution in more detail:
 
-plot_fig_pdf_credible([sss_i['radii_obs'] for sss_i in sss_all], [], [ssk['radii_obs']], x_min=radii_min, x_max=6., lw=lw, label_sim1=r'Simulated 16-84%', alpha=alpha, xlabel_text=r'Planet radius, $R_p$ ($R_\oplus$)', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_size=(10,6), fig_lbrt=[0.15,0.15,0.95,0.95])
+fig_enlarged_size = (10,6)
+fig_enlarged_lbrt = [0.15, 0.15, 0.95, 0.95]
+
+plot_fig_pdf_credible([sss_i['radii_obs'] for sss_i in sss_all], [], [ssk['radii_obs']], x_min=radii_min, x_max=6., lw=lw, label_sim1=r'Simulated 16-84%', alpha=alpha, xlabel_text=r'Planet radius, $R_p$ ($R_\oplus$)', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_size=fig_enlarged_size, fig_lbrt=fig_enlarged_lbrt)
 if savefigures:
     plt.savefig(savefigures_directory + model_name + '_radii_compare_enlarged.pdf')
     plt.close()
@@ -324,9 +327,18 @@ norm = matplotlib.colors.Normalize(vmin=0., vmax=1.)
 cmap = cm.ScalarMappable(norm=norm, cmap='Blues_r')
 cmap.set_array([])
 
-plot_fig_pdf_simple([sss_i['radii_obs'] for sss_i in sss_all[:N_plot]] + [ssk['radii_obs']], [], x_min=radii_min, x_max=6., c_sim=[cmap.to_rgba(i) for i in np.linspace(0.1,0.6,N_plot)] + ['k'], ls_sim=[(0,(1,1))]*N_plot + ['-'], lw=lw, labels_sim=['Simulated catalogs'] + [None]*(N_plot-1) + ['Kepler'], xlabel_text=r'Planet radius, $R_p$ ($R_\oplus$)', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_size=(10,6), fig_lbrt=[0.15,0.15,0.95,0.95])
+plot_fig_pdf_simple([sss_i['radii_obs'] for sss_i in sss_all[:N_plot]] + [ssk['radii_obs']], [], x_min=radii_min, x_max=6., c_sim=[cmap.to_rgba(i) for i in np.linspace(0.1,0.6,N_plot)] + ['k'], ls_sim=[(0,(1,1))]*N_plot + ['-'], lw=lw, labels_sim=['Simulated catalogs'] + [None]*(N_plot-1) + ['Kepler'], xlabel_text=r'Planet radius, $R_p$ ($R_\oplus$)', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_size=fig_enlarged_size, fig_lbrt=fig_enlarged_lbrt)
 if savefigures:
     plt.savefig(savefigures_directory + model_name + '_radii_compare_enlarged_draws.pdf')
+    plt.close()
+
+# To plot all the individual catalogs as thin lines:
+N_plot = 100
+
+# TODO: update 'plot_fig_pdf_simple' to allow for a list of linewidths 'lw'
+plot_fig_pdf_simple([sss_i['radii_obs'] for sss_i in sss_all[:N_plot]] + [ssk['radii_obs']], [], x_min=radii_min, x_max=6., c_sim=['b']*N_plot + ['k'], ls_sim=['-']*N_plot + ['-'], lw=0.05, labels_sim=['Simulated catalogs'] + [None]*(N_plot-1) + ['Kepler'], xlabel_text=r'Planet radius, $R_p$ ($R_\oplus$)', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_size=fig_enlarged_size, fig_lbrt=fig_enlarged_lbrt)
+if savefigures:
+    plt.savefig(savefigures_directory + model_name + '_radii_compare_enlarged_draws_thin.pdf')
     plt.close()
 
 plt.show()
