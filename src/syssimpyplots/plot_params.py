@@ -1,5 +1,6 @@
 # To import required modules:
 import numpy as np
+import matplotlib.colors
 import matplotlib.cm as cm #for color maps
 import matplotlib.pyplot as plt
 from matplotlib.gridspec import GridSpec #for specifying plot attributes
@@ -274,6 +275,95 @@ def plot_cornerpy_wrapper(x_symbols, xpoints, xpoints_extra=None, c_extra='r', s
         plt.close()
     else:
         return fig
+
+def plot_points_corner(x_symbols, xpoints, fpoints=None, f_label='', cmap='Reds', xlower=None, xupper=None, n_bins=20, points_size=1., points_alpha=1., afs=10, tfs=12, lfs=10, fig_size=(16,16), fig_lbrtwh=[0.05, 0.05, 0.98, 0.98, 0.05, 0.05], save_name='no_name_fig.pdf', save_fig=False):
+    """
+    Plot a set of points in the n-d parameter space.
+
+    Parameters
+    ----------
+    x_symbols : list or array[str]
+        The list of the parameter names/symbols.
+    xpoints : array[float]
+        The sample of parameter values at which the function was evaluated (2-d array).
+    fpoints : array[float], default=None
+        The function evaluations at the points given by `xpoints`, to serve as the colors of the points. If 'None', will plot all points in black.
+    f_label : str, default=''
+        The label for the colorbar.
+    cmap : str, default='RdBu_r'
+        The colormap to use, if `fpoints` is not None.
+    xlower : list or array[float]
+        The lower bounds for each parameter.
+    xupper : list or array[float]
+        The upper bounds for each parameter.
+    points_size : float, default=1.
+        The point size for plotting the sample of parameters.
+    points_alpha : float, default=1.
+        The transparency of the points for plotting the sample of parameters.
+    afs : int, default=10
+        The axes fontsize.
+    tfs : int, default=12
+        The text fontsize.
+    lfs : int, default=10
+        The legend fontsize.
+    fig_size : tuple, default=(16,16)
+        The figure size.
+    fig_lbrtwh : list, default=[0.05, 0.05, 0.98, 0.98, 0.05, 0.05]
+        The positions of the (left, bottom, right, and top) margins of all the plotting panels (between 0 and 1), followed by the width and height space between the panels.
+    save_name : str, default='no_name_fig.pdf'
+        The file name for saving the figure.
+    save_fig : bool, default=False
+        Whether to save the figure. If True, will save the figure in the working directory with the file name given by `save_name`.
+    """
+    dims = len(x_symbols)
+    if xlower == None:
+        xlower = np.min(xpoints, axis=0)
+    if xupper == None:
+        xupper = np.max(xpoints, axis=0)
+    
+    colors = 'k' if fpoints is None else fpoints # colors for the scatter points and ticks
+    # Also need to create a cmap object for coloring the ticks for each point in the top panels (overplotting the histograms):
+    cmap_obj = cm.get_cmap(cmap)
+    c_norm = matplotlib.colors.Normalize(vmin=0., vmax=1.) # object to map values (e.g. 'fpoints') to colors using a given colormap
+
+    fig = plt.figure(figsize=fig_size)
+    left, bottom, right, top, wspace, hspace = fig_lbrtwh
+    plot = GridSpec(dims, dims, left=left, bottom=bottom, right=right, top=top, wspace=wspace, hspace=hspace)
+    for i in range(dims): # indexes the row or y-axis variable
+        for j in range(i): # indexes the column or x-axis variable
+            ax = plt.subplot(plot[i,j])
+            sc = plt.scatter(xpoints[:,j], xpoints[:,i], s=points_size, alpha=points_alpha, c=colors, cmap=cmap)
+            ax.axis((xlower[j], xupper[j], xlower[i], xupper[i]))
+            ax.tick_params(labelleft=False, labelbottom=False)
+            if i == dims-1:
+                ax.tick_params(labelbottom=True)
+                plt.xlabel(x_symbols[j], fontsize=tfs)
+            if j == 0:
+                ax.tick_params(labelleft=True)
+                plt.ylabel(x_symbols[i], fontsize=tfs)
+            plt.xticks(rotation=45, fontsize=afs)
+            plt.yticks(rotation=45, fontsize=afs)
+
+    for i in range(dims):
+        ax = plt.subplot(plot[i,i])
+        counts, bins, _ = plt.hist(xpoints[:,i], bins=np.linspace(xlower[i], xupper[i], n_bins+1), histtype='step', color='k')
+        ax.vlines(xpoints[:,i], ymin=0., ymax=0.1*np.max(counts), colors=cmap_obj(c_norm(fpoints))) # also plot tick markers for each point
+        ax.axis((xlower[i], xupper[i], 0., 1.1*np.max(counts)))
+        ax.tick_params(left=False, labelleft=False, labelbottom=False) # turn off left and bottom labels since they would overlap with other panels
+        if i == 0:
+            # Make another panel for the colorbar:
+            ax_cb = fig.add_axes([ax.get_position().x1+0.005, ax.get_position().y0, 0.01, ax.get_position().y1-ax.get_position().y0])
+            #ax_cb = plt.subplot(plot[i,i+1])
+            plt.colorbar(sc, cax=ax_cb, fraction=0.1, label=f_label)
+        if i == dims-1:
+            # Turn on bottom ticks and labels again for last panel:
+            ax.tick_params(labelbottom=True, labelrotation=45)
+            #plt.xticks(rotation=45, fontsize=afs)
+            plt.xlabel(x_symbols[i], fontsize=tfs)
+
+    if save_fig:
+        plt.savefig(save_name)
+        plt.close()
 
 def plot_contours_and_points_corner(x_symbols, xlower, xupper, contour_2d_grids, xpoints=None, points_size=1., points_alpha=1., afs=10, tfs=12, lfs=10, fig_size=(16,16), fig_lbrtwh=[0.05, 0.05, 0.98, 0.98, 0.05, 0.05], save_name='no_name_fig.pdf', save_fig=False):
     """
