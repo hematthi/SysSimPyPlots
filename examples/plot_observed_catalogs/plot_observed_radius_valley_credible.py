@@ -25,8 +25,7 @@ from syssimpyplots.plot_params import *
 savefigures = False
 loadfiles_directory = '/Users/hematthi/Documents/GradSchool/Research/SysSim/SysSimExClusters/examples/test/'
 #loadfiles_directory = '/Users/hematthi/Documents/GradSchool/Research/ACI/Simulated_Data/AMD_system/Split_stars/Singles_ecc/Params11_KS/Distribute_AMD_per_mass/durations_norm_circ_singles_multis_GF2020_KS/GP_med/'
-savefigures_directory = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Figures/Hybrid_NR20_AMD_model1/Observed/' #+ 'Fit_some8_KS_params9/'
-#savefigures_directory = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Figures/H20_model/Observed/'
+savefigures_directory = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Figures/Hybrid_NR20_AMD_model1/Observed/' + 'Fit_some8_KS_params9/'
 run_number = ''
 model_name = 'Hybrid_NR20_AMD_model1' + run_number
 
@@ -62,7 +61,7 @@ dists, dists_w = compute_distances_sim_Kepler(sss_per_sys, sss, ssk_per_sys, ssk
 
 ##### TODO: move these functions to a module in src
 
-def calculate_radius_valley_depth_using_global_bins(radii_sample, radius_valley_bounds=(1.8,2.2), x_min=0.5, x_max=5.5, n_bins=100, fractional_depth=True, verbose=False, plot_fig=False):
+def calculate_radius_valley_depth_using_global_bins(radii_sample, radius_valley_bounds=(1.8,2.2), x_min=0.5, x_max=5.5, n_bins=100, fractional_depth=True, verbose=False, plot_fig=False, save_name='no_name_fig.pdf', save_fig=False):
     """
     Create a histogram of a sample of planet radii and compute the "depth" of the radius valley.
     
@@ -86,6 +85,10 @@ def calculate_radius_valley_depth_using_global_bins(radii_sample, radius_valley_
         Whether to print the computed values.
     plot_fig : bool, default=False
         Whether to also plot the histogram and the depth of the radius valley. If True, will call :py:func:`syssimpyplots.plot_catalogs.plot_fig_pdf_simple`.
+    save_name : str, default='no_name_fig.pdf'
+        The file name for saving the figure, if `plot_fig=True`.
+    save_fig : bool, default=False
+        Whether to save the figure, if `plot_fig=True`. If True, will save the figure in the working directory with the file name given by `save_name`.
     
     Returns
     -------
@@ -131,10 +134,15 @@ def calculate_radius_valley_depth_using_global_bins(radii_sample, radius_valley_
         plt.axvline(radius_valley_bounds[1], ls=':', lw=1)
         plt.hlines(height, radius_valley_bounds[0], radius_valley_bounds[1], linestyles='dashed', lw=1)
         ax.annotate('', xy=(bins_mid[iBin_min_valley], min_valley), xytext=(bins_mid[iBin_min_valley], height), arrowprops=dict(arrowstyle='->', lw=2, color='r'))
+        plt.figtext(0.92, 0.9, r'Valley depth = {:.2f}'.format(depth), color='r', fontsize=16, ha='right', va='top')
+        
+        if save_fig:
+            plt.savefig(save_name)
+            plt.close()
     
     return depth
 
-def calculate_radius_valley_depth_using_kde(radii_sample, radius_valley_bounds=(1.8,2.2), x_min=0.5, x_max=5.5, n_bins=100, bw='Scotts', bw_scotts_factor=1., fractional_depth=True, verbose=False, plot_fig=False):
+def calculate_radius_valley_depth_using_kde(radii_sample, radius_valley_bounds=(1.8,2.2), x_min=0.5, x_max=5.5, n_bins=100, bw='Scotts', bw_scotts_factor=1., fractional_depth=True, verbose=False, plot_fig=False, save_name='no_name_fig.pdf', save_fig=False):
     """
     Fit a KDE to a sample of planet radii and compute the "depth" of the radius valley.
     
@@ -162,6 +170,10 @@ def calculate_radius_valley_depth_using_kde(radii_sample, radius_valley_bounds=(
         Whether to print the computed values.
     plot_fig : bool, default=False
         Whether to also plot the histogram and the depth of the radius valley. If True, will call :py:func:`syssimpyplots.plot_catalogs.plot_fig_pdf_simple`.
+    save_name : str, default='no_name_fig.pdf'
+        The file name for saving the figure, if `plot_fig=True`.
+    save_fig : bool, default=False
+        Whether to save the figure, if `plot_fig=True`. If True, will save the figure in the working directory with the file name given by `save_name`.
     
     Returns
     -------
@@ -216,11 +228,16 @@ def calculate_radius_valley_depth_using_kde(radii_sample, radius_valley_bounds=(
         plt.axvline(radius_valley_bounds[1], ls=':', lw=1)
         plt.hlines(fnorm*height, radius_valley_bounds[0], radius_valley_bounds[1], linestyles='dashed', lw=1)
         ax.annotate('', xy=(x_evals[i_min_valley], fnorm*min_valley), xytext=(x_evals[i_min_valley], fnorm*height), arrowprops=dict(arrowstyle='->', lw=2, color='r'))
-        plt.legend(loc='upper right', bbox_to_anchor=(1,1), ncol=1, frameon=False, fontsize=16)
+        plt.figtext(0.92, 0.9, r'Valley depth = {:.2f}'.format(depth), color='r', fontsize=16, ha='right', va='top')
+        plt.legend(loc='upper right', bbox_to_anchor=(1,0.9), ncol=1, frameon=False, fontsize=16)
+        
+        if save_fig:
+            plt.savefig(save_name)
+            plt.close()
     
     return depth
 
-def calculate_radius_valley_depth_using_two_kdes(radii_sample, radius_valley_bounds=(1.8,2.2), x_min=0.5, x_max=5.5, n_bins=100, bw_low='Scotts', bw_high='Scotts', bw_low_scotts_factor=0.25, bw_high_scotts_factor=2., fractional_depth=True, verbose=False, plot_fig=False):
+def calculate_radius_valley_depth_using_two_kdes(radii_sample, radius_valley_bounds=(1.8,2.2), x_min=0.5, x_max=5.5, n_bins=100, bw_low='Scotts', bw_high='Scotts', bw_low_scotts_factor=0.25, bw_high_scotts_factor=2., fractional_depth=True, verbose=False, plot_fig=False, save_name='no_name_fig.pdf', save_fig=False):
     """
     Fit two KDEs (a low bandwith and a high bandwidth) to a sample of planet radii and compute the "depth" of the radius valley.
     
@@ -252,6 +269,10 @@ def calculate_radius_valley_depth_using_two_kdes(radii_sample, radius_valley_bou
         Whether to print the computed values.
     plot_fig : bool, default=False
         Whether to also plot the histogram and the depth of the radius valley. If True, will call :py:func:`syssimpyplots.plot_catalogs.plot_fig_pdf_simple`.
+    save_name : str, default='no_name_fig.pdf'
+        The file name for saving the figure, if `plot_fig=True`.
+    save_fig : bool, default=False
+        Whether to save the figure, if `plot_fig=True`. If True, will save the figure in the working directory with the file name given by `save_name`.
     
     Returns
     -------
@@ -300,7 +321,12 @@ def calculate_radius_valley_depth_using_two_kdes(radii_sample, radius_valley_bou
         plt.axvline(radius_valley_bounds[0], ls=':', lw=1)
         plt.axvline(radius_valley_bounds[1], ls=':', lw=1)
         ax.annotate('', xy=(x_evals[i_min_valley], fnorm*min_valley), xytext=(x_evals[i_min_valley], fnorm*height), arrowprops=dict(arrowstyle='->', lw=2, color='r'))
-        plt.legend(loc='upper right', bbox_to_anchor=(1,1), ncol=1, frameon=False, fontsize=16)
+        plt.figtext(0.92, 0.9, r'Valley depth = {:.2f}'.format(depth), color='r', fontsize=16, ha='right', va='top')
+        plt.legend(loc='upper right', bbox_to_anchor=(1,0.9), ncol=1, frameon=False, fontsize=16)
+        
+        if save_fig:
+            plt.savefig(save_name)
+            plt.close()
     
     return depth
 
@@ -387,17 +413,31 @@ if 'depth' in sort_by:
     iSort = iSort[::-1]
 
 for i in iSort[:10]:
+    save_name = savefigures_directory + model_name + '_radii_valley_%s_catalog%s.pdf' % (sort_by, i)
     if sort_by == 'depth_binned':
-        depth = calculate_radius_valley_depth_using_global_bins(sss_all[i]['radii_obs'], plot_fig=True)
+        depth = calculate_radius_valley_depth_using_global_bins(sss_all[i]['radii_obs'], plot_fig=True, save_name=save_name, save_fig=savefigures)
     elif sort_by == 'depth_kde':
-        depth = calculate_radius_valley_depth_using_kde(sss_all[i]['radii_obs'], bw_scotts_factor=bw_factor, plot_fig=True)
+        depth = calculate_radius_valley_depth_using_kde(sss_all[i]['radii_obs'], bw_scotts_factor=bw_factor, plot_fig=True, save_name=save_name, save_fig=savefigures)
     elif sort_by == 'depth_two_kdes':
-        depth = calculate_radius_valley_depth_using_two_kdes(sss_all[i]['radii_obs'], bw_low_scotts_factor=bw_factor, bw_high_scotts_factor=2., plot_fig=True)
+        depth = calculate_radius_valley_depth_using_two_kdes(sss_all[i]['radii_obs'], bw_low_scotts_factor=bw_factor, bw_high_scotts_factor=2., plot_fig=True, save_name=save_name, save_fig=savefigures)
     else:
         # Sorted by a distance to the Kepler catalog, so just use your favorite measure:
         depth = calculate_radius_valley_depth_using_kde(sss_all[i]['radii_obs'], bw_scotts_factor=bw_factor, plot_fig=True)
         print(f'i={i}: depth = {depth}, {sort_by} = {radii_measures[sort_by][i]}')
     print(f'i={i}: depth = {depth}')
+plt.show()
+
+##### To plot several catalogs with the largest depths along with the Kepler catalog:
+
+N_plot = 10
+norm = matplotlib.colors.Normalize(vmin=0., vmax=1.)
+cmap = cm.ScalarMappable(norm=norm, cmap='Blues_r')
+cmap.set_array([])
+
+plot_fig_pdf_simple([sss_all[i]['radii_obs'] for i in iSort[:N_plot]] + [ssk['radii_obs']], [], x_min=radii_min, x_max=6., c_sim=[cmap.to_rgba(i) for i in np.linspace(0.1,0.6,N_plot)] + ['k'], ls_sim=['-']*N_plot + ['-'], lw=[1.]*N_plot + [2.], labels_sim=['Simulated catalogs \n''with largest valleys'] + [None]*(N_plot-1) + ['Kepler'], xlabel_text=r'Planet radius, $R_p$ [$R_\oplus$]', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_size=(10,6), fig_lbrt=[0.15,0.15,0.95,0.95]) # ls_sim=[(0,(1,1))]*N_plot + ['-']
+if savefigures:
+    plt.savefig(savefigures_directory + model_name + '_radii_compare_enlarged_draws_best%s.pdf' % N_plot)
+    plt.close()
 plt.show()
 
 
@@ -421,7 +461,7 @@ active_params_names = list(active_params_names_symbols.keys())
 active_params_symbols = list(active_params_names_symbols.values())
 active_params_all = np.array([[params[key] for key in active_params_names] for params in params_all]) # double list comprehension!
 
-plot_points_corner(active_params_symbols, active_params_all, fpoints=radii_measures['depth_kde'], f_label='Depth (KDE)', cmap='Reds', points_size=10., fig_size=(10,10), save_name=savefigures_directory + model_name + '_params_depths_corner.pdf', save_fig=savefigures)
+plot_points_corner(active_params_symbols, active_params_all, fpoints=radii_measures['depth_kde'], f_label='Depth (KDE)', cmap='Reds', points_size=10., fig_size=(16,16), save_name=savefigures_directory + model_name + '_params_depths_corner.pdf', save_fig=savefigures)
 plt.show()
 
 
