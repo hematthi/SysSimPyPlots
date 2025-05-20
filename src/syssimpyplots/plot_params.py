@@ -276,7 +276,7 @@ def plot_cornerpy_wrapper(x_symbols, xpoints, xpoints_extra=None, c_extra='r', s
     else:
         return fig
 
-def plot_points_corner(x_symbols, xpoints, fpoints=None, f_label='', cmap='Reds', xlower=None, xupper=None, n_bins=20, points_size=1., points_alpha=1., afs=10, tfs=12, lfs=10, fig_size=(16,16), fig_lbrtwh=[0.05, 0.05, 0.98, 0.98, 0.05, 0.05], save_name='no_name_fig.pdf', save_fig=False):
+def plot_points_corner(x_symbols, xpoints, fpoints=None, f_label='', cmap='Reds', xlower=None, xupper=None, n_bins=20, points_size=1., points_alpha=1., afs=10, tfs=16, fig_size=(16,16), fig_lbrtwh=[0.05, 0.05, 0.98, 0.98, 0.05, 0.05], save_name='no_name_fig.pdf', save_fig=False):
     """
     Plot a set of points in the n-d parameter space.
 
@@ -302,10 +302,8 @@ def plot_points_corner(x_symbols, xpoints, fpoints=None, f_label='', cmap='Reds'
         The transparency of the points for plotting the sample of parameters.
     afs : int, default=10
         The axes fontsize.
-    tfs : int, default=12
+    tfs : int, default=16
         The text fontsize.
-    lfs : int, default=10
-        The legend fontsize.
     fig_size : tuple, default=(16,16)
         The figure size.
     fig_lbrtwh : list, default=[0.05, 0.05, 0.98, 0.98, 0.05, 0.05]
