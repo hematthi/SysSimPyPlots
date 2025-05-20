@@ -234,8 +234,8 @@ def plot_panel_pdf_simple(ax, x_sim, x_Kep, x_min=None, x_max=None, y_min=0., y_
         A list of line styles for the histograms of simulated data.
     ls_Kep : list[str], default=['-']
         A list of line styles for the histograms of Kepler data.
-    lw : float, default=1
-        The line width for the histograms.
+    lw : float or list[float], default=1
+        A list of line widths for the histograms (of simulated data).
     alpha : float, default=0.2
         The transparency of the shading for the histograms of Kepler data (between 0 and 1).
     labels_sim : list[str], default=['Simulated']
@@ -268,11 +268,14 @@ def plot_panel_pdf_simple(ax, x_sim, x_Kep, x_min=None, x_max=None, y_min=0., y_
         bins = np.logspace(np.log10(x_min), np.log10(x_max), n_bins+1)
     else:
         bins = np.linspace(x_min, x_max, n_bins+1)
+    
+    n_sets_sim = len(x_sim) # number of datasets in 'x_sim'
+    lw = [lw]*n_sets_sim if ((type(lw) is float) or (type(lw) is int)) else lw
 
     bin_maxes = [] # to be filled with the maximum bin counts in each histogram
     for i,x in enumerate(x_sim):
         weights = np.ones(len(x))/len(x) if normalize else np.ones(len(x))/N_sim_Kep_factor
-        ht = plt.hist(x, bins=bins, histtype='step', weights=weights, log=log_y, color=c_sim[i], ls=ls_sim[i], lw=lw, label=labels_sim[i])
+        ht = plt.hist(x, bins=bins, histtype='step', weights=weights, log=log_y, color=c_sim[i], ls=ls_sim[i], lw=lw[i], label=labels_sim[i])
         bin_maxes.append(np.max(ht[0]))
     for i,x in enumerate(x_Kep):
         weights = np.ones(len(x))/len(x) if normalize else np.ones(len(x))
