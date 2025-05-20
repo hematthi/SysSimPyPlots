@@ -53,7 +53,7 @@ param_symbols = {
     #"sigma_hk_color_slope": r'$d(\sigma_e)/dC$',
     "num_mutual_hill_radii": r'$\Delta_c$',
     "sigma_log_radius_in_cluster": r'$\sigma_R$',
-    "sigma_logperiod_per_pl_in_cluster": r'$\sigma_N$',
+    "sigma_logperiod_per_pl_in_cluster": r'$\sigma_P$',
     "f_amd_crit": r'$f_{\rm crit}$',
 } # dictionary of the symbols and names for all the model parameters; NOTE: although the params are named log rate of clusters and planets per cluster (and 'log_α_pret'), we use the symbols and values for the rates
 
