@@ -25,7 +25,7 @@ from syssimpyplots.plot_params import *
 savefigures = False
 loadfiles_directory = '/Users/hematthi/Documents/GradSchool/Research/SysSim/SysSimExClusters/examples/test/'
 #loadfiles_directory = '/Users/hematthi/Documents/GradSchool/Research/ACI/Simulated_Data/AMD_system/Split_stars/Singles_ecc/Params11_KS/Distribute_AMD_per_mass/durations_norm_circ_singles_multis_GF2020_KS/GP_med/'
-savefigures_directory = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Figures/Hybrid_NR20_AMD_model1/Observed/' + 'Fit_some8_KS_params9/'
+savefigures_directory = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Figures/Hybrid_NR20_AMD_model1/Observed/' + 'Radius_valley_measures/Fit_some8_KS_params9/'
 run_number = ''
 model_name = 'Hybrid_NR20_AMD_model1' + run_number
 
@@ -447,15 +447,19 @@ plt.show()
 ##### To plot the (active) model parameters of the simulated catalogs as a corner scatter plot, with the points colored by the depth:
 
 # NOTE: when loading the parameters, the 'log' params are actually converted to unlogged values; see 'read_sim_params()':
-active_params_names_symbols = {'log_rate_clusters': r'$\lambda_c$',
+active_params_names_symbols = {#'break_mass (M_earth)': r'$M_{p,\rm break}$ $(M_\oplus)$',
+                               'log_rate_clusters': r'$\lambda_c$',
                                'log_rate_planets_per_cluster': r'$\lambda_p$',
                                'log_α_pret': r'$\alpha_{\rm ret}$',
                                'mean_ln_mass (ln M_earth)': r'$\mu_M$',
                                'norm_radius (R_earth)': r'$R_{p,\rm norm}$',
                                'power_law_P': r'$\alpha_P$',
                                'power_law_γ0': r'$\gamma_0$',
+                               #'power_law_γ1': r'$\gamma_1$',
                                'power_law_σ0': r'$\sigma_0$',
+                               #'power_law_σ1': r'$\sigma_1$',
                                'sigma_ln_mass (ln M_earth)': r'$\sigma_M$',
+                               #'sigma_logperiod_per_pl_in_cluster': r'$\sigma_P$',
                                }
 active_params_names = list(active_params_names_symbols.keys())
 active_params_symbols = list(active_params_names_symbols.values())
