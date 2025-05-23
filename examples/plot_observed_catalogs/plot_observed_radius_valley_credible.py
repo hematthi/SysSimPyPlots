@@ -413,7 +413,8 @@ if 'depth' in sort_by:
     iSort = iSort[::-1]
 
 for i in iSort[:10]:
-    save_name = savefigures_directory + model_name + '_radii_valley_%s_catalog%s.pdf' % (sort_by, i)
+    run_number = i+1 # the catalog/run numbers are 1-based
+    save_name = savefigures_directory + model_name + '_radii_valley_%s_catalog%s.pdf' % (sort_by, run_number)
     if sort_by == 'depth_binned':
         depth = calculate_radius_valley_depth_using_global_bins(sss_all[i]['radii_obs'], plot_fig=True, save_name=save_name, save_fig=savefigures)
     elif sort_by == 'depth_kde':
