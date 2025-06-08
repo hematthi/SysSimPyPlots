@@ -13,7 +13,7 @@ import scipy.integrate # for numerical integration
 import scipy.misc # for factorial function
 from scipy.special import erf # error function, used in computing CDF of normal distribution
 import scipy.interpolate # for interpolation functions
-import scipy.stats # for gaussian KDEs
+from scipy.stats import gaussian_kde
 import corner #corner.py package for corner plots
 #matplotlib.rc('text', usetex=True)
 
@@ -23,18 +23,20 @@ from syssimpyplots.load_sims import *
 from syssimpyplots.plot_catalogs import *
 from syssimpyplots.plot_params import *
 
+from gapfit import gap_line, bootstrap_fit_gap, uncertainty_from_boots
+
 
 
 
 
 savefigures = False
-loadfiles_directory = '/Users/hematthi/Documents/GradSchool/Research/SysSim/SysSimExClusters/examples/test/'
+#loadfiles_directory = '/Users/hematthi/Documents/GradSchool/Research/SysSim/SysSimExClusters/examples/test/'
+loadfiles_directory = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Simulated_catalogs/Hybrid_NR20_AMD_model1/Fit_some8_KS/Params9_fix_highM/GP_best_models_100/'
 savefigures_directory = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Figures/Hybrid_NR20_AMD_model1/Observed/'
-run_number = ''
+run_number = '89'
 model_name = 'Hybrid_NR20_AMD_model1' + run_number
 
 compute_ratios = compute_ratios_adjacent
-AD_mod = True
 weights_all = load_split_stars_weights_only()
 dists_include = ['delta_f',
                  'mult_CRPD_r',
@@ -73,7 +75,7 @@ sss_per_sys, sss = compute_summary_stats_from_cat_obs(file_name_path=loadfiles_d
 # To load and process the observed Kepler catalog and compare with our simulated catalog:
 ssk_per_sys, ssk = compute_summary_stats_from_Kepler_catalog(P_min, P_max, radii_min, radii_max, compute_ratios=compute_ratios)
 
-dists, dists_w = compute_distances_sim_Kepler(sss_per_sys, sss, ssk_per_sys, ssk, weights_all['all'], dists_include, N_sim, cos_factor=cos_factor, AD_mod=AD_mod)
+dists, dists_w = compute_distances_sim_Kepler(sss_per_sys, sss, ssk_per_sys, ssk, weights_all['all'], dists_include, N_sim, cos_factor=cos_factor)
 
 
 
@@ -88,10 +90,51 @@ positions = np.vstack([logP_grid.ravel(), logR_grid.ravel()])
 
 values_sim = np.vstack([np.log10(sss['P_obs']), np.log10(sss['radii_obs'])])
 values_Kep = np.vstack([np.log10(ssk['P_obs']), np.log10(ssk['radii_obs'])])
-kde_sim = scipy.stats.gaussian_kde(values_sim)
-kde_Kep = scipy.stats.gaussian_kde(values_Kep)
+kde_sim = gaussian_kde(values_sim)
+kde_Kep = gaussian_kde(values_Kep)
 f_sim = np.reshape(kde_sim(positions).T, np.shape(logP_grid))
 f_Kep = np.reshape(kde_Kep(positions).T, np.shape(logP_grid))
+
+##### To fit a line for the radius valley using gapfit (https://github.com/parkus/gapfit):
+
+x0 = 0. # offset location, log10(P)
+y0_guess = 0.5 # guess for the offset, log10(Rgap_offset)
+m_guess = -0.1 # guess for the slope
+sig = 0.15 # kernel width
+y0_rng = 0.5 # maximum allowed deviation from y0 in search
+
+# Fitting the Kepler catalog:
+boots_Kep = bootstrap_fit_gap(np.log10(ssk['P_obs']), np.log10(ssk['radii_obs']), x0, y0_guess, m_guess, sig, y0_rng, nboots=500)
+# Fitting the simulated catalog:
+boots_sim = bootstrap_fit_gap(np.log10(sss['P_obs']), np.log10(sss['radii_obs']), x0, y0_guess, m_guess, sig, y0_rng, nboots=500)
+
+triplets_Kep = uncertainty_from_boots(boots_Kep)
+y0trip_Kep, mtrip_Kep = triplets_Kep # [best-fit, +1sigma, -1sigma] for each of y0, m
+triplets_sim = uncertainty_from_boots(boots_sim)
+y0trip_sim, mtrip_sim = triplets_sim # [best-fit, +1sigma, -1sigma] for each of y0, m
+print('Best-fit gap line for the Kepler catalog:')
+print('m = {:.2f} +{:.2f}/-{:.2f}'.format(*mtrip_Kep))
+print('y0 = {:.2f} +{:.2f}/-{:.2f}'.format(*y0trip_Kep))
+print('Best-fit gap line for the simulated catalog:')
+print('m = {:.2f} +{:.2f}/-{:.2f}'.format(*mtrip_sim))
+print('y0 = {:.2f} +{:.2f}/-{:.2f}'.format(*y0trip_sim))
+
+m_Kep = mtrip_Kep[0] # best-fit slope
+logRgap_offset_Kep = y0trip_Kep[0] # best-fit intercept
+# If hardcoding values instead (e.g., best-fit from Van Eylen et al. 2018):
+#m_Kep = -0.10 # slope
+#logRgap_offset_Kep = 0.38 # intercept at P=1 day
+
+m_sim = mtrip_sim[0] # best-fit slope
+logRgap_offset_sim = y0trip_sim[0] # best-fit intercept
+
+# Evaluate the line for the radius valley along an array of log10(P):
+logP_array = np.linspace(np.log10(P_min), np.log10(P_max), 101)
+
+logRgap_array_Kep = m_Kep*logP_array + logRgap_offset_Kep
+#Rgap_array_Kep = 10.**logRgap_array_Kep
+logRgap_array_sim = m_sim*logP_array + logRgap_offset_sim
+#Rgap_array_sim = 10.**logRgap_array_sim
 
 
 
@@ -123,6 +166,8 @@ ax = plt.subplot(plot[:,0]) # for the Kepler distribution
 plt.contourf(logP_grid, logR_grid, f_Kep, cmap=cmap)
 # Scatter points:
 plt.scatter(np.log10(ssk['P_obs']), np.log10(ssk['radii_obs']), s=5, marker='o', edgecolor='k', facecolor='none', label='Kepler')
+# Radius valley fit:
+plt.plot(logP_array, logRgap_array_Kep, ls='--', lw=lw, color='k')
 ax.tick_params(axis='both', labelsize=afs)
 xtick_vals = np.array([3,10,30,100,300])
 ytick_vals = np.array([0.5,1,2,4,10])
@@ -134,11 +179,13 @@ plt.xlabel(r'Orbital period, $P$ [days]', fontsize=tfs)
 plt.ylabel(r'Planet radius, $R_p$ [$R_\oplus$]', fontsize=tfs)
 plt.legend(loc='lower right', bbox_to_anchor=(1,0), ncol=1, frameon=False, fontsize=lfs)
 
-ax = plt.subplot(plot[:,1]) # for the SysSim distribution
+ax = plt.subplot(plot[:,1]) # for the simulated distribution
 # KDE contours:
 plt.contourf(logP_grid, logR_grid, f_sim, cmap=cmap)
 # Scatter points:
 plt.scatter(np.log10(sss['P_obs']), np.log10(sss['radii_obs']), s=5, marker='o', edgecolor='b', facecolor='none', label='Simulated')
+# Radius valley fit:
+plt.plot(logP_array, logRgap_array_sim, ls='--', lw=lw, color='k')
 ax.tick_params(axis='both', labelsize=afs)
 xtick_vals = np.array([3,10,30,100,300])
 ytick_vals = np.array([0.5,1,2,4,10])
