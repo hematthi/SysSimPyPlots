@@ -113,9 +113,12 @@ for i in range(1,runs+1):
 
 ##### To calculate the depth for the Kepler catalog first:
 
-depth_binned_Kep = measure_and_plot_radius_valley_depth_using_global_bins(ssk['radii_obs'], plot_fig=True)
-depth_kde_Kep = measure_and_plot_radius_valley_depth_using_kde(ssk['radii_obs'], bw_scotts_factor=bw_factor, plot_fig=True)
-depth_two_kdes_Kep = measure_and_plot_radius_valley_depth_using_two_kdes(ssk['radii_obs'], bw_low_scotts_factor=bw_factor, bw_high_scotts_factor=2., plot_fig=True)
+save_dir_Kepler = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Figures/Hybrid_NR20_AMD_model1/Observed/Radius_valley_measures/' # save the figures for the Kepler catalog here for now
+savefigures_Kepler = False
+
+depth_binned_Kep = measure_and_plot_radius_valley_depth_using_global_bins(ssk['radii_obs'], plot_fig=True, save_name=save_dir_Kepler + 'Kepler_radius_valley_depth_binned.pdf', save_fig=savefigures_Kepler)
+depth_kde_Kep = measure_and_plot_radius_valley_depth_using_kde(ssk['radii_obs'], bw_scotts_factor=bw_factor, plot_fig=True, save_name=save_dir_Kepler + 'Kepler_radius_valley_depth_kde.pdf', save_fig=savefigures_Kepler)
+depth_two_kdes_Kep = measure_and_plot_radius_valley_depth_using_two_kdes(ssk['radii_obs'], bw_low_scotts_factor=bw_factor, bw_high_scotts_factor=2., plot_fig=True, save_name=save_dir_Kepler + 'Kepler_radius_valley_depth_two_kdes.pdf', save_fig=savefigures_Kepler)
 print(f'Kepler catalog: depth (binned) = {depth_binned_Kep}')
 print(f'Kepler catalog: depth (kde) = {depth_kde_Kep}')
 print(f'Kepler catalog: depth (two kdes) = {depth_two_kdes_Kep}')
