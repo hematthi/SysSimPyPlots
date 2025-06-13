@@ -214,6 +214,30 @@ def photoevap_boundary_Carrera2018(R, P):
         above_boundary = 0
     return above_boundary
 
+def radii_delta_from_period_radius_gap(R, P, m=-0.10, Rgap0=2.40):
+    """
+    Computes the difference between a set of planet radii and the location of the radius gap in period-radius space, parameterized as a linear function.
+    
+    Parameters
+    ----------
+    R : float or array[float]
+        The planet radii (Earth radii).
+    P : float or array[float]
+        The orbital periods (days).
+    m : float, default=-0.10
+        The slope of the line for the radius gap in log(period) vs. log(radius).
+    Rgap0 : float, default=2.40
+        The normalization (offset) of the line for the radius gap, at P=1 day.
+    
+    Returns
+    -------
+    delta_R : float or array[float]
+        The differences in planet radii from the location of the radius gap, R - Rgap, in Earth radii (positive/negative values imply radii above/below the line, respectively).
+    """
+    Rgap = Rgap0*P**m # location of the radius gap at each planet's orbital period
+    delta_R = R - Rgap # Earth radii
+    return delta_R
+
 def incl_mult_power_law_Zhu2018(k, sigma_5=0.8, alpha=-3.5):
     """
     Compute the Rayleigh scale of the mutual inclination distribution for a given planet multiplicity using the power-law relation.
