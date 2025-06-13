@@ -653,6 +653,38 @@ def AD_mod_dist(x1, x2):
 
     return AD_dist
 
+def integrate_difference_cdfs_dist(x1, x2):
+    """
+    Compute a distance metric that is the integrated (absolute) difference between the CDFs of two continuous distributions.
+    
+    This turns out to be equivalent to the Wasserstein distance (i.e. Earth mover's distance)!
+    
+    Parameters
+    ----------
+    x1, x2 : array[float]
+        A sample of real values.
+    
+    Returns:
+    --------
+    dist : float
+        The distance metric between the two distributions.
+    """
+    # TODO: write some unit tests
+    # TODO: normalize the x-values to the range [0,1] so the result is independent of the units of x
+    
+    n, m = len(x1), len(x2)
+    x_all = np.sort(np.concatenate((x1, x2))) # combined and sorted sample
+    dx_i = np.diff(x_all) # array of differences in the sorted x-values, x_{i+1}-x_i
+    Fn_x_all = np.array([np.sum(x1 <= x) for x in x_all]) / n # cdf of sample x1, evaluated at all the x-values
+    Fm_x_all = np.array([np.sum(x2 <= x) for x in x_all]) / m # cdf of sample x2, evaluated at all the x-values
+    A_i = np.abs(Fn_x_all[:-1] - Fm_x_all[:-1])*dx_i # array of the areas of each rectangle; there are n+m-1 rectangles (while 'Fn_x_all' and 'Fm_x_all' each have n+m elements, the last element in each is 1)
+    dist = np.sum(A_i)
+    
+    return dist
+    
+
+
+
 def load_split_stars_model_evaluations_and_weights(file_name):
     """
     Load a file containing the distances from many evaluations of the same model, and compute the weights for each distance term.
