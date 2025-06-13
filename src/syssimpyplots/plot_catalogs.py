@@ -1849,7 +1849,7 @@ def plot_fig_period_radius_fraction_multis_higher(sss_per_sys, sss, P_bins, R_bi
 
 # Functions for plotting and measuring the radius valley:
 
-def measure_and_plot_radius_valley_depth_using_global_bins(radii_sample, radius_valley_bounds=(1.8,2.2), x_min=0.5, x_max=5.5, n_bins=100, fractional_depth=True, verbose=False, plot_fig=False, save_name='no_name_fig.pdf', save_fig=False):
+def measure_and_plot_radius_valley_depth_using_global_bins(radii_sample, radius_valley_bounds=(1.8,2.2), x_min=0.5, x_max=5.5, n_bins=100, fractional_depth=True, xlabel_text=r'Planet radius, $R_p$ [$R_\oplus$]', verbose=False, plot_fig=False, save_name='no_name_fig.pdf', save_fig=False):
     """
     Create a histogram of a sample of planet radii and compute the "depth" of the radius valley.
     
@@ -1869,6 +1869,8 @@ def measure_and_plot_radius_valley_depth_using_global_bins(radii_sample, radius_
         The number of bins to use between `x_min` and `x_max`.
     fractional_depth : bool, default=True
         Whether to compute the fractional depth (i.e. the depth as a fraction of the minimum of the maximum bins on either side; the max value of 1 means the valley drops to zero). Note that this can be negative if the "valley" is actually higher than one of peaks.
+    xlabel_text : str, default=r'Planet radius, $R_p$ [$R_\oplus$]'
+        The text for the x-axis label.
     verbose : bool, default=False
         Whether to print the computed values.
     plot_fig : bool, default=False
@@ -1917,7 +1919,7 @@ def measure_and_plot_radius_valley_depth_using_global_bins(radii_sample, radius_
     
     # To also make a plot:
     if plot_fig:
-        ax = plot_fig_pdf_simple([radii_sample], [], x_min=x_min, x_max=x_max, n_bins=n_bins, normalize=True, xlabel_text=r'Planet radius, $R_p$ [$R_\oplus$]')
+        ax = plot_fig_pdf_simple([radii_sample], [], x_min=x_min, x_max=x_max, n_bins=n_bins, normalize=True, xlabel_text=xlabel_text)
         plt.axvline(radius_valley_bounds[0], ls=':', lw=1)
         plt.axvline(radius_valley_bounds[1], ls=':', lw=1)
         plt.hlines(height, radius_valley_bounds[0], radius_valley_bounds[1], linestyles='dashed', lw=1)
@@ -1930,7 +1932,7 @@ def measure_and_plot_radius_valley_depth_using_global_bins(radii_sample, radius_
     
     return depth
 
-def measure_and_plot_radius_valley_depth_using_kde(radii_sample, radius_valley_bounds=(1.8,2.2), x_min=0.5, x_max=5.5, n_bins=100, bw='Scotts', bw_scotts_factor=1., fractional_depth=True, verbose=False, plot_fig=False, save_name='no_name_fig.pdf', save_fig=False):
+def measure_and_plot_radius_valley_depth_using_kde(radii_sample, radius_valley_bounds=(1.8,2.2), x_min=0.5, x_max=5.5, n_bins=100, bw='Scotts', bw_scotts_factor=1., fractional_depth=True, xlabel_text=r'Planet radius, $R_p$ [$R_\oplus$]', verbose=False, plot_fig=False, save_name='no_name_fig.pdf', save_fig=False):
     """
     Fit a KDE to a sample of planet radii and compute the "depth" of the radius valley.
     
@@ -1954,6 +1956,8 @@ def measure_and_plot_radius_valley_depth_using_kde(radii_sample, radius_valley_b
         The factor to multiply the bandwidth from Scott's rule. Only used if `bw='Scotts'`.
     fractional_depth : bool, default=True
         Whether to compute the fractional depth (i.e. the depth as a fraction of the minimum of the maximum on either side; the max value of 1 means the valley drops to zero). Note that this can be negative if the "valley" is actually higher than one of peaks.
+    xlabel_text : str, default=r'Planet radius, $R_p$ [$R_\oplus$]'
+        The text for the x-axis label.
     verbose : bool, default=False
         Whether to print the computed values.
     plot_fig : bool, default=False
@@ -2008,7 +2012,7 @@ def measure_and_plot_radius_valley_depth_using_kde(radii_sample, radius_valley_b
     
     # To also make a plot:
     if plot_fig:
-        ax = plot_fig_pdf_simple([radii_sample], [], x_min=x_min, x_max=x_max, n_bins=n_bins, normalize=True, labels_sim=[None], xlabel_text=r'Planet radius, $R_p$ [$R_\oplus$]')
+        ax = plot_fig_pdf_simple([radii_sample], [], x_min=x_min, x_max=x_max, n_bins=n_bins, normalize=True, labels_sim=[None], xlabel_text=xlabel_text)
         bins = np.linspace(x_min, x_max, n_bins+1) # these are the bins the call above would be using to create the histogram; needed to normalize the KDE density
         fnorm = bins[1]-bins[0]
         plt.plot(x_evals, fnorm*kde(x_evals), color='b', label=r'KDE fit ($bw = {:0.2f}$)'.format(bw))
@@ -2025,7 +2029,7 @@ def measure_and_plot_radius_valley_depth_using_kde(radii_sample, radius_valley_b
     
     return depth
 
-def measure_and_plot_radius_valley_depth_using_two_kdes(radii_sample, radius_valley_bounds=(1.8,2.2), x_min=0.5, x_max=5.5, n_bins=100, bw_low='Scotts', bw_high='Scotts', bw_low_scotts_factor=0.25, bw_high_scotts_factor=2., fractional_depth=True, verbose=False, plot_fig=False, save_name='no_name_fig.pdf', save_fig=False):
+def measure_and_plot_radius_valley_depth_using_two_kdes(radii_sample, radius_valley_bounds=(1.8,2.2), x_min=0.5, x_max=5.5, n_bins=100, bw_low='Scotts', bw_high='Scotts', bw_low_scotts_factor=0.25, bw_high_scotts_factor=2., fractional_depth=True, xlabel_text=r'Planet radius, $R_p$ [$R_\oplus$]', verbose=False, plot_fig=False, save_name='no_name_fig.pdf', save_fig=False):
     """
     Fit two KDEs (a low bandwith and a high bandwidth) to a sample of planet radii and compute the "depth" of the radius valley.
     
@@ -2053,6 +2057,8 @@ def measure_and_plot_radius_valley_depth_using_two_kdes(radii_sample, radius_val
         The factor to multiply the bandwidth from Scott's rule for the high-bandwidth KDE. Only used if `bw_high='Scotts'`.
     fractional_depth : bool, default=True
         Whether to compute the fractional depth (i.e. the depth as a fraction of the minimum of the maximum on either side; the max value of 1 means the valley drops to zero). Note that this can be negative if the "valley" is actually higher than one of peaks.
+    xlabel_text : str, default=r'Planet radius, $R_p$ [$R_\oplus$]'
+        The text for the x-axis label.
     verbose : bool, default=False
         Whether to print the computed values.
     plot_fig : bool, default=False
@@ -2105,7 +2111,7 @@ def measure_and_plot_radius_valley_depth_using_two_kdes(radii_sample, radius_val
     
     # To also make a plot:
     if plot_fig:
-        ax = plot_fig_pdf_simple([radii_sample], [], x_min=x_min, x_max=x_max, n_bins=n_bins, normalize=True, labels_sim=[None], xlabel_text=r'Planet radius, $R_p$ [$R_\oplus$]')
+        ax = plot_fig_pdf_simple([radii_sample], [], x_min=x_min, x_max=x_max, n_bins=n_bins, normalize=True, labels_sim=[None], xlabel_text=xlabel_text)
         bins = np.linspace(x_min, x_max, n_bins+1) # these are the bins the call above would be using to create the histogram; needed to normalize the KDE density
         fnorm = bins[1]-bins[0]
         plt.plot(x_evals, fnorm*kde_low(x_evals), color='b', label=r'KDE fit ($bw_{{\rm low}} = {:0.2f}$)'.format(bw_low)) # should appear to capture the radius valley
