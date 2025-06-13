@@ -22,7 +22,7 @@ from syssimpyplots.plot_params import *
 savefigures = False
 loadfiles_directory = '/Users/hematthi/Documents/GradSchool/Research/SysSim/SysSimExClusters/examples/test/'
 #loadfiles_directory = '/Users/hematthi/Documents/GradSchool/Research/ACI/Simulated_Data/AMD_system/Split_stars/Singles_ecc/Params11_KS/Distribute_AMD_per_mass/durations_norm_circ_singles_multis_GF2020_KS/GP_med/'
-savefigures_directory = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Figures/Hybrid_NR20_AMD_model1/Observed/' + 'Radius_valley_measures/Fit_some8_KS_params9/catalog62_repeated/'
+savefigures_directory = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Figures/Hybrid_NR20_AMD_model1/Observed/' + 'Radius_valley_measures/Fit_some8_KS_params9/' #catalog62_repeated/'
 run_number = ''
 model_name = 'Hybrid_NR20_AMD_model1' + run_number
 
@@ -67,7 +67,7 @@ lfs = 16 # legend labels font size
 ##### To load and compute the same statistics for a large number of models:
 
 #loadfiles_directory = '/Users/hematthi/Documents/GradSchool/Research/ACI/Simulated_Data/AMD_system/Split_stars/Singles_ecc/Params11_KS/Distribute_AMD_per_mass/durations_norm_circ_singles_multis_GF2020_KS/GP_best_models/'
-loadfiles_directory = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Simulated_catalogs/Hybrid_NR20_AMD_model1/Fit_some8_KS/Params9_fix_highM/Radius_valley_model62_repeated_100/'
+loadfiles_directory = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Simulated_catalogs/Hybrid_NR20_AMD_model1/Fit_some8_KS/Params9_fix_highM/GP_best_models_100/' #Radius_valley_model62_repeated_100/'
 runs = 100
 
 sss_all = []
@@ -77,9 +77,11 @@ params_all = []
 radii_measures = {'KS_dist_w': [],
                   'AD_dist_w': [],
                   'EMD': [],
+                  #'IDCD': [],
                   'depth_binned': [],
                   'depth_kde': [],
-                  'depth_two_kdes': []}
+                  #'depth_two_kdes': [],
+                  'delta_depth_kde': []}
 
 bw_factor = 0.25 # factor for multiplying the KDE bandwidth from Scott's rule
 
@@ -89,10 +91,15 @@ for i in range(1,runs+1):
     params_i = read_sim_params(loadfiles_directory + 'periods%s.out' % run_number)
     dists_i, dists_w_i = compute_distances_sim_Kepler(sss_per_sys_i, sss_i, ssk_per_sys, ssk, weights_all['all'], dists_include, N_Kep, cos_factor=cos_factor)
     
-    EMD_radii_i = wasserstein_distance(sss_i['radii_obs'], ssk['radii_obs'])
+    EMD_radii_i = wasserstein_distance(sss_i['radii_obs'], ssk['radii_obs']) # Earth mover's distance
+    #IDCD_radii_i = integrate_difference_cdfs_dist(sss_i['radii_obs'], ssk['radii_obs']) # integrated differences in CDFs distance
     depth_binned_i = measure_and_plot_radius_valley_depth_using_global_bins(sss_i['radii_obs'], n_bins=n_bins)
     depth_kde_i = measure_and_plot_radius_valley_depth_using_kde(sss_i['radii_obs'], bw_scotts_factor=bw_factor)
-    depth_two_kdes_i = measure_and_plot_radius_valley_depth_using_two_kdes(sss_i['radii_obs'], bw_low_scotts_factor=bw_factor, bw_high_scotts_factor=2.)
+    #depth_two_kdes_i = measure_and_plot_radius_valley_depth_using_two_kdes(sss_i['radii_obs'], bw_low_scotts_factor=bw_factor, bw_high_scotts_factor=2.)
+    
+    # Measure the depth from the distribution of radii differences from the location of the period-radius gap in the Kepler data:
+    radii_delta_i = radii_delta_from_period_radius_gap(sss_i['radii_obs'], sss_i['P_obs'], m=-0.10, Rgap0=2.40)
+    delta_depth_kde_i = measure_and_plot_radius_valley_depth_using_kde(radii_delta_i, radius_valley_bounds=(-0.2,0.2), x_min=-1.5, x_max=3.5, bw_scotts_factor=bw_factor)
     
     sss_all.append(sss_i)
     sss_per_sys_all.append(sss_per_sys_i)
@@ -101,9 +108,11 @@ for i in range(1,runs+1):
     radii_measures['KS_dist_w'].append(dists_w_i['radii_KS'])
     radii_measures['AD_dist_w'].append(dists_w_i['radii_AD'])
     radii_measures['EMD'].append(EMD_radii_i)
+    #radii_measures['IDCD'].append(IDCD_radii_i)
     radii_measures['depth_binned'].append(depth_binned_i)
     radii_measures['depth_kde'].append(depth_kde_i)
-    radii_measures['depth_two_kdes'].append(depth_two_kdes_i)
+    #radii_measures['depth_two_kdes'].append(depth_two_kdes_i)
+    radii_measures['delta_depth_kde'].append(delta_depth_kde_i)
 
 #####
 
@@ -118,15 +127,17 @@ savefigures_Kepler = False
 
 depth_binned_Kep = measure_and_plot_radius_valley_depth_using_global_bins(ssk['radii_obs'], plot_fig=True, save_name=save_dir_Kepler + 'Kepler_radius_valley_depth_binned.pdf', save_fig=savefigures_Kepler)
 depth_kde_Kep = measure_and_plot_radius_valley_depth_using_kde(ssk['radii_obs'], bw_scotts_factor=bw_factor, plot_fig=True, save_name=save_dir_Kepler + 'Kepler_radius_valley_depth_kde.pdf', save_fig=savefigures_Kepler)
-depth_two_kdes_Kep = measure_and_plot_radius_valley_depth_using_two_kdes(ssk['radii_obs'], bw_low_scotts_factor=bw_factor, bw_high_scotts_factor=2., plot_fig=True, save_name=save_dir_Kepler + 'Kepler_radius_valley_depth_two_kdes.pdf', save_fig=savefigures_Kepler)
+
+radii_delta_Kep = radii_delta_from_period_radius_gap(ssk['radii_obs'], ssk['P_obs'], m=-0.10, Rgap0=2.40)
+radii_delta_depth_kde_Kep = measure_and_plot_radius_valley_depth_using_kde(radii_delta_Kep, radius_valley_bounds=(-0.2,0.2), x_min=-1.5, x_max=3.5, bw_scotts_factor=bw_factor, xlabel_text=r'Gap subtracted radius, $R_p - R_{\rm gap}$ [$R_\oplus$]', plot_fig=True, save_name=save_dir_Kepler + 'Kepler_radius_delta_valley_depth_kde.pdf', save_fig=savefigures_Kepler)
 print(f'Kepler catalog: depth (binned) = {depth_binned_Kep}')
 print(f'Kepler catalog: depth (kde) = {depth_kde_Kep}')
-print(f'Kepler catalog: depth (two kdes) = {depth_two_kdes_Kep}')
+print(f'Kepler catalog: radii delta depth (kde) = {radii_delta_depth_kde_Kep}')
 plt.show()
 
 ##### To sort the catalogs by the 'depth' of the radius valley and plot them:
 
-sort_by = 'depth_kde' # 'KS_dist_w', 'AD_dist_w', 'EMD', 'depth_binned', 'depth_kde', 'depth_two_kdes'
+sort_by = 'delta_depth_kde' # 'KS_dist_w', 'AD_dist_w', 'EMD', 'depth_binned', 'depth_kde', 'delta_depth_kde'
 
 print(f'Sorting the simulated catalogs by {sort_by}...')
 iSort = np.argsort(radii_measures[sort_by])
@@ -141,8 +152,9 @@ for i in iSort[:10]:
         depth = measure_and_plot_radius_valley_depth_using_global_bins(sss_all[i]['radii_obs'], plot_fig=True, save_name=save_name, save_fig=savefigures)
     elif sort_by == 'depth_kde':
         depth = measure_and_plot_radius_valley_depth_using_kde(sss_all[i]['radii_obs'], bw_scotts_factor=bw_factor, plot_fig=True, save_name=save_name, save_fig=savefigures)
-    elif sort_by == 'depth_two_kdes':
-        depth = measure_and_plot_radius_valley_depth_using_two_kdes(sss_all[i]['radii_obs'], bw_low_scotts_factor=bw_factor, bw_high_scotts_factor=2., plot_fig=True, save_name=save_name, save_fig=savefigures)
+    elif sort_by == 'delta_depth_kde':
+        radii_delta = radii_delta_from_period_radius_gap(sss_all[i]['radii_obs'], sss_all[i]['P_obs'], m=-0.10, Rgap0=2.40)
+        depth = measure_and_plot_radius_valley_depth_using_kde(radii_delta, radius_valley_bounds=(-0.2,0.2), x_min=-1.5, x_max=3.5, bw_scotts_factor=bw_factor, xlabel_text=r'Gap subtracted radius, $R_p - R_{\rm gap}$ [$R_\oplus$]', plot_fig=True, save_name=save_name, save_fig=savefigures)
     else:
         # Sorted by a distance to the Kepler catalog, so just use your favorite measure:
         depth = measure_and_plot_radius_valley_depth_using_kde(sss_all[i]['radii_obs'], bw_scotts_factor=bw_factor, plot_fig=True)
@@ -199,19 +211,19 @@ plt.show()
 
 radii_measures_pairs = [("KS_dist_w", "AD_dist_w"),
                         ("KS_dist_w", "EMD"),
+                        #("KS_dist_w", "IDCD"),
                         #("KS_dist_w", "depth_binned"),
                         ("KS_dist_w", "depth_kde"),
-                        #("KS_dist_w", "depth_two_kdes"),
                         ("AD_dist_w", "EMD"),
+                        #("AD_dist_w", "IDCD"),
                         #("AD_dist_w", "depth_binned"),
                         ("AD_dist_w", "depth_kde"),
-                        #("AD_dist_w", "depth_two_kdes"),
+                        #("EMD", "IDCD"),
                         #("EMD", "depth_binned"),
                         ("EMD", "depth_kde"),
-                        #("EMD", "depth_two_kdes"),
+                        #("IDCD", "depth_kde"),
                         #("depth_binned", "depth_kde"),
-                        #("depth_binned", "depth_two_kdes"),
-                        #("depth_kde", "depth_two_kdes")
+                        ("depth_kde", "delta_depth_kde"),
                         ]
 
 N_panels = len(radii_measures_pairs)
@@ -225,6 +237,10 @@ for i,pair in enumerate(radii_measures_pairs):
     i_row, i_col = i//cols, i%cols
     ax = plt.subplot(plot[i_row,i_col])
     sc = plt.scatter(radii_measures[pair[0]], radii_measures[pair[1]], marker='.', c='k', s=10, alpha=1)
+    if 'depth' in pair[0] and 'depth' in pair[1]:
+        plt.plot([0,1],[0,1], ls='--')
+        plt.xlim([0, 1.1*np.max(radii_measures[pair[0]])])
+        plt.ylim([0, 1.1*np.max(radii_measures[pair[1]])])
     ax.tick_params(axis='both', labelsize=12)
     plt.xlabel(pair[0], fontsize=16)
     plt.ylabel(pair[1], fontsize=16)
