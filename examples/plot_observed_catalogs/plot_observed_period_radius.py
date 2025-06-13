@@ -168,6 +168,8 @@ plt.contourf(logP_grid, logR_grid, f_Kep, cmap=cmap)
 plt.scatter(np.log10(ssk['P_obs']), np.log10(ssk['radii_obs']), s=5, marker='o', edgecolor='k', facecolor='none', label='Kepler')
 # Radius valley fit:
 plt.plot(logP_array, logRgap_array_Kep, ls='--', lw=lw, color='k')
+plt.plot(logP_array, -0.10*logP_array + 0.38, ls='--', lw=lw, color='b') # Van Eylen et al. (2018) best-fit
+plt.plot(logP_array, -0.1467*logP_array + np.log10(2.6), ls='--', lw=lw, color='r') # Carrera et al. (2018) photoevaporation boundary
 ax.tick_params(axis='both', labelsize=afs)
 xtick_vals = np.array([3,10,30,100,300])
 ytick_vals = np.array([0.5,1,2,4,10])
