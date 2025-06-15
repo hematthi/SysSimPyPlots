@@ -119,11 +119,19 @@ if 'depth' in sort_by:
     iSort = iSort[::-1]
 
 # Define the grid for evaluating the KDEs:
+use_log_radii = False # choose whether to use a log-scale for the radii
+radii_min, radii_max = 0.5, 4. # optionally, further restrict the radii bounds (NOTE: this overwrites 'radii_min' and 'radii_max' read from the files)
+
 logP_min, logP_max = np.log10(P_min), np.log10(P_max)
-logR_min, logR_max = np.log10(radii_min), np.log10(radii_max)
+# NOTE: variable names still use 'logR_' regardless of whether a log-scale is used or not
+if use_log_radii:
+    logR_min, logR_max = np.log10(radii_min), np.log10(radii_max)
+else:
+    logR_min, logR_max = radii_min, radii_max
 logP_grid, logR_grid = np.mgrid[logP_min:logP_max:100j, logR_min:logR_max:100j] # complex step size '100j' to include the upper bound
 positions = np.vstack([logP_grid.ravel(), logR_grid.ravel()])
 
+# Plot the period-radius distributions of the Kepler and simulated catalogs side-by-side:
 for i in iSort[:10]:
     run_number = i+1 # the catalog/run numbers are 1-based
     sss_i = sss_all[i]
@@ -142,19 +150,16 @@ for i in iSort[:10]:
         print(f'i={i}: depth = {depth}, {sort_by} = {radii_measures[sort_by][i]}')
     
     # To perform a gaussian KDE for the log(period)-log(radius) distributions:
-    values_sim = np.vstack([np.log10(sss_i['P_obs']), np.log10(sss_i['radii_obs'])])
-    values_Kep = np.vstack([np.log10(ssk['P_obs']), np.log10(ssk['radii_obs'])])
+    radii_obs_sim = np.log10(sss_i['radii_obs']) if use_log_radii else sss_i['radii_obs']
+    radii_obs_Kep = np.log10(ssk['radii_obs']) if use_log_radii else ssk['radii_obs']
+    values_sim = np.vstack([np.log10(sss_i['P_obs']), radii_obs_sim])
+    values_Kep = np.vstack([np.log10(ssk['P_obs']), radii_obs_Kep])
     kde_sim = gaussian_kde(values_sim)
     kde_Kep = gaussian_kde(values_Kep)
     f_sim = np.reshape(kde_sim(positions).T, np.shape(logP_grid))
     f_Kep = np.reshape(kde_Kep(positions).T, np.shape(logP_grid))
     
-    
     # To plot the period-radius distributions of the simulated and Kepler catalogs:
-
-    #load_cat_obs_and_plot_fig_period_radius(loadfiles_directory, run_number=run_number, lw=lw, save_name='no_name_fig.pdf', save_fig=False)
-    #plt.show()
-
     fig = plt.figure(figsize=(16,8))
     plot = GridSpec(1,2,left=0.1,bottom=0.1,right=0.95,top=0.95,wspace=0.1,hspace=0)
     cmap = 'Blues' #'Blues' #'viridis'
@@ -163,14 +168,15 @@ for i in iSort[:10]:
     # KDE contours:
     plt.contourf(logP_grid, logR_grid, f_Kep, cmap=cmap)
     # Scatter points:
-    plt.scatter(np.log10(ssk['P_obs']), np.log10(ssk['radii_obs']), s=5, marker='o', edgecolor='k', facecolor='none', label='Kepler')
+    plt.scatter(np.log10(ssk['P_obs']), radii_obs_Kep, s=5, marker='o', edgecolor='k', facecolor='none', label='Kepler')
     ax.tick_params(axis='both', labelsize=afs)
     xtick_vals = np.array([3,10,30,100,300])
-    ytick_vals = np.array([0.5,1,2,4,10])
     plt.xticks(np.log10(xtick_vals), xtick_vals)
-    plt.yticks(np.log10(ytick_vals), ytick_vals)
-    plt.xlim([np.log10(P_min), np.log10(P_max)])
-    plt.ylim([np.log10(radii_min), np.log10(radii_max)])
+    if use_log_radii:
+        ytick_vals = np.array([0.5,1,2,4,10])
+        plt.yticks(np.log10(ytick_vals), ytick_vals)
+    plt.xlim([logP_min, logP_max])
+    plt.ylim([logR_min, logR_max])
     plt.xlabel(r'Orbital period, $P$ [days]', fontsize=tfs)
     plt.ylabel(r'Planet radius, $R_p$ [$R_\oplus$]', fontsize=tfs)
     plt.legend(loc='lower right', bbox_to_anchor=(1,0), ncol=1, frameon=False, fontsize=lfs)
@@ -179,21 +185,87 @@ for i in iSort[:10]:
     # KDE contours:
     plt.contourf(logP_grid, logR_grid, f_sim, cmap=cmap)
     # Scatter points:
-    plt.scatter(np.log10(sss_i['P_obs']), np.log10(sss_i['radii_obs']), s=5, marker='o', edgecolor='b', facecolor='none', label='Simulated')
+    plt.scatter(np.log10(sss_i['P_obs']), radii_obs_sim, s=5, marker='o', edgecolor='b', facecolor='none', label='Simulated')
     ax.tick_params(axis='both', labelsize=afs)
     xtick_vals = np.array([3,10,30,100,300])
-    ytick_vals = np.array([0.5,1,2,4,10])
     plt.xticks(np.log10(xtick_vals), xtick_vals)
-    plt.yticks(np.log10(ytick_vals), [])
-    plt.xlim([np.log10(P_min), np.log10(P_max)])
-    plt.ylim([np.log10(radii_min), np.log10(radii_max)])
+    if use_log_radii:
+        ytick_vals = np.array([0.5,1,2,4,10])
+        plt.yticks(np.log10(ytick_vals), [])
+    plt.xlim([logP_min, logP_max])
+    plt.ylim([logR_min, logR_max])
     plt.xlabel(r'Orbital period, $P$ [days]', fontsize=tfs)
     #plt.ylabel(r'Planet radius, $R_p$ [$R_\oplus$]', fontsize=tfs)
     plt.legend(loc='lower right', bbox_to_anchor=(1,0), ncol=1, frameon=False, fontsize=lfs)
 
     if savefigures:
-        save_name = savefigures_directory + model_name + '_period_radius_catalog%s.pdf' % run_number
+        save_name = savefigures_directory + model_name + '_period_radius_catalog%s_vs_Kepler.pdf' % run_number
         plt.savefig(save_name)
+        plt.close()
+
+plt.show()
+
+# Plot the period-radius distribution of just the simulated catalog (OR optionally, the difference in the KDEs between the Kepler and simulated catalogs), with the marginal distributions as side panels:
+plot_difference = False
+cmap = 'coolwarm' if plot_difference else 'Blues'
+for i in iSort[:10]:
+    run_number = i+1 # the catalog/run numbers are 1-based
+    sss_i = sss_all[i]
+    
+    # To perform a gaussian KDE for the log(period)-log(radius) distributions:
+    radii_obs_sim = np.log10(sss_i['radii_obs']) if use_log_radii else sss_i['radii_obs']
+    radii_obs_Kep = np.log10(ssk['radii_obs']) if use_log_radii else ssk['radii_obs']
+    values_sim = np.vstack([np.log10(sss_i['P_obs']), radii_obs_sim])
+    values_Kep = np.vstack([np.log10(ssk['P_obs']), radii_obs_Kep])
+    kde_sim = gaussian_kde(values_sim)
+    kde_Kep = gaussian_kde(values_Kep)
+    f_sim = np.reshape(kde_sim(positions).T, np.shape(logP_grid))
+    f_Kep = np.reshape(kde_Kep(positions).T, np.shape(logP_grid))
+    
+    # To plot the period-radius distributions of the simulated and Kepler catalogs:
+    fig = plt.figure(figsize=(12,8))
+    plot = GridSpec(5, 7, left=0.1, bottom=0.1, right=0.95, top=0.95, wspace=0, hspace=0)
+
+    ax = plt.subplot(plot[1:,:-1]) # main panel
+    # KDE contours:
+    if plot_difference:
+        plt.contourf(logP_grid, logR_grid, f_sim - f_Kep, cmap=cmap)
+    else:
+        plt.contourf(logP_grid, logR_grid, f_sim, cmap=cmap)
+    # Scatter points:
+    plt.scatter(np.log10(sss_i['P_obs']), radii_obs_sim, s=5, marker='o', edgecolor='b', facecolor='none', label='Simulated planets')
+    ax.tick_params(axis='both', labelsize=afs)
+    xtick_vals = np.array([3,10,30,100,300])
+    plt.xticks(np.log10(xtick_vals), xtick_vals)
+    if use_log_radii:
+        ytick_vals = np.array([0.5,1,2,4,10])
+        plt.yticks(np.log10(ytick_vals), ytick_vals)
+    plt.xlim([logP_min, logP_max])
+    plt.ylim([logR_min, logR_max])
+    plt.xlabel(r'Orbital period, $P$ [days]', fontsize=tfs)
+    plt.ylabel(r'Planet radius, $R_p$ [$R_\oplus$]', fontsize=tfs)
+    plt.legend(loc='lower right', bbox_to_anchor=(1,0), ncol=1, frameon=False, fontsize=lfs)
+    
+    ax = plt.subplot(plot[0,:-1]) # top histogram
+    bins = np.linspace(logP_min, logP_max, n_bins+1)
+    plt.hist(np.log10(sss_i['P_obs']), bins=bins, histtype='step', color='b', ls='-', label='Simulated')
+    plt.hist(np.log10(ssk['P_obs']), bins=bins, histtype='step', color='k', ls='-', label='Kepler')
+    plt.xlim([logP_min, logP_max])
+    plt.xticks([])
+    plt.yticks([])
+    plt.legend(loc='upper right', bbox_to_anchor=(0.99,0.99), ncol=1, frameon=False, fontsize=lfs)
+    
+    ax = plt.subplot(plot[1:,-1]) # side histogram
+    bins = np.linspace(logR_min, logR_max, n_bins+1)
+    plt.hist(radii_obs_sim, bins=bins, histtype='step', orientation='horizontal', color='b', ls='-', label='Simulated')
+    plt.hist(radii_obs_Kep, bins=bins, histtype='step', orientation='horizontal', color='k', ls='-', label='Kepler')
+    plt.ylim([logR_min, logR_max])
+    plt.xticks([])
+    plt.yticks([])
+
+    if savefigures:
+        save_fn = model_name + '_period_radius_catalog%s_minus_Kepler.pdf' % run_number if plot_difference else model_name + '_period_radius_catalog%s.pdf' % run_number
+        plt.savefig(savefigures_directory + save_fn)
         plt.close()
 
 plt.show()
