@@ -29,7 +29,7 @@ plt.ioff()
 
 #run_directory = 'Hybrid_NR20_AMD_model1/Fit_all_KS/Params12/'
 #loadfiles_directory = '/Users/hematthi/Documents/NotreDame_Postdoc/CRC/Files/SysSim/Model_Optimization/' + run_directory + 'GP_files/'
-run_directory = 'Hybrid_NR20_AMD_model1/Fit_some8_KS/Params9_fix_highM/'
+run_directory = 'Hybrid_NR20_AMD_model1/Fit_some8p1_KS/Params9_fix_highM/'
 loadfiles_directory = '/Users/hematthi/Documents/NPP_ARC_Modernize_Kepler/Personal_research/SysSim/Model_Optimization/' + run_directory + 'GP_files/'
 savefigures_directory = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Figures/Model_Optimization/' + run_directory
 
@@ -85,7 +85,7 @@ plot_function_heatmap_averaged_grid_given_irregular_points_corner(active_params_
 #dist_terms = ['radii_partitioning_KS', 'radii_monotonicity_KS', 'gap_complexity_KS']
 #dist_terms = ['radii_partitioning_AD', 'radii_monotonicity_AD', 'gap_complexity_AD']
 #dist_terms = ['delta_f', 'mult_CRPD_r', 'periods_KS', 'period_ratios_KS', 'durations_KS', 'duration_ratios_KS', 'depths_KS', 'radii_KS', 'radius_ratios_KS']
-dist_terms = ['delta_f', 'mult_CRPD_r', 'periods_KS', 'depths_KS', 'radii_KS', 'radius_ratios_KS', 'radii_partitioning_KS', 'radii_monotonicity_KS']
+dist_terms = ['delta_f', 'mult_CRPD_r', 'periods_KS', 'depths_KS', 'radii_KS', 'radii_delta_valley_KS', 'radius_ratios_KS', 'radii_partitioning_KS', 'radii_monotonicity_KS']
 for (i,key) in enumerate(dist_terms):
     results_cmap_key = results['d_used_vals_w_evals']['all'][key] if split_stars else results['d_used_vals_w_evals'][key] # still the weighted distances for the full sample, but this is in a dictionary if split_stars=True
     plot_function_heatmap_averaged_grid_given_irregular_points_corner(active_params_symbols, results['active_params_evals'], results_cmap_key, flabel=key, show_points=False, save_name=savefigures_directory + model_name + '_recomputed_best%s_every%s_corner_cmap_%s.pdf' % (N_best_save, keep_every, key), save_fig=savefigures)

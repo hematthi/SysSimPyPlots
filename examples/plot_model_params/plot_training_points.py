@@ -26,11 +26,11 @@ from syssimpyplots.plot_params import *
 ##### To load the files with the GP evaluated points:
 
 savefigures = False
-transformed_rates = False
+transformed_rates = True
 
 #run_directory = 'Hybrid_NR20_AMD_model1/Fit_all_KS/Params12/GP_files/'
 #loadfiles_directory = '/Users/hematthi/Documents/NotreDame_Postdoc/CRC/Files/SysSim/Model_Optimization/' + run_directory
-run_directory = 'Hybrid_NR20_AMD_model1/Fit_some8_KS/Params9_fix_highM/GP_files/'
+run_directory = 'Hybrid_NR20_AMD_model1/Fit_some8p1_KS/Params9_fix_highM/GP_files/'
 loadfiles_directory = '/Users/hematthi/Documents/NPP_ARC_Modernize_Kepler/Personal_research/SysSim/Model_Optimization/' + run_directory
 savefigures_directory = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Figures/Model_Optimization/' + run_directory
 model_name = 'Hybrid_NR20_AMD_model1'
