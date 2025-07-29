@@ -66,13 +66,13 @@ else:
     results = load_recomputed_distances_file(loadfiles_directory + 'Hybrid1_recompute_optim_best%s_every%s_targs86760.txt' % (N_best_save, keep_every))
 
 ##### To save the best parameter values and the recomputed distances for training a GP emulator:
-#'''
+'''
 save_path_name = loadfiles_directory + 'Active_params_recomputed_distances_table_best%s_every%s.txt' % (N_best_save, keep_every)
 if split_stars:
     savetxt_active_params_recomputed_distances_table_split_stars(results, save_path_name)
 else:
     savetxt_active_params_recomputed_distances_table(results, save_path_name)
-#'''
+'''
 
 
 
@@ -89,5 +89,18 @@ dist_terms = ['delta_f', 'mult_CRPD_r', 'periods_KS', 'depths_KS', 'radii_KS', '
 for (i,key) in enumerate(dist_terms):
     results_cmap_key = results['d_used_vals_w_evals']['all'][key] if split_stars else results['d_used_vals_w_evals'][key] # still the weighted distances for the full sample, but this is in a dictionary if split_stars=True
     plot_function_heatmap_averaged_grid_given_irregular_points_corner(active_params_symbols, results['active_params_evals'], results_cmap_key, flabel=key, show_points=False, save_name=savefigures_directory + model_name + '_recomputed_best%s_every%s_corner_cmap_%s.pdf' % (N_best_save, keep_every, key), save_fig=savefigures)
+plt.show()
+#'''
+
+
+
+
+
+##### To also plot corner plots of the *distances* (not the parameters!), to see if there are any (anti-)correlations implying tensions between distributions:
+#'''
+N_best_plot = 100
+dists_plot = np.array(results['d_used_vals_w_evals'][:N_best_plot].tolist())
+dtots_plot = results['dtot_w_evals'][:N_best_plot]
+plot_points_corner(dist_terms, dists_plot, fpoints=dtots_plot, f_label=r'$\mathcal{D}_W$', cmap='Blues_r', points_size=10., fig_size=(16,16), save_name=savefigures_directory + model_name + '_recomputed_best%s_every%s_best%s_distances_corner.pdf' % (N_best_save, keep_every, N_best_plot), save_fig=savefigures)
 plt.show()
 #'''
