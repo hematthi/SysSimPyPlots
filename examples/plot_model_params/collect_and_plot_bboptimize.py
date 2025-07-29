@@ -30,7 +30,7 @@ plt.ioff()
 
 #run_directory = 'Hybrid_NR20_AMD_model1/Fit_all_KS/Params12/'
 #loadfiles_directory = '/Users/hematthi/Documents/NotreDame_Postdoc/CRC/Files/SysSim/Model_Optimization/' + run_directory
-run_directory = 'Hybrid_NR20_AMD_model1/Fit_some8p1_KS/Params9_fix_highM/'
+run_directory = 'Hybrid_NR20_AMD_model1/clustered_initial_masses/Fit_some8p1_KS/Params10_fix_highM/'
 loadfiles_directory = '/Users/hematthi/Documents/NPP_ARC_Modernize_Kepler/Personal_research/SysSim/Model_Optimization/' + run_directory
 savefigures_directory = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Figures/Model_Optimization/' + run_directory
 
@@ -56,6 +56,7 @@ active_params_symbols = [#r'$M_{\rm break,1}$',
                          r'$\sigma_0$',
                          #r'$\sigma_1$',
                          r'$\sigma_M$',
+                         r'$\sigma_{M,\rm cluster}$',
                          #r'$\sigma_P$',
                          ] # this list of parameter symbols must match the order of parameters in 'active_params_names'!
 
@@ -78,7 +79,7 @@ np.savetxt('/Users/hematthi/Documents/GradSchool/Research/ACI/Simulated_Data/' +
 '''
 
 ##### To save the best parameter values and the distances for training a GP emulator:
-'''
+#'''
 #N_best_save, keep_every = 100000, 10
 N_best_save, keep_every = 10000, 1 # NOTE: may want to use this if many runs stop early due to reaching the target distance
 i_best_N = np.argsort(results['dtot_w_all'])[0:N_best_save:keep_every]
@@ -86,7 +87,7 @@ active_params_distances_table = np.concatenate((results['active_params_all'][i_b
 table_header = ' '.join(results['active_params_names_all'][0]) + ' dist_tot_weighted'
 fields_formats = ['%1.6f']*len(results['active_params_names_all'][0]) + ['%1.6f']
 np.savetxt(loadfiles_directory + 'Active_params_distances_table_best%s_every%s.txt' % (N_best_save, keep_every), active_params_distances_table, fmt=fields_formats, header=table_header, comments='')
-'''
+#'''
 
 #sys.exit("Error message")
 
@@ -163,6 +164,30 @@ active_params_pairs = [("log_rate_clusters", "log_rate_planets_per_cluster"),
                        ("sigma_ln_mass", "power_law_σ0"),
                        ] # for Hybrid1 model with 9 active parameters (fix break mass and power-law above, free lambdas, alpha_pret, and alpha_P)
 #'''
+#'''
+active_params_pairs = [("log_rate_clusters", "log_rate_planets_per_cluster"),
+                       ("log_rate_clusters", "power_law_P"),
+                       ("log_rate_planets_per_cluster", "power_law_P"),
+                       ("power_law_P", "log_α_pret"),
+                       ("log_α_pret", "mean_ln_mass"),
+                       ("log_α_pret", "sigma_ln_mass"),
+                       ("log_α_pret", "norm_radius"),
+                       ("log_α_pret", "power_law_γ0"),
+                       ("mean_ln_mass", "log_rate_clusters"),
+                       ("mean_ln_mass", "log_rate_planets_per_cluster"),
+                       ("mean_ln_mass", "sigma_ln_mass"),
+                       ("mean_ln_mass", "norm_radius"),
+                       ("norm_radius", "power_law_γ0"),
+                       ("norm_radius", "power_law_σ0"),
+                       ("power_law_γ0", "power_law_σ0"),
+                       ("sigma_ln_mass", "power_law_σ0"),
+                       ("sigma_ln_mass_in_cluster", "log_rate_clusters"),
+                       ("sigma_ln_mass_in_cluster", "mean_ln_mass"),
+                       ("sigma_ln_mass_in_cluster", "sigma_ln_mass"),
+                       ("sigma_ln_mass_in_cluster", "norm_radius"),
+                       ] # for Hybrid1 clustered initial masses model with 10 active parameters (fix break mass and power-law above, free lambdas, alpha_pret, and alpha_P)
+#'''
+
 
 
 #'''
@@ -381,7 +406,7 @@ plt.show()
 
 ##### To plot histograms of the parameters for distances below various thresholds:
 
-dtot_cuts = [30., 20., 15.] #[20., 15., 10.] #[30., 25., 22.]
+dtot_cuts = [30., 18., 12.] #[20., 15., 10.] #[30., 25., 22.]
 i_evals_all_pass_cuts = [results['dtot_w_all'] <= dtot for dtot in dtot_cuts]
 for i,dtot in enumerate(dtot_cuts):
     i_evals_all_pass = i_evals_all_pass_cuts[i]
