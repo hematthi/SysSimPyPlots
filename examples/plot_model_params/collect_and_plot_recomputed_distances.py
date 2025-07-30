@@ -29,7 +29,7 @@ plt.ioff()
 
 #run_directory = 'Hybrid_NR20_AMD_model1/Fit_all_KS/Params12/'
 #loadfiles_directory = '/Users/hematthi/Documents/NotreDame_Postdoc/CRC/Files/SysSim/Model_Optimization/' + run_directory + 'GP_files/'
-run_directory = 'Hybrid_NR20_AMD_model1/Fit_some8p1_KS/Params9_fix_highM/'
+run_directory = 'Hybrid_NR20_AMD_model1/clustered_initial_masses/Fit_some8p1_KS/Params10_fix_highM/'
 loadfiles_directory = '/Users/hematthi/Documents/NPP_ARC_Modernize_Kepler/Personal_research/SysSim/Model_Optimization/' + run_directory + 'GP_files/'
 savefigures_directory = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Figures/Model_Optimization/' + run_directory
 
@@ -54,6 +54,7 @@ active_params_symbols = [#r'$M_{\rm break,1}$',
                          r'$\sigma_0$',
                          #r'$\sigma_1$',
                          r'$\sigma_M$',
+                         r'$\sigma_{M,\rm cluster}$',
                          #r'$\sigma_P$',
                          ] # this list of parameter symbols must match the order of parameters in 'active_params_names'!
 
@@ -66,13 +67,13 @@ else:
     results = load_recomputed_distances_file(loadfiles_directory + 'Hybrid1_recompute_optim_best%s_every%s_targs86760.txt' % (N_best_save, keep_every))
 
 ##### To save the best parameter values and the recomputed distances for training a GP emulator:
-'''
+#'''
 save_path_name = loadfiles_directory + 'Active_params_recomputed_distances_table_best%s_every%s.txt' % (N_best_save, keep_every)
 if split_stars:
     savetxt_active_params_recomputed_distances_table_split_stars(results, save_path_name)
 else:
     savetxt_active_params_recomputed_distances_table(results, save_path_name)
-'''
+#'''
 
 
 

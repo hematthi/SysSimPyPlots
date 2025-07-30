@@ -30,7 +30,7 @@ transformed_rates = True
 
 #run_directory = 'Hybrid_NR20_AMD_model1/Fit_all_KS/Params12/GP_files/'
 #loadfiles_directory = '/Users/hematthi/Documents/NotreDame_Postdoc/CRC/Files/SysSim/Model_Optimization/' + run_directory
-run_directory = 'Hybrid_NR20_AMD_model1/Fit_some8p1_KS/Params9_fix_highM/GP_files/'
+run_directory = 'Hybrid_NR20_AMD_model1/clustered_initial_masses/Fit_some8p1_KS/Params10_fix_highM/GP_files/'
 loadfiles_directory = '/Users/hematthi/Documents/NPP_ARC_Modernize_Kepler/Personal_research/SysSim/Model_Optimization/' + run_directory
 savefigures_directory = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Figures/Model_Optimization/' + run_directory
 model_name = 'Hybrid_NR20_AMD_model1'
@@ -47,6 +47,7 @@ active_params_symbols = [#r'$M_{\rm break,1}$',
                          r'$\sigma_0$',
                          #r'$\sigma_1$',
                          r'$\sigma_M$',
+                         r'$\sigma_{M,\rm cluster}$',
                          #r'$\sigma_P$',
                          ] # this list of parameter symbols must match the order of parameters in 'active_params_names'!
 dims = len(active_params_symbols)
