@@ -1721,6 +1721,38 @@ def compute_summary_stats_from_cat_obs(cat_obs=None, star_obs=None, file_name_pa
 
     return [sss_per_sys, sss]
 
+def compute_additional_stats_for_subsample_from_summary_stats(sss, P_min=0., P_max=100., radii_min=0.5, radii_max=4., params={'m': -0.10, 'Rgap0': 2.40}):
+    """
+    Compute additional summary statistics, for a sub-sample of the observed planets, and adds them to the summary statistics dictionary.
+
+    Parameters
+    ----------
+    sss : dict
+        The dictionary containing the summary statistics of a simulated observed catalog. The additionary summary statistics for the sub-sample will be added to this dictionary. NOTE: this function can also be called on a summary statistics dictionary for the Kepler catalog!
+    P_min : float, default=0.
+        The minimum orbital period to include in the sub-sample.
+    P_max : float, default=100.
+        The maximum orbital period to include in the sub-sample.
+    radii_min : float, default=0.5
+        The minimum planet radius to include in the sub-sample.
+    radii_max : float, default=4.
+        The maximum planet radius to include in the sub-sample.
+    params : dict
+        A dictionary containing extra parameters needed to compute the additional summary statistics.
+    """
+    bools_subsample = (sss['radii_obs'] >= radii_min) & (sss['radii_obs'] <= radii_max) & (sss['P_obs'] >= P_min) & (sss['P_obs'] <= P_max)
+    print('Number of planets in the sub-sample: %s/%s' % (np.sum(bools_subsample), len(sss['P_obs'])))
+    
+    # Periods and radii of the planets in the sub-sample:
+    periods_subsample = sss['P_obs'][bools_subsample]
+    radii_subsample = sss['radii_obs'][bools_subsample]
+    
+    # Compute the radii differences from the location of the period-radius gap:
+    radii_delta_gap = gen.radii_delta_from_period_radius_gap(radii_subsample, periods_subsample, m=params['m'], Rgap0=params['Rgap0']) # Rp - Rgap (Earth radii)
+    
+    # Add the additional summary statistics to the dictionary:
+    print('Adding additionary stats for sub-sample to summary statistics.')
+    sss['radii_delta_gap_obs'] = radii_delta_gap
 
 
 

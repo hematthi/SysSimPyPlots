@@ -41,8 +41,9 @@ def load_Kepler_planets_cleaned():
     - `Mstar`: The stellar mass (solar masses).
 
     """
-    # q1_q17_dr25_gaia_fgk_HFR2021a_koi_cleaned.csv for Paper II
-    # q1_q17_dr25_gaia_berger_fgk_H2020_koi_cleaned.csv for Paper III
+    # q1_q17_dr25_gaia_fgk_HFR2021a_koi_cleaned.csv # for Paper II
+    # q1_q17_dr25_gaia_berger_fgk_H2020_koi_cleaned.csv # for Paper III
+    # q1_q17_dr25_gaia_berger_fgk_H2020_koi_cleaned_P0-400_R0-10.csv # for a larger sample (can still apply period and radius bounds after)
     planets_cleaned = np.genfromtxt(os.path.join(path_data, 'q1_q17_dr25_gaia_berger_fgk_H2020_koi_cleaned_P0-400_R0-10.csv'), dtype={'names': ('kepid', 'KOI', 'koi_disposition', 'koi_pdisposition', 'koi_score', 'P', 't_D', 'depth', 'Rp', 'teff', 'logg', 'Rstar', 'Mstar'), 'formats': ('i8', 'S9', 'S15', 'S15', 'f8', 'f8', 'f8', 'f8', 'f8', 'f8', 'f8', 'f8', 'f8',)}, delimiter=',') #orbit periods 'P' are in days; transit durations 't_D' are in hrs; transit depths 'depth' are in ppm; planetary radii 'Rp' are in Rearth; stellar radii 'Rstar' are in Rsolar
     planets_cleaned = planets_cleaned[1:]
     return planets_cleaned
@@ -873,6 +874,8 @@ def compute_distances_sim_Kepler(sss_per_sys, sss, ssk_per_sys, ssk, weights, di
     dists['depths_above_KS'] = KS_dist(sss['D_above_obs'], ssk['D_above_obs'])[0]
     dists['depths_below_KS'] = KS_dist(sss['D_below_obs'], ssk['D_below_obs'])[0]
     dists['radii_KS'] = KS_dist(sss['radii_obs'], ssk['radii_obs'])[0]
+    if ('radii_delta_gap_obs' in sss) and ('radii_delta_gap_obs' in ssk):
+        dists['radii_delta_gap_KS'] = KS_dist(sss['radii_delta_gap_obs'], ssk['radii_delta_gap_obs'])[0]
     dists['radius_ratios_KS'] = KS_dist(sss['D_ratio_obs'], ssk['D_ratio_obs'])[0]
     dists['radius_ratios_above_KS'] = KS_dist(sss['D_ratio_above_obs'], ssk['D_ratio_above_obs'])[0]
     dists['radius_ratios_below_KS'] = KS_dist(sss['D_ratio_below_obs'], ssk['D_ratio_below_obs'])[0]
