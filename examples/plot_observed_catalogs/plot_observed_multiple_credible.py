@@ -34,7 +34,7 @@ save_name = 'Hybrid_vs_H20_models'
 
 
 
-compute_ratios = compute_ratios_adjacent #compute_ratios_adjacent
+compute_ratios = compute_ratios_adjacent
 AD_mod = True
 weights_all = load_split_stars_weights_only()
 dists_include = ['delta_f',
@@ -56,34 +56,13 @@ dists_include = ['delta_f',
                  'gap_complexity_KS',
                  ]
 
-# Model 1:
-loadfiles_directory1 = '/Users/hematthi/Documents/GradSchool/Research/SysSim/SysSimExClusters/examples/test/'
-run_number1 = ''
 
-N_sim, cos_factor, P_min, P_max, radii_min, radii_max = read_targets_period_radius_bounds(loadfiles_directory1 + 'periods%s.out' % run_number1)
-
-param_vals_all1 = read_sim_params(loadfiles_directory1 + 'periods%s.out' % run_number1)
-sss_per_sys1, sss1 = compute_summary_stats_from_cat_obs(file_name_path=loadfiles_directory1, run_number=run_number1, compute_ratios=compute_ratios)
-
-# Model 2:
-loadfiles_directory2 = '/Users/hematthi/Documents/GradSchool/Research/ACI/Simulated_Data/AMD_system/Split_stars/Singles_ecc/Params11_KS/Distribute_AMD_per_mass/durations_norm_circ_singles_multis_GF2020_KS/GP_med/'
-run_number2 = ''
-
-param_vals_all2 = read_sim_params(loadfiles_directory2 + 'periods%s.out' % run_number2)
-sss_per_sys2, sss2 = compute_summary_stats_from_cat_obs(file_name_path=loadfiles_directory2, run_number=run_number2, compute_ratios=compute_ratios)
-
-
-
-model_sss = [sss1, sss2]
-model_sss_per_sys = [sss_per_sys1, sss_per_sys2]
-model_names = ['Hybrid model', 'H20 model']
-model_linestyles = ['--', '--']
-model_colors = ['b', 'g']
-model_stagger_errorbars = [-0.05, 0.05] # offsets for plotting multiplicity counts in order to stagger errorbars
 
 
 
 # To load and process the observed Kepler catalog and compare with our simulated catalog:
+P_min, P_max = 3., 300.
+radii_min, radii_max = 0.5, 10.
 ssk_per_sys, ssk = compute_summary_stats_from_Kepler_catalog(P_min, P_max, radii_min, radii_max, compute_ratios=compute_ratios)
 
 logxi_Kep_2 = np.log10(ssk_per_sys['xi_obs'][ssk_per_sys['Mtot_obs'] == 2, 0])
@@ -93,10 +72,6 @@ xi_Kep_4p = ssk_per_sys['xi_obs'][ssk_per_sys['Mtot_obs'] >= 4]
 logxi_Kep_4p = np.log10(xi_Kep_4p[xi_Kep_4p != -1])
 xi_Kep_5p = ssk_per_sys['xi_obs'][ssk_per_sys['Mtot_obs'] >= 5]
 logxi_Kep_5p = np.log10(xi_Kep_5p[xi_Kep_5p != -1])
-
-dists1, dists_w1 = compute_distances_sim_Kepler(sss_per_sys1, sss1, ssk_per_sys, ssk, weights_all['all'], dists_include, N_sim, cos_factor=cos_factor, AD_mod=AD_mod)
-
-dists2, dists_w2 = compute_distances_sim_Kepler(sss_per_sys2, sss2, ssk_per_sys, ssk, weights_all['all'], dists_include, N_sim, cos_factor=cos_factor, AD_mod=AD_mod)
 
 
 
@@ -125,13 +100,18 @@ lfs = 16 # legend labels font size
 
 ##### To load and compute the same statistics for a large number of models, computing the confidence intervals for each bin:
 
-loadfiles_directory1 = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Simulated_catalogs/Hybrid_NR20_AMD_model1/Fit_some_KS/Params8_fix_highM/GP_best_models_100/'
-loadfiles_directory2 = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Simulated_catalogs/Hybrid_NR20_AMD_model1/Fit_some8_KS/Params9_fix_highM/GP_best_models_100/'
-#loadfiles_directory2 = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Simulated_catalogs/Hybrid_NR20_AMD_model1/Fit_all_KS/Params8/GP_best_models_100/'
-#loadfiles_directory2 = '/Users/hematthi/Documents/GradSchool/Research/ACI/Simulated_Data/AMD_system/Split_stars/Singles_ecc/Params11_KS/Distribute_AMD_per_mass/durations_norm_circ_singles_multis_GF2020_KS/GP_best_models/'
+#loadfiles_directory1 = '/Users/hematthi/Documents/GradSchool/Research/ACI/Simulated_Data/AMD_system/Split_stars/Singles_ecc/Params11_KS/Distribute_AMD_per_mass/durations_norm_circ_singles_multis_GF2020_KS/GP_best_models/'
+#loadfiles_directory1 = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Simulated_catalogs/Hybrid_NR20_AMD_model1/Fit_all_KS/Params8/GP_best_models_100/'
+#loadfiles_directory1 = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Simulated_catalogs/Hybrid_NR20_AMD_model1/Fit_some_KS/Params8_fix_highM/GP_best_models_100/'
+loadfiles_directory1 = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Simulated_catalogs/Hybrid_NR20_AMD_model1/Fit_some8p1_KS/Params9_fix_highM/GP_best_models_100/'
+loadfiles_directory2 = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Simulated_catalogs/Hybrid_NR20_AMD_model1/clustered_initial_masses/Fit_some8p1_KS/Params10_fix_highM/GP_best_models_100/'
 
-model_loadfiles_dirs = [loadfiles_directory1, loadfiles_directory2]
-models = len(model_loadfiles_dirs)
+model_names = ['Hybrid model', 'Hybrid model, clustered']
+model_linestyles = ['--', '--']
+model_colors = ['b', 'g']
+model_stagger_errorbars = [-0.05, 0.05] # offsets for plotting multiplicity counts in order to stagger errorbars
+model_load_dirs = [loadfiles_directory1, loadfiles_directory2]
+models = len(model_load_dirs)
 
 runs = 100
 
@@ -157,7 +137,7 @@ xi_4_pvals_all = []
 xi_4p_pvals_all = []
 #xi_5p_pvals_all = []
 
-for loadfiles_dir in model_loadfiles_dirs:
+for loadfiles_dir in model_load_dirs:
     sss_dir = []
     sss_per_sys_dir = []
     params_dir = []
@@ -179,7 +159,8 @@ for loadfiles_dir in model_loadfiles_dirs:
         run_number = i
         sss_per_sys_i, sss_i = compute_summary_stats_from_cat_obs(file_name_path=loadfiles_dir, run_number=run_number, compute_ratios=compute_ratios)
         params_i = read_sim_params(loadfiles_dir + 'periods%s.out' % run_number)
-        dists_i, dists_w_i = compute_distances_sim_Kepler(sss_per_sys_i, sss_i, ssk_per_sys, ssk, weights_all['all'], dists_include, N_Kep, cos_factor=cos_factor, AD_mod=AD_mod)
+        N_sim = params_i['num_targets_sim_pass_one']
+        dists_i, dists_w_i = compute_distances_sim_Kepler(sss_per_sys_i, sss_i, ssk_per_sys, ssk, weights_all['all'], dists_include, N_sim, AD_mod=AD_mod)
         
         sss_dir.append(sss_i)
         sss_per_sys_dir.append(sss_per_sys_i)

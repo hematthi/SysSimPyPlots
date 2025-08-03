@@ -30,7 +30,7 @@ savefigures = False
 loadfiles_directory = '/Users/hematthi/Documents/GradSchool/Research/SysSim/SysSimExClusters/examples/test/'
 #loadfiles_directory = '/Users/hematthi/Documents/GradSchool/Research/ACI/Simulated_Data/AMD_system/Split_stars/Singles_ecc/Params11_KS/Distribute_AMD_per_mass/durations_norm_circ_singles_multis_GF2020_KS/GP_med/'
 #loadfiles_directory = '/Users/hematthi/Documents/GradSchool/Research/ACI/Simulated_Data/Split_stars/Clustered_P_R_fswp_bprp/Params13_KS/durations_KS/GP_med/'
-savefigures_directory = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Figures/Hybrid_NR20_AMD_model1/Observed/' + 'Fit_some8_KS_params9/'
+savefigures_directory = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Figures/Hybrid_NR20_AMD_model1/clustered_initial_masses/Observed/' + 'Fit_some8p1_KS_params10/'
 #savefigures_directory = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Figures/H20_model/Observed/'
 run_number = ''
 model_name = 'Hybrid_NR20_AMD_model1' + run_number #'Non_Clustered_Model', 'Clustered_P_Model', 'Clustered_P_R_Model', 'Maximum_AMD_model', 'Hybrid_NR20_AMD_model1'
@@ -41,12 +41,12 @@ weights_all = load_split_stars_weights_only()
 dists_include = ['delta_f',
                  'mult_CRPD_r',
                  'periods_KS',
-                 'period_ratios_KS',
-                 'durations_KS',
+                 #'period_ratios_KS',
+                 #'durations_KS',
                  #'durations_norm_circ_KS',
                  #'durations_norm_circ_singles_KS',
                  #'durations_norm_circ_multis_KS',
-                 'duration_ratios_KS',
+                 #'duration_ratios_KS',
                  #'duration_ratios_nonmmr_KS',
                  #'duration_ratios_mmr_KS',
                  'depths_KS',
@@ -54,7 +54,7 @@ dists_include = ['delta_f',
                  'radius_ratios_KS',
                  'radii_partitioning_KS',
                  'radii_monotonicity_KS',
-                 'gap_complexity_KS',
+                 #'gap_complexity_KS',
                  ]
 
 
@@ -104,7 +104,7 @@ lfs = 16 # legend labels font size
 
 #loadfiles_directory = '../../ACI/Simulated_Data/Split_stars/Clustered_P_R_fswp_bprp/Params13_KS/durations_KS/GP_best_models/'
 #loadfiles_directory = '/Users/hematthi/Documents/GradSchool/Research/ACI/Simulated_Data/AMD_system/Split_stars/Singles_ecc/Params11_KS/Distribute_AMD_per_mass/durations_norm_circ_singles_multis_GF2020_KS/GP_best_models/'
-loadfiles_directory = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Simulated_catalogs/Hybrid_NR20_AMD_model1/Fit_some8_KS/Params9_fix_highM/Radius_valley_model62_repeated_100/'
+loadfiles_directory = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Simulated_catalogs/Hybrid_NR20_AMD_model1/clustered_initial_masses/Fit_some8p1_KS/Params10_fix_highM/GP_best_models_100/'
 runs = 100
 
 sss_all = []
@@ -128,7 +128,7 @@ for i in range(1,runs+1):
     run_number = i
     sss_per_sys_i, sss_i = compute_summary_stats_from_cat_obs(file_name_path=loadfiles_directory, run_number=run_number, compute_ratios=compute_ratios)
     params_i = read_sim_params(loadfiles_directory + 'periods%s.out' % run_number)
-    dists_i, dists_w_i = compute_distances_sim_Kepler(sss_per_sys_i, sss_i, ssk_per_sys, ssk, weights_all['all'], dists_include, N_Kep, cos_factor=cos_factor, AD_mod=AD_mod)
+    dists_i, dists_w_i = compute_distances_sim_Kepler(sss_per_sys_i, sss_i, ssk_per_sys, ssk, weights_all['all'], dists_include, N_sim, cos_factor=cos_factor, AD_mod=AD_mod)
     
     sss_all.append(sss_i)
     sss_per_sys_all.append(sss_per_sys_i)
