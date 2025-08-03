@@ -25,9 +25,7 @@ from syssimpyplots.plot_params import *
 
 savefigures = False
 transformed_rates = False
-#run_directory = 'Hybrid_NR20_AMD_model1/Fit_all_KS/Params13_alpha1_100/GP_files/'
-#loadfiles_directory = '/Users/hematthi/Documents/NotreDame_Postdoc/CRC/Files/SysSim/Model_Optimization/' + run_directory
-run_directory = 'Hybrid_NR20_AMD_model1/Fit_some8p1_KS/Params9_fix_highM/GP_files/' #'Fit_all_KS/Params8/'
+run_directory = 'Hybrid_NR20_AMD_model1/clustered_initial_masses/Fit_some8p1_KS/Params10_fix_highM/GP_files/' #'Fit_all_KS/Params8/'
 loadfiles_directory = '/Users/hematthi/Documents/NPP_ARC_Modernize_Kepler/Personal_research/SysSim/Model_Optimization/' + run_directory
 savefigures_directory = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Figures/Model_Optimization/' + run_directory
 model_name = 'Hybrid_NR20_AMD_model1'
@@ -44,6 +42,7 @@ active_params_symbols = [#r'$M_{\rm break,1}$',
                          r'$\sigma_0$',
                          #r'$\sigma_1$',
                          r'$\sigma_M$',
+                         r'$\sigma_{M,\rm cluster}$',
                          #r'$\sigma_P$',
                          ] # this list of parameter symbols must match the order of parameters in 'active_params_names'!
 
@@ -68,9 +67,11 @@ active_params_names = np.array(data_train['active_params_names'])
 #n_train, mean_f, sigma_f, lscales, vol = 2000, 35.0, 2.7, 16.05, 74.25 # 8 params
 #n_train, mean_f, sigma_f, lscales, vol = 2000, 25.0, 2.7, 2.45, 112.9 # fit some, 8 params
 #n_train, mean_f, sigma_f, lscales, vol = 2000, 30.0, 2.7, 3.03, 240.84 # fit some8, 9 params
-n_train, mean_f, sigma_f, lscales, vol = 2000, 30.0, 2.7, 2.22, 48.52 # fit some8+1, 9 params
+#n_train, mean_f, sigma_f, lscales, vol = 2000, 30.0, 2.7, 4.45, 48.52 # fit some8+1, 9 params
+n_train, mean_f, sigma_f, lscales, vol = 2000, 30.0, 2.7, 3.85, 9.72 # clustered initial masses, fit some8+1, 10 params
+
 #n_points, max_mean, max_std, max_post = 100000, 'Inf', 'Inf', 'Inf' # for initial testing
-n_points, max_mean, max_std, max_post = 10000, 'Inf', 'Inf', -12.0
+n_points, max_mean, max_std, max_post = 10000, 'Inf', 'Inf', -18.0
 file_name = 'GP_train%s_meanf%s_sigmaf%s_lscales%s_vol%s_points%s_mean%s_std%s_post%s.csv' % (n_train, mean_f, sigma_f, lscales, vol, n_points, max_mean, max_std, max_post)
 xprior_accepted_table = load_GP_table_prior_draws(file_name, file_name_path=loadfiles_directory)
 active_params_transformed_names = np.array(xprior_accepted_table.dtype.names[:dims])
@@ -89,7 +90,7 @@ plt.show()
 
 ##### To make cuts for the posterior:
 
-mean_cut, std_cut, post_cut = np.inf, np.inf, -12.0
+mean_cut, std_cut, post_cut = np.inf, np.inf, -18.0
 #xprior_accepts = make_cuts_GP_mean_std_post(active_params_transformed_names, xprior_accepted_table, max_mean=mean_cut, max_std=std_cut, max_post=post_cut)
 if transformed_rates:
     xprior_accepts_transformed = make_cuts_GP_mean_std_post(active_params_transformed_names, xprior_accepted_table, max_mean=mean_cut, max_std=std_cut, max_post=post_cut)
