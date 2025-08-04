@@ -80,7 +80,7 @@ logxi_Kep_5p = np.log10(xi_Kep_5p[xi_Kep_5p != -1])
 #'''
 ##### To plot the simulated and Kepler catalogs as marginal distributions:
 
-subdirectory = 'Compare_to_H20_model/'
+subdirectory = 'Compare_hybrid_clustered/' #'Compare_to_H20_model/'
 
 fig_size = (8,3) #size of each panel (figure)
 fig_lbrt = [0.15, 0.3, 0.95, 0.925]
