@@ -29,6 +29,7 @@ param_symbols = {
     "max_period": r'$P_{\rm max}$',
     "mean_ln_mass (ln M_earth)": r'$\mu_{\ln{M}}$ $(\ln{M_\oplus})$',
     "sigma_ln_mass (ln M_earth)": r'$\sigma_{\ln{M}}$ $(\ln{M_\oplus})$',
+    "sigma_ln_mass_in_cluster (ln M_earth)": r'$\sigma_{\ln{M},\rm cluster}$ $(\ln{M_\oplus})$',
     "break_mass (M_earth)": r'$M_{p,\rm break}$ $(M_\oplus)$',
     "min_mass (M_earth)": r'$M_{p,\rm min}$ $(M_\oplus)$',
     "max_mass (M_earth)": r'$M_{p,\rm max}$ $(M_\oplus)$',
