@@ -26,8 +26,8 @@ from syssimpyplots.plot_params import *
 
 
 savefigures = False
-savefigures_directory = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Figures/Hybrid_NR20_AMD_model1/Underlying/'
-save_name = 'Hybrid_vs_H20_models'
+savefigures_directory = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Figures/Hybrid_NR20_AMD_model1/clustered_initial_masses/Underlying/'
+save_name = 'Hybrid_clustered_vs_nonclustered_models' #'Hybrid_vs_H20_models'
 
 
 
@@ -55,7 +55,7 @@ sssp_per_sys2, sssp2 = compute_summary_stats_from_cat_phys(file_name_path=loadfi
 
 model_sssp = [sssp1, sssp2]
 model_sssp_per_sys = [sssp_per_sys1, sssp_per_sys2]
-model_names = ['Hybrid model', 'H20 model'] #['Distribute AMD per mass', 'Distribute AMD equal'] #['Maximum AMD model', 'Two-Rayleigh model'] #[r'Linear $\alpha_P(b_p-r_p-E^*)$', r'Linear $f_{\rm swpa}(b_p-r_p-E^*)$'] #['Maximum AMD model', 'Two-Rayleigh model (Paper II)'] # Make sure this matches the models loaded!
+model_names = ['Hybrid model', 'Hybrid model, clustered'] #['Hybrid model', 'H20 model']
 model_linestyles = ['--', '--']
 model_colors = ['b', 'g']
 model_stagger_errorbars = [-0.05, 0.05] # offsets for plotting multiplicity counts in order to stagger errorbars
@@ -66,7 +66,7 @@ model_stagger_errorbars = [-0.05, 0.05] # offsets for plotting multiplicity coun
 
 ##### To plot the simulated catalog as marginal distributions:
 
-subdirectory = 'Compare_to_H20_model/'
+subdirectory = 'Compare_to_hybrid_nonclustered/' #'Compare_to_H20_model/'
 
 fig_size = (8,3) #size of each panel (figure)
 fig_lbrt = [0.15, 0.3, 0.95, 0.925]
@@ -85,8 +85,10 @@ lfs = 16 #legend labels font size
 
 ##### To load and compute the same statistics for a large number of models, computing the confidence intervals for each bin:
 
-loadfiles_directory1 = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Simulated_catalogs/Hybrid_NR20_AMD_model1/Fit_all_KS/Params12/GP_best_models_100/'
-loadfiles_directory2 = '/Users/hematthi/Documents/GradSchool/Research/ACI/Simulated_Data/AMD_system/Split_stars/Singles_ecc/Params11_KS/Distribute_AMD_per_mass/durations_norm_circ_singles_multis_GF2020_KS/GP_best_models/' #'/Users/hematthi/Documents/GradSchool/Research/ACI/Simulated_Data/AMD_system/Split_stars/Singles_ecc/Params11_KS/Distribute_AMD_equal/durations_norm_circ_singles_multis_GF2020_KS/GP_best_models/' #'/Users/hematthi/Documents/GradSchool/Research/ACI/Simulated_Data/Split_stars/Clustered_P_R_fswp_bprp/Params13_KS/durations_KS/GP_best_models/'
+loadfiles_directory1 = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Simulated_catalogs/Hybrid_NR20_AMD_model1/Fit_some8p1_KS/Params9_fix_highM/GP_best_models_100/'
+loadfiles_directory2 = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Simulated_catalogs/Hybrid_NR20_AMD_model1/clustered_initial_masses/Fit_some8p1_KS/Params10_fix_highM/GP_best_models_100/'
+#loadfiles_directory2 = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Simulated_catalogs/Hybrid_NR20_AMD_model1/Fit_all_KS/Params8/GP_best_models_100/'
+#loadfiles_directory2 = '/Users/hematthi/Documents/GradSchool/Research/ACI/Simulated_Data/AMD_system/Split_stars/Singles_ecc/Params11_KS/Distribute_AMD_per_mass/durations_norm_circ_singles_multis_GF2020_KS/GP_best_models/' #'/Users/hematthi/Documents/GradSchool/Research/ACI/Simulated_Data/AMD_system/Split_stars/Singles_ecc/Params11_KS/Distribute_AMD_equal/durations_norm_circ_singles_multis_GF2020_KS/GP_best_models/' #'/Users/hematthi/Documents/GradSchool/Research/ACI/Simulated_Data/Split_stars/Clustered_P_R_fswp_bprp/Params13_KS/durations_KS/GP_best_models/'
 
 model_loadfiles_dirs = [loadfiles_directory1, loadfiles_directory2]
 models = len(model_loadfiles_dirs)
