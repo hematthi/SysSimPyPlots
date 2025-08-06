@@ -33,7 +33,7 @@ Main.include("/Users/hematthi/Documents/GradSchool/Research/SysSim/SysSimExClust
 
 
 savefigures = False
-savefigures_directory = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Figures/Hybrid_NR20_AMD_model1/Underlying/Fit_some8_KS_params9/'
+savefigures_directory = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Figures/Hybrid_NR20_AMD_model1/clustered_initial_masses/Underlying/Fit_some8p1_KS_params10/'
 
 
 
@@ -52,7 +52,7 @@ qtls = [0.16,0.5,0.84] # for 1-sigma
 
 #run_directory = 'Hybrid_NR20_AMD_model1/Fit_all_KS/Params12/GP_files/'
 #loadfiles_directory = '/Users/hematthi/Documents/NotreDame_Postdoc/CRC/Files/SysSim/Model_Optimization/' + run_directory
-run_directory = 'Hybrid_NR20_AMD_model1/Fit_some8_KS/Params9_fix_highM/GP_files/'
+run_directory = 'Hybrid_NR20_AMD_model1/clustered_initial_masses/Fit_some8p1_KS/Params10_fix_highM/GP_files/'
 loadfiles_directory = '/Users/hematthi/Documents/NPP_ARC_Modernize_Kepler/Personal_research/SysSim/Model_Optimization/' + run_directory
 
 n_params = 9
@@ -60,8 +60,12 @@ n_params = 9
 #n_train, mean_f, sigma_f, lscales, vol = 2000, 35.0, 2.7, 67.65, 141134.4 # 13 params
 #n_train, mean_f, sigma_f, lscales, vol = 2000, 35.0, 2.7, 16.05, 14.26 # 8 params
 #n_train, mean_f, sigma_f, lscales, vol = 2000, 25.0, 2.7, 2.45, 112.9 # fit some, 8 params
-n_train, mean_f, sigma_f, lscales, vol = 2000, 30.0, 2.7, 3.03, 240.84 # fit some, 9 params
-n_points, max_mean, max_std, max_post = 10000, 'Inf', 'Inf', -13.0 #100000, 'Inf', 'Inf', 'Inf'
+#n_train, mean_f, sigma_f, lscales, vol = 2000, 30.0, 2.7, 3.03, 240.84 # fit some, 9 params
+#n_train, mean_f, sigma_f, lscales, vol = 2000, 30.0, 2.7, 2.22, 48.52 # fit some+1, 9 params
+n_train, mean_f, sigma_f, lscales, vol = 2000, 30.0, 2.7, 3.85, 9.72 # clustered initial masses, fit some+1, 10 params
+
+
+n_points, max_mean, max_std, max_post = 10000, 'Inf', 'Inf', -18.0 #100000, 'Inf', 'Inf', 'Inf'
 file_name = 'GP_train%s_meanf%s_sigmaf%s_lscales%s_vol%s_points%s_mean%s_std%s_post%s.csv' % (n_train, mean_f, sigma_f, lscales, vol, n_points, max_mean, max_std, max_post)
 xprior_accepted_table = load_GP_table_prior_draws(file_name, file_name_path=loadfiles_directory)
 active_params_names = np.array(xprior_accepted_table.dtype.names[:n_params])
@@ -97,7 +101,7 @@ Minit_pdf_array_qtls = np.quantile(Minit_pdf_array_all, qtls, axis=0)
 
 ##### (2) From the model parameters drawn from the posterior distribution that have simulated catalogs (that still pass the distance threshold after simulation):
 
-loadfiles_directory = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Simulated_catalogs/Hybrid_NR20_AMD_model1/Fit_some8_KS/Params9_fix_highM/GP_best_models_100/'
+loadfiles_directory = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Simulated_catalogs/Hybrid_NR20_AMD_model1/clustered_initial_masses/Fit_some8p1_KS/Params10_fix_highM/GP_best_models_100/'
 
 params_all = []
 
