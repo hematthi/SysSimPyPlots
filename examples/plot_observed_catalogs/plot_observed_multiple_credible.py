@@ -27,8 +27,8 @@ from syssimpyplots.plot_params import *
 
 
 savefigures = False
-savefigures_directory = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Figures/Hybrid_NR20_AMD_model1/Observed/'
-save_name = 'Hybrid_vs_H20_models'
+savefigures_directory = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Figures/Hybrid_NR20_AMD_model1/clustered_initial_masses/Observed/'
+save_name = 'Hybrid_clustered_vs_nonclustered_models' #'Hybrid_vs_H20_models'
 
 
 
@@ -80,7 +80,7 @@ logxi_Kep_5p = np.log10(xi_Kep_5p[xi_Kep_5p != -1])
 #'''
 ##### To plot the simulated and Kepler catalogs as marginal distributions:
 
-subdirectory = 'Compare_hybrid_clustered/' #'Compare_to_H20_model/'
+subdirectory = 'Compare_to_hybrid_nonclustered/' #'Compare_to_H20_model/'
 
 fig_size = (8,3) #size of each panel (figure)
 fig_lbrt = [0.15, 0.3, 0.95, 0.925]
