@@ -311,30 +311,6 @@ plt.show()
 
 
 
-##### To plot the planet radius distribution in more detail:
-
-fig_enlarged_size = (10,6)
-fig_enlarged_lbrt = [0.15, 0.15, 0.95, 0.95]
-
-plot_fig_pdf_credible([sss_i['radii_obs'] for sss_i in sss_all], [], [ssk['radii_obs']], x_min=radii_min, x_max=6., lw=lw, label_sim1=r'Simulated 16-84%', alpha=alpha, xlabel_text=r'Planet radius, $R_p$ [$R_\oplus$]', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_size=fig_enlarged_size, fig_lbrt=fig_enlarged_lbrt)
-if savefigures:
-    plt.savefig(savefigures_directory + model_name + '_radii_compare_enlarged.pdf')
-    plt.close()
-
-# To plot all the individual catalogs as thin lines:
-N_plot = 100
-
-plot_fig_pdf_simple([sss_i['radii_obs'] for sss_i in sss_all[:N_plot]] + [ssk['radii_obs']], [], x_min=radii_min, x_max=6., c_sim=['b']*N_plot + ['k'], ls_sim=['-']*N_plot + ['-'], lw=[0.05]*N_plot + [2.], labels_sim=['Simulated catalogs'] + [None]*(N_plot-1) + ['Kepler'], xlabel_text=r'Planet radius, $R_p$ [$R_\oplus$]', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_size=fig_enlarged_size, fig_lbrt=fig_enlarged_lbrt)
-if savefigures:
-    plt.savefig(savefigures_directory + model_name + '_radii_compare_enlarged_draws.pdf')
-    plt.close()
-
-plt.show()
-
-
-
-
-
 ##### To plot the marginal distributions (CDFs):
 
 # Multiplicities:
