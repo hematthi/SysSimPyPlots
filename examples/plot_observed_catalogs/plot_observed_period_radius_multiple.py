@@ -23,7 +23,7 @@ from syssimpyplots.plot_params import *
 
 savefigures = False
 loadfiles_directory = '/Users/hematthi/Documents/GradSchool/Research/SysSim/SysSimExClusters/examples/test/'
-savefigures_directory = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Figures/Hybrid_NR20_AMD_model1/Observed/' + 'Radius_valley_measures/Fit_some8_KS_params9/'
+savefigures_directory = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Figures/Hybrid_NR20_AMD_model1/clustered_initial_masses/Observed/' + 'Radius_valley_measures/Fit_some8_KS_params10/'
 run_number = ''
 model_name = 'Hybrid_NR20_AMD_model1' + run_number
 
@@ -67,7 +67,7 @@ lfs = 16 # legend labels font size
 
 ##### To load and compute the same statistics for a large number of models:
 
-loadfiles_directory = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Simulated_catalogs/Hybrid_NR20_AMD_model1/Fit_some8_KS/Params9_fix_highM/GP_best_models_100/'
+loadfiles_directory = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Simulated_catalogs/Hybrid_NR20_AMD_model1/clustered_initial_masses/Fit_some8p1_KS/Params10_fix_highM/GP_best_models_100/'
 runs = 100
 
 sss_all = []

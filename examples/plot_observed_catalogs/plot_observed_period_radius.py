@@ -34,7 +34,7 @@ savefigures = False
 loadfiles_directory = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Simulated_catalogs/Hybrid_NR20_AMD_model1/Fit_some8_KS/Params9_fix_highM/GP_best_models_100/'
 savefigures_directory = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Figures/Hybrid_NR20_AMD_model1/Observed/'
 run_number = '89'
-model_name = 'Hybrid_NR20_AMD_model1' + run_number
+model_name = 'Hybrid_model' + run_number
 
 compute_ratios = compute_ratios_adjacent
 weights_all = load_split_stars_weights_only()
@@ -121,9 +121,18 @@ print('y0 = {:.2f} +{:.2f}/-{:.2f}'.format(*y0trip_sim))
 
 m_Kep = mtrip_Kep[0] # best-fit slope
 logRgap_offset_Kep = y0trip_Kep[0] # best-fit intercept
-# If hardcoding values instead (e.g., best-fit from Van Eylen et al. 2018):
-#m_Kep = -0.10 # slope
-#logRgap_offset_Kep = 0.38 # intercept at P=1 day
+
+# Best-fit from Van Eylen et al. (2018):
+m_VE18 = -0.10 # slope
+logRgap_offset_VE18 = 0.38 # intercept at P=1 day
+
+# Carrera et al. (2018):
+m_C18 = -0.1467
+logRgap_offset_C18 = np.log10(2.6)
+
+# If want to use one of the above:
+#m_Kep = m_VE18
+#logRgap_offset_Kep = logRgap_offset_VE18
 
 m_sim = mtrip_sim[0] # best-fit slope
 logRgap_offset_sim = y0trip_sim[0] # best-fit intercept
@@ -167,9 +176,9 @@ plt.contourf(logP_grid, logR_grid, f_Kep, cmap=cmap)
 # Scatter points:
 plt.scatter(np.log10(ssk['P_obs']), np.log10(ssk['radii_obs']), s=5, marker='o', edgecolor='k', facecolor='none', label='Kepler')
 # Radius valley fit:
-plt.plot(logP_array, logRgap_array_Kep, ls='--', lw=lw, color='k')
-plt.plot(logP_array, -0.10*logP_array + 0.38, ls='--', lw=lw, color='b') # Van Eylen et al. (2018) best-fit
-plt.plot(logP_array, -0.1467*logP_array + np.log10(2.6), ls='--', lw=lw, color='r') # Carrera et al. (2018) photoevaporation boundary
+plt.plot(logP_array, logRgap_array_Kep, ls='--', lw=lw, color='k', label=r'gapfit: $R_{\rm gap} = {%s}P^{%s}$' % ('{:0.2f}'.format(10.**logRgap_offset_Kep), '{:0.2f}'.format(m_Kep)))
+plt.plot(logP_array, m_VE18*logP_array + logRgap_offset_VE18, ls='--', lw=lw, color='b', label=r'Van Eylen+2018: $R_{\rm gap} = {%s}P^{%s}$' % ('{:0.2f}'.format(10.**logRgap_offset_VE18), '{:0.2f}'.format(m_VE18))) # Van Eylen et al. (2018) best-fit
+#plt.plot(logP_array, m_C18*logP_array + logRgap_offset_C18, ls='--', lw=lw, color='r', label=r'Carrera+2018: $R_{\rm gap} = {%s}P^{%s}$' % ('{:0.2f}'.format(10.**logRgap_offset_C18), '{:0.2f}'.format(m_C18))) # Carrera et al. (2018) photoevaporation boundary
 ax.tick_params(axis='both', labelsize=afs)
 xtick_vals = np.array([3,10,30,100,300])
 ytick_vals = np.array([0.5,1,2,4,10])
