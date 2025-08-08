@@ -150,12 +150,12 @@ compute_additional_stats_for_subsample_from_summary_stats(ssk, P_min=P_min_subsa
 runs = 100
 
 load_dirs = [
-    '/Users/hematthi/Documents/GradSchool/Research/SysSim/Simulated_catalogs/Hybrid_NR20_AMD_model1/clustered_initial_masses/Fit_some8p1_KS/Params10_fix_highM/GP_best_models_100/backup_with_bug/',
+    '/Users/hematthi/Documents/GradSchool/Research/SysSim/Simulated_catalogs/Hybrid_NR20_AMD_model1/Fit_some8p1_KS/Params9_fix_highM/GP_best_models_100/',
     '/Users/hematthi/Documents/GradSchool/Research/SysSim/Simulated_catalogs/Hybrid_NR20_AMD_model1/clustered_initial_masses/Fit_some8p1_KS/Params10_fix_highM/GP_best_models_100/',
     #'/Users/hematthi/Documents/GradSchool/Research/SysSim/Simulated_catalogs/Hybrid_NR20_AMD_model1/Fit_some8_KS/Params9_fix_highM/Radius_valley_model62_repeated_100/',
     #'/Users/hematthi/Documents/GradSchool/Research/SysSim/Simulated_catalogs/Hybrid_NR20_AMD_model1/Fit_some8_KS/Params9_fix_highM/Radius_valley_model89_repeated_100/',
 ]
-model_names = ['Old', 'New'] #['Posterior', 'Catalog 62 repeated', 'Catalog 89 repeated'] #['Hybrid model', 'Hybrid model, clustered initial masses']
+model_names = ['Hybrid model', 'Hybrid model, clustered initial masses'] #['Posterior', 'Catalog 62 repeated', 'Catalog 89 repeated'] #['Hybrid model', 'Hybrid model, clustered initial masses']
 model_linestyles = ['-', '-', '-']
 model_colors = ['b', 'r', 'g']
 model_outputs_catalogs = []
