@@ -73,13 +73,13 @@ N_best = 100
 table_header = 'run_number ' + ' '.join(results['active_params_names_all'][0])
 fields_formats = ['%i'] + ['%1.6f']*len(results['active_params_names_all'][0])
 
-i_best_N = np.argsort(dtot_w_all)[:N_best]
+i_best_N = np.argsort(results['dtot_w_all'])[:N_best]
 active_params_table = np.concatenate((np.array([np.arange(N_best)]).transpose(), results['active_params_all'][i_best_N]), axis=1)
-np.savetxt('/Users/hematthi/Documents/GradSchool/Research/ACI/Simulated_Data/' + run_directory + 'best_N/Active_params_table.txt', active_params_table, fmt=fields_formats, header=table_header, comments='')
+np.savetxt(loadfiles_directory + 'best_N/Active_params_table_best%s.txt' % N_best, active_params_table, fmt=fields_formats, header=table_header, comments='')
 '''
 
 ##### To save the best parameter values and the distances for training a GP emulator:
-#'''
+'''
 #N_best_save, keep_every = 100000, 10
 N_best_save, keep_every = 10000, 1 # NOTE: may want to use this if many runs stop early due to reaching the target distance
 i_best_N = np.argsort(results['dtot_w_all'])[0:N_best_save:keep_every]
@@ -87,7 +87,7 @@ active_params_distances_table = np.concatenate((results['active_params_all'][i_b
 table_header = ' '.join(results['active_params_names_all'][0]) + ' dist_tot_weighted'
 fields_formats = ['%1.6f']*len(results['active_params_names_all'][0]) + ['%1.6f']
 np.savetxt(loadfiles_directory + 'Active_params_distances_table_best%s_every%s.txt' % (N_best_save, keep_every), active_params_distances_table, fmt=fields_formats, header=table_header, comments='')
-#'''
+'''
 
 #sys.exit("Error message")
 
