@@ -55,10 +55,11 @@ sssp_per_sys2, sssp2 = compute_summary_stats_from_cat_phys(file_name_path=loadfi
 
 model_sssp = [sssp1, sssp2]
 model_sssp_per_sys = [sssp_per_sys1, sssp_per_sys2]
-model_names = ['Hybrid model', 'Hybrid model, clustered'] #['Hybrid model', 'H20 model']
-model_linestyles = ['--', '--']
-model_colors = ['b', 'g']
-model_stagger_errorbars = [-0.05, 0.05] # offsets for plotting multiplicity counts in order to stagger errorbars
+
+model_names = ['Hybrid Model 2', 'Hybrid Model 1', 'H20 model'] #['Hybrid model', 'H20 model']
+model_linestyles = ['--', '--', '--']
+model_colors = ['g', 'b', 'k']
+model_stagger_errorbars = [0., -0.1, 0.1] # offsets for plotting multiplicity counts in order to stagger errorbars
 
 
 
@@ -66,7 +67,7 @@ model_stagger_errorbars = [-0.05, 0.05] # offsets for plotting multiplicity coun
 
 ##### To plot the simulated catalog as marginal distributions:
 
-subdirectory = 'Compare_to_hybrid_nonclustered/' #'Compare_to_H20_model/'
+subdirectory = 'Compare_to_hybrid_nonclustered_and_H20/' #'Compare_to_H20_model/'
 
 fig_size = (8,3) #size of each panel (figure)
 fig_lbrt = [0.15, 0.3, 0.95, 0.925]
@@ -74,6 +75,7 @@ fig_lbrt = [0.15, 0.3, 0.95, 0.925]
 n_bins = 100
 lw = 2
 alpha = 0.2
+alpha_all = [alpha]
 
 afs = 20 #axes labels font size
 tfs = 20 #text labels font size
@@ -85,12 +87,13 @@ lfs = 16 #legend labels font size
 
 ##### To load and compute the same statistics for a large number of models, computing the confidence intervals for each bin:
 
-loadfiles_directory1 = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Simulated_catalogs/Hybrid_NR20_AMD_model1/Fit_some8p1_KS/Params9_fix_highM/GP_best_models_100/'
-loadfiles_directory2 = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Simulated_catalogs/Hybrid_NR20_AMD_model1/clustered_initial_masses/Fit_some8p1_KS/Params10_fix_highM/GP_best_models_100/'
+loadfiles_directory1 = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Simulated_catalogs/Hybrid_NR20_AMD_model1/clustered_initial_masses/Fit_some8p1_KS/Params10_fix_highM/GP_best_models_100/'
+loadfiles_directory2 = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Simulated_catalogs/Hybrid_NR20_AMD_model1/Fit_some8p1_KS/Params9_fix_highM/GP_best_models_100/'
+loadfiles_directory3 = '/Users/hematthi/Documents/GradSchool/Research/ACI/Simulated_Data/AMD_system/Split_stars/Singles_ecc/Params11_KS/Distribute_AMD_per_mass/durations_norm_circ_singles_multis_GF2020_KS/GP_best_models/'
 #loadfiles_directory2 = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Simulated_catalogs/Hybrid_NR20_AMD_model1/Fit_all_KS/Params8/GP_best_models_100/'
 #loadfiles_directory2 = '/Users/hematthi/Documents/GradSchool/Research/ACI/Simulated_Data/AMD_system/Split_stars/Singles_ecc/Params11_KS/Distribute_AMD_per_mass/durations_norm_circ_singles_multis_GF2020_KS/GP_best_models/' #'/Users/hematthi/Documents/GradSchool/Research/ACI/Simulated_Data/AMD_system/Split_stars/Singles_ecc/Params11_KS/Distribute_AMD_equal/durations_norm_circ_singles_multis_GF2020_KS/GP_best_models/' #'/Users/hematthi/Documents/GradSchool/Research/ACI/Simulated_Data/Split_stars/Clustered_P_R_fswp_bprp/Params13_KS/durations_KS/GP_best_models/'
 
-model_loadfiles_dirs = [loadfiles_directory1, loadfiles_directory2]
+model_loadfiles_dirs = [loadfiles_directory1, loadfiles_directory2, loadfiles_directory3]
 models = len(model_loadfiles_dirs)
 
 runs = 100
@@ -259,74 +262,74 @@ if savefigures:
     plt.close()
 
 # Periods:
-plot_fig_pdf_credible([sssp_i['P_all'] for sssp_i in sssp_all[0]], [sssp_i['P_all'] for sssp_i in sssp_all[1]], [], x_min=P_min, x_max=P_max, y_min=1e-3, n_bins=n_bins, step=None, plot_median=True, log_x=True, log_y=True, c_sim1=model_colors[0], c_sim2=model_colors[1], lw=lw, alpha=alpha, label_sim1=model_names[0], label_sim2=model_names[1], xticks_custom=[3,10,30,100,300], xlabel_text=r'Period, $P$ (days)', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
+plot_fig_pdf_credible([[sssp_i['P_all'] for sssp_i in sssp_list] for sssp_list in sssp_all], [], x_min=P_min, x_max=P_max, y_min=1e-3, n_bins=n_bins, step=None, plot_median=True, log_x=True, log_y=True, c_sim_all=model_colors, lw=lw, alpha_all=alpha_all, labels_sim_all=model_names, xticks_custom=[3,10,30,100,300], xlabel_text=r'Period, $P$ (days)', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 plt.legend(loc='lower right', bbox_to_anchor=(1,0), ncol=1, frameon=False, fontsize=lfs)
 if savefigures:
     plt.savefig(savefigures_directory + subdirectory + save_name + '_underlying_periods.pdf')
     plt.close()
 
 # Period ratios:
-plot_fig_pdf_credible([sssp_i['Rm_all'] for sssp_i in sssp_all[0]], [sssp_i['Rm_all'] for sssp_i in sssp_all[1]], [], x_min=1., x_max=20., n_bins=n_bins, step=None, plot_median=True, log_x=True, c_sim1=model_colors[0], c_sim2=model_colors[1], lw=lw, alpha=alpha, label_sim1=model_names[0], label_sim2=model_names[1], xticks_custom=[1,2,3,4,5,10,20], xlabel_text=r'Period ratio, $P_{i+1}/P_i$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
+plot_fig_pdf_credible([[sssp_i['Rm_all'] for sssp_i in sssp_list] for sssp_list in sssp_all], [], x_min=1., x_max=20., n_bins=n_bins, step=None, plot_median=True, log_x=True, c_sim_all=model_colors, lw=lw, alpha_all=alpha_all, labels_sim_all=model_names, xticks_custom=[1,2,3,4,5,10,20], xlabel_text=r'Period ratio, $P_{i+1}/P_i$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 if savefigures:
     plt.savefig(savefigures_directory + subdirectory + save_name + '_underlying_periodratios.pdf')
     plt.close()
 
 # Eccentricities:
-plot_fig_pdf_credible([sssp_i['e_all'] for sssp_i in sssp_all[0]], [sssp_i['e_all'] for sssp_i in sssp_all[1]], [], x_min=1e-3, x_max=1., n_bins=n_bins, step=None, plot_median=True, log_x=True, c_sim1=model_colors[0], c_sim2=model_colors[1], lw=lw, alpha=alpha, label_sim1=model_names[0], label_sim2=model_names[1], xticks_custom=[0.01, 0.1, 1.], xlabel_text=r'Eccentricity, $e$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
+plot_fig_pdf_credible([[sssp_i['e_all'] for sssp_i in sssp_list] for sssp_list in sssp_all], [], x_min=1e-3, x_max=1., n_bins=n_bins, step=None, plot_median=True, log_x=True, c_sim_all=model_colors, lw=lw, alpha_all=alpha_all, labels_sim_all=model_names, xticks_custom=[0.01, 0.1, 1.], xlabel_text=r'Eccentricity, $e$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 if savefigures:
     plt.savefig(savefigures_directory + subdirectory + save_name + '_underlying_eccentricities.pdf')
     plt.close()
 
 # Mutual inclinations:
-plot_fig_pdf_credible([sssp_i['inclmut_all']*(180./np.pi) for sssp_i in sssp_all[0]], [sssp_i['inclmut_all']*(180./np.pi) for sssp_i in sssp_all[1]], [], x_min=1e-2, x_max=45., n_bins=n_bins, step=None, plot_median=True, log_x=True, c_sim1=model_colors[0], c_sim2=model_colors[1], lw=lw, alpha=alpha, label_sim1=model_names[0], label_sim2=model_names[1], xlabel_text=r'Mutual inclination, $i_m$ (deg)', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
+plot_fig_pdf_credible([[sssp_i['inclmut_all']*(180./np.pi) for sssp_i in sssp_list] for sssp_list in sssp_all], [], x_min=1e-2, x_max=45., n_bins=n_bins, step=None, plot_median=True, log_x=True, c_sim_all=model_colors, lw=lw, alpha_all=alpha_all, labels_sim_all=model_names, xlabel_text=r'Mutual inclination, $i_m$ (deg)', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 if savefigures:
     plt.savefig(savefigures_directory + subdirectory + save_name + '_underlying_mutualinclinations.pdf')
     plt.close()
 
 # Planet masses:
-plot_fig_pdf_credible([sssp_i['mass_all'] for sssp_i in sssp_all[0]], [sssp_i['mass_all'] for sssp_i in sssp_all[1]], [], x_min=0.09, x_max=1e3, n_bins=n_bins, step=None, plot_median=True, log_x=True, c_sim1=model_colors[0], c_sim2=model_colors[1], lw=lw, alpha=alpha, label_sim1=model_names[0], label_sim2=model_names[1], xlabel_text=r'Planet mass, $M_p$ ($M_\oplus$)', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
+plot_fig_pdf_credible([[sssp_i['mass_all'] for sssp_i in sssp_list] for sssp_list in sssp_all], [], x_min=0.09, x_max=1e3, n_bins=n_bins, step=None, plot_median=True, log_x=True, c_sim_all=model_colors, lw=lw, alpha_all=alpha_all, labels_sim_all=model_names, xlabel_text=r'Planet mass, $M_p$ ($M_\oplus$)', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 if savefigures:
     plt.savefig(savefigures_directory + subdirectory + save_name + '_underlying_masses.pdf')
     plt.close()
 
 # Planet radii:
-plot_fig_pdf_credible([sssp_i['radii_all'] for sssp_i in sssp_all[0]], [sssp_i['radii_all'] for sssp_i in sssp_all[1]], [], x_min=radii_min, x_max=radii_max, n_bins=n_bins, step=None, plot_median=True, log_x=True, c_sim1=model_colors[0], c_sim2=model_colors[1], lw=lw, alpha=alpha, label_sim1=model_names[0], label_sim2=model_names[1], xticks_custom=[0.5,1,2,4,10], xlabel_text=r'Planet radius, $R_p$ ($R_\oplus$)', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
+plot_fig_pdf_credible([[sssp_i['radii_all'] for sssp_i in sssp_list] for sssp_list in sssp_all], [], x_min=radii_min, x_max=radii_max, n_bins=n_bins, step=None, plot_median=True, log_x=True, c_sim_all=model_colors, lw=lw, alpha_all=alpha_all, labels_sim_all=model_names, xticks_custom=[0.5,1,2,4,10], xlabel_text=r'Planet radius, $R_p$ ($R_\oplus$)', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 if savefigures:
     plt.savefig(savefigures_directory + subdirectory + save_name + '_underlying_radii.pdf')
     plt.close()
 
 # Planet radii ratios:
-plot_fig_pdf_credible([sssp_i['radii_ratio_all'] for sssp_i in sssp_all[0]], [sssp_i['radii_ratio_all'] for sssp_i in sssp_all[1]], [], x_min=0.1, x_max=10., n_bins=n_bins, step=None, plot_median=True, log_x=True, c_sim1=model_colors[0], c_sim2=model_colors[1], lw=lw, alpha=alpha, label_sim1=model_names[0], label_sim2=model_names[1], xlabel_text=r'Radius ratio, $R_{p,i+1}/R_{p,i}$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
+plot_fig_pdf_credible([[sssp_i['radii_ratio_all'] for sssp_i in sssp_list] for sssp_list in sssp_all], [], x_min=0.1, x_max=10., n_bins=n_bins, step=None, plot_median=True, log_x=True, c_sim_all=model_colors, lw=lw, alpha_all=alpha_all, labels_sim_all=model_names, xlabel_text=r'Radius ratio, $R_{p,i+1}/R_{p,i}$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 if savefigures:
     plt.savefig(savefigures_directory + subdirectory + save_name + '_underlying_radii_ratios.pdf')
     plt.close()
 
 # Separations in mutual Hill radii:
-plot_fig_pdf_credible([sssp_i['N_mH_all'] for sssp_i in sssp_all[0]], [sssp_i['N_mH_all'] for sssp_i in sssp_all[1]], [], x_min=1., x_max=200., n_bins=n_bins, step=None, plot_median=True, log_x=True, c_sim1=model_colors[0], c_sim2=model_colors[1], lw=lw, alpha=alpha, label_sim1=model_names[0], label_sim2=model_names[1], xlabel_text=r'Minimum separation, $\Delta$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
+plot_fig_pdf_credible([[sssp_i['N_mH_all'] for sssp_i in sssp_list] for sssp_list in sssp_all], [], x_min=1., x_max=200., n_bins=n_bins, step=None, plot_median=True, log_x=True, c_sim_all=model_colors, lw=lw, alpha_all=alpha_all, labels_sim_all=model_names, xlabel_text=r'Minimum separation, $\Delta$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 if savefigures:
     plt.savefig(savefigures_directory + subdirectory + save_name + '_underlying_deltas.pdf')
     plt.close()
 
 # Dynamical masses:
-plot_fig_pdf_credible([sssp_per_sys_i['dynamical_mass'] for sssp_per_sys_i in sssp_per_sys_all[0]], [sssp_per_sys_i['dynamical_mass'] for sssp_per_sys_i in sssp_per_sys_all[1]], [], x_min=2e-7, x_max=3e-3, n_bins=n_bins, step=None, plot_median=True, log_x=True, c_sim1=model_colors[0], c_sim2=model_colors[1], lw=lw, alpha=alpha, label_sim1=model_names[0], label_sim2=model_names[1], xlabel_text=r'Dynamical mass, $\mu$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
+plot_fig_pdf_credible([[sssp_per_sys_i['dynamical_mass'] for sssp_per_sys_i in sssp_per_sys_list] for sssp_per_sys_list in sssp_per_sys_all], [], x_min=2e-7, x_max=3e-3, n_bins=n_bins, step=None, plot_median=True, log_x=True, c_sim_all=model_colors, lw=lw, alpha_all=alpha_all, labels_sim_all=model_names, xlabel_text=r'Dynamical mass, $\mu$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 if savefigures:
     plt.savefig(savefigures_directory + subdirectory + save_name + '_underlying_dynamical_masses.pdf')
     plt.close()
 
 # Planet radii partitioning:
-plot_fig_pdf_credible([sssp_per_sys_i['radii_partitioning'] for sssp_per_sys_i in sssp_per_sys_all[0]], [sssp_per_sys_i['radii_partitioning'] for sssp_per_sys_i in sssp_per_sys_all[1]], [], x_min=1e-4, x_max=1., n_bins=n_bins, step=None, plot_median=True, log_x=True, c_sim1=model_colors[0], c_sim2=model_colors[1], lw=lw, alpha=alpha, label_sim1=model_names[0], label_sim2=model_names[1], xlabel_text=r'Radius partitioning, $\mathcal{Q}_R$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
+plot_fig_pdf_credible([[sssp_per_sys_i['radii_partitioning'] for sssp_per_sys_i in sssp_per_sys_list] for sssp_per_sys_list in sssp_per_sys_all], [], x_min=1e-4, x_max=1., n_bins=n_bins, step=None, plot_median=True, log_x=True, c_sim_all=model_colors, lw=lw, alpha_all=alpha_all, labels_sim_all=model_names, xlabel_text=r'Radius partitioning, $\mathcal{Q}_R$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 if savefigures:
     plt.savefig(savefigures_directory + subdirectory + save_name + '_underlying_radii_partitioning.pdf')
     plt.close()
 
 # Planet radii monotonicity:
-plot_fig_pdf_credible([sssp_per_sys_i['radii_monotonicity'] for sssp_per_sys_i in sssp_per_sys_all[0]], [sssp_per_sys_i['radii_monotonicity'] for sssp_per_sys_i in sssp_per_sys_all[1]], [], x_min=-0.7, x_max=0.7, n_bins=n_bins, step=None, plot_median=True, c_sim1=model_colors[0], c_sim2=model_colors[1], lw=lw, alpha=alpha, label_sim1=model_names[0], label_sim2=model_names[1], xlabel_text=r'Radius monotonicity, $\mathcal{M}_R$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
+plot_fig_pdf_credible([[sssp_per_sys_i['radii_monotonicity'] for sssp_per_sys_i in sssp_per_sys_list] for sssp_per_sys_list in sssp_per_sys_all], [], x_min=-0.7, x_max=0.7, n_bins=n_bins, step=None, plot_median=True, c_sim_all=model_colors, lw=lw, alpha_all=alpha_all, labels_sim_all=model_names, xlabel_text=r'Radius monotonicity, $\mathcal{M}_R$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 if savefigures:
     plt.savefig(savefigures_directory + subdirectory + save_name + '_underlying_radii_monotonicity.pdf')
     plt.close()
 
 # Gap complexity:
-plot_fig_pdf_credible([sssp_per_sys_i['gap_complexity'] for sssp_per_sys_i in sssp_per_sys_all[0]], [sssp_per_sys_i['gap_complexity'] for sssp_per_sys_i in sssp_per_sys_all[1]], [], x_min=0., x_max=1., n_bins=n_bins, step=None, plot_median=True, c_sim1=model_colors[0], c_sim2=model_colors[1], lw=lw, alpha=alpha, label_sim1=model_names[0], label_sim2=model_names[1], xlabel_text=r'Gap complexity, $\mathcal{C}$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
+plot_fig_pdf_credible([[sssp_per_sys_i['gap_complexity'] for sssp_per_sys_i in sssp_per_sys_list] for sssp_per_sys_list in sssp_per_sys_all], [], x_min=0., x_max=1., n_bins=n_bins, step=None, plot_median=True, c_sim_all=model_colors, lw=lw, alpha_all=alpha_all, labels_sim_all=model_names, xlabel_text=r'Gap complexity, $\mathcal{C}$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 if savefigures:
     plt.savefig(savefigures_directory + subdirectory + save_name + '_underlying_gap_complexity.pdf')
     plt.close()
