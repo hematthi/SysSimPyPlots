@@ -30,7 +30,7 @@ plt.ioff()
 
 #run_directory = 'Hybrid_NR20_AMD_model1/Fit_all_KS/Params12/'
 #loadfiles_directory = '/Users/hematthi/Documents/NotreDame_Postdoc/CRC/Files/SysSim/Model_Optimization/' + run_directory
-run_directory = 'Hybrid_NR20_AMD_model1/clustered_initial_masses/Fit_some8p1_KS/Params10_fix_highM/'
+run_directory = 'Hybrid_NR20_AMD_model1/clustered_initial_masses/Fit_all12_KS/Params10_fix_highM/'
 loadfiles_directory = '/Users/hematthi/Documents/NPP_ARC_Modernize_Kepler/Personal_research/SysSim/Model_Optimization/' + run_directory
 savefigures_directory = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Figures/Model_Optimization/' + run_directory
 
@@ -406,7 +406,7 @@ plt.show()
 
 ##### To plot histograms of the parameters for distances below various thresholds:
 
-dtot_cuts = [30., 18., 12.] #[20., 15., 10.] #[30., 25., 22.]
+dtot_cuts = [30., 22., 16.] #[30., 18., 12.] #[20., 15., 10.] #[30., 25., 22.]
 i_evals_all_pass_cuts = [results['dtot_w_all'] <= dtot for dtot in dtot_cuts]
 for i,dtot in enumerate(dtot_cuts):
     i_evals_all_pass = i_evals_all_pass_cuts[i]
