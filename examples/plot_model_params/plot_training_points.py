@@ -30,7 +30,7 @@ transformed_rates = True
 
 #run_directory = 'Hybrid_NR20_AMD_model1/Fit_all_KS/Params12/GP_files/'
 #loadfiles_directory = '/Users/hematthi/Documents/NotreDame_Postdoc/CRC/Files/SysSim/Model_Optimization/' + run_directory
-run_directory = 'Hybrid_NR20_AMD_model1/clustered_initial_masses/Fit_some8p1_KS/Params10_fix_highM/GP_files/'
+run_directory = 'Hybrid_NR20_AMD_model1/clustered_initial_masses/Fit_all12_KS/Params10_fix_highM/GP_files/'
 loadfiles_directory = '/Users/hematthi/Documents/NPP_ARC_Modernize_Kepler/Personal_research/SysSim/Model_Optimization/' + run_directory
 savefigures_directory = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Figures/Model_Optimization/' + run_directory
 model_name = 'Hybrid_NR20_AMD_model1'
