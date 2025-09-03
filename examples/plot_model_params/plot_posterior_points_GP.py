@@ -72,7 +72,7 @@ active_params_names = np.array(data_train['active_params_names'])
 n_train, mean_f, sigma_f, lscales, vol = 2000, 35.0, 2.7, 3.85, 9.72 # clustered initial masses, fit all12, 10 params
 
 #n_points, max_mean, max_std, max_post = 100000, 'Inf', 'Inf', 'Inf' # for initial testing
-n_points, max_mean, max_std, max_post = 10000, 'Inf', 'Inf', -15.0
+n_points, max_mean, max_std, max_post = 100000, 'Inf', 'Inf', -15.0
 file_name = 'GP_train%s_meanf%s_sigmaf%s_lscales%s_vol%s_points%s_mean%s_std%s_post%s.csv' % (n_train, mean_f, sigma_f, lscales, vol, n_points, max_mean, max_std, max_post)
 xprior_accepted_table = load_GP_table_prior_draws(file_name, file_name_path=loadfiles_directory)
 active_params_transformed_names = np.array(xprior_accepted_table.dtype.names[:dims])
