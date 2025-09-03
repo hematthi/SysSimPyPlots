@@ -33,7 +33,7 @@ loadfiles_directory = '/Users/hematthi/Documents/GradSchool/Research/SysSim/SysS
 savefigures_directory = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Figures/Hybrid_NR20_AMD_model1/clustered_initial_masses/Observed/' + 'Fit_some8p1_KS_params10/'
 #savefigures_directory = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Figures/H20_model/Observed/'
 run_number = ''
-model_name = 'Hybrid_NR20_AMD_model1' + run_number #'Non_Clustered_Model', 'Clustered_P_Model', 'Clustered_P_R_Model', 'Maximum_AMD_model', 'Hybrid_NR20_AMD_model1'
+model_name = 'Hybrid_model' + run_number #'Non_Clustered_Model', 'Clustered_P_Model', 'Clustered_P_R_Model', 'Maximum_AMD_model', 'Hybrid_NR20_AMD_model1'
 
 compute_ratios = compute_ratios_adjacent
 AD_mod = True
@@ -104,8 +104,8 @@ lfs = 16 # legend labels font size
 
 #loadfiles_directory = '../../ACI/Simulated_Data/Split_stars/Clustered_P_R_fswp_bprp/Params13_KS/durations_KS/GP_best_models/'
 #loadfiles_directory = '/Users/hematthi/Documents/GradSchool/Research/ACI/Simulated_Data/AMD_system/Split_stars/Singles_ecc/Params11_KS/Distribute_AMD_per_mass/durations_norm_circ_singles_multis_GF2020_KS/GP_best_models/'
-loadfiles_directory = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Simulated_catalogs/Hybrid_NR20_AMD_model1/clustered_initial_masses/Fit_some8p1_KS/Params10_fix_highM/GP_best_models_100/'
-runs = 100
+loadfiles_directory = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Simulated_catalogs/Hybrid_NR20_AMD_model1/clustered_initial_masses/Fit_some8p1_KS/Params10_fix_highM/GP_dtotmax12_depthmin0.29_models/' #GP_best_models_100/'
+runs = 1000
 
 sss_all = []
 sss_per_sys_all = []
