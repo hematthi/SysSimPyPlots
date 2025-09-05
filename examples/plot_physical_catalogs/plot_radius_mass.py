@@ -119,3 +119,45 @@ if savefigures:
     plt.savefig(savefigures_directory + 'Models_underlying_radius_mass.pdf')
     plt.close()
 plt.show()
+
+
+
+
+
+##### To make a simpler version, for the paper:
+
+fig = plt.figure(figsize=(7,7))
+plot = GridSpec(5, 1, left=0.2, bottom=0.15, right=0.9, top=0.95, wspace=0, hspace=0)
+
+ax = plt.subplot(plot[1:,:]) # main panel
+plt.plot(mass_evals_med_H20, radius_evals_H20, '--', color='k') #, label='H20, mean prediction'
+plt.fill_betweenx(radius_evals_H20, mass_evals_016_H20, mass_evals_084_H20, color='k', alpha=0.2, label=r'H20 model, 16%-84% region') # 16%-84% region of H20 model
+plt.plot(M_array, μ_R_array, '-', color='c') #, label='NR20, Model 2, mean'
+plt.fill_between(M_array, μ_R_array*(1+σ_R_array), μ_R_array*(1-σ_R_array), color='c', alpha=0.2, label='NR20, Model 2 (initial)')
+plt.plot(M_array, R_S07_silicate_array, color='tab:brown') #, label='S07, pure-silicate'
+plt.fill_between(M_array, 0.95*R_S07_silicate_array, 1.05*R_S07_silicate_array, color='tab:brown', alpha=0.5, label='NR20, 5% scatter around \nS07 pure-silicate (final)') #, label='NR20, 5% scatter around S07 pure-silicate (final)'
+ax.set_xscale('log')
+ax.set_yscale('log')
+ax.tick_params(axis='both', labelsize=afs)
+xtick_vals = np.array([1e-1, 1., 10., 1e2, 1e3])
+ytick_vals = np.array([0.5, 1., 2., 4., 10.])
+plt.xticks(xtick_vals, [0.1, 1.0, 10, 100, 1000])
+plt.yticks(ytick_vals, ytick_vals)
+plt.xlim([mass_min, mass_max])
+plt.ylim([radii_min, radii_max])
+plt.xlabel(r'Planet mass, $M_p$ [$M_\oplus$]', fontsize=tfs)
+plt.ylabel(r'Planet radius, $R_p$ [$R_\oplus$]', fontsize=tfs)
+plt.legend(loc='lower right', bbox_to_anchor=(0.99,0.01), ncol=1, frameon=False, fontsize=lfs)
+
+ax = plt.subplot(plot[0,:]) # top panel
+plt.plot(M_array, Minit_pdf_array, '-', color='c', label='NR20, Model 2 \n(initial mass distribution)')
+plt.gca().set_xscale("log")
+plt.xlim([mass_min, mass_max])
+plt.xticks([])
+plt.yticks([])
+plt.legend(loc='lower left', bbox_to_anchor=(0.1,0), ncol=1, frameon=False, fontsize=lfs)
+
+if savefigures:
+    plt.savefig(savefigures_directory + 'Models_underlying_radius_mass_simple.pdf')
+    plt.close()
+plt.show()

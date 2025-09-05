@@ -4,6 +4,7 @@ import time
 import os
 import sys
 import copy
+import scipy
 
 ##### For calling Julia functions:
 # Import Julia:
@@ -21,7 +22,7 @@ Main.include("/Users/hematthi/Documents/GradSchool/Research/SysSim/SysSimExClust
 
 
 ##### NR20 model: best-fit parameters (medians of posteriors) for Model 2 from Table 1 of NR20:
-'''
+#'''
 μ_M, σ_M = 1.00, 1.65 # ln(Earth masses)
 C = 2.37 # Earth radii
 M_break1 = 17.4 # Earth masses
@@ -32,9 +33,9 @@ R_min, R_max = 0.4, 20. # minimum and maximum planet radii to truncate at (Earth
 P_min, P_break, P_max = 0.3, 7.16, 100. # days
 β1, β2 = 0.88, -0.76
 α = 7.98 # fudge factor for mass-loss timescale
-'''
-##### Hybrid model: best-fit parameters (medians of posteriors) from ABC:
 #'''
+##### Hybrid model: best-fit parameters (medians of posteriors) from ABC:
+'''
 μ_M, σ_M = 0.95, 1.60 # ln(Earth masses)
 C = 1.79 # Earth radii
 M_break1 = 61.2 # Earth masses
@@ -45,10 +46,11 @@ R_min, R_max = 0.4, 20. # minimum and maximum planet radii to truncate at (Earth
 P_min, P_break, P_max = 3., 30., 300. # days # NOTE: no P_break in this model so value is arbitrary
 β1, β2 = 0.06, 0.06 # NOTE: no P_break in this model so both of these are the same
 α = 7.98 # fudge factor for mass-loss timescale # NOTE: fixed for some runs (to what value?)
-#'''
+'''
 
 M_min, M_max = 0.1, 1e3
 M_array = np.logspace(np.log10(M_min), np.log10(M_max), 1000)
+Minit_pdf_array = scipy.stats.norm(μ_M, σ_M).pdf(np.log(M_array))
 μσ_R_array = [Main.mean_radius_and_scatter_given_mass_neil_rogers2020(M, C=C, M_break1=M_break1, M_break2=M_break2, γ0=γ0, γ1=γ1, γ2=γ2, σ0=σ0, σ1=σ1, σ2=σ2) for M in M_array]
 
 μ_R_array = np.array([μσ_R[0] for μσ_R in μσ_R_array])
@@ -60,7 +62,7 @@ R_S07_silicate_array = np.array([Main.radius_given_mass_pure_silicate_fit_seager
 
 ##### Mocking up a simple population:
 #'''
-N_pl = 10000 # number of planets to draw
+N_pl = 1000 # number of planets to draw
 print('Simulating a simple underlying population with %s planets...' % N_pl)
 
 M_init_all = np.random.lognormal(μ_M, σ_M, N_pl) # initial planet masses (Earth masses)
