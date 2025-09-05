@@ -30,12 +30,12 @@ weights_all['all']['radii_delta_gap_KS'] = weights_all['all']['radii_KS'] # for 
 dists_include = ['delta_f',
                  'mult_CRPD_r',
                  'periods_KS',
-                 #'period_ratios_KS',
-                 #'durations_KS',
+                 'period_ratios_KS',
+                 'durations_KS',
                  #'durations_norm_circ_KS',
                  #'durations_norm_circ_singles_KS',
                  #'durations_norm_circ_multis_KS',
-                 #'duration_ratios_KS',
+                 'duration_ratios_KS',
                  #'duration_ratios_nonmmr_KS',
                  #'duration_ratios_mmr_KS',
                  'depths_KS',
@@ -150,12 +150,14 @@ compute_additional_stats_for_subsample_from_summary_stats(ssk, P_min=P_min_subsa
 runs = 100
 
 load_dirs = [
-    '/Users/hematthi/Documents/GradSchool/Research/SysSim/Simulated_catalogs/Hybrid_NR20_AMD_model1/Fit_some8p1_KS/Params9_fix_highM/GP_best_models_100/',
+    #'/Users/hematthi/Documents/GradSchool/Research/SysSim/Simulated_catalogs/Hybrid_NR20_AMD_model1/Fit_some8p1_KS/Params9_fix_highM/GP_best_models_100/',
     '/Users/hematthi/Documents/GradSchool/Research/SysSim/Simulated_catalogs/Hybrid_NR20_AMD_model1/clustered_initial_masses/Fit_some8p1_KS/Params10_fix_highM/GP_best_models_100/',
+    '/Users/hematthi/Documents/GradSchool/Research/SysSim/Simulated_catalogs/Hybrid_NR20_AMD_model1/clustered_initial_masses/Fit_all12_KS/Params10_fix_highM/GP_best_models_100/',
+    #'/Users/hematthi/Documents/GradSchool/Research/SysSim/Simulated_catalogs/Hybrid_NR20_AMD_model1/clustered_initial_masses/Fit_some8p1_KS/Params10_fix_highM/GP_dtotmax12_depthmin0.29_models/',
     #'/Users/hematthi/Documents/GradSchool/Research/SysSim/Simulated_catalogs/Hybrid_NR20_AMD_model1/Fit_some8_KS/Params9_fix_highM/Radius_valley_model62_repeated_100/',
     #'/Users/hematthi/Documents/GradSchool/Research/SysSim/Simulated_catalogs/Hybrid_NR20_AMD_model1/Fit_some8_KS/Params9_fix_highM/Radius_valley_model89_repeated_100/',
 ]
-model_names = ['Hybrid model', 'Hybrid model, clustered initial masses'] #['Posterior', 'Catalog 62 repeated', 'Catalog 89 repeated'] #['Hybrid model', 'Hybrid model, clustered initial masses']
+model_names = ['Hybrid Model 2 (fit some8p1)', 'Hybrid model 2 (fit all12)'] #['Posterior', 'Catalog 62 repeated', 'Catalog 89 repeated'] #['Hybrid model', 'Hybrid model, clustered initial masses']
 model_linestyles = ['-', '-', '-']
 model_colors = ['b', 'r', 'g']
 model_outputs_catalogs = []
