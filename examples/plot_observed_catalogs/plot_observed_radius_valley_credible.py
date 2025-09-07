@@ -234,11 +234,11 @@ plt.show()
 
 ##### To plot the (active) model parameters of the simulated catalogs as a corner scatter plot, with the points colored by the depth:
 
-# NOTE: when loading the parameters, the 'log' params are actually converted to unlogged values; see 'read_sim_params()':
+# NOTE: when loading the parameters, the 'log' params are actually converted to unlogged values (see 'read_sim_params()'), so we will convert them back for this plot:
 active_params_names_symbols = {#'break_mass (M_earth)': r'$M_{p,\rm break}$ $(M_\oplus)$',
-                               'log_rate_clusters': r'$\lambda_c$',
-                               'log_rate_planets_per_cluster': r'$\lambda_p$',
-                               'log_α_pret': r'$\alpha_{\rm ret}$',
+                               'log_rate_clusters': r'$\ln{\lambda_c}$',
+                               'log_rate_planets_per_cluster': r'$\ln{\lambda_p}$',
+                               'log_α_pret': r'$\ln{\alpha_{\rm ret}}$',
                                'mean_ln_mass (ln M_earth)': r'$\mu_M$',
                                'norm_radius (R_earth)': r'$R_{p,\rm norm}$',
                                'power_law_P': r'$\alpha_P$',
@@ -247,14 +247,14 @@ active_params_names_symbols = {#'break_mass (M_earth)': r'$M_{p,\rm break}$ $(M_
                                'power_law_σ0': r'$\sigma_0$',
                                #'power_law_σ1': r'$\sigma_1$',
                                'sigma_ln_mass (ln M_earth)': r'$\sigma_M$',
-                               'sigma_ln_mass_in_cluster (ln M_earth)': r'$\sigma_{M,\rm cluster}$',
+                               'sigma_ln_mass_in_cluster (ln M_earth)': r'$\sigma_{M,c}$',
                                #'sigma_logperiod_per_pl_in_cluster': r'$\sigma_P$',
                                }
 active_params_names = list(active_params_names_symbols.keys())
 active_params_symbols = list(active_params_names_symbols.values())
-active_params_all = np.array([[params[key] for key in active_params_names] for params in params_all]) # double list comprehension!
+active_params_all = np.array([[np.log(params[key]) if key[:4]=='log_' else params[key] for key in active_params_names] for params in params_all]) # double list comprehension! Also converting unlogged values back to log values
 
-plot_points_corner(active_params_symbols, active_params_all, fpoints=radii_measures['depth_kde'], f_label='Depth (KDE)', cmap='Reds', points_size=10., fig_size=(16,16), save_name=savefigures_directory + model_name + '_params_depths_corner.pdf', save_fig=savefigures)
+plot_points_corner(active_params_symbols, active_params_all, fpoints=radii_measures['depth_kde'], f_label=r'$\Delta_{\rm valley}$', cmap='Reds', points_size=2., tfs=13, save_name=savefigures_directory + model_name + '_params_depths_corner.pdf', save_fig=savefigures)
 plt.show()
 
 

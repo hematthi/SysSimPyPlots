@@ -276,7 +276,7 @@ def plot_cornerpy_wrapper(x_symbols, xpoints, xpoints_extra=None, c_extra='r', s
     else:
         return fig
 
-def plot_points_corner(x_symbols, xpoints, fpoints=None, f_label='', cmap='Reds', xlower=None, xupper=None, n_bins=20, points_size=1., points_alpha=1., afs=10, tfs=16, fig_size=(16,16), fig_lbrtwh=[0.05, 0.05, 0.98, 0.98, 0.05, 0.05], save_name='no_name_fig.pdf', save_fig=False):
+def plot_points_corner(x_symbols, xpoints, fpoints=None, f_label='', cmap='Reds', xlower=None, xupper=None, n_bins=20, points_size=1., points_alpha=1., show_quantiles=True, plot_colorbar=True, afs=10, tfs=16, fig_size=(16,16), fig_lbrtwh=[0.06, 0.06, 0.98, 0.98, 0.05, 0.05], save_name='no_name_fig.pdf', save_fig=False):
     """
     Plot a set of points in the n-d parameter space.
 
@@ -300,6 +300,10 @@ def plot_points_corner(x_symbols, xpoints, fpoints=None, f_label='', cmap='Reds'
         The point size for plotting the sample of parameters.
     points_alpha : float, default=1.
         The transparency of the points for plotting the sample of parameters.
+    show_quantiles : bool, default=True
+        Whether to compute and show the quantiles for each parameter.
+    plot_colorbar : bool, default=True
+        Whether to plot the colorbar.
     afs : int, default=10
         The axes fontsize.
     tfs : int, default=16
@@ -342,26 +346,57 @@ def plot_points_corner(x_symbols, xpoints, fpoints=None, f_label='', cmap='Reds'
             plt.xticks(rotation=45, fontsize=afs)
             plt.yticks(rotation=45, fontsize=afs)
 
+    if plot_colorbar:
+        # Add another panel for the colorbar:
+        # NOTE: this will plot it to the left of the first diagonal panel (i.e. first histogram), BUT this panel is added to the figure before the diagonal panels
+        # NOTE: this ensures that the last 'dims' axes of the returned figure correspond to diagonal panels for the histogram axes
+        axes_first = fig.axes[0] # this is the first axes plotted (should be the scatter points of the first two parameters/dimensions)
+        cb_width = 0.01
+        cb_height = axes_first.get_position().y1-axes_first.get_position().y0
+        ax_cb = fig.add_axes([axes_first.get_position().x0-(0.005+cb_width), axes_first.get_position().y1+0.005, cb_width, cb_height])
+        #ax_cb = plt.subplot(plot[i,i+1])
+        cb = plt.colorbar(sc, cax=ax_cb, fraction=0.1)
+        cb.set_label(label=f_label, fontsize=tfs)
+        ax_cb.yaxis.tick_left()
+        ax_cb.yaxis.set_label_position('left')
+
+    # Now add the diagonal panels for plotting the histograms:
     for i in range(dims):
         ax = plt.subplot(plot[i,i])
         counts, bins, _ = plt.hist(xpoints[:,i], bins=np.linspace(xlower[i], xupper[i], n_bins+1), histtype='step', color='k')
         ax.vlines(xpoints[:,i], ymin=0., ymax=0.1*np.max(counts), colors=cmap_obj(c_norm(fpoints))) # also plot tick markers for each point
         ax.axis((xlower[i], xupper[i], 0., 1.1*np.max(counts)))
         ax.tick_params(left=False, labelleft=False, labelbottom=False) # turn off left and bottom labels since they would overlap with other panels
-        if i == 0:
-            # Make another panel for the colorbar:
-            ax_cb = fig.add_axes([ax.get_position().x1+0.005, ax.get_position().y0, 0.01, ax.get_position().y1-ax.get_position().y0])
-            #ax_cb = plt.subplot(plot[i,i+1])
-            plt.colorbar(sc, cax=ax_cb, fraction=0.1, label=f_label)
         if i == dims-1:
             # Turn on bottom ticks and labels again for last panel:
             ax.tick_params(labelbottom=True, labelrotation=45)
             #plt.xticks(rotation=45, fontsize=afs)
             plt.xlabel(x_symbols[i], fontsize=tfs)
+        
+        if show_quantiles:
+            qtls = corner.quantile(xpoints[:,i], [0.16, 0.5, 0.84])
+            q_pm = np.diff(qtls)
+            for q in qtls:
+                ax.axvline(q, ls='--', lw=1, color='k')
+            title = x_symbols[i] + r'$=%s_{-%s}^{+%s}$' % ('{:0.2f}'.format(qtls[1]), '{:0.2f}'.format(q_pm[0]), '{:0.2f}'.format(q_pm[1]))
+            ax.set_title(title, fontsize=tfs)
+        '''
+        # To add another panel for the colorbar:
+        # ^NOTE: this will add to the left of the top-most panel (i.e. first histogram):
+        if i == 0:
+            # Make another panel for the colorbar:
+            cb_width = 0.01
+            ax_cb = fig.add_axes([ax.get_position().x0-(0.005+cb_width), ax.get_position().y0, cb_width, ax.get_position().y1-ax.get_position().y0])
+            plt.colorbar(sc, cax=ax_cb, fraction=0.1, label=f_label)
+            ax_cb.yaxis.tick_left()
+            ax_cb.yaxis.set_label_position('left')
+        '''
 
     if save_fig:
         plt.savefig(save_name)
         plt.close()
+    else:
+        return fig
 
 def plot_contours_and_points_corner(x_symbols, xlower, xupper, contour_2d_grids, xpoints=None, points_size=1., points_alpha=1., afs=10, tfs=12, lfs=10, fig_size=(16,16), fig_lbrtwh=[0.05, 0.05, 0.98, 0.98, 0.05, 0.05], save_name='no_name_fig.pdf', save_fig=False):
     """
