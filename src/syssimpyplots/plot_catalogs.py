@@ -1915,7 +1915,7 @@ def measure_and_plot_radius_valley_depth_using_global_bins(radii_sample, radius_
     
     return depth
 
-def measure_and_plot_radius_valley_depth_using_kde(radii_sample, radius_valley_bounds=(1.8,2.2), x_min=0.5, x_max=5.5, n_bins=100, bw='Scotts', bw_scotts_factor=1., fractional_depth=True, xlabel_text=r'Planet radius, $R_p$ [$R_\oplus$]', verbose=False, plot_fig=False, save_name='no_name_fig.pdf', save_fig=False):
+def measure_and_plot_radius_valley_depth_using_kde(radii_sample, radius_valley_bounds=(1.8,2.2), x_min=0.5, x_max=5.5, n_bins=100, bw='Scotts', bw_scotts_factor=1., fractional_depth=True, xlabel_text=r'Planet radius, $R_p$ [$R_\oplus$]', verbose=False, plot_fig=False, ax=None, legend=True, save_name='no_name_fig.pdf', save_fig=False):
     """
     Fit a KDE to a sample of planet radii and compute the "depth" of the radius valley.
     
@@ -1945,6 +1945,10 @@ def measure_and_plot_radius_valley_depth_using_kde(radii_sample, radius_valley_b
         Whether to print the computed values.
     plot_fig : bool, default=False
         Whether to also plot the histogram and the depth of the radius valley. If True, will call :py:func:`syssimpyplots.plot_catalogs.plot_fig_pdf_simple`.
+    ax : matplotlib.axes._subplots.AxesSubplot, optional
+        The plotting axes for the figure.
+    legend : bool, default=True
+        Whether to show the legend.
     save_name : str, default='no_name_fig.pdf'
         The file name for saving the figure, if `plot_fig=True`.
     save_fig : bool, default=False
@@ -1995,7 +1999,10 @@ def measure_and_plot_radius_valley_depth_using_kde(radii_sample, radius_valley_b
     
     # To also make a plot:
     if plot_fig:
-        ax = plot_fig_pdf_simple([radii_sample], [], x_min=x_min, x_max=x_max, n_bins=n_bins, normalize=True, labels_sim=[None], xlabel_text=xlabel_text)
+        if ax is None:
+            ax = plot_fig_pdf_simple([radii_sample], [], x_min=x_min, x_max=x_max, n_bins=n_bins, normalize=True, labels_sim=[None], xlabel_text=xlabel_text)
+        else:
+            plot_panel_pdf_simple(ax, [radii_sample], [], x_min=x_min, x_max=x_max, n_bins=n_bins, normalize=True, labels_sim=[None], xlabel_text=xlabel_text)
         bins = np.linspace(x_min, x_max, n_bins+1) # these are the bins the call above would be using to create the histogram; needed to normalize the KDE density
         fnorm = bins[1]-bins[0]
         plt.plot(x_evals, fnorm*kde(x_evals), color='b', label=r'KDE fit ($bw = {:0.2f}$)'.format(bw))
@@ -2003,8 +2010,9 @@ def measure_and_plot_radius_valley_depth_using_kde(radii_sample, radius_valley_b
         plt.axvline(radius_valley_bounds[1], ls=':', lw=1)
         plt.hlines(fnorm*height, radius_valley_bounds[0], radius_valley_bounds[1], linestyles='dashed', lw=1)
         ax.annotate('', xy=(x_evals[i_min_valley], fnorm*min_valley), xytext=(x_evals[i_min_valley], fnorm*height), arrowprops=dict(arrowstyle='->', lw=2, color='r'))
-        plt.figtext(0.92, 0.9, r'Valley depth = {:.2f}'.format(depth), color='r', fontsize=16, ha='right', va='top')
-        plt.legend(loc='upper right', bbox_to_anchor=(1,0.9), ncol=1, frameon=False, fontsize=16)
+        if legend:
+            plt.figtext(0.92, 0.9, r'Valley depth = {:.2f}'.format(depth), color='r', fontsize=16, ha='right', va='top')
+            plt.legend(loc='upper right', bbox_to_anchor=(1,0.9), ncol=1, frameon=False, fontsize=16)
         
         if save_fig:
             plt.savefig(save_name)

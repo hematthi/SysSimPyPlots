@@ -20,7 +20,7 @@ from syssimpyplots.plot_params import *
 
 
 savefigures = False
-savefigures_directory = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Figures/Hybrid_NR20_AMD_model1/clustered_initial_masses/Observed/' + 'Radius_valley_measures/Fit_some8p1_KS_params10/' #catalog62_repeated/'
+savefigures_directory = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Figures/Hybrid_NR20_AMD_model1/Observed/' + 'Radius_valley_measures/Fit_some8_KS_params9/' #catalog62_repeated/'
 model_name = 'Hybrid_model'
 
 compute_ratios = compute_ratios_adjacent
@@ -53,8 +53,8 @@ lfs = 16 # legend labels font size
 ##### To load and compute the same statistics for a large number of models:
 
 #loadfiles_directory = '/Users/hematthi/Documents/GradSchool/Research/ACI/Simulated_Data/AMD_system/Split_stars/Singles_ecc/Params11_KS/Distribute_AMD_per_mass/durations_norm_circ_singles_multis_GF2020_KS/GP_best_models/'
-loadfiles_directory = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Simulated_catalogs/Hybrid_NR20_AMD_model1/clustered_initial_masses/Fit_some8p1_KS/Params10_fix_highM/GP_dtotmax15.0_depthmin0.29_models/' #GP_dtotmax15.0_depthmin0.29_models/' #GP_best_models_100/' #Radius_valley_model62_repeated_100/'
-runs = 1000
+loadfiles_directory = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Simulated_catalogs/Hybrid_NR20_AMD_model1/Fit_some8_KS/Params9_fix_highM/GP_best_models_100/' #GP_dtotmax15.0_depthmin0.29_models/' #GP_best_models_100/' #Radius_valley_model62_repeated_100/'
+runs = 100
 
 sss_all = []
 sss_per_sys_all = []
@@ -187,6 +187,30 @@ for i in iSort[:10]:
         print(f'i={i}: depth = {depth}, {sort_by} = {radii_measures[sort_by][i]}')
     print(f'i={i}: depth = {depth}')
 plt.show()
+
+### Repeat the above as a multi-panel plot (the top individual catalogs with their measured depths, along with the Kepler catalog):
+
+fig = plt.figure(figsize=(8,16))
+plot = GridSpec(6,1,left=0.15,bottom=0.05,right=0.95,top=0.98,wspace=0,hspace=0)
+# For the Kepler catalog:
+ax = plt.subplot(plot[0,:])
+depth_Kep = measure_and_plot_radius_valley_depth_using_kde(ssk['radii_obs'], bw_scotts_factor=bw_factor, plot_fig=True, ax=ax, legend=False)
+plt.text(x=0.97, y=0.9, s='Kepler catalog', color='k', fontsize=16, ha='right', va='top', transform=ax.transAxes)
+leg = plt.legend(loc='upper right', bbox_to_anchor=(1,0.83), ncol=1, frameon=False, fontsize=16)
+leg_texts = leg.get_texts()
+leg_texts[0].set_text('KDE fit')
+plt.text(x=0.97, y=0.6, s=r'$\Delta_{{\rm valley}} = {:.2f}$'.format(depth_Kep), color='r', fontsize=16, ha='right', va='top', transform=ax.transAxes)
+# For the top simulated catalogs:
+for j,i in enumerate(iSort[:5]):
+    ax = plt.subplot(plot[j+1,:])
+    depth = measure_and_plot_radius_valley_depth_using_kde(sss_all[i]['radii_obs'], bw_scotts_factor=bw_factor, plot_fig=True, ax=ax, legend=False)
+    plt.text(x=0.97, y=0.9, s=r'$\Delta_{{\rm valley}} = {:.2f}$'.format(depth), color='r', fontsize=16, ha='right', va='top', transform=ax.transAxes)
+if savefigures:
+    plt.savefig(savefigures_directory + model_name + '_radii_valley_%s_top5_multipanel.pdf' % sort_by)
+    plt.close()
+plt.show()
+
+
 
 
 
