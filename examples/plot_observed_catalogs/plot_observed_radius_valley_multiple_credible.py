@@ -47,8 +47,8 @@ ssk_per_sys, ssk = compute_summary_stats_from_Kepler_catalog(P_min, P_max, radii
 compute_additional_stats_for_subsample_from_summary_stats(ssk, P_min=P_min_subsample, P_max=P_max_subsample, radii_min=radii_min_subsample, radii_max=radii_max_subsample, params=params_gapfit) # also compute the radii deltas of the restricted sample
 
 # To calculate and plot the depth for the Kepler catalog:
-depth_kde_Kep = measure_and_plot_radius_valley_depth_using_kde(ssk['radii_obs'], bw_scotts_factor=bw_factor, plot_fig=True)
-delta_depth_kde_Kep = measure_and_plot_radius_valley_depth_using_kde(ssk['radii_delta_gap_obs'], radius_valley_bounds=(-0.2,0.2), x_min=-1.5, x_max=3.5, bw_scotts_factor=bw_factor, xlabel_text=r'Gap subtracted radius, $R_p - R_{\rm gap}$ [$R_\oplus$]', plot_fig=True)
+depth_kde_Kep = measure_and_plot_radius_valley_depth_using_kde(ssk['radii_obs'], bw_scotts_factor=bw_factor, plot_fig=False)
+delta_depth_kde_Kep = measure_and_plot_radius_valley_depth_using_kde(ssk['radii_delta_gap_obs'], radius_valley_bounds=(-0.2,0.2), x_min=-1.5, x_max=3.5, bw_scotts_factor=bw_factor, xlabel_text=r'Gap subtracted radius, $R_p - R_{\rm gap}$ [$R_\oplus$]', plot_fig=False)
 print(f'Kepler catalog: depth (kde) = {depth_kde_Kep}')
 print(f'Kepler catalog: radii delta depth (kde) = {delta_depth_kde_Kep}')
 plt.show()
@@ -61,16 +61,17 @@ plt.show()
 
 #loadfiles_directory1 = '/Users/hematthi/Documents/GradSchool/Research/ACI/Simulated_Data/AMD_system/Split_stars/Singles_ecc/Params11_KS/Distribute_AMD_per_mass/durations_norm_circ_singles_multis_GF2020_KS/GP_best_models/'
 loadfiles_directory2 = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Simulated_catalogs/Hybrid_NR20_AMD_model1/Fit_some8p1_KS/Params9_fix_highM/GP_best_models_100/'
-loadfiles_directory3 = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Simulated_catalogs/Hybrid_NR20_AMD_model1/clustered_initial_masses/Fit_some8p1_KS/Params10_fix_highM/GP_best_models_1000/'
+loadfiles_directory3 = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Simulated_catalogs/Hybrid_NR20_AMD_model1/Fit_some8_KS/Params9_fix_highM/GP_best_models_100/'
+#loadfiles_directory3 = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Simulated_catalogs/Hybrid_NR20_AMD_model1/clustered_initial_masses/Fit_some8p1_KS/Params10_fix_highM/GP_best_models_1000/'
 
-model_names = ['Hybrid Model 1', 'Hybrid Model 2']
+model_names = ['Hybrid Model 1 (Run 5)', 'Hybrid Model 1 (Run 4)']
 model_linestyles = ['--', '--']
 model_colors = ['b', 'g']
 model_alphas = [0.2, 0.2]
 model_load_dirs = [loadfiles_directory2, loadfiles_directory3]
 models = len(model_load_dirs)
 
-runs_all = [100, 1000]
+runs_all = [100, 100]
 
 sss_all = []
 sss_per_sys_all = []
