@@ -2123,6 +2123,106 @@ def measure_and_plot_radius_valley_depth_using_two_kdes(radii_sample, radius_val
 
 
 
+# Function for fitting the slope of and plotting the radius cliff:
+
+def fit_and_plot_radius_cliff_using_kde(radii_sample, x_min=0.5, x_max=5.5, x_min_cliff=2.5, x_max_cliff=5.5, n_bins=100, bw='Scotts', bw_scotts_factor=1., xlabel_text=r'Planet radius, $R_p$ [$R_\oplus$]', verbose=False, plot_fig=False, ax=None, legend=True, save_name='no_name_fig.pdf', save_fig=False):
+    """
+    Fit a line to the observed frequency of planets as a function of planet radius, within the bounds given for measuring the "radius cliff". The observed frequency of planets is estimated by a KDE fit to the sample of planet radii (in log10 scale).
+    
+    Parameters
+    ----------
+    radii_sample : array[float]
+        The sample of planet radii (in Earth radii).
+    radius_valley_bounds : (float,float), default=(1.8,2.2)
+        The bounds for planet radii considered to be within the "radius valley" (in Earth radii).
+    x_min : float, default=0.5
+        The minimum planet radius to plot (in Earth radii).
+    x_max : float, default=5.5
+        The maximum planet radius to plot (in Earth radii).
+    x_min_cliff : float, default=2.5
+        The minimum planet radius to include in the radius cliff (in Earth radii). Must be no less than `x_min`.
+    x_max_cliff : float, default=5.5
+        The maximum planet radius to include in the radius cliff (in Earth radii). Must be no more than `x_max`.
+    n_bins : int, default=100
+        The number of bins to use between `x_min` and `x_max`, for plotting purposes.
+    bw : {float, 'Scotts'}, default='Scotts'
+        The bandwidth or method for computing the bandwidth. If 'Scotts', will compute the bandwidth using Scott's rule, which is 'n^(-1/5)' where 'n' is the number of data points.
+    bw_scotts_factor : float, default=1.
+        The factor to multiply the bandwidth from Scott's rule. Only used if `bw='Scotts'`.
+    xlabel_text : str, default=r'Planet radius, $R_p$ [$R_\oplus$]'
+        The text for the x-axis label.
+    verbose : bool, default=False
+        Whether to print the computed values.
+    plot_fig : bool, default=False
+        Whether to also plot the histogram and the depth of the radius valley. If True, will call :py:func:`syssimpyplots.plot_catalogs.plot_fig_pdf_simple`.
+    ax : matplotlib.axes._subplots.AxesSubplot, optional
+        The plotting axes for the figure.
+    legend : bool, default=True
+        Whether to show the legend.
+    save_name : str, default='no_name_fig.pdf'
+        The file name for saving the figure, if `plot_fig=True`.
+    save_fig : bool, default=False
+        Whether to save the figure, if `plot_fig=True`. If True, will save the figure in the working directory with the file name given by `save_name`.
+    
+    Returns
+    -------
+    depth : float
+        The "depth" of the radius valley. This should be a positive value; if negative, it means that the radius "valley" is actually a peak (more precisely, it is higher than at least one of the peaks on the two sides)!
+    """
+    #radii_inrange = radii_sample[(radii_sample >= x_min) & (radii_sample <= x_max)]
+    #N_inrange = len(radii_inrange) # number of samples in the range considered
+    
+    # Fit the KDE:
+    # NOTE: we should fit the KDE to the full sample, not just the points in the range (x_min, x_max); thus also use the total number of data points in the calculation of 'bw'.
+    if bw == 'Scotts':
+        bw_Scotts = len(radii_sample)**(-1./5)
+        bw = bw_Scotts*bw_scotts_factor
+    kde = scipy.stats.gaussian_kde(np.log10(radii_sample), bw_method=bw)
+    
+    # Evaluate the KDE on an array of radii values for fitting the radius cliff:
+    logx_evals_cliff = np.linspace(np.log10(x_min_cliff), np.log10(x_max_cliff), 101) # log10(Rp) values
+    x_evals_cliff = 10.**logx_evals_cliff # Rp values
+    kde_evals_cliff = kde(logx_evals_cliff)
+    
+    # Normalize the KDE to the normalized histogram counts:
+    # NOTE: this means that the measured slope of the radius cliff has units that scale with the normalization (and thus the number of bins used).
+    bins = np.logspace(np.log10(x_min), np.log10(x_max), n_bins+1) # these are the bins the plotting call below would be using to create the histogram; needed to normalize the KDE density
+    fnorm = bins[1]-bins[0]
+    
+    # Fit a line for the radius cliff following Dattilo & Batalha (2024), of the form
+    # F = m_cliff*log10(Rp) + b, where F is measured from the KDE:
+    m_cliff, b = np.polyfit(logx_evals_cliff, fnorm*kde_evals_cliff, deg=1)
+    
+    if verbose:
+        print(f'm_cliff = {m_cliff}')
+        print(f'b = {b}')
+        print('#####')
+    
+    # To also make a plot:
+    if plot_fig:
+        if ax is None:
+            ax = plot_fig_pdf_simple([radii_sample], [], x_min=x_min, x_max=x_max, n_bins=n_bins, normalize=True, log_x=True, labels_sim=[None], xlabel_text=xlabel_text)
+        else:
+            plot_panel_pdf_simple(ax, [radii_sample], [], x_min=x_min, x_max=x_max, n_bins=n_bins, normalize=True, log_x=True, labels_sim=[None], xlabel_text=xlabel_text)
+        x_evals = np.logspace(np.log10(x_min), np.log10(x_max), 1001)
+        plt.plot(x_evals, fnorm*kde(np.log10(x_evals)), color='b', label=r'KDE fit ($bw = {:0.2f}$)'.format(bw))
+        plt.plot(x_evals_cliff, m_cliff*logx_evals_cliff + b, color='r')
+        plt.axvline(x_min_cliff, ls=':', lw=1)
+        plt.axvline(x_max_cliff, ls=':', lw=1)
+        if legend:
+            plt.figtext(0.92, 0.9, r'$m_{{\rm cliff}} = {:.2f}$'.format(m_cliff), color='r', fontsize=16, ha='right', va='top')
+            plt.legend(loc='upper right', bbox_to_anchor=(1,0.9), ncol=1, frameon=False, fontsize=16)
+        
+        if save_fig:
+            plt.savefig(save_name)
+            plt.close()
+    
+    return m_cliff, b
+
+
+
+
+
 # Functions for making various other plots:
 
 def compute_pratio_in_out_and_plot_fig(p_per_sys_all, colors=['k'], labels=['Input'], xymax=50., xyticks_custom=None, afs=12, tfs=12, lfs=12, save_name='no_name_fig.pdf', save_fig=False):
