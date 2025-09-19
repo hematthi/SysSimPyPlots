@@ -20,7 +20,7 @@ from syssimpyplots.plot_params import *
 
 
 savefigures = False
-savefigures_directory = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Figures/Hybrid_NR20_AMD_model1/Observed/' + 'Radius_valley_measures/Fit_some8_KS_params9/' #catalog62_repeated/'
+savefigures_directory = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Figures/Hybrid_NR20_AMD_model1/clustered_initial_masses/Observed/' + 'Radius_valley_measures/Fit_some8p1_KS_params10/' #catalog62_repeated/'
 model_name = 'Hybrid_model'
 
 compute_ratios = compute_ratios_adjacent
@@ -53,8 +53,8 @@ lfs = 16 # legend labels font size
 ##### To load and compute the same statistics for a large number of models:
 
 #loadfiles_directory = '/Users/hematthi/Documents/GradSchool/Research/ACI/Simulated_Data/AMD_system/Split_stars/Singles_ecc/Params11_KS/Distribute_AMD_per_mass/durations_norm_circ_singles_multis_GF2020_KS/GP_best_models/'
-loadfiles_directory = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Simulated_catalogs/Hybrid_NR20_AMD_model1/Fit_some8_KS/Params9_fix_highM/GP_best_models_100/' #GP_dtotmax15.0_depthmin0.29_models/' #GP_best_models_100/' #Radius_valley_model62_repeated_100/'
-runs = 100
+loadfiles_directory = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Simulated_catalogs/Hybrid_NR20_AMD_model1/clustered_initial_masses/Fit_some8p1_KS/Params10_fix_highM/GP_best_models_1000/' #GP_dtotmax15.0_depthmin0.29_models/' #GP_best_models_100/' #Radius_valley_model62_repeated_100/'
+runs = 1000
 
 sss_all = []
 sss_per_sys_all = []
@@ -216,6 +216,7 @@ plt.show()
 
 # FOR 1000 SIMULATED CATALOGS PASSING A DEPTH THRESHOLD:
 # Select and plot many individual catalogs above a given depth threshold:
+'''
 depth_thres = 0.26 # 0.256 is about the 90% percentile from the 100 catalogs drawn from posterior
 N_plot = 100
 
@@ -251,6 +252,7 @@ if savefigures:
     plt.savefig(savefigures_directory + model_name + '_radii_compare_enlarged_multipanel_depththres%s.pdf' % depth_thres)
     plt.close()
 plt.show()
+'''
 
 
 
@@ -324,5 +326,34 @@ for i,pair in enumerate(radii_measures_pairs):
     plt.ylabel(pair[1], fontsize=16)
 if savefigures:
     plt.savefig(savefigures_directory + model_name + '_radii_measures_2D.pdf')
+    plt.close()
+plt.show()
+
+# To plot some of the panels above ('depth_kde' vs. distance metrics) into a single figure for the paper:
+unweight_AD = True
+distance_labels = {'KS_dist_w': r'$w\mathcal{D}_{\rm KS}$',
+                   'AD_dist_w': r'$\mathcal{D}_{\rm AD}$' if unweight_AD else r'$w\mathcal{D}_{\rm AD}$',
+                   'EMD': r'$\mathcal{D}_{\rm EM}$'}
+distance_bounds = {'KS_dist_w': [0.8, 3.5],
+                   'AD_dist_w': [1e-3, 0.022] if unweight_AD else [0.5, 9.5],
+                   'EMD': [0.06, 0.275]}
+
+fig = plt.figure(figsize=(16,5))
+plot = GridSpec(1,3,left=0.075,bottom=0.15,right=0.975,top=0.95,wspace=0.15,hspace=0)
+for i,dist in enumerate(distance_labels):
+    ax = plt.subplot(plot[:,i])
+    x = radii_measures[dist]
+    if unweight_AD and dist=='AD_dist_w':
+        x = x/weights_all['all']['radii_AD']
+    sc = plt.scatter(x, radii_measures['depth_kde'], marker='.', c='k', s=10, alpha=1)
+    plt.axhline(y=depth_kde_Kep, linestyle='--', color='r')
+    ax.tick_params(axis='both', labelsize=afs)
+    plt.xlim(distance_bounds[dist])
+    plt.ylim([0,0.55])
+    plt.xlabel(distance_labels[dist], fontsize=tfs)
+    if i==0:
+        plt.ylabel(r'$\Delta_{\rm valley}$', fontsize=tfs)
+if savefigures:
+    plt.savefig(savefigures_directory + model_name + '_depths_vs_distances.pdf')
     plt.close()
 plt.show()
