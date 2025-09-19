@@ -30,13 +30,13 @@ There are multiple ways of cloning; if you have trouble with the above or prefer
 Downloading simulated catalogs
 ------------------------------
 
-After you have installed SysSimPyPlots, you will still need to download some simulated catalogs in order to explore any models. You can download a single, representative catalog generated from the latest model (the "maximum AMD model" described in `He et al. 2020 <https://ui.adsabs.harvard.edu/abs/2020arXiv200714473H/abstract>`_) using `this link <https://drive.google.com/drive/folders/18-PMwzqDeCDQtXStAG4u_EWTOx-T4gML?usp=sharing>`_.
+After you have installed SysSimPyPlots, you will still need to download some simulated catalogs in order to explore any models. You can download a single, representative catalog generated from the latest model (the "maximum AMD model" described in `He et al. 2020 <https://ui.adsabs.harvard.edu/abs/2020arXiv200714473H/abstract>`_) using `this link <https://drive.google.com/drive/folders/1bygEpBz1tJv--4rwI5n-IOY16w-2gLpr?usp=share_link>`_.
 
 .. note::
 
    This simulated catalog contains five times as many stars as the Kepler catalog in our sample, and is about 450 MB in size.
 
-If you want to perform more robust analyses, you can download many more simulated catalogs from the `SysSimExClusters Simulated Catalog folder <https://drive.google.com/drive/folders/1KGY7E1fK48O9mDuF6mDDhpXlyErkkd7t?usp=sharing>`_.
+If you want to perform more robust analyses, you can download many more simulated catalogs from the `SysSimExClusters Simulated Catalog folder <https://drive.google.com/drive/folders/1eYeeVb-r-M06fUHFqObgYniIZE6Atc1n?usp=sharing>`_.
 
 .. note::
 
