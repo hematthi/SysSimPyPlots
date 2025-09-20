@@ -20,8 +20,8 @@ from syssimpyplots.plot_params import *
 
 
 savefigures = False
-savefigures_directory = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Figures/Hybrid_NR20_AMD_model1/TBD/'
-save_name = 'Dists'
+savefigures_directory = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Figures/Hybrid_NR20_AMD_model1/clustered_initial_masses/Observed/Compare_to_hybrid_nonclustered_and_H20/'
+save_name = 'Models_compare'
 
 compute_ratios = compute_ratios_adjacent
 AD_mod = True
@@ -65,6 +65,26 @@ dists_symbols_KS = {
     "radii_partitioning_KS": r'$w \mathcal{D}_{\rm KS}$ for $\{\mathcal{Q}_R\}$',
     "radii_monotonicity_KS": r'$w \mathcal{D}_{\rm KS}$ for $\{\mathcal{M}_R\}$',
     "gap_complexity_KS": r'$w \mathcal{D}_{\rm KS}$ for $\{\mathcal{C}\}$',
+}
+dists_summarystats_symbols = {
+    "delta_f": r'$N_{p,\rm obs}/N_\bigstar$',
+    "mult_CRPD_r": r'$\{N_m\}$',
+    "periods_KS": r'$\{P\}$',
+    "period_ratios_KS": r'$\{\mathcal{P}\}$',
+    "durations_KS": r'$\{t_{\rm dur}\}$',
+    "durations_norm_circ_KS": r'$\{t_{\rm dur}/t_{\rm circ}\}$',
+    "durations_norm_circ_singles_KS": r'$\{t_{\rm dur}/t_{\rm circ}\}_{1}$',
+    "durations_norm_circ_multis_KS": r'$\{t_{\rm dur}/t_{\rm circ}\}_{2+}$',
+    "duration_ratios_KS": r'$\{\xi\}$',
+    "duration_ratios_mmr_KS": r'$\{\xi_{\rm res}\}$',
+    "duration_ratios_nonmmr_KS": r'$\{\xi_{\rm non-res}\}$',
+    "depths_KS": r'$\{\delta\}$',
+    "radii_KS": r'$\{R_p\}$',
+    "radii_delta_gap_KS": r'$\{R_p - R_{\rm gap}\}$',
+    "radius_ratios_KS": r'$\{\delta_{i+1}/\delta_i\}$',
+    "radii_partitioning_KS": r'$\{\mathcal{Q}_R\}$',
+    "radii_monotonicity_KS": r'$\{\mathcal{M}_R\}$',
+    "gap_complexity_KS": r'$\{\mathcal{C}\}$',
 }
 
 # For computing the radii deltas for a sub-sample of planets:
@@ -150,16 +170,17 @@ compute_additional_stats_for_subsample_from_summary_stats(ssk, P_min=P_min_subsa
 runs = 100
 
 load_dirs = [
-    #'/Users/hematthi/Documents/GradSchool/Research/SysSim/Simulated_catalogs/Hybrid_NR20_AMD_model1/Fit_some8p1_KS/Params9_fix_highM/GP_best_models_100/',
+    '/Users/hematthi/Documents/GradSchool/Research/ACI/Simulated_Data/AMD_system/Split_stars/Singles_ecc/Params11_KS/Distribute_AMD_per_mass/durations_norm_circ_singles_multis_GF2020_KS/GP_best_models/',
+    '/Users/hematthi/Documents/GradSchool/Research/SysSim/Simulated_catalogs/Hybrid_NR20_AMD_model1/Fit_some8p1_KS/Params9_fix_highM/GP_best_models_100/',
     '/Users/hematthi/Documents/GradSchool/Research/SysSim/Simulated_catalogs/Hybrid_NR20_AMD_model1/clustered_initial_masses/Fit_some8p1_KS/Params10_fix_highM/GP_best_models_100/',
-    '/Users/hematthi/Documents/GradSchool/Research/SysSim/Simulated_catalogs/Hybrid_NR20_AMD_model1/clustered_initial_masses/Fit_all12_KS/Params10_fix_highM/GP_best_models_100/',
+    #'/Users/hematthi/Documents/GradSchool/Research/SysSim/Simulated_catalogs/Hybrid_NR20_AMD_model1/clustered_initial_masses/Fit_all12_KS/Params10_fix_highM/GP_best_models_100/',
     #'/Users/hematthi/Documents/GradSchool/Research/SysSim/Simulated_catalogs/Hybrid_NR20_AMD_model1/clustered_initial_masses/Fit_some8p1_KS/Params10_fix_highM/GP_dtotmax12_depthmin0.29_models/',
     #'/Users/hematthi/Documents/GradSchool/Research/SysSim/Simulated_catalogs/Hybrid_NR20_AMD_model1/Fit_some8_KS/Params9_fix_highM/Radius_valley_model62_repeated_100/',
     #'/Users/hematthi/Documents/GradSchool/Research/SysSim/Simulated_catalogs/Hybrid_NR20_AMD_model1/Fit_some8_KS/Params9_fix_highM/Radius_valley_model89_repeated_100/',
 ]
-model_names = ['Hybrid Model 2 (fit some8p1)', 'Hybrid model 2 (fit all12)'] #['Posterior', 'Catalog 62 repeated', 'Catalog 89 repeated'] #['Hybrid model', 'Hybrid model, clustered initial masses']
+model_names = ['H20 model', 'Hybrid Model 1', 'Hybrid model 2'] #['Posterior', 'Catalog 62 repeated', 'Catalog 89 repeated'] #['Hybrid model', 'Hybrid model, clustered initial masses']
 model_linestyles = ['-', '-', '-']
-model_colors = ['b', 'r', 'g']
+model_colors = ['k', 'b', 'g']
 model_outputs_catalogs = []
 model_outputs_distances = []
 for load_dir in load_dirs:
@@ -206,18 +227,59 @@ for dist in dists_include:
 
 plt.show()
 
-# Make a single figure with all of the individual distance terms as stacked panels, with the same bounds:
-n_dists = len(dists_include)
-x_min, x_max = 0., 3. # bounds for plotting the weighted distances
-x_lines = [1., 2.] # draw vertical lines for these
 
-fig = plt.figure(figsize=(8,12))
-plot = GridSpec(n_dists, 1, left=0.1, bottom=0.1, right=0.95, top=0.95, wspace=0, hspace=0)
+
+##### Make a single figure with all of the individual distance terms as stacked panels, with the same bounds:
+##### Also be able to distinguish which distances were excluded from the total distance function but are still plotted (and thus in 'dists_include')
+dists_excluded = ['period_ratios_KS', 'durations_KS', 'duration_ratios_KS'] # the distances excluded from the total distance function, but we still wish to plot
+
+plot_cdfs = True # whether to plot the CDFs instead of histograms
+
+n_dists = len(dists_include)
+x_min, x_max = 0., 4. # bounds for plotting the weighted distances
+x_lines = [1.] # draw vertical lines for these
+
+fig = plt.figure(figsize=(16,16))
+plot = GridSpec(1, 1, left=0.08, bottom=0.83, right=0.98, top=0.98, wspace=0, hspace=0)
+# First, plot the total weighted distance:
+dtot_w_all_models = [outputs_distances['dtot_w']['all'] - np.sum([outputs_distances[dist]['all'] for dist in dists_excluded], axis=0) for outputs_distances in model_outputs_distances]
+ax = plt.subplot(plot[:,:])
+if plot_cdfs:
+    plot_panel_cdf_simple(ax, dtot_w_all_models, [], c_sim=model_colors, ls_sim=model_linestyles, lw=lw, labels_sim=model_names, xlabel_text=r'Total weighted distance, $\mathcal{D}_{W} = \sum{w \mathcal{D}}$', ylabel_text='CDF', legend=True, afs=afs, tfs=tfs, lfs=lfs)
+    # Plot the total weighted distances including the excluded distances anyway, as faded lines:
+    for m,outputs_distances in enumerate(model_outputs_distances):
+        x = outputs_distances['dtot_w']['all']
+        ax.plot(np.sort(x), (np.arange(len(x))+1.)/float(len(x)), drawstyle='steps-post', color=model_colors[m], alpha=alpha, ls='-', lw=lw)
+else:
+    plot_panel_pdf_simple(ax, dtot_w_all_models, [], n_bins=n_bins, normalize=False, c_sim=model_colors, ls_sim=model_linestyles, lw=lw, labels_sim=model_names, xlabel_text=r'Total weighted distance, $\mathcal{D}_{W} = \sum{w \mathcal{D}}$', ylabel_text='Catalogs', legend=True, afs=afs, tfs=tfs, lfs=lfs)
+    # TODO: Plot the total weighted distances including the excluded distances anyway
+# Now plot the individual distance terms:
+cols = 2
+rows = int(np.ceil(n_dists/cols))
+plot = GridSpec(rows, cols, left=0.08, bottom=0.06, right=0.98, top=0.75, wspace=0.2, hspace=0)
 for i,dist in enumerate(dists_include):
-    is_bottom_panel = i==n_dists-1
-    ax = plot_panel_pdf_simple(plt.subplot(plot[i,0]), [outputs_distances[dist]['all'] for outputs_distances in model_outputs_distances], [], x_min=x_min, x_max=x_max, n_bins=n_bins, normalize=False, c_sim=model_colors, ls_sim=model_linestyles, lw=lw, labels_sim=[None]*n_models, extra_text=dists_symbols_KS[dist], xlabel_text=r'$w \mathcal{D}$' if is_bottom_panel else '', ylabel_text='Catalogs' if i==0 else '', afs=afs, tfs=tfs, lfs=lfs)
+    #row, col = np.divmod(i,cols) # to plot panels from left to right, then top to bottom
+    col, row = np.divmod(i,rows) # to plot panels from top to bottom, then left to right
+    ax = plt.subplot(plot[row,col])
+    is_bottom_panel = row==rows-1 #i==n_dists-1
+    if plot_cdfs:
+        plot_panel_cdf_simple(ax, [outputs_distances[dist]['all'] for outputs_distances in model_outputs_distances], [], x_min=x_min, x_max=x_max, c_sim=model_colors, ls_sim=model_linestyles, lw=lw, labels_sim=[None]*n_models, extra_text=dists_summarystats_symbols[dist], xlabel_text=r'Weighted distance, $w \mathcal{D}$' if is_bottom_panel else '', ylabel_text='', afs=afs, tfs=tfs, lfs=lfs)
+        if dist in dists_excluded:
+            for line in ax.lines:
+                line.set_alpha(alpha)
+        plt.yticks([0., 0.5, 1.] if is_bottom_panel else [0.5, 1.])
+    else:
+        plot_panel_pdf_simple(ax, [outputs_distances[dist]['all'] for outputs_distances in model_outputs_distances], [], x_min=x_min, x_max=x_max, n_bins=n_bins, normalize=False, c_sim=model_colors, ls_sim=model_linestyles, lw=lw, labels_sim=[None]*n_models, extra_text=dists_summarystats_symbols[dist], xlabel_text=r'Weighted distance, $w \mathcal{D}$' if is_bottom_panel else '', ylabel_text='', afs=afs, tfs=tfs, lfs=lfs)
+        if dist in dists_excluded:
+            for line in ax.lines:
+                line.set_alpha(alpha)
     for x in x_lines:
-        plt.axvline(x=x, ls=':', lw=1, color='k')
+        plt.axvline(x=x, ls=':', lw=1, color='r')
     if not is_bottom_panel:
         plt.xticks([])
+fig.supylabel('CDF' if plot_cdfs else 'Catalogs', fontsize=tfs)
+if savefigures:
+    fig_name = '_all_dists_multipanel_cdfs.pdf' if plot_cdfs else '_all_dists_multipanel_hists.pdf'
+    plt.savefig(savefigures_directory + save_name + fig_name)
+    plt.close()
 plt.show()
