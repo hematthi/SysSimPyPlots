@@ -129,7 +129,26 @@ for loadfiles_dir in model_loadfiles_dirs:
         # Append empty lists to keep the same length for indexing the models:
         model_σ_M_cluster_qtls_sim.append([])
         model_Minit_cluster_pdf_array_qtls_sim.append([])
-    
+
+
+
+
+
+##### Optionally, also load a simulated catalog to plot the initial and final radii vs. masses for a sample of planets:
+
+plot_sample = True
+
+if plot_sample:
+    loadfiles_directory_sample = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Simulated_catalogs/Hybrid_NR20_AMD_model1/clustered_initial_masses/Fit_some8p1_KS/Params10_fix_highM/GP_best_models_100/'
+    run_number = 3
+
+    has_extra_params = True # [NEW,TEMPORARY] whether the simulated catalog has extra planet params
+
+    params = read_sim_params(loadfiles_directory_sample + 'periods%s.out' % run_number)
+    sssp_per_sys, sssp = compute_summary_stats_from_cat_phys(file_name_path=loadfiles_directory_sample, run_number=run_number, load_full_tables=False if has_extra_params else True)
+
+    N_pl_plot = 1000 # number of planets to plot
+
 
 
 
@@ -138,7 +157,7 @@ for loadfiles_dir in model_loadfiles_dirs:
 
 afs = 20 #axes labels font size
 tfs = 20 #text labels font size
-lfs = 12 #legend labels font size
+lfs = 16 #legend labels font size
 
 bins = 100
 
@@ -146,8 +165,8 @@ bins = 100
 
 ##### To plot radius vs. mass from several models:
 
-fig = plt.figure(figsize=(8,8))
-plot = GridSpec(5, 5, left=0.15, bottom=0.1, right=0.93, top=0.95, wspace=0, hspace=0)
+fig = plt.figure(figsize=(12,12))
+plot = GridSpec(5, 5, left=0.1, bottom=0.08, right=0.95, top=0.98, wspace=0, hspace=0)
 
 ax = plt.subplot(plot[1:,:]) # main panel
 # Plot the mass-radius/radius-mass relations:
@@ -176,6 +195,11 @@ plt.fill_betweenx(radius_evals_H20, mass_evals_016_H20, mass_evals_084_H20, colo
 #
 plt.plot(M_array, R_S07_silicate_array, color='tab:brown') #, label='S07, pure-silicate'
 plt.fill_between(M_array, 0.95*R_S07_silicate_array, 1.05*R_S07_silicate_array, color='tab:brown', alpha=0.5, label='S07 pure-silicate model with 5% scatter') #, label='NR20, 5% scatter around S07 pure-silicate (final)'
+# Plot a sample population:
+if plot_sample:
+    plt.scatter(sssp['init_mass_all'][:N_pl_plot], sssp['init_radii_all'][:N_pl_plot], s=20, marker='o', edgecolors='k', facecolors='none', label='Sample population (initial)')
+    plt.scatter(sssp['mass_all'][:N_pl_plot], sssp['radii_all'][:N_pl_plot], s=30, marker='.', c='r', label='Sample population (final)')
+#
 ax.set_xscale('log')
 ax.set_yscale('log')
 ax.tick_params(axis='both', labelsize=afs)
