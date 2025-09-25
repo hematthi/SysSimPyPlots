@@ -904,67 +904,74 @@ def compute_summary_stats_from_cat_phys(cat_phys=None, star_phys=None, file_name
 
 
 
-    #To calculate the underlying period ratios, radii ratios, and separations in mutual Hill radii:
-    Rm_all = [] #list to be filled with all the period ratios
-    radii_ratio_all = [] #list to be filled with all the radii ratios
-    N_mH_all = [] #list to be filled with all the separations between adjacent planet pairs in units of mutual Hill radii
+    # To calculate the underlying period ratios, radii ratios, and separations in mutual Hill radii:
+    Rm_all = [] # list to be filled with all the period ratios
+    radii_ratio_all = [] # list to be filled with all the radii ratios
+    mass_ratio_all = [] # list to be filled with all the mass ratios
+    N_mH_all = [] # list to be filled with all the separations between adjacent planet pairs in units of mutual Hill radii
 
-    radii_above_all_flat = [] #list to be filled with the radii of planets above the photoevaporation boundary
-    radii_below_all_flat = [] #list to be filled with the radii of planets below the photoevaporation boundary
-    radii_ratio_above_all_flat = [] #list to be filled with the radii ratios of adjacent planet pairs above the photoevaporation boundary
-    radii_ratio_below_all_flat = [] #list to be filled with the radii ratios of adjacent planet pairs below the photoevaporation boundary
-    radii_ratio_across_all_flat = [] #list to be filled with the radii ratios of adjacent planet pairs across the photoevaporation boundary
+    radii_above_all_flat = [] # list to be filled with the radii of planets above the photoevaporation boundary
+    radii_below_all_flat = [] # list to be filled with the radii of planets below the photoevaporation boundary
+    radii_ratio_above_all_flat = [] # list to be filled with the radii ratios of adjacent planet pairs above the photoevaporation boundary
+    radii_ratio_below_all_flat = [] # list to be filled with the radii ratios of adjacent planet pairs below the photoevaporation boundary
+    radii_ratio_across_all_flat = [] # list to be filled with the radii ratios of adjacent planet pairs across the photoevaporation boundary
 
     start = time.time()
     for i in range(len(P_all)):
-        Mstar_system = Mstar_all[i] #mass of the star for this system, in solar masses
+        Mstar_system = Mstar_all[i] # mass of the star for this system, in solar masses
         P_all_system = P_all[i][P_all[i] > 0]
         e_all_system = e_all[i][P_all[i] > 0]
         radii_all_system = radii_all[i][P_all[i] > 0]
         mass_all_system = mass_all[i][P_all[i] > 0]
 
-        #To calculate all the period ratios:
-        Rm_all_system = list(compute_ratios(P_all_system)) #list of period ratios in this system
-        Rm_all_system = np.array(Rm_all_system + [0]*(Mmax - 1 - len(Rm_all_system))) #to add filler 0's to Rm_all_system to pad it to Mmax - 1 elements
+        # To calculate all the period ratios:
+        Rm_all_system = list(compute_ratios(P_all_system)) # list of period ratios in this system
+        Rm_all_system = np.array(Rm_all_system + [0]*(Mmax - 1 - len(Rm_all_system))) # to add filler 0's to Rm_all_system to pad it to Mmax - 1 elements
         Rm_all.append(Rm_all_system)
 
-        #To calculate all the radii ratios:
-        radii_ratio_all_system = list(compute_ratios(radii_all_system)) #list of radii ratios in this system
-        radii_ratio_all_system = np.array(radii_ratio_all_system + [0]*(Mmax - 1 - len(radii_ratio_all_system))) #to add filler 0's to radii_ratio_all_system to pad it to Mmax - 1 elements
+        # To calculate all the radii ratios:
+        radii_ratio_all_system = list(compute_ratios(radii_all_system)) # list of radii ratios in this system
+        radii_ratio_all_system = np.array(radii_ratio_all_system + [0]*(Mmax - 1 - len(radii_ratio_all_system))) # to add filler 0's to radii_ratio_all_system to pad it to Mmax - 1 elements
         radii_ratio_all.append(radii_ratio_all_system)
+        
+        # To calculate all the mass ratios:
+        mass_ratio_all_system = list(compute_ratios(mass_all_system)) # list of mass ratios in this system
+        mass_ratio_all_system = np.array(mass_ratio_all_system + [0]*(Mmax - 1 - len(mass_ratio_all_system))) # to add filler 0's to radii_ratio_all_system to pad it to Mmax - 1 elements
+        mass_ratio_all.append(mass_ratio_all_system)
 
-        #To calculate all the separations in mutual Hill radii between adjacent planet pairs:
+        # To calculate all the separations in mutual Hill radii between adjacent planet pairs:
         a_all_system = gen.a_from_P(P_all_system, Mstar_system)
-        R_mH_all_system = ((a_all_system[0:-1] + a_all_system[1:])/2.)*(gen.Mearth*(mass_all_system[0:-1] + mass_all_system[1:])/(3.*Mstar_system*gen.Msun))**(1./3.) #mutual Hill radii between adjacent planet pairs in this system, in AU
-        #R_sep_all_system = a_all_system[1:] - a_all_system[0:-1] #separations between adjacent planet pairs in this system, in AU, ignoring eccentricities
-        R_sep_all_system = a_all_system[1:]*(1. - e_all_system[1:]) - a_all_system[0:-1]*(1. + e_all_system[0:-1]) #separations between adjacent planet pairs in this system, in AU, including eccentricities
-        N_mH_all_system = list(R_sep_all_system/R_mH_all_system) #separations between adjacent planet pairs in this system, in mutual Hill radii
-        N_mH_all_system = np.array(N_mH_all_system + [0]*(Mmax - 1 - len(N_mH_all_system))) #to add filler 0's to N_mH_all_system to pad it to Mmax - 1 elements
+        R_mH_all_system = ((a_all_system[0:-1] + a_all_system[1:])/2.)*(gen.Mearth*(mass_all_system[0:-1] + mass_all_system[1:])/(3.*Mstar_system*gen.Msun))**(1./3.) # mutual Hill radii between adjacent planet pairs in this system, in AU
+        #R_sep_all_system = a_all_system[1:] - a_all_system[0:-1] # separations between adjacent planet pairs in this system, in AU, ignoring eccentricities
+        R_sep_all_system = a_all_system[1:]*(1. - e_all_system[1:]) - a_all_system[0:-1]*(1. + e_all_system[0:-1]) # separations between adjacent planet pairs in this system, in AU, including eccentricities
+        N_mH_all_system = list(R_sep_all_system/R_mH_all_system) # separations between adjacent planet pairs in this system, in mutual Hill radii
+        N_mH_all_system = np.array(N_mH_all_system + [0]*(Mmax - 1 - len(N_mH_all_system))) # to add filler 0's to N_mH_all_system to pad it to Mmax - 1 elements
         N_mH_all.append(N_mH_all_system)
 
-        #To separate the planets in the system as above and below the boundary:
+        # To separate the planets in the system as above and below the boundary:
         system_above_bools = np.array([gen.photoevap_boundary_Carrera2018(radii_all_system[x], P_all_system[x]) for x in range(len(P_all_system))])
         #if len(system_above_bools) > 1:
         #print(system_above_bools)
 
-        #To record the transit depths of the planets above and below the boundary:
+        # To record the transit depths of the planets above and below the boundary:
         for j in range(len(radii_all_system)):
             radii_above_all_flat.append(radii_all_system[j]) if system_above_bools[j] == 1 else radii_below_all_flat.append(radii_all_system[j])
 
-        #To record the transit depth ratios of the planets above, below, and across the boundary:
-        radii_ratio_all_system = list(compute_ratios(radii_all_system)) #list of radii ratios in this system
+        # To record the transit depth ratios of the planets above, below, and across the boundary:
+        radii_ratio_all_system = list(compute_ratios(radii_all_system)) # list of radii ratios in this system
         for j in range(len(radii_ratio_all_system)):
-            if system_above_bools[j] + system_above_bools[j+1] == 2: #both planets are above the boundary
+            if system_above_bools[j] + system_above_bools[j+1] == 2: # both planets are above the boundary
                 radii_ratio_above_all_flat.append(radii_ratio_all_system[j])
-            elif system_above_bools[j] + system_above_bools[j+1] == 1: #one planet is above, the other is below the boundary
+            elif system_above_bools[j] + system_above_bools[j+1] == 1: # one planet is above, the other is below the boundary
                 radii_ratio_across_all_flat.append(radii_ratio_all_system[j])
-            elif system_above_bools[j] + system_above_bools[j+1] == 0: #both planets are below the boundary
+            elif system_above_bools[j] + system_above_bools[j+1] == 0: # both planets are below the boundary
                 radii_ratio_below_all_flat.append(radii_ratio_all_system[j])
     stop = time.time()
     print('Time to analyze: %s s' % (stop-start))
 
     Rm_all = np.array(Rm_all)
     radii_ratio_all = np.array(radii_ratio_all)
+    mass_ratio_all = np.array(mass_ratio_all)
     N_mH_all = np.array(N_mH_all)
 
     inclmut_all_flat = []
@@ -972,7 +979,7 @@ def compute_summary_stats_from_cat_phys(cat_phys=None, star_phys=None, file_name
         # NOTE: getting rid of all the 'mutual inclinations' for the single planets (since they would all be zero or are not real)
         inclmut_all_2plus = inclmut_all[Mtot_all > 1,:]
         P_all_2plus = P_all[Mtot_all > 1,:]
-        inclmut_all_flat = inclmut_all_2plus[P_all_2plus > 0] #all the mutual inclinations of all the planets (which can be zero; in particular, all intrinsic singles are zero)
+        inclmut_all_flat = inclmut_all_2plus[P_all_2plus > 0] # all the mutual inclinations of all the planets (which can be zero; in particular, all intrinsic singles are zero)
     inclmut_all_flat = np.array(inclmut_all_flat)
 
     radii_above_all_flat = np.array(radii_above_all_flat)
@@ -1008,6 +1015,7 @@ def compute_summary_stats_from_cat_phys(cat_phys=None, star_phys=None, file_name
     # Planet property ratios:
     sssp_per_sys['Rm_all'] = Rm_all
     sssp_per_sys['radii_ratio_all'] = radii_ratio_all
+    sssp_per_sys['mass_ratio_all'] = mass_ratio_all
     sssp_per_sys['N_mH_all'] = N_mH_all
 
     sssp = {}
@@ -1036,6 +1044,7 @@ def compute_summary_stats_from_cat_phys(cat_phys=None, star_phys=None, file_name
     # Planet property ratios:
     sssp['Rm_all'] = Rm_all[Rm_all > 0]
     sssp['radii_ratio_all'] = radii_ratio_all[radii_ratio_all > 0]
+    sssp['mass_ratio_all'] = mass_ratio_all[mass_ratio_all > 0]
     sssp['N_mH_all'] = N_mH_all[N_mH_all > 0]
     sssp['radii_ratio_above_all'] = radii_ratio_above_all_flat
     sssp['radii_ratio_below_all'] = radii_ratio_below_all_flat
@@ -1046,6 +1055,7 @@ def compute_summary_stats_from_cat_phys(cat_phys=None, star_phys=None, file_name
     assert Nsys_all == len(radii_all) == len(P_all)
 
     dynamical_mass = []
+    mass_partitioning = []
     radii_partitioning = []
     radii_monotonicity = []
     gap_complexity = []
@@ -1054,11 +1064,13 @@ def compute_summary_stats_from_cat_phys(cat_phys=None, star_phys=None, file_name
     for i in range(Nsys_all):
         P_all_system = P_all[i][P_all[i] > 0]
         radii_all_system = radii_all[i][P_all[i] > 0]
+        mass_all_system = mass_all[i][P_all[i] > 0]
         mu_all_system = mu_all[i][P_all[i] > 0]
 
         dynamical_mass.append(np.sum(mu_all_system))
 
         if len(P_all_system) >= 2:
+            mass_partitioning.append(gen.partitioning(mass_all_system))
             radii_partitioning.append(gen.partitioning(radii_all_system))
             radii_monotonicity.append(gen.monotonicity_GF2020(radii_all_system))
         if len(P_all_system) >= 3:
@@ -1067,6 +1079,7 @@ def compute_summary_stats_from_cat_phys(cat_phys=None, star_phys=None, file_name
     print('Time to analyze (GF2020): %s s' % (stop-start))
 
     sssp_per_sys['dynamical_mass'] = np.array(dynamical_mass)
+    sssp_per_sys['mass_partitioning'] = np.array(mass_partitioning)
     sssp_per_sys['radii_partitioning'] = np.array(radii_partitioning)
     sssp_per_sys['radii_monotonicity'] = np.array(radii_monotonicity)
     sssp_per_sys['gap_complexity'] = np.array(gap_complexity)
