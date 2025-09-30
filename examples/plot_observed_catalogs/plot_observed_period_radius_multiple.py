@@ -17,15 +17,17 @@ from syssimpyplots.load_sims import *
 from syssimpyplots.plot_catalogs import *
 from syssimpyplots.plot_params import *
 
+from gapfit import gap_line, bootstrap_fit_gap, uncertainty_from_boots
+
 
 
 
 
 savefigures = False
 loadfiles_directory = '/Users/hematthi/Documents/GradSchool/Research/SysSim/SysSimExClusters/examples/test/'
-savefigures_directory = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Figures/Hybrid_NR20_AMD_model1/clustered_initial_masses/Observed/' + 'Radius_valley_measures/Fit_some8_KS_params10/'
+savefigures_directory = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Figures/Hybrid_NR20_AMD_model1/clustered_initial_masses/Observed/' + 'Radius_valley_measures/Fit_some8p1_KS_params10/'
 run_number = ''
-model_name = 'Hybrid_NR20_AMD_model1' + run_number
+model_name = 'Hybrid_model' + run_number
 
 compute_ratios = compute_ratios_adjacent
 weights_all = load_split_stars_weights_only()
@@ -119,8 +121,8 @@ if 'depth' in sort_by:
     iSort = iSort[::-1]
 
 # Define the grid for evaluating the KDEs:
-use_log_radii = False # choose whether to use a log-scale for the radii
-radii_min, radii_max = 0.5, 4. # optionally, further restrict the radii bounds (NOTE: this overwrites 'radii_min' and 'radii_max' read from the files)
+use_log_radii = True # choose whether to use a log-scale for the radii
+radii_min, radii_max = 0.5, 6. # optionally, further restrict the radii bounds (NOTE: this overwrites 'radii_min' and 'radii_max' read from the files)
 
 logP_min, logP_max = np.log10(P_min), np.log10(P_max)
 # NOTE: variable names still use 'logR_' regardless of whether a log-scale is used or not
@@ -131,8 +133,42 @@ else:
 logP_grid, logR_grid = np.mgrid[logP_min:logP_max:100j, logR_min:logR_max:100j] # complex step size '100j' to include the upper bound
 positions = np.vstack([logP_grid.ravel(), logR_grid.ravel()])
 
-# Plot the period-radius distributions of the Kepler and simulated catalogs side-by-side:
-for i in iSort[:10]:
+
+
+# First, perform a gaussian KDE for the period-radius distribution of the Kepler catalog:
+radii_obs_Kep = np.log10(ssk['radii_obs']) if use_log_radii else ssk['radii_obs']
+values_Kep = np.vstack([np.log10(ssk['P_obs']), radii_obs_Kep])
+kde_Kep = gaussian_kde(values_Kep)
+f_Kep = np.reshape(kde_Kep(positions).T, np.shape(logP_grid))
+
+# Now fit a line for the radius valley of the Kepler catalog using gapfit:
+# NOTE: this has to be done in log-log units, but we can plot the resulting fit any way:
+x0 = 0. # offset location, log10(P)
+y0_guess = 0.5 # guess for the offset, log10(Rgap_offset)
+m_guess = -0.1 # guess for the slope
+sig = 0.15 # kernel width
+y0_rng = 0.5 # maximum allowed deviation from y0 in search
+
+boots_Kep = bootstrap_fit_gap(np.log10(ssk['P_obs']), np.log10(ssk['radii_obs']), x0, y0_guess, m_guess, sig, y0_rng, nboots=500)
+triplets_Kep = uncertainty_from_boots(boots_Kep)
+y0trip_Kep, mtrip_Kep = triplets_Kep # [best-fit, +1sigma, -1sigma] for each of y0, m
+print('Best-fit gap line for the Kepler catalog:')
+print('m = {:.2f} +{:.2f}/-{:.2f}'.format(*mtrip_Kep))
+print('y0 = {:.2f} +{:.2f}/-{:.2f}'.format(*y0trip_Kep))
+
+m_Kep = mtrip_Kep[0] # best-fit slope
+logRgap_offset_Kep = y0trip_Kep[0] # best-fit intercept
+
+# Evaluate the line for the radius valley along an array of log10(P):
+logP_array = np.linspace(np.log10(P_min), np.log10(P_max), 101)
+logRgap_array_Kep = m_Kep*logP_array + logRgap_offset_Kep
+
+
+
+### Plot the period-radius distributions of the Kepler and simulated catalogs side-by-side:
+N_plot = 10
+gap_fits_sims = [] # to be filled with tuples of the best-fit slope and intercepts
+for i in iSort[:N_plot]:
     run_number = i+1 # the catalog/run numbers are 1-based
     sss_i = sss_all[i]
     
@@ -149,19 +185,28 @@ for i in iSort[:10]:
         depth = measure_and_plot_radius_valley_depth_using_kde(sss_i['radii_obs'], bw_scotts_factor=bw_factor, plot_fig=plot_marginal)
         print(f'i={i}: depth = {depth}, {sort_by} = {radii_measures[sort_by][i]}')
     
-    # To perform a gaussian KDE for the log(period)-log(radius) distributions:
+    # To perform a gaussian KDE for the period-radius distributions:
     radii_obs_sim = np.log10(sss_i['radii_obs']) if use_log_radii else sss_i['radii_obs']
-    radii_obs_Kep = np.log10(ssk['radii_obs']) if use_log_radii else ssk['radii_obs']
     values_sim = np.vstack([np.log10(sss_i['P_obs']), radii_obs_sim])
-    values_Kep = np.vstack([np.log10(ssk['P_obs']), radii_obs_Kep])
     kde_sim = gaussian_kde(values_sim)
-    kde_Kep = gaussian_kde(values_Kep)
     f_sim = np.reshape(kde_sim(positions).T, np.shape(logP_grid))
-    f_Kep = np.reshape(kde_Kep(positions).T, np.shape(logP_grid))
+    
+    # To fit a line for the radius valley using gapfit:
+    boots_sim = bootstrap_fit_gap(np.log10(sss_i['P_obs']), np.log10(sss_i['radii_obs']), x0, y0_guess, m_guess, sig, y0_rng, nboots=500)
+    triplets_sim = uncertainty_from_boots(boots_sim)
+    y0trip_sim, mtrip_sim = triplets_sim # [best-fit, +1sigma, -1sigma] for each of y0, m
+    print('Best-fit gap line for the simulated catalog:')
+    print('m = {:.2f} +{:.2f}/-{:.2f}'.format(*mtrip_sim))
+    print('y0 = {:.2f} +{:.2f}/-{:.2f}'.format(*y0trip_sim))
+    
+    m_sim = mtrip_sim[0] # best-fit slope
+    logRgap_offset_sim = y0trip_sim[0] # best-fit intercept
+    logRgap_array_sim = m_sim*logP_array + logRgap_offset_sim
+    gap_fits_sims.append([m_sim, logRgap_offset_sim])
     
     # To plot the period-radius distributions of the simulated and Kepler catalogs:
     fig = plt.figure(figsize=(16,8))
-    plot = GridSpec(1,2,left=0.1,bottom=0.1,right=0.95,top=0.95,wspace=0.1,hspace=0)
+    plot = GridSpec(1,2,left=0.08,bottom=0.1,right=0.98,top=0.95,wspace=0.1,hspace=0)
     cmap = 'Blues' #'Blues' #'viridis'
 
     ax = plt.subplot(plot[:,0]) # for the Kepler distribution
@@ -169,6 +214,8 @@ for i in iSort[:10]:
     plt.contourf(logP_grid, logR_grid, f_Kep, cmap=cmap)
     # Scatter points:
     plt.scatter(np.log10(ssk['P_obs']), radii_obs_Kep, s=5, marker='o', edgecolor='k', facecolor='none', label='Kepler')
+    # Radius valley fit:
+    plt.plot(logP_array, logRgap_array_Kep, ls='--', lw=lw, color='k', label=r'gapfit: $R_{\rm gap} = {%s}P^{%s}$' % ('{:0.2f}'.format(10.**logRgap_offset_Kep), '{:0.2f}'.format(m_Kep)))
     ax.tick_params(axis='both', labelsize=afs)
     xtick_vals = np.array([3,10,30,100,300])
     plt.xticks(np.log10(xtick_vals), xtick_vals)
@@ -186,6 +233,8 @@ for i in iSort[:10]:
     plt.contourf(logP_grid, logR_grid, f_sim, cmap=cmap)
     # Scatter points:
     plt.scatter(np.log10(sss_i['P_obs']), radii_obs_sim, s=5, marker='o', edgecolor='b', facecolor='none', label='Simulated')
+    # Radius valley fit:
+    plt.plot(logP_array, logRgap_array_sim, ls='--', lw=lw, color='k')
     ax.tick_params(axis='both', labelsize=afs)
     xtick_vals = np.array([3,10,30,100,300])
     plt.xticks(np.log10(xtick_vals), xtick_vals)
@@ -203,24 +252,92 @@ for i in iSort[:10]:
         plt.savefig(save_name)
         plt.close()
 
+gap_fits_sims = np.array(gap_fits_sims)
 plt.show()
 
-# Plot the period-radius distribution of just the simulated catalog (OR optionally, the difference in the KDEs between the Kepler and simulated catalogs), with the marginal distributions as side panels:
+
+
+### Plot a representative simulated catalog alongside the Kepler catalog, with the best-fit lines from multiple simulated catalogs also shown:
+iSort_rep = 8 # choose an index, up to 'N_plot-1', to index 'iSort[:N_plot]'
+i_rep = iSort[:N_plot][iSort_rep]
+sss_i = sss_all[i_rep]
+
+# To perform a gaussian KDE for the period-radius distributions:
+radii_obs_sim = np.log10(sss_i['radii_obs']) if use_log_radii else sss_i['radii_obs']
+values_sim = np.vstack([np.log10(sss_i['P_obs']), radii_obs_sim])
+kde_sim = gaussian_kde(values_sim)
+f_sim = np.reshape(kde_sim(positions).T, np.shape(logP_grid))
+
+# To plot the period-radius distributions of the simulated and Kepler catalogs:
+fig = plt.figure(figsize=(16,8))
+plot = GridSpec(1,2,left=0.08,bottom=0.1,right=0.98,top=0.95,wspace=0.1,hspace=0)
+cmap = 'Blues' #'Blues' #'viridis'
+
+ax = plt.subplot(plot[:,0]) # for the Kepler distribution
+# KDE contours:
+plt.contourf(logP_grid, logR_grid, f_Kep, cmap=cmap)
+# Scatter points:
+plt.scatter(np.log10(ssk['P_obs']), radii_obs_Kep, s=5, marker='o', edgecolor='k', facecolor='none', label='Kepler planet candidates')
+# Radius valley fit:
+plt.plot(logP_array, logRgap_array_Kep, ls='--', lw=lw, color='k', label=r'$R_{\rm gap} = {%s} R_\oplus (P/{\rm days})^{%s}$' % ('{:0.2f}'.format(10.**logRgap_offset_Kep), '{:0.2f}'.format(m_Kep)))
+ax.tick_params(axis='both', labelsize=afs)
+xtick_vals = np.array([3,10,30,100,300])
+plt.xticks(np.log10(xtick_vals), xtick_vals)
+if use_log_radii:
+    ytick_vals = np.array([0.5,1,2,4,10])
+    plt.yticks(np.log10(ytick_vals), ytick_vals)
+plt.xlim([logP_min, logP_max])
+plt.ylim([logR_min, logR_max])
+plt.xlabel(r'Orbital period, $P$ [days]', fontsize=tfs)
+plt.ylabel(r'Planet radius, $R_p$ [$R_\oplus$]', fontsize=tfs)
+plt.legend(loc='lower right', bbox_to_anchor=(1,0), ncol=1, frameon=False, fontsize=lfs)
+
+ax = plt.subplot(plot[:,1]) # for the simulated distribution
+# KDE contours:
+plt.contourf(logP_grid, logR_grid, f_sim, cmap=cmap)
+# Scatter points:
+plt.scatter(np.log10(sss_i['P_obs']), radii_obs_sim, s=5, marker='o', edgecolor='b', facecolor='none', label='Simulated planets (HM-C)')
+# Radius valley fit:
+for i,gap_fit_sim in enumerate(gap_fits_sims):
+    m_sim, logRgap_offset_sim = gap_fit_sim
+    logRgap_array_sim = m_sim*logP_array + logRgap_offset_sim
+    color = 'r'
+    alpha = 1 if i==iSort_rep else 0.3
+    label = r'$R_{\rm gap} = {%s} R_\oplus (P/{\rm days})^{%s}$' % ('{:0.2f}'.format(10.**logRgap_offset_sim), '{:0.2f}'.format(m_sim)) if i==iSort_rep else None
+    plt.plot(logP_array, logRgap_array_sim, ls='--', lw=lw, alpha=alpha, color=color, label=label)
+ax.tick_params(axis='both', labelsize=afs)
+xtick_vals = np.array([3,10,30,100,300])
+plt.xticks(np.log10(xtick_vals), xtick_vals)
+if use_log_radii:
+    ytick_vals = np.array([0.5,1,2,4,10])
+    plt.yticks(np.log10(ytick_vals), [])
+plt.xlim([logP_min, logP_max])
+plt.ylim([logR_min, logR_max])
+plt.xlabel(r'Orbital period, $P$ [days]', fontsize=tfs)
+#plt.ylabel(r'Planet radius, $R_p$ [$R_\oplus$]', fontsize=tfs)
+plt.legend(loc='lower right', bbox_to_anchor=(1,0), ncol=1, frameon=False, fontsize=lfs)
+
+if savefigures:
+    run_number = i_rep+1
+    save_name = savefigures_directory + model_name + '_period_radius_catalog%s_with_multiple_fits_vs_Kepler.pdf' % run_number
+    plt.savefig(save_name)
+    plt.close()
+plt.show()
+
+
+
+### Plot the period-radius distribution of just the simulated catalog (OR optionally, the difference in the KDEs between the Kepler and simulated catalogs), with the marginal distributions as side panels:
 plot_difference = False
 cmap = 'coolwarm' if plot_difference else 'Blues'
-for i in iSort[:10]:
+for i in iSort[:N_plot]:
     run_number = i+1 # the catalog/run numbers are 1-based
     sss_i = sss_all[i]
     
     # To perform a gaussian KDE for the log(period)-log(radius) distributions:
     radii_obs_sim = np.log10(sss_i['radii_obs']) if use_log_radii else sss_i['radii_obs']
-    radii_obs_Kep = np.log10(ssk['radii_obs']) if use_log_radii else ssk['radii_obs']
     values_sim = np.vstack([np.log10(sss_i['P_obs']), radii_obs_sim])
-    values_Kep = np.vstack([np.log10(ssk['P_obs']), radii_obs_Kep])
     kde_sim = gaussian_kde(values_sim)
-    kde_Kep = gaussian_kde(values_Kep)
     f_sim = np.reshape(kde_sim(positions).T, np.shape(logP_grid))
-    f_Kep = np.reshape(kde_Kep(positions).T, np.shape(logP_grid))
     
     # To plot the period-radius distributions of the simulated and Kepler catalogs:
     fig = plt.figure(figsize=(12,8))
