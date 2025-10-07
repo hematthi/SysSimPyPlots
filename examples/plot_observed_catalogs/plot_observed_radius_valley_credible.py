@@ -53,7 +53,9 @@ lfs = 16 # legend labels font size
 ##### To load and compute the same statistics for a large number of models:
 
 #loadfiles_directory = '/Users/hematthi/Documents/GradSchool/Research/ACI/Simulated_Data/AMD_system/Split_stars/Singles_ecc/Params11_KS/Distribute_AMD_per_mass/durations_norm_circ_singles_multis_GF2020_KS/GP_best_models/'
-loadfiles_directory = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Simulated_catalogs/Hybrid_NR20_AMD_model1/clustered_initial_masses/Fit_some8p1_KS/Params10_fix_highM/GP_best_models_1000/' #GP_dtotmax15.0_depthmin0.29_models/' #GP_best_models_100/' #Radius_valley_model62_repeated_100/'
+#loadfiles_directory = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Simulated_catalogs/Hybrid_NR20_AMD_model1/clustered_initial_masses/Fit_some8p1_KS/Params10_fix_highM/GP_best_models_1000/' #GP_dtotmax15.0_depthmin0.29_models/' #GP_best_models_100/' #Radius_valley_model62_repeated_100/'
+loadfiles_directory = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Simulated_catalogs/Hybrid_NR20_AMD_model1/clustered_initial_masses/Fit_some8p1_KS/Params10_fix_highM/GP_dtotmax15.0_depthmin0.29_models/' #GP_dtotmax15.0_depthmin0.29_models/' #GP_best_models_100/' #Radius_valley_model62_repeated_100/'
+
 runs = 1000
 
 sss_all = []
@@ -150,7 +152,7 @@ if savefigures:
     plt.close()
 
 # Plot all the individual catalogs as thin lines along with the Kepler catalog:
-plot_fig_pdf_simple([sss_i['radii_obs'] for sss_i in sss_all[:runs]] + [ssk['radii_obs']], [], x_min=radii_min, x_max=radii_max_plot, y_max=y_max, c_sim=['b']*runs + ['k'], ls_sim=['-']*runs + ['-'], lw=[0.05]*runs + [2.], labels_sim=['Simulated catalogs'] + [None]*(runs-1) + ['Kepler'], xlabel_text=r'Planet radius, $R_p$ [$R_\oplus$]', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_size=fig_enlarged_size, fig_lbrt=fig_enlarged_lbrt)
+plot_fig_pdf_simple([sss_i['radii_obs'] for sss_i in sss_all[:runs]] + [ssk['radii_obs']], [], x_min=radii_min, x_max=radii_max_plot, y_max=y_max, c_sim=['b']*runs + ['k'], ls_sim=['-']*runs + ['-'], lw=[0.05]*runs + [2.], alpha_sim=[1.]*(runs+1), labels_sim=['Simulated catalogs'] + [None]*(runs-1) + ['Kepler'], xlabel_text=r'Planet radius, $R_p$ [$R_\oplus$]', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_size=fig_enlarged_size, fig_lbrt=fig_enlarged_lbrt)
 if savefigures:
     plt.savefig(savefigures_directory + model_name + '_radii_compare_enlarged_draws.pdf')
     plt.close()
@@ -161,7 +163,7 @@ norm = matplotlib.colors.Normalize(vmin=0., vmax=1.)
 cmap = cm.ScalarMappable(norm=norm, cmap='Blues_r')
 cmap.set_array([])
 
-plot_fig_pdf_simple([sss_all[i]['radii_obs'] for i in iSort[:N_plot]] + [ssk['radii_obs']], [], x_min=radii_min, x_max=radii_max_plot, y_max=y_max, c_sim=[cmap.to_rgba(i) for i in np.linspace(0.1,0.6,N_plot)] + ['k'], ls_sim=['-']*N_plot + ['-'], lw=[1.]*N_plot + [2.], labels_sim=['Simulated catalogs \n''with largest valleys'] + [None]*(N_plot-1) + ['Kepler'], xlabel_text=r'Planet radius, $R_p$ [$R_\oplus$]', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_size=fig_enlarged_size, fig_lbrt=fig_enlarged_lbrt) # ls_sim=[(0,(1,1))]*N_plot + ['-']
+plot_fig_pdf_simple([sss_all[i]['radii_obs'] for i in iSort[:N_plot]] + [ssk['radii_obs']], [], x_min=radii_min, x_max=radii_max_plot, y_max=y_max, c_sim=[cmap.to_rgba(i) for i in np.linspace(0.1,0.6,N_plot)] + ['k'], ls_sim=['-']*N_plot + ['-'], lw=[1.]*N_plot + [2.], alpha_sim=[1.]*(N_plot+1), labels_sim=['Simulated catalogs \n''with largest valleys'] + [None]*(N_plot-1) + ['Kepler'], xlabel_text=r'Planet radius, $R_p$ [$R_\oplus$]', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_size=fig_enlarged_size, fig_lbrt=fig_enlarged_lbrt) # ls_sim=[(0,(1,1))]*N_plot + ['-']
 if savefigures:
     plt.savefig(savefigures_directory + model_name + '_radii_compare_enlarged_draws_best%s_%s.pdf' % (N_plot, sort_by))
     plt.close()
@@ -216,7 +218,7 @@ plt.show()
 
 # FOR 1000 SIMULATED CATALOGS PASSING A DEPTH THRESHOLD:
 # Select and plot many individual catalogs above a given depth threshold:
-'''
+#'''
 depth_thres = 0.26 # 0.256 is about the 90% percentile from the 100 catalogs drawn from posterior
 N_plot = 100
 
@@ -235,7 +237,7 @@ fig = plt.figure(figsize=(8,10))
 plot = GridSpec(5,1,left=0.2,bottom=0.1,right=0.95,top=0.98,wspace=0,hspace=0)
 
 ax = plt.subplot(plot[0,0]) # credible regions of CDFs
-plot_panel_cdf_credible(ax, [[sss_all[i]['radii_obs'] for i in iN_plot]], [ssk['radii_obs']], x_min=radii_min, x_max=radii_max_plot, c_sim_all=['g'], ls_sim_all=['--'], lw=lw, labels_sim_all=['Hybrid Model 2,\nTop 10% of catalogs'], alpha_all=[alpha], xlabel_text='', afs=afs, tfs=tfs, lfs=lfs, legend=False)
+plot_panel_cdf_credible(ax, [[sss_all[i]['radii_obs'] for i in iN_plot]], [ssk['radii_obs']], x_min=radii_min, x_max=radii_max_plot, c_sim_all=['g'], ls_sim_all=['--'], lw=lw, labels_sim_all=['HM-C, top 10% of catalogs'], alpha_all=[alpha], xlabel_text='', afs=afs, tfs=tfs, lfs=lfs, legend=False)
 ax.set_xticklabels([])
 plt.legend(loc='lower right', bbox_to_anchor=(1,0), ncol=1, frameon=False, fontsize=lfs)
 
@@ -245,14 +247,14 @@ ax.set_xticklabels([])
 plt.text(x=0.98, y=0.95, s='16%-84% credible region', ha='right', va='top', fontsize=lfs, transform=ax.transAxes)
 
 ax = plt.subplot(plot[3:,0]) # individual catalog draws/histograms
-plot_panel_pdf_simple(ax, [sss_all[i]['radii_obs'] for i in iN_plot] + [ssk['radii_obs']], [], x_min=radii_min, x_max=radii_max_plot, y_max=y_max, c_sim=['g']*N_plot + ['k'], ls_sim=['-']*(N_plot+1), lw=[0.1]*N_plot + [lw], labels_sim=['catalogs'] + [None]*(N_plot-1) + ['Kepler'], xlabel_text=r'Planet radius, $R_p$ [$R_\oplus$]', afs=afs, tfs=tfs, lfs=lfs, legend=False)
+plot_panel_pdf_simple(ax, [sss_all[i]['radii_obs'] for i in iN_plot] + [ssk['radii_obs']], [], x_min=radii_min, x_max=radii_max_plot, y_max=y_max, c_sim=['g']*N_plot + ['k'], ls_sim=['-']*(N_plot+1), lw=[0.5]*N_plot + [lw], alpha_sim=[0.2]*N_plot + [1.], labels_sim=['catalogs'] + [None]*(N_plot-1) + ['Kepler'], xlabel_text=r'Planet radius, $R_p$ [$R_\oplus$]', afs=afs, tfs=tfs, lfs=lfs, legend=False)
 plt.text(x=0.98, y=0.95, s='Individual catalogs', ha='right', va='top', fontsize=lfs, transform=ax.transAxes)
 
 if savefigures:
     plt.savefig(savefigures_directory + model_name + '_radii_compare_enlarged_multipanel_depththres%s.pdf' % depth_thres)
     plt.close()
 plt.show()
-'''
+#'''
 
 
 

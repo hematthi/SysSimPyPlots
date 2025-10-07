@@ -167,7 +167,7 @@ if savefigures:
     plt.close()
 
 # Plot all the individual catalogs as thin lines along with the Kepler catalog:
-plot_fig_pdf_simple([sss_i['radii_delta_gap_obs'] for sss_i in sss_all[:runs]] + [radii_delta_Kep], [], x_min=radii_delta_min, x_max=radii_delta_max, y_max=y_max, c_sim=['b']*runs + ['k'], ls_sim=['-']*runs + ['-'], lw=[0.05]*runs + [2.], labels_sim=['Simulated catalogs'] + [None]*(runs-1) + ['Kepler'], xlabel_text=r'Gap subtracted radius, $R_p - R_{\rm gap}$ [$R_\oplus$]', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_size=fig_enlarged_size, fig_lbrt=fig_enlarged_lbrt)
+plot_fig_pdf_simple([sss_i['radii_delta_gap_obs'] for sss_i in sss_all[:runs]] + [radii_delta_Kep], [], x_min=radii_delta_min, x_max=radii_delta_max, y_max=y_max, c_sim=['b']*runs + ['k'], ls_sim=['-']*runs + ['-'], lw=[0.05]*runs + [2.], alpha_sim=[1.]*(runs+1), labels_sim=['Simulated catalogs'] + [None]*(runs-1) + ['Kepler'], xlabel_text=r'Gap subtracted radius, $R_p - R_{\rm gap}$ [$R_\oplus$]', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_size=fig_enlarged_size, fig_lbrt=fig_enlarged_lbrt)
 if savefigures:
     plt.savefig(savefigures_directory + model_name + '_radii_delta_compare_enlarged_draws.pdf')
     plt.close()
@@ -178,7 +178,7 @@ norm = matplotlib.colors.Normalize(vmin=0., vmax=1.)
 cmap = cm.ScalarMappable(norm=norm, cmap='Blues_r')
 cmap.set_array([])
 
-plot_fig_pdf_simple([sss_all[i]['radii_delta_gap_obs'] for i in iSort[:N_plot]] + [radii_delta_Kep], [], x_min=radii_delta_min, x_max=radii_delta_max, y_max=y_max, c_sim=[cmap.to_rgba(i) for i in np.linspace(0.1,0.6,N_plot)] + ['k'], ls_sim=['-']*N_plot + ['-'], lw=[1.]*N_plot + [2.], labels_sim=['Simulated catalogs \n''with largest valleys'] + [None]*(N_plot-1) + ['Kepler'], xlabel_text=r'Gap subtracted radius, $R_p - R_{\rm gap}$ [$R_\oplus$]', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_size=fig_enlarged_size, fig_lbrt=fig_enlarged_lbrt) # ls_sim=[(0,(1,1))]*N_plot + ['-']
+plot_fig_pdf_simple([sss_all[i]['radii_delta_gap_obs'] for i in iSort[:N_plot]] + [radii_delta_Kep], [], x_min=radii_delta_min, x_max=radii_delta_max, y_max=y_max, c_sim=[cmap.to_rgba(i) for i in np.linspace(0.1,0.6,N_plot)] + ['k'], ls_sim=['-']*N_plot + ['-'], lw=[1.]*N_plot + [2.], alpha_sim=[1.]*(N_plot+1), labels_sim=['Simulated catalogs \n''with largest valleys'] + [None]*(N_plot-1) + ['Kepler'], xlabel_text=r'Gap subtracted radius, $R_p - R_{\rm gap}$ [$R_\oplus$]', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_size=fig_enlarged_size, fig_lbrt=fig_enlarged_lbrt) # ls_sim=[(0,(1,1))]*N_plot + ['-']
 if savefigures:
     plt.savefig(savefigures_directory + model_name + '_radii_delta_compare_enlarged_draws_best%s_%s.pdf' % (N_plot, sort_by))
     plt.close()
@@ -227,7 +227,7 @@ fig = plt.figure(figsize=(8,10))
 plot = GridSpec(5,1,left=0.2,bottom=0.1,right=0.95,top=0.98,wspace=0,hspace=0)
 
 ax = plt.subplot(plot[0,0]) # credible regions of CDFs
-plot_panel_cdf_credible(ax, [[sss_all[i]['radii_delta_gap_obs'] for i in iN_plot]], [radii_delta_Kep], x_min=radii_delta_min_plot, x_max=radii_delta_max_plot, c_sim_all=['g'], ls_sim_all=['--'], lw=lw, labels_sim_all=['Hybrid Model 2,\nTop 10% of catalogs'], alpha_all=[alpha], xlabel_text='', afs=afs, tfs=tfs, lfs=lfs, legend=False)
+plot_panel_cdf_credible(ax, [[sss_all[i]['radii_delta_gap_obs'] for i in iN_plot]], [radii_delta_Kep], x_min=radii_delta_min_plot, x_max=radii_delta_max_plot, c_sim_all=['g'], ls_sim_all=['--'], lw=lw, labels_sim_all=['HM-C, top 10% of catalogs'], alpha_all=[alpha], xlabel_text='', afs=afs, tfs=tfs, lfs=lfs, legend=False)
 ax.set_xticklabels([])
 plt.legend(loc='lower right', bbox_to_anchor=(1,0), ncol=1, frameon=False, fontsize=lfs)
 plt.text(x=0.02, y=0.95, s='$P < %s$d \n$R_p < %s R_\oplus$' % ('{:0.0f}'.format(P_max), '{:0.1f}'.format(radii_max)), ha='left', va='top', fontsize=lfs, transform=ax.transAxes)
@@ -238,7 +238,7 @@ ax.set_xticklabels([])
 plt.text(x=0.98, y=0.95, s='16%-84% credible regions', ha='right', va='top', fontsize=lfs, transform=ax.transAxes)
 
 ax = plt.subplot(plot[3:,0]) # individual catalog draws/histograms
-plot_panel_pdf_simple(ax, [sss_all[i]['radii_delta_gap_obs'] for i in iN_plot] + [radii_delta_Kep], [], x_min=radii_delta_min_plot, x_max=radii_delta_max_plot, y_max=y_max, c_sim=['g']*N_plot + ['k'], ls_sim=['-']*(N_plot+1), lw=[0.1]*N_plot + [lw], labels_sim=['catalogs'] + [None]*(N_plot-1) + ['Kepler'], xlabel_text=r'Gap subtracted radius, $R_p - R_{\rm gap}$ [$R_\oplus$]', afs=afs, tfs=tfs, lfs=lfs, legend=False)
+plot_panel_pdf_simple(ax, [sss_all[i]['radii_delta_gap_obs'] for i in iN_plot] + [radii_delta_Kep], [], x_min=radii_delta_min_plot, x_max=radii_delta_max_plot, y_max=y_max, c_sim=['g']*N_plot + ['k'], ls_sim=['-']*(N_plot+1), lw=[0.5]*N_plot + [lw], alpha_sim=[0.2]*N_plot + [1.], labels_sim=['catalogs'] + [None]*(N_plot-1) + ['Kepler'], xlabel_text=r'Gap subtracted radius, $R_p - R_{\rm gap}$ [$R_\oplus$]', afs=afs, tfs=tfs, lfs=lfs, legend=False)
 plt.text(x=0.98, y=0.95, s='Individual catalogs', ha='right', va='top', fontsize=lfs, transform=ax.transAxes)
 
 if savefigures:

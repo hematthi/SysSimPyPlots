@@ -115,7 +115,7 @@ loadfiles_directory2 = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Sim
 loadfiles_directory3 = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Simulated_catalogs/Hybrid_NR20_AMD_model1/clustered_initial_masses/Fit_some8p1_KS/Params10_fix_highM/GP_best_models_100/'
 
 
-model_names = ['H20 model', 'Hybrid Model 1', 'Hybrid Model 2']
+model_names = ['H20 model', 'HM-U', 'HM-C']
 model_linestyles = ['--', '--', '--']
 model_colors = ['k', 'b', 'g']
 model_alphas = [0.1, 0.2, 0.4]
@@ -495,7 +495,7 @@ plt.text(x=0.98, y=0.9, s='16%-84% credible regions', ha='right', fontsize=lfs, 
 ax = plt.subplot(plot[3:,0]) # individual catalog draws/histograms
 N_plot = 100
 i_model = 2
-plot_panel_pdf_simple(ax, [sss_i['radii_obs'] for sss_i in sss_all[i_model][:N_plot]] + [ssk['radii_obs']], [], x_min=radii_min, x_max=radii_max_plot, y_max=y_max, c_sim=[model_colors[i_model]]*N_plot + ['k'], ls_sim=['-']*(N_plot+1), lw=[0.1]*N_plot + [lw], labels_sim=[model_names[i_model]+' catalogs'] + [None]*(N_plot-1) + ['Kepler'], xlabel_text=r'Planet radius, $R_p$ [$R_\oplus$]', afs=afs, tfs=tfs, lfs=lfs, legend=False)
+plot_panel_pdf_simple(ax, [sss_i['radii_obs'] for sss_i in sss_all[i_model][:N_plot]] + [ssk['radii_obs']], [], x_min=radii_min, x_max=radii_max_plot, y_max=y_max, c_sim=[model_colors[i_model]]*N_plot + ['k'], ls_sim=['-']*(N_plot+1), lw=[0.5]*N_plot + [lw], alpha_sim=[0.2]*N_plot + [1.], labels_sim=[model_names[i_model]+' catalogs'] + [None]*(N_plot-1) + ['Kepler'], xlabel_text=r'Planet radius, $R_p$ [$R_\oplus$]', afs=afs, tfs=tfs, lfs=lfs, legend=False)
 plt.text(x=0.98, y=0.9, s='Catalogs from ' + model_names[i_model], ha='right', fontsize=lfs, transform=ax.transAxes)
 
 if savefigures:
@@ -523,7 +523,7 @@ plt.text(x=0.98, y=0.9, s='16%-84% credible regions', ha='right', fontsize=lfs, 
 ax = plt.subplot(plot[3:,0]) # individual catalog draws/histograms
 N_plot = 100
 i_model = 2
-plot_panel_pdf_simple(ax, [sss_i['radii_delta_gap_obs'] for sss_i in sss_all[i_model][:N_plot]] + [ssk['radii_delta_gap_obs']], [], x_min=radii_delta_min_plot, x_max=radii_delta_max_plot, y_max=y_max, c_sim=[model_colors[i_model]]*N_plot + ['k'], ls_sim=['-']*(N_plot+1), lw=[0.1]*N_plot + [lw], labels_sim=[model_names[i_model]+' catalogs'] + [None]*(N_plot-1) + ['Kepler'], xlabel_text=r'Gap subtracted radius, $R_p - R_{\rm gap}$ [$R_\oplus$]', afs=afs, tfs=tfs, lfs=lfs, legend=False)
+plot_panel_pdf_simple(ax, [sss_i['radii_delta_gap_obs'] for sss_i in sss_all[i_model][:N_plot]] + [ssk['radii_delta_gap_obs']], [], x_min=radii_delta_min_plot, x_max=radii_delta_max_plot, y_max=y_max, c_sim=[model_colors[i_model]]*N_plot + ['k'], ls_sim=['-']*(N_plot+1), lw=[0.5]*N_plot + [lw], alpha_sim=[0.2]*N_plot + [1.], labels_sim=[model_names[i_model]+' catalogs'] + [None]*(N_plot-1) + ['Kepler'], xlabel_text=r'Gap subtracted radius, $R_p - R_{\rm gap}$ [$R_\oplus$]', afs=afs, tfs=tfs, lfs=lfs, legend=False)
 plt.text(x=0.98, y=0.9, s='Catalogs from ' + model_names[i_model], ha='right', fontsize=lfs, transform=ax.transAxes)
 
 if savefigures:
