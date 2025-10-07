@@ -196,7 +196,7 @@ def plot_fig_counts_hist_simple(x_sim, x_Kep, x_min=0, x_max=None, y_min=None, y
     else:
         return ax
 
-def plot_panel_pdf_simple(ax, x_sim, x_Kep, x_min=None, x_max=None, y_min=0., y_max=None, n_bins=100, normalize=True, N_sim_Kep_factor=1., log_x=False, log_y=False, c_sim=['k'], c_Kep=['k'], ls_sim=['-'], ls_Kep=['-'], lw=1, alpha=0.2, labels_sim=['Simulated'], labels_Kep=['Kepler'], extra_text=None, xticks_custom=None, xlabel_text='x', ylabel_text='Fraction', afs=20, tfs=20, lfs=16, legend=False):
+def plot_panel_pdf_simple(ax, x_sim, x_Kep, x_min=None, x_max=None, y_min=0., y_max=None, n_bins=100, normalize=True, N_sim_Kep_factor=1., log_x=False, log_y=False, c_sim=['k'], c_Kep=['k'], ls_sim=['-'], ls_Kep=['-'], lw=1, alpha_sim=[1], alpha_Kep=[0.2], labels_sim=['Simulated'], labels_Kep=['Kepler'], extra_text=None, xticks_custom=None, xlabel_text='x', ylabel_text='Fraction', afs=20, tfs=20, lfs=16, legend=False):
     """
     Plot histogram(s) of continuous distributions on a given panel.
 
@@ -236,8 +236,10 @@ def plot_panel_pdf_simple(ax, x_sim, x_Kep, x_min=None, x_max=None, y_min=0., y_
         A list of line styles for the histograms of Kepler data.
     lw : float or list[float], default=1
         A list of line widths for the histograms (of simulated data).
-    alpha : float, default=0.2
-        The transparency of the shading for the histograms of Kepler data (between 0 and 1).
+    alpha_sim : list[float], default=[1]
+        A list of transparencies of the lines for the histograms of simulated data (between 0 and 1).
+    alpha_Kep : list[float], default=[0.2]
+        A list of transparencies of the shading for the histograms of Kepler data (between 0 and 1).
     labels_sim : list[str], default=['Simulated']
         A list of legend labels for the histograms of simulated data.
     labels_Kep : list[str], default=['Kepler']
@@ -275,11 +277,11 @@ def plot_panel_pdf_simple(ax, x_sim, x_Kep, x_min=None, x_max=None, y_min=0., y_
     bin_maxes = [] # to be filled with the maximum bin counts in each histogram
     for i,x in enumerate(x_sim):
         weights = np.ones(len(x))/len(x) if normalize else np.ones(len(x))/N_sim_Kep_factor
-        ht = plt.hist(x, bins=bins, histtype='step', weights=weights, log=log_y, color=c_sim[i], ls=ls_sim[i], lw=lw[i], label=labels_sim[i])
+        ht = plt.hist(x, bins=bins, histtype='step', weights=weights, log=log_y, color=c_sim[i], ls=ls_sim[i], lw=lw[i], alpha=alpha_sim[i], label=labels_sim[i])
         bin_maxes.append(np.max(ht[0]))
     for i,x in enumerate(x_Kep):
         weights = np.ones(len(x))/len(x) if normalize else np.ones(len(x))
-        ht = plt.hist(x, bins=bins, histtype='stepfilled', weights=weights, log=log_y, color=c_Kep[i], ls=ls_Kep[i], alpha=alpha, label=labels_Kep[i])
+        ht = plt.hist(x, bins=bins, histtype='stepfilled', weights=weights, log=log_y, color=c_Kep[i], ls=ls_Kep[i], alpha=alpha_Kep[i], label=labels_Kep[i])
         bin_maxes.append(np.max(ht[0]))
     if y_min <= 0. and log_y:
         y_min = None
@@ -300,7 +302,7 @@ def plot_panel_pdf_simple(ax, x_sim, x_Kep, x_min=None, x_max=None, y_min=0., y_
     if legend:
         plt.legend(loc='upper right', bbox_to_anchor=(0.99,0.99), ncol=1, frameon=False, fontsize=lfs) #show the legend
 
-def plot_fig_pdf_simple(x_sim, x_Kep, x_min=None, x_max=None, y_min=0., y_max=None, n_bins=100, normalize=True, N_sim_Kep_factor=1., log_x=False, log_y=False, c_sim=['k'], c_Kep=['k'], ls_sim=['-'], ls_Kep=['-'], lw=1, alpha=0.2, labels_sim=['Simulated'], labels_Kep=['Kepler'], extra_text=None, xticks_custom=None, xlabel_text='x', ylabel_text='Fraction', afs=20, tfs=20, lfs=16, legend=False, fig_size=(8,4), fig_lbrt=[0.15, 0.2, 0.95, 0.925], save_name='no_name_fig.pdf', save_fig=False):
+def plot_fig_pdf_simple(x_sim, x_Kep, x_min=None, x_max=None, y_min=0., y_max=None, n_bins=100, normalize=True, N_sim_Kep_factor=1., log_x=False, log_y=False, c_sim=['k'], c_Kep=['k'], ls_sim=['-'], ls_Kep=['-'], lw=1, alpha_sim=[1], alpha_Kep=[0.2], labels_sim=['Simulated'], labels_Kep=['Kepler'], extra_text=None, xticks_custom=None, xlabel_text='x', ylabel_text='Fraction', afs=20, tfs=20, lfs=16, legend=False, fig_size=(8,4), fig_lbrt=[0.15, 0.2, 0.95, 0.925], save_name='no_name_fig.pdf', save_fig=False):
     """
     Plot a figure with histogram(s) of continuous distributions.
 
@@ -325,7 +327,7 @@ def plot_fig_pdf_simple(x_sim, x_Kep, x_min=None, x_max=None, y_min=0., y_max=No
     left, bottom, right, top = fig_lbrt
     ax = setup_fig_single(fig_size, left=left, bottom=bottom, right=right, top=top)
 
-    plot_panel_pdf_simple(ax, x_sim, x_Kep, x_min=x_min, x_max=x_max, y_min=y_min, y_max=y_max, n_bins=n_bins, normalize=normalize, N_sim_Kep_factor=N_sim_Kep_factor, log_x=log_x, log_y=log_y, c_sim=c_sim, c_Kep=c_Kep, ls_sim=ls_sim, ls_Kep=ls_Kep, lw=lw, alpha=alpha, labels_sim=labels_sim, labels_Kep=labels_Kep, extra_text=extra_text, xticks_custom=xticks_custom, xlabel_text=xlabel_text, ylabel_text=ylabel_text, afs=afs, tfs=tfs, lfs=lfs, legend=legend)
+    plot_panel_pdf_simple(ax, x_sim, x_Kep, x_min=x_min, x_max=x_max, y_min=y_min, y_max=y_max, n_bins=n_bins, normalize=normalize, N_sim_Kep_factor=N_sim_Kep_factor, log_x=log_x, log_y=log_y, c_sim=c_sim, c_Kep=c_Kep, ls_sim=ls_sim, ls_Kep=ls_Kep, lw=lw, alpha_sim=alpha_sim, alpha_Kep=alpha_Kep, labels_sim=labels_sim, labels_Kep=labels_Kep, extra_text=extra_text, xticks_custom=xticks_custom, xlabel_text=xlabel_text, ylabel_text=ylabel_text, afs=afs, tfs=tfs, lfs=lfs, legend=legend)
 
     if save_fig:
         plt.savefig(save_name)
@@ -415,7 +417,7 @@ def plot_panel_pdf_credible(ax, x_sim_all, x_Kep, x_min=None, x_max=None, y_min=
 
     if log_x:
         bins = np.logspace(np.log10(x_min), np.log10(x_max), n_bins+1)
-        bins_mid = (bins[:-1] + bins[1:])/2. # TODO: double check
+        bins_mid = np.sqrt(bins[:-1] * bins[1:])
     else:
         bins = np.linspace(x_min, x_max, n_bins+1)
         bins_mid = (bins[:-1] + bins[1:])/2.
@@ -433,10 +435,8 @@ def plot_panel_pdf_credible(ax, x_sim_all, x_Kep, x_min=None, x_max=None, y_min=
             counts_all.append(counts/float(np.sum(counts)) if normalize else counts/N_sim_Kep_factor)
         counts_all = np.array(counts_all)
         
-        counts_qtls = np.zeros((len(bins)-1,len(qtls)))
-        for b in range(n_bins):
-            counts_qtls[b] = np.quantile(counts_all[:,b], qtls)
-        bin_maxes.append(np.nanmax(counts_qtls[:,2]))
+        counts_qtls = np.quantile(counts_all, qtls, axis=0)
+        bin_maxes.append(np.nanmax(counts_qtls[2]))
         
         # Plot the credible regions (and median, optional):
         ls = ls_sim_all[0] if len(ls_sim_all)==1 else ls_sim_all[i]
@@ -444,8 +444,8 @@ def plot_panel_pdf_credible(ax, x_sim_all, x_Kep, x_min=None, x_max=None, y_min=
         alpha = alpha_all[0] if len(alpha_all)==1 else alpha_all[i]
         label = f'Sample set {i}' if labels_sim_all is None else labels_sim_all[i]
         if plot_median:
-            plt.plot(bins_mid, counts_qtls[:,1], ls=ls, color=color)
-        plt.fill_between(bins_mid, counts_qtls[:,0], counts_qtls[:,2], step=step, color=color, alpha=alpha, label=label)
+            plt.plot(bins_mid, counts_qtls[1], ls=ls, color=color)
+        plt.fill_between(bins_mid, counts_qtls[0], counts_qtls[2], step=step, color=color, alpha=alpha, label=label)
 
     # To compute and plot the histograms in 'x_Kep':
     for i,x in enumerate(x_Kep):
