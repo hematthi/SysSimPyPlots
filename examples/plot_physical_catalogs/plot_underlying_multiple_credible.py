@@ -302,6 +302,12 @@ if savefigures:
     plt.savefig(savefigures_directory + subdirectory + save_name + '_underlying_radii_unlogged.pdf')
     plt.close()
 
+# Initial planet radii:
+plot_fig_pdf_credible([[sssp_i['init_radii_all'] for sssp_i in sssp_list] for sssp_list in sssp_all[:2]], [], x_min=radii_min, x_max=4., n_bins=n_bins, step=None, plot_median=True, log_x=False, c_sim_all=model_colors, lw=lw, alpha_all=alpha_all, labels_sim_all=model_names, xticks_custom=[1,2,3,4], xlabel_text=r'Planet radius, $R_p$ [$R_\oplus$]', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_size=fig_size, fig_lbrt=fig_lbrt)
+if savefigures:
+    plt.savefig(savefigures_directory + subdirectory + save_name + '_underlying_initial_radii_unlogged.pdf')
+    plt.close()
+
 # Planet radii ratios:
 plot_fig_pdf_credible([[sssp_i['radii_ratio_all'] for sssp_i in sssp_list] for sssp_list in sssp_all], [], x_min=0.1, x_max=10., n_bins=n_bins, step=None, plot_median=True, log_x=True, c_sim_all=model_colors, lw=lw, alpha_all=alpha_all, labels_sim_all=model_names, xlabel_text=r'Radius ratio, $R_{p,i+1}/R_{p,i}$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 if savefigures:
@@ -353,6 +359,52 @@ if savefigures:
 plt.show()
 plt.close()
 #'''
+
+
+
+
+
+##### To plot the planet radii again, with the initial and final distributions (also log and unlogged versions):
+
+init_radii_all = [[sssp_i['init_radii_all'] for sssp_i in sssp_list] for sssp_list in sssp_all[:2]] # list of lists (per model) of arrays (per catalog) of initial radii
+
+# Logged version:
+plot_fig_pdf_credible([[sssp_i['radii_all'] for sssp_i in sssp_list] for sssp_list in sssp_all], [], x_min=radii_min, x_max=radii_max, n_bins=n_bins, step=None, plot_median=True, log_x=True, c_sim_all=model_colors, lw=lw, alpha_all=alpha_all, labels_sim_all=model_names, xticks_custom=[0.5,1,2,4,10], xlabel_text=r'Planet radius, $R_p$ [$R_\oplus$]', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
+bins = np.logspace(np.log10(radii_min), np.log10(radii_max), n_bins+1)
+bins_mid = np.sqrt(bins[:-1] * bins[1:])
+for i,x_sim in enumerate(init_radii_all):
+    counts_all = []
+    for xs in x_sim:
+        counts, bins = np.histogram(xs, bins=bins)
+        counts_all.append(counts/float(np.sum(counts)))
+    counts_all = np.array(counts_all)
+    counts_qtls = np.quantile(counts_all, [0.16,0.5,0.84], axis=0)
+    plt.plot(bins_mid, counts_qtls[1], ls=':', color=model_colors[i], alpha=0.25)
+    plt.fill_between(bins_mid, counts_qtls[0], counts_qtls[2], step=None, color=model_colors[i], alpha=0.05)
+plt.ylim([0.,0.05])
+if savefigures:
+    plt.savefig(savefigures_directory + subdirectory + save_name + '_underlying_radii_with_initial.pdf')
+    plt.close()
+
+# Unlogged version:
+plot_fig_pdf_credible([[sssp_i['radii_all'] for sssp_i in sssp_list] for sssp_list in sssp_all], [], x_min=radii_min, x_max=4., n_bins=n_bins, step=None, plot_median=True, log_x=False, c_sim_all=model_colors, lw=lw, alpha_all=alpha_all, labels_sim_all=model_names, xticks_custom=[1,2,3,4], xlabel_text=r'Planet radius, $R_p$ [$R_\oplus$]', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_size=fig_size, fig_lbrt=fig_lbrt)
+bins = np.linspace(radii_min, 4., n_bins+1)
+bins_mid = (bins[:-1] + bins[1:])/2.
+for i,x_sim in enumerate(init_radii_all):
+    counts_all = []
+    for xs in x_sim:
+        counts, bins = np.histogram(xs, bins=bins)
+        counts_all.append(counts/float(np.sum(counts)))
+    counts_all = np.array(counts_all)
+    counts_qtls = np.quantile(counts_all, [0.16,0.5,0.84], axis=0)
+    plt.plot(bins_mid, counts_qtls[1], ls=':', color=model_colors[i], alpha=0.25)
+    plt.fill_between(bins_mid, counts_qtls[0], counts_qtls[2], step=None, color=model_colors[i], alpha=0.05)
+plt.ylim([0.,0.05])
+if savefigures:
+    plt.savefig(savefigures_directory + subdirectory + save_name + '_underlying_radii_with_initial_unlogged.pdf')
+    plt.close()
+
+plt.show()
 
 
 
