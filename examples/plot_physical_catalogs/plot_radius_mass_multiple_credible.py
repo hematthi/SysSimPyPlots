@@ -56,7 +56,7 @@ loadfiles_directory1 = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Sim
 loadfiles_directory2 = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Simulated_catalogs/Hybrid_NR20_AMD_model1/Fit_some8p1_KS/Params9_fix_highM/GP_best_models_100/'
 
 model_loadfiles_dirs = [loadfiles_directory1, loadfiles_directory2]
-model_names = ['Hybrid Model 2', 'Hybrid Model 1']
+model_names = ['HM-C', 'HM-U']
 model_colors = ['g', 'b']
 model_colormaps = ['Greens', 'Blues']
 models = len(model_loadfiles_dirs)
@@ -223,7 +223,7 @@ for m in range(models):
     str_μ_M = '%s_{-%s}^{+%s}' % ('{:0.2f}'.format(μ_M_qtls_sim[1]), '{:0.2f}'.format(μ_M_qtls_sim[1]-μ_M_qtls_sim[0]), '{:0.2f}'.format(μ_M_qtls_sim[2]-μ_M_qtls_sim[1]))
     str_σ_M = '%s_{-%s}^{+%s}' % ('{:0.2f}'.format(σ_M_qtls_sim[1]), '{:0.2f}'.format(σ_M_qtls_sim[1]-σ_M_qtls_sim[0]), '{:0.2f}'.format(σ_M_qtls_sim[2]-σ_M_qtls_sim[1]))
     plt.plot(M_array, Minit_pdf_array_qtls_sim[1], '-', color=color)
-    plt.fill_between(M_array, Minit_pdf_array_qtls_sim[2], Minit_pdf_array_qtls_sim[0], color=color, alpha=0.2, label=model_names[m] + '\n' r'$\mathcal{N}(\mu = %s, \sigma = %s)$' % (str_μ_M, str_σ_M)) # r', $\ln{M_{p,\rm init}} \sim$' '\n'
+    plt.fill_between(M_array, Minit_pdf_array_qtls_sim[2], Minit_pdf_array_qtls_sim[0], color=color, alpha=0.2, label=model_names[m] + r', $\mathcal{N}(\mu = %s, \sigma = %s)$' % (str_μ_M, str_σ_M)) # r', $\ln{M_{p,\rm init}} \sim$' '\n'
     
     # For the model with clustered initial masses:
     if 'sigma_ln_mass_in_cluster (ln M_earth)' in model_params_all[m][0]:
@@ -235,7 +235,7 @@ for m in range(models):
         y_scale = np.max(Minit_pdf_array_qtls_sim[2])/np.max(Minit_cluster_pdf_array_qtls_sim[2]) # factor to scale the pdf values so the lognormal of the cluster is not too tall
         plt.plot(M_array, y_scale*Minit_cluster_pdf_array_qtls_sim[1], ':', color=color)
         plt.fill_between(M_array, y_scale*Minit_cluster_pdf_array_qtls_sim[2], y_scale*Minit_cluster_pdf_array_qtls_sim[0], color=color, alpha=0.1) # label=r'typical cluster, $\mathcal{N}(\mu = %s, \sigma = %s)$' % (str_μ_M_cluster, str_σ_M_cluster)
-        plt.text(0.05, 0.1, r'typical cluster $(\sigma = %s)$' % str_σ_M_cluster, fontsize=lfs-2, transform=ax.transAxes)
+        plt.text(0.05, 0.1, r'typical cluster $(\sigma_{M,c} = %s)$' % str_σ_M_cluster, fontsize=lfs-2, transform=ax.transAxes)
 plt.gca().set_xscale("log")
 plt.xlim([mass_min, mass_max])
 plt.xticks([])
