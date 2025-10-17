@@ -296,7 +296,7 @@ ax = plt.subplot(plot[:,1]) # for the simulated distribution
 # KDE contours:
 plt.contourf(logP_grid, logR_grid, f_sim, cmap=cmap)
 # Scatter points:
-plt.scatter(np.log10(sss_i['P_obs']), radii_obs_sim, s=5, marker='o', edgecolor='b', facecolor='none', label='Simulated planets (HM-C)')
+plt.scatter(np.log10(sss_i['P_obs']), radii_obs_sim, s=5, marker='o', edgecolor='k', facecolor='none', label='Simulated planets (HM-C)')
 # Radius valley fit:
 for i,gap_fit_sim in enumerate(gap_fits_sims):
     m_sim, logRgap_offset_sim = gap_fit_sim
