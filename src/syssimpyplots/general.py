@@ -704,6 +704,42 @@ def bin_Nmult(Nmult_obs, m_geq=5):
 
 
 
+# Mass-radius relations:
+
+def radius_given_mass_analytical_relation_seager2007(M, R1, M1, k1, k2, k3):
+    # M: planet mass (Earth masses)
+    R = R1*10.**(k1 + (1./3.)*np.log10(M/M1) - k2*(M/M1)**k3)
+    return R
+
+def radius_given_mass_pure_iron_fit_seager2007(M):
+    # M: planet mass (Earth masses)
+    R = radius_given_mass_analytical_relation_seager2007(M, R1=2.52, M1=5.80, k1=-0.20949, k2=0.0804, k3=0.394)
+    return R
+
+def radius_given_mass_pure_silicate_fit_seager2007(M):
+    # M: planet mass (Earth masses)
+    R = radius_given_mass_analytical_relation_seager2007(M, R1=3.90, M1=10.55, k1=-0.209594, k2=0.0799, k3=0.413)
+    return R
+
+def envelope_mass_smoothed_low_high_neil_rogers2020(M, M_transition=20.):
+    # M: planet mass (Earth masses)
+    # M_transition=20: transition planet mass based on where the scaling from Thorngren et al. (2016) is valid (set to 20 Earth masses)
+    
+    # The envelope mass scalings given the total mass:
+    M_env_low = 0.1*M
+    M_env_high = M - np.sqrt(M)
+    
+    # Smooth between the envelope mass scalings using a logistic function:
+    # NOTE: this is interpreted based on the text from Neil & Rogers (2020); they do not explicitly state the equations used for this part of the model
+    S = 1./(1. + np.exp(-5.*(np.log(M)-np.log(M_transition))))
+    
+    M_env = (1.-S)*M_env_low + S*M_env_high # Earth masses
+    return M_env
+
+
+
+
+
 # Information theory quantities and metrics from Gilbert & Fabrycky 2020 (GF2020):
 
 def Shannon_entropy(p):
