@@ -122,7 +122,7 @@ e_med_1_all = []
 e_med_n_all = []
 im_med_n_all = []
 
-for loadfiles_dir in model_loadfiles_dirs:
+for m,loadfiles_dir in enumerate(model_loadfiles_dirs):
     sssp_dir = []
     sssp_per_sys_dir = []
     params_dir = []
@@ -136,9 +136,8 @@ for loadfiles_dir in model_loadfiles_dirs:
     e_med_n = np.zeros((runs, len(n_array)))
     im_med_n = np.zeros((runs, len(n_array)))
     
-    for i in range(runs): #range(1,runs+1)
-        run_number = i+1
-        print(i)
+    for i,run_number in enumerate(range(1,runs+1)):
+        print('i=%s, run_number=%s' % (i, run_number))
         N_sim_i = read_targets_period_radius_bounds(loadfiles_dir + 'periods%s.out' % run_number)[0]
         params_i = read_sim_params(loadfiles_dir + 'periods%s.out' % run_number)
         sssp_per_sys_i, sssp_i = compute_summary_stats_from_cat_phys(file_name_path=loadfiles_dir, run_number=run_number)
@@ -303,7 +302,7 @@ if savefigures:
     plt.close()
 
 # Initial planet radii:
-plot_fig_pdf_credible([[sssp_i['init_radii_all'] for sssp_i in sssp_list] for sssp_list in sssp_all[:2]], [], x_min=radii_min, x_max=4., n_bins=n_bins, step=None, plot_median=True, log_x=False, c_sim_all=model_colors, lw=lw, alpha_all=alpha_all, labels_sim_all=model_names, xticks_custom=[1,2,3,4], xlabel_text=r'Planet radius, $R_p$ [$R_\oplus$]', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_size=fig_size, fig_lbrt=fig_lbrt)
+plot_fig_pdf_credible([[sssp_i['init_radii_all'] for sssp_i in sssp_list] for sssp_list in sssp_all[:2]], [], x_min=radii_min, x_max=4., n_bins=n_bins, step=None, plot_median=True, log_x=False, c_sim_all=model_colors, lw=lw, alpha_all=alpha_all, labels_sim_all=model_names, xticks_custom=[1,2,3,4], xlabel_text=r'Planet radius (initial), $R_{p,\rm init}$ [$R_\oplus$]', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_size=fig_size, fig_lbrt=fig_lbrt)
 if savefigures:
     plt.savefig(savefigures_directory + subdirectory + save_name + '_underlying_initial_radii_unlogged.pdf')
     plt.close()
@@ -315,7 +314,7 @@ if savefigures:
     plt.close()
 
 # Planet mass ratios:
-plot_fig_pdf_credible([[sssp_i['mass_ratio_all'] for sssp_i in sssp_list] for sssp_list in sssp_all], [], x_min=0.01, x_max=100., n_bins=n_bins, step=None, plot_median=True, log_x=True, c_sim_all=model_colors, lw=lw, alpha_all=alpha_all, labels_sim_all=model_names, xlabel_text=r'Mass ratio, $M_{p,i+1}/M_{p,i}$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
+plot_fig_pdf_credible([[sssp_i['mass_ratio_all'] for sssp_i in sssp_list] for sssp_list in sssp_all], [], x_min=0.01, x_max=100., n_bins=n_bins, step=None, plot_median=True, log_x=True, c_sim_all=model_colors, lw=lw, alpha_all=alpha_all, labels_sim_all=model_names, xlabel_text=r'Mass ratio, $M_{p,i+1}/M_{p,i}$', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_size=fig_size, fig_lbrt=fig_lbrt)
 if savefigures:
     plt.savefig(savefigures_directory + subdirectory + save_name + '_underlying_mass_ratios.pdf')
     plt.close()
@@ -368,6 +367,24 @@ plt.close()
 
 init_radii_all = [[sssp_i['init_radii_all'] for sssp_i in sssp_list] for sssp_list in sssp_all[:2]] # list of lists (per model) of arrays (per catalog) of initial radii
 
+# Unlogged version:
+plot_fig_pdf_credible([[sssp_i['radii_all'] for sssp_i in sssp_list] for sssp_list in sssp_all], [], x_min=radii_min, x_max=4., n_bins=n_bins, step=None, plot_median=True, log_x=False, c_sim_all=model_colors, lw=lw, alpha_all=alpha_all, labels_sim_all=model_names, xticks_custom=[0.5,1,2,3,4], xlabel_text=r'Planet radius, $R_p$ [$R_\oplus$]', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_size=fig_size, fig_lbrt=fig_lbrt)
+bins = np.linspace(radii_min, 4., n_bins+1)
+bins_mid = (bins[:-1] + bins[1:])/2.
+for i,x_sim in enumerate(init_radii_all):
+    counts_all = []
+    for xs in x_sim:
+        counts, bins = np.histogram(xs, bins=bins)
+        counts_all.append(counts/float(np.sum(counts)))
+    counts_all = np.array(counts_all)
+    counts_qtls = np.quantile(counts_all, [0.16,0.5,0.84], axis=0)
+    plt.plot(bins_mid, counts_qtls[1], ls=':', color=model_colors[i], alpha=0.25)
+    plt.fill_between(bins_mid, counts_qtls[0], counts_qtls[2], step=None, color=model_colors[i], alpha=0.05)
+plt.ylim([0.,0.05])
+if savefigures:
+    plt.savefig(savefigures_directory + subdirectory + save_name + '_underlying_radii_with_initial_unlogged.pdf')
+    plt.close()
+
 # Logged version:
 plot_fig_pdf_credible([[sssp_i['radii_all'] for sssp_i in sssp_list] for sssp_list in sssp_all], [], x_min=radii_min, x_max=radii_max, n_bins=n_bins, step=None, plot_median=True, log_x=True, c_sim_all=model_colors, lw=lw, alpha_all=alpha_all, labels_sim_all=model_names, xticks_custom=[0.5,1,2,4,10], xlabel_text=r'Planet radius, $R_p$ [$R_\oplus$]', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 bins = np.logspace(np.log10(radii_min), np.log10(radii_max), n_bins+1)
@@ -386,8 +403,42 @@ if savefigures:
     plt.savefig(savefigures_directory + subdirectory + save_name + '_underlying_radii_with_initial.pdf')
     plt.close()
 
+plt.show()
+
+
+
+
+
+##### OPTIONALLY: To also load and plot the planet radii for the top 10% of catalogs from HM-C:
+#'''
+loadfiles_directory = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Simulated_catalogs/Hybrid_NR20_AMD_model1/clustered_initial_masses/Fit_some8p1_KS/Params10_fix_highM/GP_dtotmax15.0_depthmin0.29_models/'
+
+table = np.genfromtxt(loadfiles_directory + 'catalog_depths.txt', dtype=[int, float], names=True)
+run_numbers = table['run_number']
+depths = table['depth_kde']
+depth_thres = 0.26
+run_numbers_keep = run_numbers[depths > depth_thres][:runs]
+
+sssp_top10p = []
+for i,run_number in enumerate(run_numbers_keep):
+    print('i=%s, run_number=%s' % (i, run_number))
+    N_sim_i = read_targets_period_radius_bounds(loadfiles_directory + 'periods%s.out' % run_number)[0]
+    params_i = read_sim_params(loadfiles_directory + 'periods%s.out' % run_number)
+    sssp_per_sys_i, sssp_i = compute_summary_stats_from_cat_phys(file_name_path=loadfiles_directory, run_number=run_number)
+    
+    # Append the catalogs:
+    sssp_top10p.append(sssp_i)
+
+# Make multi-panel plots of the full vs. top 10% of the posteriors (also log and unlogged versions):
+#'''
+init_radii_top10p = [sssp_i['init_radii_all'] for sssp_i in sssp_top10p]
+
 # Unlogged version:
-plot_fig_pdf_credible([[sssp_i['radii_all'] for sssp_i in sssp_list] for sssp_list in sssp_all], [], x_min=radii_min, x_max=4., n_bins=n_bins, step=None, plot_median=True, log_x=False, c_sim_all=model_colors, lw=lw, alpha_all=alpha_all, labels_sim_all=model_names, xticks_custom=[1,2,3,4], xlabel_text=r'Planet radius, $R_p$ [$R_\oplus$]', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_size=fig_size, fig_lbrt=fig_lbrt)
+fig = plt.figure(figsize=(8,8))
+plot = GridSpec(2,1,left=0.15,bottom=0.1,right=0.95,top=0.98,wspace=0,hspace=0)
+ax = plt.subplot(plot[0,0]) # full posterior
+plot_panel_pdf_credible(ax, [[sssp_i['radii_all'] for sssp_i in sssp_list] for sssp_list in sssp_all], [], x_min=radii_min, x_max=4., n_bins=n_bins, step=None, plot_median=True, log_x=False, c_sim_all=model_colors, lw=lw, alpha_all=alpha_all, labels_sim_all=model_names, xticks_custom=[1,2,3,4], xlabel_text=r'Planet radius, $R_p$ [$R_\oplus$]', afs=afs, tfs=tfs, lfs=lfs, legend=False)
+plt.legend(loc='upper right', bbox_to_anchor=(1,0.9), ncol=1, frameon=False, fontsize=lfs)
 bins = np.linspace(radii_min, 4., n_bins+1)
 bins_mid = (bins[:-1] + bins[1:])/2.
 for i,x_sim in enumerate(init_radii_all):
@@ -399,12 +450,91 @@ for i,x_sim in enumerate(init_radii_all):
     counts_qtls = np.quantile(counts_all, [0.16,0.5,0.84], axis=0)
     plt.plot(bins_mid, counts_qtls[1], ls=':', color=model_colors[i], alpha=0.25)
     plt.fill_between(bins_mid, counts_qtls[0], counts_qtls[2], step=None, color=model_colors[i], alpha=0.05)
-plt.ylim([0.,0.05])
+plt.ylim([0.,0.055])
+ax.set_xticklabels([])
+plt.text(x=0.98, y=0.95, s='Full posterior, 16%-84% credible regions', ha='right', va='top', fontsize=lfs, transform=ax.transAxes)
+ax = plt.subplot(plot[1,0]) # top 10%
+plot_panel_pdf_credible(ax, [[sssp_i['radii_all'] for sssp_i in sssp_top10p]], [], x_min=radii_min, x_max=4., n_bins=n_bins, step=None, plot_median=True, log_x=False, c_sim_all=model_colors[:1], lw=lw, alpha_all=alpha_all, labels_sim_all=['Final radii'], xticks_custom=[0.5,1,2,3,4], xlabel_text=r'Planet radius, $R_p$ [$R_\oplus$]', afs=afs, tfs=tfs, lfs=lfs, legend=False)
+bins = np.linspace(radii_min, 4., n_bins+1)
+bins_mid = (bins[:-1] + bins[1:])/2.
+counts_all = []
+for xs in init_radii_top10p:
+    counts, bins = np.histogram(xs, bins=bins)
+    counts_all.append(counts/float(np.sum(counts)))
+counts_all = np.array(counts_all)
+counts_qtls = np.quantile(counts_all, [0.16,0.5,0.84], axis=0)
+plt.plot(bins_mid, counts_qtls[1], ls=':', color=model_colors[0], alpha=0.25)
+plt.fill_between(bins_mid, counts_qtls[0], counts_qtls[2], step=None, color=model_colors[0], alpha=0.05, label='Initial radii')
+plt.ylim([0.,0.045])
+plt.text(x=0.98, y=0.95, s='HM-C, top 10% of catalogs', ha='right', va='top', fontsize=lfs, transform=ax.transAxes)
+plt.legend(loc='upper right', bbox_to_anchor=(1,0.9), ncol=1, frameon=False, fontsize=lfs)
 if savefigures:
-    plt.savefig(savefigures_directory + subdirectory + save_name + '_underlying_radii_with_initial_unlogged.pdf')
+    plt.savefig(savefigures_directory + subdirectory + save_name + '_underlying_radii_with_initial_unlogged_multipanel_all_vs_depththres%s.pdf' % depth_thres)
+    plt.close()
+
+# Logged version:
+fig = plt.figure(figsize=(8,8))
+plot = GridSpec(2,1,left=0.15,bottom=0.1,right=0.95,top=0.98,wspace=0,hspace=0)
+ax = plt.subplot(plot[0,0]) # full posterior
+plot_panel_pdf_credible(ax, [[sssp_i['radii_all'] for sssp_i in sssp_list] for sssp_list in sssp_all], [], x_min=radii_min, x_max=radii_max, n_bins=n_bins, step=None, plot_median=True, log_x=True, c_sim_all=model_colors, lw=lw, alpha_all=alpha_all, labels_sim_all=model_names, xticks_custom=[0.5,1,2,4,10], xlabel_text=r'Planet radius, $R_p$ [$R_\oplus$]', afs=afs, tfs=tfs, lfs=lfs, legend=False)
+bins = np.logspace(np.log10(radii_min), np.log10(radii_max), n_bins+1)
+bins_mid = np.sqrt(bins[:-1] * bins[1:])
+for i,x_sim in enumerate(init_radii_all):
+    counts_all = []
+    for xs in x_sim:
+        counts, bins = np.histogram(xs, bins=bins)
+        counts_all.append(counts/float(np.sum(counts)))
+    counts_all = np.array(counts_all)
+    counts_qtls = np.quantile(counts_all, [0.16,0.5,0.84], axis=0)
+    plt.plot(bins_mid, counts_qtls[1], ls=':', color=model_colors[i], alpha=0.25)
+    plt.fill_between(bins_mid, counts_qtls[0], counts_qtls[2], step=None, color=model_colors[i], alpha=0.05)
+plt.ylim([0.,0.055])
+ax.set_xticklabels([])
+plt.text(x=0.98, y=0.95, s='Full posterior, 16%-84% credible regions', ha='right', va='top', fontsize=lfs, transform=ax.transAxes)
+ax = plt.subplot(plot[1,0]) # top 10%
+plot_panel_pdf_credible(ax, [[sssp_i['radii_all'] for sssp_i in sssp_top10p]], [], x_min=radii_min, x_max=radii_max, n_bins=n_bins, step=None, plot_median=True, log_x=True, c_sim_all=model_colors[:1], lw=lw, alpha_all=alpha_all, labels_sim_all=model_names[:1], xticks_custom=[0.5,1,2,4,10], xlabel_text=r'Planet radius, $R_p$ [$R_\oplus$]', afs=afs, tfs=tfs, lfs=lfs, legend=False)
+bins = np.logspace(np.log10(radii_min), np.log10(radii_max), n_bins+1)
+bins_mid = np.sqrt(bins[:-1] * bins[1:])
+counts_all = []
+for xs in init_radii_top10p:
+    counts, bins = np.histogram(xs, bins=bins)
+    counts_all.append(counts/float(np.sum(counts)))
+counts_all = np.array(counts_all)
+counts_qtls = np.quantile(counts_all, [0.16,0.5,0.84], axis=0)
+plt.plot(bins_mid, counts_qtls[1], ls=':', color=model_colors[0], alpha=0.25)
+plt.fill_between(bins_mid, counts_qtls[0], counts_qtls[2], step=None, color=model_colors[0], alpha=0.05)
+plt.ylim([0.,0.075])
+plt.text(x=0.98, y=0.95, s='HM-C, top 10% of catalogs', ha='right', va='top', fontsize=lfs, transform=ax.transAxes)
+if savefigures:
+    plt.savefig(savefigures_directory + subdirectory + save_name + '_underlying_radii_with_initial_multipanel_all_vs_depththres%s.pdf' % depth_thres)
     plt.close()
 
 plt.show()
+#'''
+
+
+
+
+
+##### [NEW, 10/17/2025]: To compute the enhancement fraction of planets with core masses between ~7-12 M_earth:
+##### NOTE: since the two spikes at 7 and 12 M_earth are caused by the two turn-over points in the core mass as a function of total mass, the enhancement fraction can be computed by summing the number of planets beyond the first turn-over mass (which is ~15 M_earth)
+
+for m in range(2):
+    f_enhance_core_mass_model = []
+    f_ratio_core_mass_model = []
+    for i,sssp_i in enumerate(sssp_all[m]):
+        f_enhance = np.sum(sssp_i['init_mass_all'] > 15.)/len(sssp_i['init_mass_all'])
+        f_ratio = np.sum(sssp_i['init_mass_all'] > 8.)/np.sum((sssp_i['init_mass_all'] > 8.) & (sssp_i['init_mass_all'] < 15.))
+        f_enhance_core_mass_model.append(f_enhance)
+        f_ratio_core_mass_model.append(f_ratio)
+    
+    q = np.quantile(f_enhance_core_mass_model, [0.16,0.5,0.84])
+    q_pm = np.diff(q)
+    print(model_names[m], '(f_enhance): %s_{-%s}^{+%s}' % ('{:0.3f}'.format(q[1]), '{:0.3f}'.format(q_pm[0]), '{:0.3f}'.format(q_pm[1])))
+    
+    q = np.quantile(f_ratio_core_mass_model, [0.16,0.5,0.84])
+    q_pm = np.diff(q)
+    print(model_names[m], '(f_ratio): %s_{-%s}^{+%s}' % ('{:0.3f}'.format(q[1]), '{:0.3f}'.format(q_pm[0]), '{:0.3f}'.format(q_pm[1])))
 
 
 
