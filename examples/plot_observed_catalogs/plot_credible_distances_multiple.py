@@ -178,9 +178,10 @@ load_dirs = [
     #'/Users/hematthi/Documents/GradSchool/Research/SysSim/Simulated_catalogs/Hybrid_NR20_AMD_model1/Fit_some8_KS/Params9_fix_highM/Radius_valley_model62_repeated_100/',
     #'/Users/hematthi/Documents/GradSchool/Research/SysSim/Simulated_catalogs/Hybrid_NR20_AMD_model1/Fit_some8_KS/Params9_fix_highM/Radius_valley_model89_repeated_100/',
 ]
-model_names = ['H20 model', 'Hybrid Model 1', 'Hybrid model 2'] #['Posterior', 'Catalog 62 repeated', 'Catalog 89 repeated'] #['Hybrid model', 'Hybrid model, clustered initial masses']
+model_names = ['H20 model', 'HM-U', 'HM-C'] #['Posterior', 'Catalog 62 repeated', 'Catalog 89 repeated'] #['Hybrid model', 'Hybrid model, clustered initial masses']
 model_linestyles = ['-', '-', '-']
 model_colors = ['k', 'b', 'g']
+model_alphas = [1, 1, 1]
 model_outputs_catalogs = []
 model_outputs_distances = []
 for load_dir in load_dirs:
@@ -211,7 +212,7 @@ lfs = 16 # legend labels font size
 
 
 # Total weighted distance:
-plot_fig_pdf_simple([outputs_distances['dtot_w']['all'] for outputs_distances in model_outputs_distances], [], n_bins=n_bins, normalize=False, c_sim=model_colors, ls_sim=model_linestyles, lw=lw, labels_sim=model_names, xlabel_text=r'$\mathcal{D}_{W} (\rm KS)$', ylabel_text='Catalogs', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
+plot_fig_pdf_simple([outputs_distances['dtot_w']['all'] for outputs_distances in model_outputs_distances], [], n_bins=n_bins, normalize=False, c_sim=model_colors, ls_sim=model_linestyles, lw=lw, alpha_sim=model_alphas, labels_sim=model_names, xlabel_text=r'$\mathcal{D}_{W} (\rm KS)$', ylabel_text='Catalogs', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 plt.legend(loc='upper left', bbox_to_anchor=(0.01,0.99), ncol=1, frameon=False, fontsize=lfs)
 if savefigures:
     plt.savefig(savefigures_directory + save_name + '_sum_dtot_w.pdf')
@@ -219,7 +220,7 @@ if savefigures:
 
 # Individual distance terms:
 for dist in dists_include:
-    plot_fig_pdf_simple([outputs_distances[dist]['all'] for outputs_distances in model_outputs_distances], [], n_bins=n_bins, normalize=False, c_sim=model_colors, ls_sim=model_linestyles, lw=lw, labels_sim=model_names, xlabel_text=dists_symbols_KS[dist], ylabel_text='Catalogs', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
+    plot_fig_pdf_simple([outputs_distances[dist]['all'] for outputs_distances in model_outputs_distances], [], n_bins=n_bins, normalize=False, c_sim=model_colors, ls_sim=model_linestyles, lw=lw, alpha_sim=model_alphas, labels_sim=model_names, xlabel_text=dists_symbols_KS[dist], ylabel_text='Catalogs', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
     plt.legend(loc='upper left', bbox_to_anchor=(0.01,0.99), ncol=1, frameon=False, fontsize=lfs)
     if savefigures:
         plt.savefig(savefigures_directory + save_name + '_%s.pdf' % dist)

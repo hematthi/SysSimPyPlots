@@ -87,7 +87,7 @@ logxi_Kep_5p = np.log10(xi_Kep_5p[xi_Kep_5p != -1])
 #'''
 ##### To plot the simulated and Kepler catalogs as marginal distributions:
 
-subdirectory = 'Compare_to_hybrid_nonclustered_and_H20/' #'Compare_to_H20_model/'
+subdirectory = 'Compare_to_hybrid_nonclustered/' #'Compare_to_hybrid_nonclustered_and_H20/' #'Compare_to_H20_model/'
 
 fig_size = (8,3) #size of each panel (figure)
 fig_lbrt = [0.15, 0.3, 0.95, 0.925]
@@ -110,17 +110,16 @@ lfs = 16 # legend labels font size
 #loadfiles_directory1 = '/Users/hematthi/Documents/GradSchool/Research/ACI/Simulated_Data/AMD_system/Split_stars/Singles_ecc/Params11_KS/Distribute_AMD_per_mass/durations_norm_circ_singles_multis_GF2020_KS/GP_best_models/'
 #loadfiles_directory1 = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Simulated_catalogs/Hybrid_NR20_AMD_model1/Fit_all_KS/Params8/GP_best_models_100/'
 #loadfiles_directory1 = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Simulated_catalogs/Hybrid_NR20_AMD_model1/Fit_some_KS/Params8_fix_highM/GP_best_models_100/'
-loadfiles_directory1 = '/Users/hematthi/Documents/GradSchool/Research/ACI/Simulated_Data/AMD_system/Split_stars/Singles_ecc/Params11_KS/Distribute_AMD_per_mass/durations_norm_circ_singles_multis_GF2020_KS/GP_best_models/'
 loadfiles_directory2 = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Simulated_catalogs/Hybrid_NR20_AMD_model1/Fit_some8p1_KS/Params9_fix_highM/GP_best_models_100/'
 loadfiles_directory3 = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Simulated_catalogs/Hybrid_NR20_AMD_model1/clustered_initial_masses/Fit_some8p1_KS/Params10_fix_highM/GP_best_models_100/'
 
 
-model_names = ['H20 model', 'HM-U', 'HM-C']
-model_linestyles = ['--', '--', '--']
-model_colors = ['k', 'b', 'g']
-model_alphas = [0.1, 0.2, 0.4]
+model_names = ['HM-U', 'HM-C'] #['H20 model', 'HM-U', 'HM-C']
+model_linestyles = ['--', '--'] #['--', '--', '--']
+model_colors = ['b', 'g'] #['k', 'b', 'g']
+model_alphas = [0.2, 0.2] #[0.1, 0.2, 0.4]
 model_stagger_errorbars = [0.1, -0.1, 0.] # offsets for plotting multiplicity counts in order to stagger errorbars
-model_load_dirs = [loadfiles_directory1, loadfiles_directory2, loadfiles_directory3]
+model_load_dirs = [loadfiles_directory2, loadfiles_directory3]
 models = len(model_load_dirs)
 
 runs = 100
@@ -470,11 +469,12 @@ plt.show()
 
 
 ##### To plot the planet radius distribution in more detail:
+##### NOTE: check that 'i_model' is the intended selection!
 # Will make multi-panel figures with:
 # 1) Top panel: credible regions of CDFs
 # 2) Middle panel: credible regions of histograms
 # 3) Bottom panel: individual catalog draws/histograms from one of the models
-
+'''
 # First, for the planet radius distribution:
 radii_max_plot = 6.
 y_max = 0.045
@@ -530,6 +530,7 @@ if savefigures:
     plt.savefig(savefigures_directory + subdirectory + save_name + '_radii_delta_compare_enlarged_multipanel.pdf')
     plt.close()
 plt.show()
+'''
 
 
 

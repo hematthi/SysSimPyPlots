@@ -57,10 +57,10 @@ loadfiles_directory1 = '/Users/hematthi/Documents/GradSchool/Research/ACI/Simula
 loadfiles_directory2 = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Simulated_catalogs/Hybrid_NR20_AMD_model1/Fit_some8p1_KS/Params9_fix_highM/GP_best_models_100/'
 loadfiles_directory3 = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Simulated_catalogs/Hybrid_NR20_AMD_model1/clustered_initial_masses/Fit_some8p1_KS/Params10_fix_highM/GP_best_models_100/'
 
-model_names = ['H20 model', 'Hybrid Model 1', 'Hybrid Model 2']
+model_names = ['H20 model', 'HM-U', 'HM-C']
 model_linestyles = ['-', '-', '-']
 model_colors = ['silver', 'b', 'g']
-model_alphas = [0.2, 0.2, 0.2]
+model_alphas = [0.5, 1, 1]
 model_load_dirs = [loadfiles_directory1, loadfiles_directory2, loadfiles_directory3]
 models = len(model_load_dirs)
 
@@ -116,7 +116,6 @@ fig_lbrt = [0.15, 0.15, 0.95, 0.95]
 
 n_bins = 20
 lw = 2 # linewidth
-alpha = 0.2 # transparency of histograms
 
 afs = 20 # axes labels font size
 tfs = 20 # text labels font size
@@ -125,7 +124,7 @@ lfs = 16 # legend labels font size
 x_max = 1.
 
 # Plot the distributions:
-plot_fig_pdf_simple([radii_measures['m_cliff'] for radii_measures in radii_measures_all], [], n_bins=n_bins, c_sim=model_colors, ls_sim=model_linestyles, lw=lw, labels_sim=model_names, xlabel_text=r'$m_{\rm cliff}$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
+plot_fig_pdf_simple([radii_measures['m_cliff'] for radii_measures in radii_measures_all], [], n_bins=n_bins, c_sim=model_colors, ls_sim=model_linestyles, lw=lw, alpha_sim=model_alphas, labels_sim=model_names, xlabel_text=r'$m_{\rm cliff}$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 plt.axvline(x=m_cliff_Kep, ls='-', lw=lw, c='k', label='Kepler')
 plt.legend(loc='upper left', bbox_to_anchor=(0,1), ncol=1, frameon=False, fontsize=lfs)
 if savefigures:
