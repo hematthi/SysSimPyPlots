@@ -103,6 +103,9 @@ for i in range(1,runs+1):
     #radii_measures['depth_two_kdes'].append(depth_two_kdes_i)
     radii_measures['delta_depth_kde'].append(delta_depth_kde_i)
 
+##### OPTIONAL: save a file with the run numbers and measured depths:
+#table = np.column_stack((np.arange(1,runs+1), radii_measures['depth_kde']))
+#np.savetxt(loadfiles_directory + 'catalog_depths.txt', table, fmt=['%4d', '%.4f'], header='run_number depth_kde')
 #####
 
 
