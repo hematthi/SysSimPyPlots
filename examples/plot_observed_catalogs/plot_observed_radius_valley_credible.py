@@ -271,7 +271,7 @@ active_params_names_symbols = {#'break_mass (M_earth)': r'$M_{p,\rm break}$ $(M_
                                'log_rate_planets_per_cluster': r'$\ln{\lambda_p}$',
                                'log_α_pret': r'$\ln{\alpha_{\rm ret}}$',
                                'mean_ln_mass (ln M_earth)': r'$\mu_M$',
-                               'norm_radius (R_earth)': r'$R_{p,\rm norm}$',
+                               'norm_radius (R_earth)': r'$R_{p,\rm norm}$ [$R_\oplus$]',
                                'power_law_P': r'$\alpha_P$',
                                'power_law_γ0': r'$\gamma_0$',
                                #'power_law_γ1': r'$\gamma_1$',
@@ -285,7 +285,18 @@ active_params_names = list(active_params_names_symbols.keys())
 active_params_symbols = list(active_params_names_symbols.values())
 active_params_all = np.array([[np.log(params[key]) if key[:4]=='log_' else params[key] for key in active_params_names] for params in params_all]) # double list comprehension! Also converting unlogged values back to log values
 
-plot_points_corner(active_params_symbols, active_params_all, fpoints=radii_measures['depth_kde'], f_label=r'$\Delta_{\rm valley}$', cmap='Reds', points_size=2., tfs=13, save_name=savefigures_directory + model_name + '_params_depths_corner.pdf', save_fig=savefigures)
+fig = plot_points_corner(active_params_symbols, active_params_all, fpoints=radii_measures['depth_kde'], f_label=r'$\Delta_{\rm valley}$', cmap='Reds', points_size=2., tfs=13, save_name=savefigures_directory + model_name + '_params_depths_corner.pdf')
+# To replace the 'long' symbols (hardcoded):
+axes = np.array(fig.axes) # last 'ndims' should be for the diagonal panels (where 'ndims' is the number of free params)
+i_long = 4 # NOTE: hardcoded to correspond to 'norm_radius (R_earth)'
+q = corner.quantile(active_params_all[:,i_long], [0.16, 0.5, 0.84])
+q_pm = np.diff(q)
+title = active_params_names_symbols['norm_radius (R_earth)'] + '\n' + r'$=%s_{-%s}^{+%s}$' % ('{:0.2f}'.format(q[1]), '{:0.2f}'.format(q_pm[0]), '{:0.2f}'.format(q_pm[1]))
+ax = axes[-6]
+ax.set_title(title, fontsize=13)
+if savefigures:
+    plt.savefig(savefigures_directory + model_name + '_params_depths_corner.pdf')
+    plt.close()
 plt.show()
 
 
