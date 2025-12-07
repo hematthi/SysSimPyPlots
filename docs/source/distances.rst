@@ -17,10 +17,10 @@ Plotting histograms and CDFs are a great way of visually comparing different mod
 
    load_dir = '/path/to/a/simulated/catalog/' # replace with your path!
 
-   N_sim, cos_factor, P_min, P_max, radii_min, radii_max = read_targets_period_radius_bounds(load_dir + 'periods.out')
+   sim_settings = read_targets_period_radius_bounds(load_dir + 'periods.out')
 
    sss_per_sys, sss = compute_summary_stats_from_cat_obs(file_name_path=load_dir)
-   ssk_per_sys, ssk = compute_summary_stats_from_Kepler_catalog(P_min, P_max, radii_min, radii_max)
+   ssk_per_sys, ssk = compute_summary_stats_from_Kepler_catalog(sim_settings['P_min'], sim_settings['P_max'], sim_settings['radii_min'], sim_settings['radii_max'])
 
 
 
@@ -89,7 +89,7 @@ One idea is to simulate many iterations of catalogs of the same model, and compu
                     'depths_KS']
 
    # To compute many distance terms:
-   dists, dists_w = compute_distances_sim_Kepler(sss_per_sys, sss, ssk_per_sys, ssk, weights_all['all'], dists_include, N_sim)
+   dists, dists_w = compute_distances_sim_Kepler(sss_per_sys, sss, ssk_per_sys, ssk, weights_all['all'], dists_include, sim_settings['N_sim'])
 
 Here, 'delta_f' refers to the distance for the total number of observed planets relative to the number of stars, 'mult_CRPD_r' refers to the Cressie-Read Power Divergence (CRPD; see :py:func:`CRPD_dist <syssimpyplots.compare_kepler.CRPD_dist>`) statistic for comparing the multiplicity distributions, and the remaining items refer to the KS distances for the distributions of periods, transit durations, and transit depths. The function :py:func:`compute_distances_sim_Kepler <syssimpyplots.compare_kepler.compute_distances_sim_Kepler>` will print out the weights and distances for each of these terms, and also compute many other distances to be included in the outputs ``dists`` (raw distance terms) and ``dists_w`` (weighted distance terms)!
 

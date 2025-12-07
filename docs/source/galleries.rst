@@ -21,14 +21,14 @@ First, load the catalogs again:
 
    load_dir = '/path/to/a/simulated/catalog/' # replace with your path!
 
-   N_sim, cos_factor, P_min, P_max, radii_min, radii_max = read_targets_period_radius_bounds(load_dir + 'periods.out')
+   sim_settings = read_targets_period_radius_bounds(load_dir + 'periods.out')
 
    # Load a simulated physical catalog:
    sssp_per_sys, sssp = compute_summary_stats_from_cat_phys(file_name_path=load_dir, load_full_tables=True, match_observed=True)
 
    # Load simulated and Kepler observed catalogs:
    sss_per_sys, sss = compute_summary_stats_from_cat_obs(file_name_path=load_dir)
-   ssk_per_sys, ssk = compute_summary_stats_from_Kepler_catalog(P_min, P_max, radii_min, radii_max)
+   ssk_per_sys, ssk = compute_summary_stats_from_Kepler_catalog(sim_settings['P_min'], sim_settings['P_max'], sim_settings['radii_min'], sim_settings['radii_max'])
 
 .. Note::
 

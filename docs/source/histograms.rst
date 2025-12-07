@@ -56,10 +56,8 @@ The third argument (empty list ``[]`` in the above examples) allows you to easil
 
 .. code-block:: python
 
-   N_sim, cos_factor, P_min, P_max, radii_min, radii_max = read_targets_period_radius_bounds(load_dir + 'periods.out')
-
-   # Load the Kepler catalog first:
-   ssk_per_sys, ssk = compute_summary_stats_from_Kepler_catalog(P_min, P_max, radii_min, radii_max)
+   # Load the Kepler catalog (keeping planets in the same bounds as our model):
+   ssk_per_sys, ssk = compute_summary_stats_from_Kepler_catalog(3., 300., 0.5, 10.)
 
    # To plot a histogram of the observed multiplicities (number of planets per system):
    ax = plot_fig_counts_hist_simple([sss_per_sys['Mtot_obs']], [ssk_per_sys['Mtot_obs']], x_min=0, x_max=9, y_max=1, x_llim=0.5, normalize=True, log_y=True, xlabel_text='Observed multiplicity', ylabel_text='Fraction', legend=True)

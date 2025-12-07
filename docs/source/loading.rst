@@ -93,7 +93,8 @@ You may want to read the number of simulated targets and the period and radius b
 
 .. code-block:: python
 
-   N_sim, cos_factor, P_min, P_max, radii_min, radii_max = read_targets_period_radius_bounds(load_dir + 'periods.out')
+   # Contains 'N_sim' (number of simulated planets), 'P_min' and 'P_max' (period bounds), etc.
+   sim_settings = read_targets_period_radius_bounds(load_dir + 'periods.out')
 
 You may also want to read the parameters of the model that went into the simulation:
 
