@@ -38,10 +38,6 @@ models = len(model_loadfiles_dirs)
 
 runs = 100
 
-sssp_all = []
-sssp_per_sys_all = []
-params_all = []
-
 Mp_Venus = 0.815 # mass of Venus (Earth masses)
 P_Venus = 224.7 # orbital period of Venus (days)
 planet_type_keys = ['all',
@@ -57,13 +53,12 @@ planet_type_keys = ['all',
                     'M<4_R10p_silicate_P180-300',
                     ]
 
+sssp_per_sys_all = []
 occurrence_dicts_all = []
 fswp_dicts_all = []
 
 for loadfiles_dir in model_loadfiles_dirs:
-    sssp_dir = []
     sssp_per_sys_dir = []
-    params_dir = []
     
     # Dictionaries to hold all the various occurrence rates and fractions of stars with planets for the current model, from each catalog:
     occurrence_dict = {key: [] for key in planet_type_keys}
@@ -71,15 +66,10 @@ for loadfiles_dir in model_loadfiles_dirs:
     
     for i in range(runs):
         run_number = i+1
-        print(i)
-        N_sim_i = read_targets_period_radius_bounds(loadfiles_dir + 'periods%s.out' % run_number)[0]
-        params_i = read_sim_params(loadfiles_dir + 'periods%s.out' % run_number)
-        sssp_per_sys_i, sssp_i = compute_summary_stats_from_cat_phys(file_name_path=loadfiles_dir, run_number=run_number)
-        
-        # Catalogs and parameters:
-        sssp_dir.append(sssp_i)
+        sssp_per_sys_i = load_planets_periods_radii_masses_as_summary_stats_per_sys_fast(loadfiles_dir, run_number)
         sssp_per_sys_dir.append(sssp_per_sys_i)
-        params_dir.append(params_i)
+        N_sim_i = sssp_per_sys_i['N_sim']
+        print(f'Loaded {run_number}/{runs} catalogs.', end='\r')
         
         ### Now calculate various planet occurrence rates and fractions of stars with planets:
         
@@ -163,9 +153,7 @@ for loadfiles_dir in model_loadfiles_dirs:
         occurrence_dict['M<4_R10p_silicate_P180-300'].append(counts_pl/N_sim_i)
         fswp_dict['M<4_R10p_silicate_P180-300'].append(counts_swp/N_sim_i)
     
-    sssp_all.append(sssp_dir)
     sssp_per_sys_all.append(sssp_per_sys_dir)
-    params_all.append(params_dir)
     
     for key in occurrence_dict.keys():
         occurrence_dict[key] = np.array(occurrence_dict[key])
