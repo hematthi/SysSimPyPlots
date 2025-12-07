@@ -69,36 +69,50 @@ def read_targets_period_radius_bounds(file_name):
 
     Returns
     -------
-    N_sim : int
-        The number of simulated systems.
-    cos_factor : float
-        The cosine of the maximum inclination angle (relative to the sky plane) drawn for the reference planes of the simulated systems (between 0 and 1).
-    P_min : float
-        The minimum orbital period (days).
-    P_max : float
-        The maximum orbital period (days).
-    radii_min : float
-        The minimum planet radius (Earth radii).
-    radii_max : float
-        The maximum planet radius (Earth radii).
+    sim_settings : dict
+        A dictionary containing various simulation settings.
+    
+    The output is a dictionary containing the following fields:
+
+    - `N_sim`: The number of simulated systems.
+    - `cos_factor`: The cosine of the maximum inclination angle (relative to the sky plane) drawn for the reference planes of the simulated systems (between 0 and 1).
+    - `P_min`: The minimum orbital period (days).
+    - `P_max`: The maximum orbital period (days).
+    - `radii_min`: The minimum planet radius (Earth radii).
+    - `radii_max`: The maximum planet radius (Earth radii).
+    - `mass_min`: The minimum planet mass (Earth masses).
+    - `mass_max`: The maximum planet mass (Earth masses).
     """
+    sim_settings = {}
     with open(file_name, 'r') as file: #open(loadfiles_directory + 'observed_catalog_planets%s.txt' % run_number, 'r')
         for line in file:
             if line[:26] == '# num_targets_sim_pass_one':
                 N_sim = int(line[28:])
+                sim_settings['N_sim'] = N_sim
             elif line[:14] == '# max_incl_sys':
                 max_incl_sys = float(line[16:])
                 cos_factor = np.cos(max_incl_sys*np.pi/180.)
+                sim_settings['cos_factor'] = cos_factor
             elif line[:12] == '# min_period':
                 P_min = float(line[14:])
+                sim_settings['P_min'] = P_min
             elif line[:12] == '# max_period':
                 P_max = float(line[14:])
+                sim_settings['P_max'] = P_max
             elif line[:12] == '# min_radius':
                 radii_min = float(line[24:])
+                sim_settings['radii_min'] = radii_min
             elif line[:12] == '# max_radius':
                 radii_max = float(line[24:])
-
-    return N_sim, cos_factor, P_min, P_max, radii_min, radii_max
+                sim_settings['radii_max'] = radii_max
+            elif line[:10] == '# min_mass':
+                mass_min = float(line[22:])
+                sim_settings['mass_min'] = mass_min
+            elif line[:10] == '# max_mass':
+                mass_max = float(line[22:])
+                sim_settings['mass_max'] = mass_max
+    
+    return sim_settings
 
 def read_sim_params(file_name):
     """
@@ -440,6 +454,137 @@ def load_planets_stars_phys_separate(file_name_path, run_number):
     print('Time to load (separate files with planets and stars): %s s' % (stop - start))
 
     return clusterids_per_sys, P_per_sys, radii_per_sys, mass_per_sys, e_per_sys, inclmut_per_sys, incl_per_sys, Mstar_all, Rstar_all, initial_radii_per_sys, initial_masses_per_sys, envelope_masses_per_sys, mass_loss_timescales_per_sys, prob_retained_per_sys, envelope_retained_per_sys
+
+def load_planets_periods_radii_masses_as_summary_stats_per_sys_fast(file_name_path, run_number):
+    """
+    Load individual files with the periods, radii, and masses of all the planets in a simulated physical catalog and returns them in a summary statistics dictionary.
+
+    Note
+    ----
+    This is the fastest way to load just the periods, radii, and masses of the planets per system and should only be used for the purposes of computing simple occurrence rates.
+
+    Parameters
+    ----------
+    file_name_path : str
+        The path to the physical catalog.
+    run_number : str or int
+        The run number appended to the file names for the physical catalog.
+
+    Returns
+    -------
+    sssp_per_sys_basic : dict
+        A dictionary containing planetary and stellar properties for each system.
+
+
+    The output is a dictionary containing the following fields:
+
+    - `Mmax`: The maximum planet multiplicity of any system.
+    - `Mtot_all`: The planet multiplicity of each system (1-d array).
+    - `P_all`: The orbital periods (days) of each system (2-d array).
+    - `radii_all`: The planet radii (Earth radii) of each system (2-d array).
+    - `mass_all`: The planet masses (Earth masses) of each system (2-d array).
+    
+    In addition, it also contains the simulation settings read via the function :py:func:`syssimpyplots.load_sims.read_targets_period_radius_bounds`.
+    
+    Warning
+    -------
+    For the 2-d arrays, each row is padded with zeros (or negative ones), since different systems have different numbers of planets.
+    This function also does not sort the planets in any way, so they are just returned in the same order in which they appear in the saved files.
+    """
+    start = time.time()
+    
+    # Also load the simulation settings to get the number of systems and simulation bounds:
+    sim_settings = read_targets_period_radius_bounds(file_name_path + 'periods_all%s.out' % run_number)
+    
+    padmax = 25 # maximum padded length, which is assumed to be greater than the max planet multiplicity
+    
+    P_per_sys = [] # list to be filled with lists of all periods per system (days)
+    try:
+        with open(os.path.join(file_name_path, 'periods_all%s.out' % run_number), 'r') as file:
+            for line in file:
+                if line[0] != '#':
+                    line = line[1:-2].split(', ')
+                    P_sys = [float(i) for i in line]
+                    P_per_sys.append(P_sys + [0]*(padmax - len(P_sys)))
+                    #print(P_sys)
+    except:
+        print('No file with periods found.')
+    P_per_sys = np.array(P_per_sys)
+    
+    radii_per_sys = [] # list to be filled with lists of all planet radii per system (solar radii)
+    try:
+        with open(os.path.join(file_name_path, 'radii_all%s.out' % run_number), 'r') as file:
+            for line in file:
+                if line[0] != '#':
+                    line = line[1:-2].split(', ')
+                    radii_sys = [float(i) for i in line]
+                    radii_per_sys.append(radii_sys + [0]*(padmax - len(radii_sys)))
+                    #print(radii_sys)
+    except:
+        print('No file with planet radii found.')
+    radii_per_sys = np.array(radii_per_sys)
+    
+    mass_per_sys = [] # list to be filled with lists of all planet radii per system (solar masses)
+    try:
+        with open(os.path.join(file_name_path, 'masses_all%s.out' % run_number), 'r') as file:
+            for line in file:
+                if line[0] != '#':
+                    line = line[1:-2].split(', ')
+                    mass_sys = [float(i) for i in line]
+                    mass_per_sys.append(mass_sys + [0]*(padmax - len(mass_sys)))
+                    #print(mass_sys)
+    except:
+        print('No file with planet masses found.')
+    mass_per_sys = np.array(mass_per_sys)
+    
+    stop = time.time()
+    print('Time to load (periods, radii, and masses): {:0.3f}s'.format(stop - start))
+    
+    Mtot_all = np.sum(P_per_sys > 0, axis=1) # planet multiplicities
+    Mmax = np.max(Mtot_all) # maximum planet multiplicity
+    P_all = P_per_sys[:,:Mmax] # planet periods (days)
+    radii_all = radii_per_sys[:,:Mmax] *(gen.Rsun/gen.Rearth) # planet radii (Earth radii)
+    mass_all = mass_per_sys[:,:Mmax] *(gen.Msun/gen.Mearth) # planet masses (Earth masses)
+    
+    sssp_per_sys_basic = {}
+    # Add the simulation settings and bounds:
+    for key in sim_settings.keys():
+        sssp_per_sys_basic[key] = sim_settings[key]
+    # Add the planets:
+    sssp_per_sys_basic['Mmax'] = Mmax
+    sssp_per_sys_basic['Mtot_all'] = Mtot_all
+    sssp_per_sys_basic['P_all'] = P_all
+    sssp_per_sys_basic['radii_all'] = radii_all
+    sssp_per_sys_basic['mass_all'] = mass_all
+    
+    return sssp_per_sys_basic
+
+def load_planets_periods_radii_masses_as_summary_stats_per_sys_many_fast(file_name_path, runs=100):
+    """
+    Load individual files with the periods, radii, and masses of all the planets in many simulated physical catalogs and returns them in a list of dictionaries of summary statistics.
+    
+    Wrapper for the function :py:func:`syssimpyplots.load_sims.load_planets_periods_radii_masses_as_summary_stats_per_sys_fast`.
+
+    Parameters
+    ----------
+    file_name_path : str
+        The path to where the catalogs are saved.
+    runs : int, default=100
+        The number of runs to load.
+
+    Returns
+    -------
+    sssp_per_sys_all : list[dict]
+        A list of dictionaries containing the planet periods, radii, and masses in each system. Each dictionary is an output from :py:func:`syssimpyplots.load_sims.load_planets_periods_radii_masses_as_summary_stats_per_sys_fast`.
+    """
+    sssp_per_sys_all = []
+    for i in range(runs):
+        run_number = i+1
+        sssp_per_sys_i = load_planets_periods_radii_masses_as_summary_stats_per_sys_fast(file_name_path, run_number)
+        sssp_per_sys_all.append(sssp_per_sys_i)
+        print(f'Loaded {run_number}/{runs} catalogs.', end='\r')
+    
+    return sssp_per_sys_all
 
 def compute_basic_summary_stats_per_sys_cat_phys(clusterids_per_sys, P_per_sys, radii_per_sys, mass_per_sys, e_per_sys, inclmut_per_sys, incl_per_sys, Mstar_all, Rstar_all, initial_radii_per_sys, initial_masses_per_sys, envelope_masses_per_sys, mass_loss_timescales_per_sys, prob_retained_per_sys, envelope_retained_per_sys):
     """
