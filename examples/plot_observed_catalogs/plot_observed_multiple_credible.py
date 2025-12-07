@@ -107,19 +107,19 @@ lfs = 16 # legend labels font size
 
 ##### To load and compute the same statistics for a large number of models, computing the confidence intervals for each bin:
 
-#loadfiles_directory1 = '/Users/hematthi/Documents/GradSchool/Research/ACI/Simulated_Data/AMD_system/Split_stars/Singles_ecc/Params11_KS/Distribute_AMD_per_mass/durations_norm_circ_singles_multis_GF2020_KS/GP_best_models/'
+loadfiles_directory1 = '/Users/hematthi/Documents/GradSchool/Research/ACI/Simulated_Data/AMD_system/Split_stars/Singles_ecc/Params11_KS/Distribute_AMD_per_mass/durations_norm_circ_singles_multis_GF2020_KS/GP_best_models/'
 #loadfiles_directory1 = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Simulated_catalogs/Hybrid_NR20_AMD_model1/Fit_all_KS/Params8/GP_best_models_100/'
 #loadfiles_directory1 = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Simulated_catalogs/Hybrid_NR20_AMD_model1/Fit_some_KS/Params8_fix_highM/GP_best_models_100/'
-loadfiles_directory2 = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Simulated_catalogs/Hybrid_NR20_AMD_model1/Fit_some8p1_KS/Params9_fix_highM/GP_best_models_100/'
+#loadfiles_directory2 = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Simulated_catalogs/Hybrid_NR20_AMD_model1/Fit_some8p1_KS/Params9_fix_highM/GP_best_models_100/'
 loadfiles_directory3 = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Simulated_catalogs/Hybrid_NR20_AMD_model1/clustered_initial_masses/Fit_some8p1_KS/Params10_fix_highM/GP_best_models_100/'
 
 
-model_names = ['HM-U', 'HM-C'] #['H20 model', 'HM-U', 'HM-C']
+model_names = ['H20 model', 'HM-C'] #['H20 model', 'HM-U', 'HM-C']
 model_linestyles = ['--', '--'] #['--', '--', '--']
-model_colors = ['b', 'g'] #['k', 'b', 'g']
+model_colors = ['k', 'g'] #['k', 'b', 'g']
 model_alphas = [0.2, 0.2] #[0.1, 0.2, 0.4]
 model_stagger_errorbars = [0.1, -0.1, 0.] # offsets for plotting multiplicity counts in order to stagger errorbars
-model_load_dirs = [loadfiles_directory2, loadfiles_directory3]
+model_load_dirs = [loadfiles_directory1, loadfiles_directory3]
 models = len(model_load_dirs)
 
 runs = 100
@@ -259,6 +259,28 @@ for m in range(models):
         xi_4p_counts_qtls[m][b] = np.quantile(xi_4p_counts_all[m][:,b], [0.16, 0.5, 0.84])
         xi_5p_counts_qtls[m][b] = np.quantile(xi_5p_counts_all[m][:,b], [0.16, 0.5, 0.84])
 #####
+
+##### OPTIONALLY: To also load the top 10% of catalogs (in terms of radius valley depths) from HM-C:
+#'''
+loadfiles_directory = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Simulated_catalogs/Hybrid_NR20_AMD_model1/clustered_initial_masses/Fit_some8p1_KS/Params10_fix_highM/GP_dtotmax15.0_depthmin0.29_models/'
+
+table = np.genfromtxt(loadfiles_directory + 'catalog_depths.txt', dtype=[int, float], names=True)
+run_numbers = table['run_number']
+depths = table['depth_kde']
+depth_thres = 0.26
+run_numbers_keep = run_numbers[depths > depth_thres][:runs]
+
+sss_top10p = []
+for i,run_number in enumerate(run_numbers_keep):
+    print('i=%s, run_number=%s' % (i, run_number))
+    sss_per_sys_i, sss_i = compute_summary_stats_from_cat_obs(file_name_path=loadfiles_directory, run_number=run_number, compute_ratios=compute_ratios)
+    compute_additional_stats_for_subsample_from_summary_stats(sss_i, P_min=P_min_subsample, P_max=P_max_subsample, radii_min=radii_min_subsample, radii_max=radii_max_subsample, params=params_gapfit) # also compute the radii deltas of the restricted sample
+    params_i = read_sim_params(loadfiles_directory + 'periods%s.out' % run_number)
+    N_sim = params_i['num_targets_sim_pass_one']
+    dists_i, dists_w_i = compute_distances_sim_Kepler(sss_per_sys_i, sss_i, ssk_per_sys, ssk, weights_all['all'], dists_include, N_sim, AD_mod=AD_mod)
+    
+    sss_top10p.append(sss_i)
+#'''
 
 
 
@@ -474,7 +496,7 @@ plt.show()
 # 1) Top panel: credible regions of CDFs
 # 2) Middle panel: credible regions of histograms
 # 3) Bottom panel: individual catalog draws/histograms from one of the models
-'''
+#'''
 # First, for the planet radius distribution:
 radii_max_plot = 6.
 y_max = 0.045
@@ -483,19 +505,23 @@ fig = plt.figure(figsize=(8,10))
 plot = GridSpec(5,1,left=0.2,bottom=0.1,right=0.95,top=0.98,wspace=0,hspace=0)
 
 ax = plt.subplot(plot[0,0]) # credible regions of CDFs
-plot_panel_cdf_credible(ax, [[sss_i['radii_obs'] for sss_i in sss_list] for sss_list in sss_all], [ssk['radii_obs']], x_min=radii_min, x_max=radii_max_plot, c_sim_all=model_colors, ls_sim_all=model_linestyles, lw=lw, labels_sim_all=model_names, alpha_all=model_alphas, xlabel_text='', afs=afs, tfs=tfs, lfs=lfs, legend=False)
+#sss_radii_plot_list_models = [[sss_i['radii_obs'] for sss_i in sss_list] for sss_list in sss_all]
+sss_radii_plot_list_models = [[sss_i['radii_obs'] for sss_i in sss_all[0]], [sss_i['radii_obs'] for sss_i in sss_top10p]]
+plot_panel_cdf_credible(ax, sss_radii_plot_list_models, [ssk['radii_obs']], x_min=radii_min, x_max=radii_max_plot, c_sim_all=model_colors, ls_sim_all=model_linestyles, lw=lw, labels_sim_all=model_names, alpha_all=model_alphas, xlabel_text='', afs=afs, tfs=tfs, lfs=lfs, legend=False)
 ax.set_xticklabels([])
 plt.legend(loc='lower right', bbox_to_anchor=(1,0), ncol=1, frameon=False, fontsize=lfs)
 
 ax = plt.subplot(plot[1:3,0]) # credible regions of histograms
-plot_panel_pdf_credible(ax, [[sss_i['radii_obs'] for sss_i in sss_list] for sss_list in sss_all], [ssk['radii_obs']], x_min=radii_min, x_max=radii_max_plot, y_max=y_max, c_sim_all=model_colors, ls_sim_all=model_linestyles, lw=lw, labels_sim_all=model_names, alpha_all=model_alphas, xlabel_text='', afs=afs, tfs=tfs, lfs=lfs, legend=False)
+plot_panel_pdf_credible(ax, sss_radii_plot_list_models, [ssk['radii_obs']], x_min=radii_min, x_max=radii_max_plot, y_max=y_max, c_sim_all=model_colors, ls_sim_all=model_linestyles, lw=lw, labels_sim_all=model_names, alpha_all=model_alphas, xlabel_text='', afs=afs, tfs=tfs, lfs=lfs, legend=False)
 ax.set_xticklabels([])
 plt.text(x=0.98, y=0.9, s='16%-84% credible regions', ha='right', fontsize=lfs, transform=ax.transAxes)
 
 ax = plt.subplot(plot[3:,0]) # individual catalog draws/histograms
 N_plot = 100
-i_model = 2
-plot_panel_pdf_simple(ax, [sss_i['radii_obs'] for sss_i in sss_all[i_model][:N_plot]] + [ssk['radii_obs']], [], x_min=radii_min, x_max=radii_max_plot, y_max=y_max, c_sim=[model_colors[i_model]]*N_plot + ['k'], ls_sim=['-']*(N_plot+1), lw=[0.5]*N_plot + [lw], alpha_sim=[0.2]*N_plot + [1.], labels_sim=[model_names[i_model]+' catalogs'] + [None]*(N_plot-1) + ['Kepler'], xlabel_text=r'Planet radius, $R_p$ [$R_\oplus$]', afs=afs, tfs=tfs, lfs=lfs, legend=False)
+#i_model = 2
+#sss_radii_plot_list = [sss_i['radii_obs'] for sss_i in sss_all[i_model][:N_plot]]
+sss_radii_plot_list = [sss_i['radii_obs'] for sss_i in sss_top10p[:N_plot]]
+plot_panel_pdf_simple(ax, sss_radii_plot_list + [ssk['radii_obs']], [], x_min=radii_min, x_max=radii_max_plot, y_max=y_max, c_sim=[model_colors[i_model]]*N_plot + ['k'], ls_sim=['-']*(N_plot+1), lw=[0.5]*N_plot + [lw], alpha_sim=[0.2]*N_plot + [1.], labels_sim=[model_names[i_model]+' catalogs'] + [None]*(N_plot-1) + ['Kepler'], xlabel_text=r'Planet radius, $R_p$ [$R_\oplus$]', afs=afs, tfs=tfs, lfs=lfs, legend=False)
 plt.text(x=0.98, y=0.9, s='Catalogs from ' + model_names[i_model], ha='right', fontsize=lfs, transform=ax.transAxes)
 
 if savefigures:
@@ -510,27 +536,31 @@ fig = plt.figure(figsize=(8,10))
 plot = GridSpec(5,1,left=0.2,bottom=0.1,right=0.95,top=0.98,wspace=0,hspace=0)
 
 ax = plt.subplot(plot[0,0]) # credible regions of CDFs
-plot_panel_cdf_credible(ax, [[sss_i['radii_delta_gap_obs'] for sss_i in sss_list] for sss_list in sss_all], [ssk['radii_delta_gap_obs']], x_min=radii_delta_min_plot, x_max=radii_delta_max_plot, c_sim_all=model_colors, ls_sim_all=model_linestyles, lw=lw, labels_sim_all=model_names, alpha_all=model_alphas, xlabel_text='', afs=afs, tfs=tfs, lfs=lfs, legend=False)
+#sss_radii_delta_plot_list_models = [[sss_i['radii_delta_gap_obs'] for sss_i in sss_list] for sss_list in sss_all]
+sss_radii_delta_plot_list_models = [[sss_i['radii_delta_gap_obs'] for sss_i in sss_all[0]], [sss_i['radii_delta_gap_obs'] for sss_i in sss_top10p]]
+plot_panel_cdf_credible(ax, sss_radii_delta_plot_list_models, [ssk['radii_delta_gap_obs']], x_min=radii_delta_min_plot, x_max=radii_delta_max_plot, c_sim_all=model_colors, ls_sim_all=model_linestyles, lw=lw, labels_sim_all=model_names, alpha_all=model_alphas, xlabel_text='', afs=afs, tfs=tfs, lfs=lfs, legend=False)
 ax.set_xticklabels([])
 plt.legend(loc='lower right', bbox_to_anchor=(1,0), ncol=1, frameon=False, fontsize=lfs)
 plt.text(x=0.02, y=0.95, s='$P < %s$d \n$R_p < %s R_\oplus$' % ('{:0.0f}'.format(P_max_subsample), '{:0.1f}'.format(radii_max_subsample)), ha='left', va='top', fontsize=lfs, transform=ax.transAxes)
 
 ax = plt.subplot(plot[1:3,0]) # credible regions of histograms
-plot_panel_pdf_credible(ax, [[sss_i['radii_delta_gap_obs'] for sss_i in sss_list] for sss_list in sss_all], [ssk['radii_delta_gap_obs']], x_min=radii_delta_min_plot, x_max=radii_delta_max_plot, y_max=y_max, c_sim_all=model_colors, ls_sim_all=model_linestyles, lw=lw, labels_sim_all=model_names, alpha_all=model_alphas, xlabel_text='', afs=afs, tfs=tfs, lfs=lfs, legend=False)
+plot_panel_pdf_credible(ax, sss_radii_delta_plot_list_models, [ssk['radii_delta_gap_obs']], x_min=radii_delta_min_plot, x_max=radii_delta_max_plot, y_max=y_max, c_sim_all=model_colors, ls_sim_all=model_linestyles, lw=lw, labels_sim_all=model_names, alpha_all=model_alphas, xlabel_text='', afs=afs, tfs=tfs, lfs=lfs, legend=False)
 ax.set_xticklabels([])
 plt.text(x=0.98, y=0.9, s='16%-84% credible regions', ha='right', fontsize=lfs, transform=ax.transAxes)
 
 ax = plt.subplot(plot[3:,0]) # individual catalog draws/histograms
 N_plot = 100
-i_model = 2
-plot_panel_pdf_simple(ax, [sss_i['radii_delta_gap_obs'] for sss_i in sss_all[i_model][:N_plot]] + [ssk['radii_delta_gap_obs']], [], x_min=radii_delta_min_plot, x_max=radii_delta_max_plot, y_max=y_max, c_sim=[model_colors[i_model]]*N_plot + ['k'], ls_sim=['-']*(N_plot+1), lw=[0.5]*N_plot + [lw], alpha_sim=[0.2]*N_plot + [1.], labels_sim=[model_names[i_model]+' catalogs'] + [None]*(N_plot-1) + ['Kepler'], xlabel_text=r'Gap subtracted radius, $R_p - R_{\rm gap}$ [$R_\oplus$]', afs=afs, tfs=tfs, lfs=lfs, legend=False)
+#i_model = 2
+#sss_radii_delta_plot_list = [sss_i['radii_delta_gap_obs'] for sss_i in sss_all[i_model][:N_plot]]
+sss_radii_delta_plot_list = [sss_i['radii_delta_gap_obs'] for sss_i in sss_top10p[:N_plot]]
+plot_panel_pdf_simple(ax, sss_radii_delta_plot_list + [ssk['radii_delta_gap_obs']], [], x_min=radii_delta_min_plot, x_max=radii_delta_max_plot, y_max=y_max, c_sim=[model_colors[i_model]]*N_plot + ['k'], ls_sim=['-']*(N_plot+1), lw=[0.5]*N_plot + [lw], alpha_sim=[0.2]*N_plot + [1.], labels_sim=[model_names[i_model]+' catalogs'] + [None]*(N_plot-1) + ['Kepler'], xlabel_text=r'Gap subtracted radius, $R_p - R_{\rm gap}$ [$R_\oplus$]', afs=afs, tfs=tfs, lfs=lfs, legend=False)
 plt.text(x=0.98, y=0.9, s='Catalogs from ' + model_names[i_model], ha='right', fontsize=lfs, transform=ax.transAxes)
 
 if savefigures:
     plt.savefig(savefigures_directory + subdirectory + save_name + '_radii_delta_compare_enlarged_multipanel.pdf')
     plt.close()
 plt.show()
-'''
+#'''
 
 
 
