@@ -102,6 +102,11 @@ sssp_all = []
 sssp_per_sys_all = []
 params_all = []
 
+radii_min_cliff, radii_max_cliff = 2.5, 5.5 # bounds for the radius cliff
+bw_factor = 0.25 # factor for multiplying the KDE bandwidth from Scott's rule, for fitting the (log) radius distributions
+m_cliff_all = []
+m_cliff_to4_all = []
+
 Mtot_bins = np.arange(23)-1.5 #include a -1 bin with all zeros for plotting purposes
 Mtot_bins_mid = (Mtot_bins[:-1] + Mtot_bins[1:])/2.
 Mtot_counts_all = []
@@ -127,6 +132,9 @@ for m,loadfiles_dir in enumerate(model_loadfiles_dirs):
     sssp_per_sys_dir = []
     params_dir = []
     
+    m_cliff_dir = []
+    m_cliff_to4_dir = []
+    
     Mtot_counts = []
     Mtot_earth_counts = []
     clustertot_counts = []
@@ -146,6 +154,13 @@ for m,loadfiles_dir in enumerate(model_loadfiles_dirs):
         sssp_dir.append(sssp_i)
         sssp_per_sys_dir.append(sssp_per_sys_i)
         params_dir.append(params_i)
+        
+        # To also fit the radius cliff slope:
+        m_cliff_i, _ = fit_and_plot_radius_cliff_using_kde(sssp_i['radii_all'], x_min_cliff=radii_min_cliff, x_max_cliff=radii_max_cliff, bw_scotts_factor=bw_factor)
+        m_cliff_to4_i, _ = fit_and_plot_radius_cliff_using_kde(sssp_i['radii_all'], x_min_cliff=radii_min_cliff, x_max_cliff=4., bw_scotts_factor=bw_factor)
+
+        m_cliff_dir.append(m_cliff_i)
+        m_cliff_to4_dir.append(m_cliff_to4_i)
         
         # Multiplicities:
         counts, bins = np.histogram(sssp_per_sys_i['Mtot_all'], bins=Mtot_bins)
@@ -182,6 +197,9 @@ for m,loadfiles_dir in enumerate(model_loadfiles_dirs):
     sssp_all.append(sssp_dir)
     sssp_per_sys_all.append(sssp_per_sys_dir)
     params_all.append(params_dir)
+    
+    m_cliff_all.append(np.array(m_cliff_dir))
+    m_cliff_to4_all.append(np.array(m_cliff_to4_dir))
     
     Mtot_counts_all.append(np.array(Mtot_counts))
     Mtot_earth_counts_all.append(np.array(Mtot_earth_counts))
@@ -410,7 +428,7 @@ plt.show()
 
 
 ##### OPTIONALLY: To also load and plot the planet radii for the top 10% of catalogs from HM-C:
-#'''
+'''
 loadfiles_directory = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Simulated_catalogs/Hybrid_NR20_AMD_model1/clustered_initial_masses/Fit_some8p1_KS/Params10_fix_highM/GP_dtotmax15.0_depthmin0.29_models/'
 
 table = np.genfromtxt(loadfiles_directory + 'catalog_depths.txt', dtype=[int, float], names=True)
@@ -430,7 +448,7 @@ for i,run_number in enumerate(run_numbers_keep):
     sssp_top10p.append(sssp_i)
 
 # Make multi-panel plots of the full vs. top 10% of the posteriors (also log and unlogged versions):
-#'''
+
 init_radii_top10p = [sssp_i['init_radii_all'] for sssp_i in sssp_top10p]
 
 # Unlogged version:
@@ -510,7 +528,7 @@ if savefigures:
     plt.close()
 
 plt.show()
-#'''
+'''
 
 
 
