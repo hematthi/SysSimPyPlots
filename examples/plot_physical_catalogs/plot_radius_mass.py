@@ -161,3 +161,63 @@ if savefigures:
     plt.savefig(savefigures_directory + 'Models_underlying_radius_mass_simple.pdf')
     plt.close()
 plt.show()
+
+
+
+
+
+##### To make multiple builds of the simpler version, for talks:
+# Build numbers:
+# i_build = 0: only plot the H20 relation (also no upper panel)
+# i_build = 1: add the NR20 initial relation (and upper panel with lognormal)
+# i_build = 2: add the S07 pure silicate relation
+# i_build = 3: add an additional lognormal for a typical cluster in the upper panel)
+
+savefigures_directory = '/Users/hematthi/Documents/NPP_ARC_Modernize_Kepler/Misc_talks/UArizona_Origins_Seminar_11-24-2025/figures/'
+lfs = 16
+
+# Select the build number:
+i_build = 3
+
+fig = plt.figure(figsize=(12,12))
+plot = GridSpec(5, 1, left=0.1, bottom=0.08, right=0.95, top=0.98, wspace=0, hspace=0)
+
+ax = plt.subplot(plot[1:,:]) # main panel
+plt.plot(mass_evals_med_H20, radius_evals_H20, '-', color='k') #, label='H20, mean prediction'
+plt.fill_betweenx(radius_evals_H20, mass_evals_016_H20, mass_evals_084_H20, color='k', alpha=0.2, label=r'H20 model, 16%-84% region') # 16%-84% region of H20 model
+if i_build > 0:
+    plt.plot(M_array, μ_R_array, '-', color='c') #, label='NR20, Model 2, mean'
+    plt.fill_between(M_array, μ_R_array*(1+σ_R_array), μ_R_array*(1-σ_R_array), color='c', alpha=0.2, label='NR20, best-fit of Model 2 (initial)')
+if i_build > 1:
+    plt.plot(M_array, R_S07_silicate_array, color='tab:brown') #, label='S07, pure-silicate'
+    plt.fill_between(M_array, 0.95*R_S07_silicate_array, 1.05*R_S07_silicate_array, color='tab:brown', alpha=0.5, label='S07 pure-silicate model \nwith 5% scatter (final)') #, label='NR20, 5% scatter around S07 pure-silicate (final)'
+ax.set_xscale('log')
+ax.set_yscale('log')
+ax.tick_params(axis='both', labelsize=afs)
+xtick_vals = np.array([1e-1, 1., 10., 1e2, 1e3])
+ytick_vals = np.array([0.5, 1., 2., 4., 10.])
+plt.xticks(xtick_vals, [0.1, 1.0, 10, 100, 1000])
+plt.yticks(ytick_vals, ytick_vals)
+plt.xlim([mass_min, mass_max])
+plt.ylim([radii_min, radii_max])
+plt.xlabel(r'Planet mass, $M_p$ [$M_\oplus$]', fontsize=tfs)
+plt.ylabel(r'Planet radius, $R_p$ [$R_\oplus$]', fontsize=tfs)
+plt.legend(loc='upper right', bbox_to_anchor=(1,0.2), ncol=1, frameon=False, fontsize=lfs)
+
+if i_build > 0:
+    ax = plt.subplot(plot[0,:]) # top panel
+    plt.plot(M_array, Minit_pdf_array, '-', color='c', label='NR20, best-fit of Model 2 \n(initial mass distribution)')
+    if i_build > 2:
+        Minit_cluster_pdf_array = scipy.stats.norm(μ_M, 0.4).pdf(np.log(M_array))
+        y_scale = np.max(Minit_pdf_array)/np.max(Minit_cluster_pdf_array) # factor to scale the pdf values so the lognormal of the cluster is not too tall
+        plt.plot(M_array, y_scale*Minit_cluster_pdf_array, ':', lw=2, color='c', label='Example cluster')
+    plt.gca().set_xscale("log")
+    plt.xlim([mass_min, mass_max])
+    plt.xticks([])
+    plt.yticks([])
+    plt.legend(loc='upper right', bbox_to_anchor=(1,1), ncol=1, frameon=False, fontsize=lfs)
+
+if savefigures:
+    plt.savefig(savefigures_directory + 'Models_underlying_radius_mass_simple_build%s.pdf' % i_build)
+    plt.close()
+plt.show()
