@@ -183,7 +183,7 @@ for m in range(models):
         plt.plot(M_array, μ_R_array_qtls_sim[0], '--', color=color)
         plt.plot(M_array, μ_R_array_qtls_sim[2], '--', color=color, label=model_names[m] + ', 16%-84% of median')
         for i in range(len(M_array)-1):
-            plt.fill_between(M_array[i:i+1], μ_R_array_qtls_sim[2][i:i+1], μ_R_array_qtls_sim[0][i:i+1], color=cmap(c_norm(Minit_pdf_array_med_sim[i]/np.max(Minit_pdf_array_med_sim))), alpha=0.5) #, label=model_names[m] + ', 16%-84% of median' if i==np.argmax(Minit_pdf_array_med_sim) else None)
+            plt.fill_between(M_array[i:i+2], μ_R_array_qtls_sim[2][i:i+1], μ_R_array_qtls_sim[0][i:i+1], color=cmap(c_norm(Minit_pdf_array_med_sim[i]/np.max(Minit_pdf_array_med_sim))), alpha=0.5) #, label=model_names[m] + ', 16%-84% of median' if i==np.argmax(Minit_pdf_array_med_sim) else None)
     else:
         plt.plot(M_array, μ_R_array_qtls_sim[1], '-', color=color)
         plt.plot(M_array, μ_R_array_qtls_sim[0], '--', color=color)
