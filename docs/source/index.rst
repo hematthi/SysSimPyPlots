@@ -37,20 +37,31 @@ Contents
 Publications
 ------------
 
-The scripts in this package have been used to produce the figures and results in several papers:
+The scripts in this package have been used to produce some of the figures and results in several papers:
 
-- `Architectures of Exoplanetary Systems. I: A Clustered Forward Model for Exoplanetary Systems around Kepler's FGK Stars <https://ui.adsabs.harvard.edu/abs/2019MNRAS.490.4575H/abstract>`_
+- Architectures of Exoplanetary Systems. IV: A Multi-planet Model for Reproducing the Radius Valley and Intra-system Size Similarity of Planets around Kepler's FGK Dwarfs
 
-  **Matthias Y. He**, Eric B. Ford, Darin Ragozzine, 2019, MNRAS, 490, 4575-4605
+  **Matthias Y. He**, Eric B. Ford, submitted 2025, under review
 
-- `Architectures of Exoplanetary Systems. II: An Increase in Inner Planetary System Occurrence Towards Later Spectral Types for Kepler's FGK Dwarfs <https://ui.adsabs.harvard.edu/abs/2021AJ....161...16H/abstract>`_
+- `Inner Planetary System Gap Complexity is a Predictor of Outer Giant Planets <https://ui.adsabs.harvard.edu/abs/2023AJ....166...36H/abstract>`_
 
-  **Matthias Y. He**, Eric B. Ford, Darin Ragozzine, 2021a, AJ, 161, 16-40
+  **Matthias Y. He**, Lauren M. Weiss, 2023, AJ, 166, 36-48
 
-- `Architectures of Exoplanetary Systems. III: Eccentricity and Mutual Inclination Distributions of AMD-stable Planetary Systems <https://ui.adsabs.harvard.edu/abs/2020arXiv200714473H/abstract>`_
+- `Debiasing the Minimum-Mass Extrasolar Nebula: On the Diversity of Solid Disk Profiles <https://ui.adsabs.harvard.edu/abs/2022AJ....164..210H/abstract>`_
 
-  **Matthias Y. He**, Eric B. Ford, Darin Ragozzine, Daniel Carrera, 2020, AJ, 160, 276-314
+  **Matthias Y. He**, Eric B. Ford, 2022, AJ, 164, 210-220
 
 - `Friends and Foes: Conditional Occurrence Rates of Exoplanet Companions and their Impact on Radial Velocity Follow-up Surveys <https://ui.adsabs.harvard.edu/abs/2021arXiv210504703H/abstract>`_
 
   **Matthias Y. He**, Eric B. Ford, Darin Ragozzine, 2021b, AJ, 162, 216-238
+
+- `Architectures of Exoplanetary Systems. III: Eccentricity and Mutual Inclination Distributions of AMD-stable Planetary Systems <https://ui.adsabs.harvard.edu/abs/2020arXiv200714473H/abstract>`_
+
+  **Matthias Y. He**, Eric B. Ford, Darin Ragozzine, Daniel Carrera, 2020, AJ, 160, 276-314
+- `Architectures of Exoplanetary Systems. II: An Increase in Inner Planetary System Occurrence Towards Later Spectral Types for Kepler's FGK Dwarfs <https://ui.adsabs.harvard.edu/abs/2021AJ....161...16H/abstract>`_
+
+  **Matthias Y. He**, Eric B. Ford, Darin Ragozzine, 2021a, AJ, 161, 16-40
+
+- `Architectures of Exoplanetary Systems. I: A Clustered Forward Model for Exoplanetary Systems around Kepler's FGK Stars <https://ui.adsabs.harvard.edu/abs/2019MNRAS.490.4575H/abstract>`_
+
+  **Matthias Y. He**, Eric B. Ford, Darin Ragozzine, 2019, MNRAS, 490, 4575-4605
