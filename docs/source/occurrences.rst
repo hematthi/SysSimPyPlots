@@ -48,3 +48,8 @@ The outputs are an array of occurrence rates (`occurrence_all`) and an array of 
 .. tip::
 
    For bounds that are not provided (the default is set to `None`), the full simulation range will be assumed. In the example above, no `mass_bounds` were provided and thus planets of all masses are included (as long as they still satisfy the period and radius bounds).
+
+
+.. note::
+
+   Currently under construction!

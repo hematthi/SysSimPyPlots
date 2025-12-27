@@ -28,11 +28,6 @@ Here, we provide detailed documentation for *many* of the functions that you may
    Contains functions for computing, simulating, and fitting radial velocity observations of the simulated planetary systems.
 
 
-.. note::
-
-   Currently under construction!
-
-
 .. toctree::
    :hidden:
 
