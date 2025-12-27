@@ -7,6 +7,8 @@ The data you download from following the :ref:`"Downloading simulated catalogs" 
 - an "**observed catalog**": a set of transiting and detected planet candidates derived from a physical catalog (after a Kepler-like mission; contains properties like the measured orbital periods, transit depths, etc.)
 
 
+.. _loading_physical_catalogs:
+
 Loading physical catalogs
 -------------------------
 
