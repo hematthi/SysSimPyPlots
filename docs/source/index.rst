@@ -28,6 +28,7 @@ Contents
    histograms
    distances
    galleries
+   occurrences
    api
 
 
