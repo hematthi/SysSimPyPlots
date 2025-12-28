@@ -16,8 +16,8 @@ The multi-planet models enables us to compute both:
 These are computed from a large number of simulated catalogs from a given model by counting the number of planets within a given set of period, radius, and/or mass bounds provided by the user. Our functions described below also automatically calculates the uncertainties in the estimated quantities arising from uncertainties in the model parameters and stochastic noise during the simulation process.
 
 
-A simple example
-----------------
+A few simple examples
+---------------------
 
 First, we need to load the simulated catalogs from a given model. We have a faster function for loading just the periods, radii, and masses from the physical catalogs, which are sufficient for computing simple occurrence rates:
 
@@ -42,14 +42,51 @@ First, we need to load the simulated catalogs from a given model. We have a fast
 
 The output ``sssp_per_sys_all`` is a list of dictionaries (one for each simulated physical catalog), each containing the basic summary statistics (mainly things like ``P_all`` for all the orbital periods, ``radii_all`` for all the planet radii, and ``mass_all`` for all the planet masses).
 
-To compute the occurrence rates, we can call the following function providing simple bounds in period, radius, and/or mass. For example, to compute the occurrence of planets between :math:`P = 3`-100 days and :math:`R_p = 2`-:math:`4 R_\oplus`:
+To compute the occurrence rates, we can call the following function providing the list of simulated catalogs and simple bounds in period, radius, and/or mass. Some examples are given below:
+
+:math:`R_p = 2`-:math:`4 R_\oplus` and :math:`P = 3`-:math:`100` days:
 
 .. code-block:: python
 
-   occurrence_all, fswp_all = compute_occurrence_rates_and_fswps_in_period_radius_mass_bounds_many_catalogs(sssp_per_sys_all, period_bounds=(3,100), radius_bounds=(2,4))
+   occurrence_all, fswp_all = compute_occurrence_rates_and_fswps_in_period_radius_mass_bounds_many_catalogs(sssp_per_sys_all, radius_bounds=(2,4), period_bounds=(3,100))
 
-The outputs are an array of occurrence rates (``occurrence_all``) and an array of fractions of stars with planets (``fswp_all``), with each value in the arrays corresponding to a single simulated catalog. The function will also print the credible regions (central 68%) of each quantity.
+.. code-block:: console
+
+    # Printed output:
+    No mass bounds given; assuming the full simulation range of (0.1,1000.0) Earth masses.
+    Occurrence rate = 0.422_{-0.030}^{+0.049}
+    f_swp = 0.295_{-0.019}^{+0.023}
+
+
+:math:`M_p = 50`-:math:`1000 M_\oplus` and :math:`P = 3`-:math:`11` days:
+
+.. code-block:: python
+
+   occurrence_all, fswp_all = compute_occurrence_rates_and_fswps_in_period_radius_mass_bounds_many_catalogs(sssp_per_sys_all, mass_bounds=(50,1000), period_bounds=(3,11))
+
+.. code-block:: console
+
+    # Printed output:
+    No radius bounds given; assuming the full simulation range of (0.5,10.0) Earth radii.
+    Occurrence rate = 0.008_{-0.004}^{+0.006}
+    f_swp = 0.007_{-0.004}^{+0.005}
+
+
+:math:`R_p = 0.8`-:math:`1.2 R_\oplus`, :math:`M_p = 0.65`-:math:`0.98 M_\oplus`, and :math:`P = 180`-:math:`270` days (e.g., Venus analogs):
+
+.. code-block:: python
+
+   occurrence_all, fswp_all = compute_occurrence_rates_and_fswps_in_period_radius_mass_bounds_many_catalogs(sssp_per_sys_all, radius_bounds=(0.8,1.2), mass_bounds=(0.65,0.98), period_bounds=(180,270))
+
+.. code-block:: console
+
+    # Printed output:
+    Occurrence rate = 0.006_{-0.002}^{+0.003}
+    f_swp = 0.006_{-0.002}^{+0.003}
+
+
+The outputs of the function calls are an array of occurrence rates (``occurrence_all``) and an array of fractions of stars with planets (``fswp_all``), with each value in the arrays corresponding to a single simulated catalog. The function will also print the credible regions (central 68%) of each quantity.
 
 .. tip::
 
-   For bounds that are not provided (the default is set to `None`), the full simulation range will be assumed. In the example above, no `mass_bounds` were provided and thus planets of all masses are included (as long as they still satisfy the period and radius bounds).
+   For bounds that are not provided, the full simulation range will be assumed.
