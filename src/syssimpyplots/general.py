@@ -585,6 +585,27 @@ def zeta_2_order(pratios):
     zeta_2_1or2[bools_in_2nd] = zeta(pratios[bools_in_2nd], n=2, order=2) # zeta_{2,2}
     return zeta_2_1or2, bools_in_1st, bools_in_2nd
 
+# TODO: add unit tests for this function
+def zeta_u(pratios):
+    """
+    Compute the 'zeta_u' statistic (proximity to any 1st or 2nd order MMR) for each period ratio in ``pratios``.
+    
+    This is essentially computing 'zeta_{2,1}' and 'zeta_{2,2}', in the neighborhood of 1st and 2nd order MMRs, respectively, and mapping the latter to the range [-2,-1). The range of 'zeta_u' is [-2,1). Thus, this is a wrapper for the function :py:func:`syssimpyplots.general.zeta_2_order`.
+    
+    Parameters
+    ----------
+    pratios : array[floats]
+        The period ratios (must all be in the range (1,4]).
+    
+    Returns
+    -------
+    zeta_u : array[floats]
+        The 'zeta_u' values corresponding to the period ratios in ``pratios``.
+    """
+    zeta_2_1or2, bools_in_1st, bools_in_2nd = zeta_2_order(pratios)
+    zeta_2_1or2[bools_in_2nd] = (zeta_2_1or2[bools_in_2nd] - 3.)/2.
+    return zeta_2_1or2
+
 def split_colors_per_cdpp_bin(stars_cleaned, nbins=10):
     # Compute a histogram of combined differential photometric precision (CDPP) values, and then split each bin by `bp-rp` color into a bluer half (smaller `bp-rp`) and a redder half (larger `bp-rp`).
     """
