@@ -29,7 +29,7 @@ from syssimpyplots.plot_params import *
 savefigures = False
 loadfiles_directory = '/Users/hematthi/Documents/GradSchool/Research/ACI/Simulated_Data/AMD_system/Split_stars/Singles_ecc/Params11_KS/Distribute_AMD_per_mass/durations_norm_circ_singles_multis_GF2020_KS/GP_med/' #'/Users/hematthi/Documents/GradSchool/Research/ACI/Simulated_Data/AMD_system/Split_stars/Singles_ecc/Params11_KS/Distribute_AMD_per_mass/durations_norm_circ_singles_multis_GF2020_KS/GP_med/' #'/Users/hematthi/Documents/GradSchool/Research/ACI/Simulated_Data/Split_stars/Clustered_P_R_fswp_bprp/Params13_KS/durations_KS/GP_med/'
 #loadfiles_directory = '/Users/hematthi/Documents/GradSchool/Research/SysSim/SysSimExClusters/examples/test/'
-savefigures_directory = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Figures/H20_model/Observed/Archit-III_notation/' #Archit-III_notation/
+savefigures_directory = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Figures/H20_model/Observed/MMRs/Archit-III_notation/03-07-2026/' #Archit-III_notation/
 run_number = ''
 model_name = 'Maximum_AMD_Model' + run_number
 
@@ -60,7 +60,12 @@ dists_include = ['delta_f',
 ##### To load the files with the systems with observed planets:
 
 # To first read the number of simulated targets and bounds for the periods and radii:
-N_sim, cos_factor, P_min, P_max, radii_min, radii_max = read_targets_period_radius_bounds(loadfiles_directory + 'periods%s.out' % run_number)
+sim_settings = read_targets_period_radius_bounds(loadfiles_directory + 'periods%s.out' % run_number)
+N_sim = sim_settings['N_sim']
+P_min = sim_settings['P_min']
+P_max = sim_settings['P_max']
+radii_min = sim_settings['radii_min']
+radii_max = sim_settings['radii_max']
 
 # To read the simulation parameters from the file:
 param_vals_all = read_sim_params(loadfiles_directory + 'periods%s.out' % run_number)
@@ -71,7 +76,7 @@ sss_per_sys, sss = compute_summary_stats_from_cat_obs(file_name_path=loadfiles_d
 # To load and process the observed Kepler catalog and compare with our simulated catalog:
 ssk_per_sys, ssk = compute_summary_stats_from_Kepler_catalog(P_min, P_max, radii_min, radii_max, compute_ratios=compute_ratios)
 
-dists, dists_w = compute_distances_sim_Kepler(sss_per_sys, sss, ssk_per_sys, ssk, weights_all['all'], dists_include, N_sim, cos_factor=cos_factor, AD_mod=AD_mod)
+dists, dists_w = compute_distances_sim_Kepler(sss_per_sys, sss, ssk_per_sys, ssk, weights_all['all'], dists_include, N_sim, AD_mod=AD_mod)
 
 
 
@@ -82,7 +87,7 @@ dists, dists_w = compute_distances_sim_Kepler(sss_per_sys, sss, ssk_per_sys, ssk
 fig_size = (8,5) #size of each panel (figure)
 fig_lbrt = [0.15, 0.2, 0.95, 0.925]
 
-n_bins = 40
+n_bins = 60
 lw = 2 #linewidth
 alpha = 0.2 #transparency of histograms
 
@@ -108,7 +113,7 @@ sss_all = []
 for i in range(1,runs+1):
     run_number = i
     sss_per_sys_i, sss_i = compute_summary_stats_from_cat_obs(file_name_path=loadfiles_directory, run_number=run_number, compute_ratios=compute_ratios)
-    dists_i, dists_w_i = compute_distances_sim_Kepler(sss_per_sys_i, sss_i, ssk_per_sys, ssk, weights_all['all'], dists_include, N_Kep, cos_factor=cos_factor, AD_mod=AD_mod)
+    dists_i, dists_w_i = compute_distances_sim_Kepler(sss_per_sys_i, sss_i, ssk_per_sys, ssk, weights_all['all'], dists_include, N_Kep, AD_mod=AD_mod)
 
     sss_per_sys_all.append(sss_per_sys_i)
     sss_all.append(sss_i)
@@ -120,127 +125,104 @@ for i in range(1,runs+1):
 
 ##### To plot histograms of the zeta statistics and numbers of planets near MMRs:
 
-n_mmr = 2 # 1 => only consider the 1st order MMRs; 2 => consider both 1st and 2nd order MMRs
-pratio_max = 3. if n_mmr==1 else 4.
-#pratio_max_1, pratio_max_2 = 2.5, 4. # should be 2.5 for zeta_{2,1} and 4 for zeta_{2,2}
+pratio_max = 4.
 
-zeta_in_mmr_lim_list = [0.25, 0.2] # all |zeta1| <= zeta_in_mmr_lim are considered "near a 1st order MMR"
+zeta_in_mmr_lim_list = [0.25, 0.2] # all |zeta_u| <= zeta_in_mmr_lim are considered "near a 1st order MMR"
+alpha_all = [1.]*len(zeta_in_mmr_lim_list)
 
 # First, compute the statistics for the Kepler catalog:
 pratios_small_Kep = ssk['Rm_obs'][ssk['Rm_obs'] < pratio_max]
-bools_in_1st_Kep, _ = pratio_is_in_any_1st_order_mmr_neighborhood(pratios_small_Kep)
-bools_in_2nd_Kep, _ = pratio_is_in_any_2nd_order_mmr_neighborhood(pratios_small_Kep)
-zeta1_small_Kep = zeta(pratios_small_Kep[bools_in_1st_Kep]) # zeta_{2,1}
-zeta2_small_Kep = zeta(pratios_small_Kep[bools_in_2nd_Kep], order=2) # zeta_{2,2}
+zetau_small_Kep = zeta_u(pratios_small_Kep)
 
-zeta1_counts_near_MMRs_Kep_dict = {zeta_lim : np.sum(np.abs(zeta1_small_Kep) <= zeta_lim)/len(zeta1_small_Kep) for zeta_lim in zeta_in_mmr_lim_list}
-zeta1_counts_near_above_MMRs_Kep_dict = {zeta_lim : np.sum((zeta1_small_Kep >= -zeta_lim) & (zeta1_small_Kep <= 0.))/len(zeta1_small_Kep) for zeta_lim in zeta_in_mmr_lim_list}
-zeta1_counts_near_below_MMRs_Kep_dict = {zeta_lim : np.sum((zeta1_small_Kep >= 0.) & (zeta1_small_Kep <= zeta_lim))/len(zeta1_small_Kep) for zeta_lim in zeta_in_mmr_lim_list}
+zetau_counts_near_MMRs_Kep_dict = {zeta_lim : np.sum(np.abs(zetau_small_Kep) <= zeta_lim)/len(zetau_small_Kep) for zeta_lim in zeta_in_mmr_lim_list}
+zetau_counts_near_above_MMRs_Kep_dict = {zeta_lim : np.sum((zetau_small_Kep >= -zeta_lim) & (zetau_small_Kep <= 0.))/len(zetau_small_Kep) for zeta_lim in zeta_in_mmr_lim_list}
+zetau_counts_near_below_MMRs_Kep_dict = {zeta_lim : np.sum((zetau_small_Kep >= 0.) & (zetau_small_Kep <= zeta_lim))/len(zetau_small_Kep) for zeta_lim in zeta_in_mmr_lim_list}
 
 # Then, compute the statistics for each of the simulated catalogs:
-zeta_bins = np.linspace(-1., 1., n_bins+1)
+zeta_bins = np.linspace(-2., 1., n_bins+1)
 zeta_bins_mid = (zeta_bins[:-1] + zeta_bins[1:])/2.
 
-zeta1_counts_all = [] # to be filled with normalized (fractional) counts per bin for each simulated catalog
-zeta2_counts_all = []
-zeta1_counts_near_MMRs_all_dict = {zeta_lim : [] for zeta_lim in zeta_in_mmr_lim_list} # to be filled with normalized (fractional) counts of the number of planet-pairs near MMRs (|zeta| < 'zeta_in_mmr_lim')
-zeta1_counts_near_above_MMRs_all_dict = {zeta_lim : [] for zeta_lim in zeta_in_mmr_lim_list} # -0.25 < zeta < 0
-zeta1_counts_near_below_MMRs_all_dict = {zeta_lim : [] for zeta_lim in zeta_in_mmr_lim_list} # 0 < zeta < 0.25
+zetau_counts_all = [] # to be filled with normalized (fractional) counts per bin for each simulated catalog
+zetau_counts_near_MMRs_all_dict = {zeta_lim : [] for zeta_lim in zeta_in_mmr_lim_list} # to be filled with normalized (fractional) counts of the number of planet-pairs near MMRs (|zeta| < 'zeta_in_mmr_lim')
+zetau_counts_near_above_MMRs_all_dict = {zeta_lim : [] for zeta_lim in zeta_in_mmr_lim_list} # -0.25 < zeta < 0
+zetau_counts_near_below_MMRs_all_dict = {zeta_lim : [] for zeta_lim in zeta_in_mmr_lim_list} # 0 < zeta < 0.25
 for i,sss_i in enumerate(sss_all):
     pratios_small_sim_i = sss_i['Rm_obs'][sss_i['Rm_obs'] < pratio_max]
-    bools_in_1st_sim_i, _ = pratio_is_in_any_1st_order_mmr_neighborhood(pratios_small_sim_i)
-    bools_in_2nd_sim_i, _ = pratio_is_in_any_2nd_order_mmr_neighborhood(pratios_small_sim_i)
-    zeta1_small_sim_i = zeta(pratios_small_sim_i[bools_in_1st_sim_i])
-    zeta2_small_sim_i = zeta(pratios_small_sim_i[bools_in_2nd_sim_i], order=2)
+    zetau_small_sim_i = zeta_u(pratios_small_sim_i)
     
     # Histograms of zetas:
-    counts_zeta1, bins = np.histogram(zeta1_small_sim_i, bins=zeta_bins)
-    counts_zeta2, bins = np.histogram(zeta2_small_sim_i, bins=zeta_bins)
-    zeta1_counts_all.append(counts_zeta1/np.sum(counts_zeta1))
-    zeta2_counts_all.append(counts_zeta2/np.sum(counts_zeta2))
+    counts_zetau, bins = np.histogram(zetau_small_sim_i, bins=zeta_bins)
+    zetau_counts_all.append(counts_zetau/np.sum(counts_zetau))
     
     # Numbers of planet pairs near MMRs:
     for zeta_lim in zeta_in_mmr_lim_list:
-        counts_zeta1_near_MMRs = np.sum(np.abs(zeta1_small_sim_i) <= zeta_lim)/len(zeta1_small_sim_i)
-        counts_zeta1_near_above_MMRs = np.sum((zeta1_small_sim_i >= -zeta_lim) & (zeta1_small_sim_i <= 0.))/len(zeta1_small_sim_i)
-        counts_zeta1_near_below_MMRs = np.sum((zeta1_small_sim_i >= 0.) & (zeta1_small_sim_i <= zeta_lim))/len(zeta1_small_sim_i)
-        assert np.isclose(counts_zeta1_near_MMRs, counts_zeta1_near_above_MMRs + counts_zeta1_near_below_MMRs)
-        zeta1_counts_near_MMRs_all_dict[zeta_lim].append(counts_zeta1_near_MMRs)
-        zeta1_counts_near_above_MMRs_all_dict[zeta_lim].append(counts_zeta1_near_above_MMRs)
-        zeta1_counts_near_below_MMRs_all_dict[zeta_lim].append(counts_zeta1_near_below_MMRs)
+        counts_zetau_near_MMRs = np.sum(np.abs(zetau_small_sim_i) <= zeta_lim)/len(zetau_small_sim_i)
+        counts_zetau_near_above_MMRs = np.sum((zetau_small_sim_i >= -zeta_lim) & (zetau_small_sim_i <= 0.))/len(zetau_small_sim_i)
+        counts_zetau_near_below_MMRs = np.sum((zetau_small_sim_i >= 0.) & (zetau_small_sim_i <= zeta_lim))/len(zetau_small_sim_i)
+        assert np.isclose(counts_zetau_near_MMRs, counts_zetau_near_above_MMRs + counts_zetau_near_below_MMRs)
+        zetau_counts_near_MMRs_all_dict[zeta_lim].append(counts_zetau_near_MMRs)
+        zetau_counts_near_above_MMRs_all_dict[zeta_lim].append(counts_zetau_near_above_MMRs)
+        zetau_counts_near_below_MMRs_all_dict[zeta_lim].append(counts_zetau_near_below_MMRs)
     
-zeta1_counts_all = np.array(zeta1_counts_all)
-zeta2_counts_all = np.array(zeta2_counts_all)
+zetau_counts_all = np.array(zetau_counts_all)
 for zeta_lim in zeta_in_mmr_lim_list:
-    zeta1_counts_near_MMRs_all_dict[zeta_lim] = np.array(zeta1_counts_near_MMRs_all_dict[zeta_lim])
-    zeta1_counts_near_above_MMRs_all_dict[zeta_lim] = np.array(zeta1_counts_near_above_MMRs_all_dict[zeta_lim])
-    zeta1_counts_near_below_MMRs_all_dict[zeta_lim] = np.array(zeta1_counts_near_below_MMRs_all_dict[zeta_lim])
+    zetau_counts_near_MMRs_all_dict[zeta_lim] = np.array(zetau_counts_near_MMRs_all_dict[zeta_lim])
+    zetau_counts_near_above_MMRs_all_dict[zeta_lim] = np.array(zetau_counts_near_above_MMRs_all_dict[zeta_lim])
+    zetau_counts_near_below_MMRs_all_dict[zeta_lim] = np.array(zetau_counts_near_below_MMRs_all_dict[zeta_lim])
 
-zeta1_counts_qtls = np.quantile(zeta1_counts_all, qtls_123sigma_lower_upper, axis=0) # quantiles per bin in zeta
-zeta2_counts_qtls = np.quantile(zeta2_counts_all, qtls_123sigma_lower_upper, axis=0) # quantiles per bin in zeta
+zetau_counts_qtls = np.quantile(zetau_counts_all, qtls_123sigma_lower_upper, axis=0) # quantiles per bin in zeta
 
-zeta1_counts_near_MMRs_qtls_dict = {zeta_lim : np.quantile(zeta1_counts_near_MMRs_all_dict[zeta_lim], [0.16,0.5,0.84]) for zeta_lim in zeta_in_mmr_lim_list} # quantiles in the fraction of planet-pairs near MMRs
-zeta1_counts_near_above_MMRs_qtls_dict = {zeta_lim : np.quantile(zeta1_counts_near_above_MMRs_all_dict[zeta_lim], [0.16,0.5,0.84]) for zeta_lim in zeta_in_mmr_lim_list}
-zeta1_counts_near_below_MMRs_qtls_dict = {zeta_lim : np.quantile(zeta1_counts_near_below_MMRs_all_dict[zeta_lim], [0.16,0.5,0.84]) for zeta_lim in zeta_in_mmr_lim_list}
+zetau_counts_near_MMRs_qtls_dict = {zeta_lim : np.quantile(zetau_counts_near_MMRs_all_dict[zeta_lim], [0.16,0.5,0.84]) for zeta_lim in zeta_in_mmr_lim_list} # quantiles in the fraction of planet-pairs near MMRs
+zetau_counts_near_above_MMRs_qtls_dict = {zeta_lim : np.quantile(zetau_counts_near_above_MMRs_all_dict[zeta_lim], [0.16,0.5,0.84]) for zeta_lim in zeta_in_mmr_lim_list}
+zetau_counts_near_below_MMRs_qtls_dict = {zeta_lim : np.quantile(zetau_counts_near_below_MMRs_all_dict[zeta_lim], [0.16,0.5,0.84]) for zeta_lim in zeta_in_mmr_lim_list}
 
-# Plot histograms of zeta_{2,1}:
-ax = plot_fig_pdf_simple([zeta1_small_Kep], [], x_min=-1., x_max=1., n_bins=n_bins, normalize=True, lw=lw, labels_sim=['Kepler catalog'], xlabel_text=r'$\zeta_{2,1}$', ylabel_text='Normalized fraction', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
+# Plot histograms of zeta_u:
+ax = plot_fig_pdf_simple([zetau_small_Kep], [], x_min=-2., x_max=1., n_bins=n_bins, normalize=True, lw=lw, labels_sim=['HFRC20 Kepler catalog'], xlabel_text=r'$\zeta_{u}$', ylabel_text='Normalized fraction', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 ax.tick_params(right=True)
-plt.plot(zeta_bins_mid, zeta1_counts_qtls[3], drawstyle='steps-mid', color='b', lw=lw) #, label='SysSim catalogs (median)'
-plt.fill_between(zeta_bins_mid, zeta1_counts_qtls[2], zeta1_counts_qtls[-3], step='mid', color='b', alpha=alpha, label='SysSim catalogs \n(16-84%)')
-plt.fill_between(zeta_bins_mid, zeta1_counts_qtls[1], zeta1_counts_qtls[-2], step='mid', color='b', alpha=alpha/2., label='')
-plt.fill_between(zeta_bins_mid, zeta1_counts_qtls[0], zeta1_counts_qtls[-1], step='mid', color='b', alpha=alpha/4., label='')
+plt.plot(zeta_bins_mid, zetau_counts_qtls[3], drawstyle='steps-mid', color='b', lw=lw) #, label='SysSim catalogs (median)'
+plt.fill_between(zeta_bins_mid, zetau_counts_qtls[2], zetau_counts_qtls[-3], step='mid', color='b', alpha=alpha, label='SysSim catalogs')
+plt.fill_between(zeta_bins_mid, zetau_counts_qtls[1], zetau_counts_qtls[-2], step='mid', color='b', alpha=alpha/2., label='')
+plt.fill_between(zeta_bins_mid, zetau_counts_qtls[0], zetau_counts_qtls[-1], step='mid', color='b', alpha=alpha/4., label='')
 zeta_in_mmr_lim = zeta_in_mmr_lim_list[0]
 plt.vlines([-zeta_in_mmr_lim, zeta_in_mmr_lim], 0., 1., colors='r', linestyles='dashed')
 plt.fill_betweenx([0,1], -zeta_in_mmr_lim, zeta_in_mmr_lim, color='r', alpha=0.1)
-plt.text(0., 0.95, 'Near MMRs', color='k', ha='center', fontsize=12, transform=ax.get_xaxis_transform())
-plt.legend(loc='upper right', bbox_to_anchor=(1,1), ncol=1, frameon=False, fontsize=lfs)
+plt.text(0., 0.98, 'Near 1st \norder MMRs', color='k', ha='center', va='top', fontsize=12, transform=ax.get_xaxis_transform())
+plt.legend(loc='lower left', bbox_to_anchor=(0,0), ncol=1, frameon=False, fontsize=lfs)
 if savefigures:
-    plt.savefig(savefigures_directory + model_name + '_zeta2_1_small_compare_credible.pdf')
-    plt.close()
-
-# Plot histograms of zeta_{2,2}:
-ax = plot_fig_pdf_simple([zeta2_small_Kep], [], x_min=-1., x_max=1., y_max=0.12, n_bins=n_bins, normalize=True, lw=lw, labels_sim=['Kepler catalog'], xlabel_text=r'$\zeta_{2,2}$', ylabel_text='Normalized fraction', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
-ax.tick_params(right=True)
-plt.plot(zeta_bins_mid, zeta2_counts_qtls[3], drawstyle='steps-mid', color='b', lw=lw) #, label='SysSim catalogs (median)'
-plt.fill_between(zeta_bins_mid, zeta2_counts_qtls[2], zeta2_counts_qtls[-3], step='mid', color='b', alpha=alpha, label='SysSim catalogs (16-84%)')
-plt.fill_between(zeta_bins_mid, zeta2_counts_qtls[1], zeta2_counts_qtls[-2], step='mid', color='b', alpha=alpha/2., label='')
-plt.fill_between(zeta_bins_mid, zeta2_counts_qtls[0], zeta2_counts_qtls[-1], step='mid', color='b', alpha=alpha/4., label='')
-plt.legend(loc='upper left', bbox_to_anchor=(0,1), ncol=1, frameon=False, fontsize=lfs)
-if savefigures:
-    plt.savefig(savefigures_directory + model_name + '_zeta2_2_small_compare_credible.pdf')
+    plt.savefig(savefigures_directory + model_name + '_zetau_compare_credible.pdf')
     plt.close()
 
 plt.show()
 
 # Plot histograms of the numbers (fractions) of planet-pairs near MMRs:
+n_bins = 30
 lfs = 12
 
 zeta_lim_colors = ['r', 'm']
 zeta_lim_lines = ['--', '--']
 
 # Fractions of planet-pairs near MMRs:
-ax = plot_fig_pdf_simple([zeta1_counts_near_MMRs_all_dict[zeta_lim] for zeta_lim in zeta_in_mmr_lim_list], [], x_min=0.1, x_max=0.35, y_max=200, n_bins=30, normalize=False, lw=lw, ls_sim=zeta_lim_lines, c_sim=zeta_lim_colors, labels_sim=['SysSim catalogs, $|\zeta_{1}| \leq %s$' % zeta_lim for zeta_lim in zeta_in_mmr_lim_list], xlabel_text=r'Fraction of planet-pairs near MMR', ylabel_text='Counts', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
+ax = plot_fig_pdf_simple([zetau_counts_near_MMRs_all_dict[zeta_lim] for zeta_lim in zeta_in_mmr_lim_list], [], x_min=0.06, x_max=0.21, y_max=200, n_bins=n_bins, normalize=False, lw=lw, ls_sim=zeta_lim_lines, c_sim=zeta_lim_colors, alpha_sim=alpha_all, labels_sim=['SysSim catalogs, $|\zeta_{u}| \leq %s$' % zeta_lim for zeta_lim in zeta_in_mmr_lim_list], xlabel_text=r'Fraction of planet-pairs near MMR', ylabel_text='Counts', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 for i,zeta_lim in enumerate(zeta_in_mmr_lim_list):
-    plt.axvline(x=zeta1_counts_near_MMRs_Kep_dict[zeta_lim], lw=lw, color=zeta_lim_colors[i], label=r'Kepler catalog, $|\zeta_{1}| \leq %s$' % zeta_lim)
-    plt.text(zeta1_counts_near_MMRs_Kep_dict[zeta_lim], 0.95, '{:0.2f}'.format(zeta1_counts_near_MMRs_Kep_dict[zeta_lim]), color=zeta_lim_colors[i], ha='left', fontsize=12, transform=ax.get_xaxis_transform())
-    plt.text(zeta1_counts_near_MMRs_qtls_dict[zeta_lim][1], 0.4, '${:0.2f}_{{-{:0.2f} }}^{{+{:0.2f} }}$'.format(zeta1_counts_near_MMRs_qtls_dict[zeta_lim][1], zeta1_counts_near_MMRs_qtls_dict[zeta_lim][1]-zeta1_counts_near_MMRs_qtls_dict[zeta_lim][0], zeta1_counts_near_MMRs_qtls_dict[zeta_lim][2]-zeta1_counts_near_MMRs_qtls_dict[zeta_lim][1]), color=zeta_lim_colors[i], ha='center', fontsize=12, transform=ax.get_xaxis_transform())
+    plt.axvline(x=zetau_counts_near_MMRs_Kep_dict[zeta_lim], lw=lw, color=zeta_lim_colors[i], label=r'HFRC20 Kepler catalog, $|\zeta_{u}| \leq %s$' % zeta_lim)
+    plt.text(zetau_counts_near_MMRs_Kep_dict[zeta_lim], 0.95, '{:0.2f}'.format(zetau_counts_near_MMRs_Kep_dict[zeta_lim]), color=zeta_lim_colors[i], ha='left', fontsize=12, transform=ax.get_xaxis_transform())
+    plt.text(zetau_counts_near_MMRs_qtls_dict[zeta_lim][1], 0.4, '${:0.2f}_{{-{:0.2f} }}^{{+{:0.2f} }}$'.format(zetau_counts_near_MMRs_qtls_dict[zeta_lim][1], zetau_counts_near_MMRs_qtls_dict[zeta_lim][1]-zetau_counts_near_MMRs_qtls_dict[zeta_lim][0], zetau_counts_near_MMRs_qtls_dict[zeta_lim][2]-zetau_counts_near_MMRs_qtls_dict[zeta_lim][1]), color=zeta_lim_colors[i], ha='center', fontsize=12, transform=ax.get_xaxis_transform())
 plt.legend(loc='upper left', bbox_to_anchor=(0.,1.), ncol=1, frameon=False, fontsize=lfs)
 if savefigures:
     plt.savefig(savefigures_directory + model_name + '_planet_fraction_near_MMRs_credible.pdf')
     plt.close()
 
 # Fractions of planet-pairs just wide of MMRs:
-ax = plot_fig_pdf_simple([zeta1_counts_near_above_MMRs_all_dict[zeta_lim] for zeta_lim in zeta_in_mmr_lim_list], [], x_min=0.025, x_max=0.225, y_max=200, n_bins=30, normalize=False, lw=lw, ls_sim=zeta_lim_lines, c_sim=zeta_lim_colors, labels_sim=['SysSim catalogs, $-%s \leq \zeta_{1} \leq 0$' % zeta_lim for zeta_lim in zeta_in_mmr_lim_list], xlabel_text=r'Fraction of planet-pairs just wide of MMR', ylabel_text='Counts', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
+ax = plot_fig_pdf_simple([zetau_counts_near_above_MMRs_all_dict[zeta_lim] for zeta_lim in zeta_in_mmr_lim_list], [], x_min=0.01, x_max=0.13, y_max=200, n_bins=n_bins, normalize=False, lw=lw, ls_sim=zeta_lim_lines, c_sim=zeta_lim_colors, alpha_sim=alpha_all, labels_sim=['SysSim catalogs, $-%s \leq \zeta_{u} \leq 0$' % zeta_lim for zeta_lim in zeta_in_mmr_lim_list], xlabel_text=r'Fraction of planet-pairs just wide of MMR', ylabel_text='Counts', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 for i,zeta_lim in enumerate(zeta_in_mmr_lim_list):
-    plt.axvline(x=zeta1_counts_near_above_MMRs_Kep_dict[zeta_lim], lw=lw, color=zeta_lim_colors[i], label='Kepler catalog, $-%s \leq \zeta_{1} \leq 0$' % zeta_lim)
-    plt.text(zeta1_counts_near_above_MMRs_Kep_dict[zeta_lim], 0.95, '{:0.2f}'.format(zeta1_counts_near_above_MMRs_Kep_dict[zeta_lim]), color=zeta_lim_colors[i], ha='left', fontsize=12, transform=ax.get_xaxis_transform())
-    plt.text(zeta1_counts_near_above_MMRs_qtls_dict[zeta_lim][1], 0.5, '${:0.2f}_{{-{:0.2f} }}^{{+{:0.2f} }}$'.format(zeta1_counts_near_above_MMRs_qtls_dict[zeta_lim][1], zeta1_counts_near_above_MMRs_qtls_dict[zeta_lim][1]-zeta1_counts_near_above_MMRs_qtls_dict[zeta_lim][0], zeta1_counts_near_above_MMRs_qtls_dict[zeta_lim][2]-zeta1_counts_near_above_MMRs_qtls_dict[zeta_lim][1]), color=zeta_lim_colors[i], ha='center', fontsize=12, transform=ax.get_xaxis_transform())
+    plt.axvline(x=zetau_counts_near_above_MMRs_Kep_dict[zeta_lim], lw=lw, color=zeta_lim_colors[i], label='HFRC20 Kepler catalog, $-%s \leq \zeta_{u} \leq 0$' % zeta_lim)
+    plt.text(zetau_counts_near_above_MMRs_Kep_dict[zeta_lim], 0.95, '{:0.2f}'.format(zetau_counts_near_above_MMRs_Kep_dict[zeta_lim]), color=zeta_lim_colors[i], ha='left', fontsize=12, transform=ax.get_xaxis_transform())
+    plt.text(zetau_counts_near_above_MMRs_qtls_dict[zeta_lim][1], 0.5, '${:0.2f}_{{-{:0.2f} }}^{{+{:0.2f} }}$'.format(zetau_counts_near_above_MMRs_qtls_dict[zeta_lim][1], zetau_counts_near_above_MMRs_qtls_dict[zeta_lim][1]-zetau_counts_near_above_MMRs_qtls_dict[zeta_lim][0], zetau_counts_near_above_MMRs_qtls_dict[zeta_lim][2]-zetau_counts_near_above_MMRs_qtls_dict[zeta_lim][1]), color=zeta_lim_colors[i], ha='center', fontsize=12, transform=ax.get_xaxis_transform())
     
     # Compute + print some numbers:
     print('##### For zeta_lim = %s #####' % zeta_lim)
-    print('Number of simulated catalogs with a fraction of planet-pairs just wide of MMRs (-%s < zeta_1 < 0) as high as in the Kepler catalog: %s' % (zeta_lim, np.sum(zeta1_counts_near_above_MMRs_all_dict[zeta_lim] >= zeta1_counts_near_above_MMRs_Kep_dict[zeta_lim])))
-    fratios_Kepler_to_draws = zeta1_counts_near_above_MMRs_Kep_dict[zeta_lim]/zeta1_counts_near_above_MMRs_all_dict[zeta_lim]
+    print('Number of simulated catalogs with a fraction of planet-pairs just wide of MMRs (-%s < zeta_1 < 0) as high as in the Kepler catalog: %s' % (zeta_lim, np.sum(zetau_counts_near_above_MMRs_all_dict[zeta_lim] >= zetau_counts_near_above_MMRs_Kep_dict[zeta_lim])))
+    fratios_Kepler_to_draws = zetau_counts_near_above_MMRs_Kep_dict[zeta_lim]/zetau_counts_near_above_MMRs_all_dict[zeta_lim]
     fratios_qtls = np.quantile(fratios_Kepler_to_draws, [0.16,0.5,0.84])
     print('F_Kep/F_draws = ${:0.2f}_{{-{:0.2f} }}^{{+{:0.2f} }}$'.format(fratios_qtls[1], fratios_qtls[1]-fratios_qtls[0], fratios_qtls[2]-fratios_qtls[1]))
 plt.legend(loc='upper left', bbox_to_anchor=(0.,1.), ncol=1, frameon=False, fontsize=lfs)
@@ -249,16 +231,16 @@ if savefigures:
     plt.close()
 
 # Fractions of planet-pairs just narrow of MMRs:
-ax = plot_fig_pdf_simple([zeta1_counts_near_below_MMRs_all_dict[zeta_lim] for zeta_lim in zeta_in_mmr_lim_list], [], x_min=0.025, x_max=0.225, y_max=200, n_bins=30, normalize=False, lw=lw, ls_sim=zeta_lim_lines, c_sim=zeta_lim_colors, labels_sim=['SysSim catalogs, $0 \leq \zeta_{1} \leq %s$' % zeta_lim for zeta_lim in zeta_in_mmr_lim_list], xlabel_text=r'Fraction of planet-pairs just narrow of MMR', ylabel_text='Counts', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
+ax = plot_fig_pdf_simple([zetau_counts_near_below_MMRs_all_dict[zeta_lim] for zeta_lim in zeta_in_mmr_lim_list], [], x_min=0.01, x_max=0.13, y_max=200, n_bins=n_bins, normalize=False, lw=lw, ls_sim=zeta_lim_lines, c_sim=zeta_lim_colors, alpha_sim=alpha_all, labels_sim=['SysSim catalogs, $0 \leq \zeta_{u} \leq %s$' % zeta_lim for zeta_lim in zeta_in_mmr_lim_list], xlabel_text=r'Fraction of planet-pairs just narrow of MMR', ylabel_text='Counts', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 for i,zeta_lim in enumerate(zeta_in_mmr_lim_list):
-    plt.axvline(x=zeta1_counts_near_below_MMRs_Kep_dict[zeta_lim], lw=lw, color=zeta_lim_colors[i], label='Kepler catalog, $0 \leq \zeta_{1} \leq %s$' % zeta_lim)
-    plt.text(zeta1_counts_near_below_MMRs_Kep_dict[zeta_lim], 0.95, '{:0.2f}'.format(zeta1_counts_near_below_MMRs_Kep_dict[zeta_lim]), color=zeta_lim_colors[i], ha='left', fontsize=12, transform=ax.get_xaxis_transform())
-    plt.text(zeta1_counts_near_below_MMRs_qtls_dict[zeta_lim][1], 0.55, '${:0.2f}_{{-{:0.2f} }}^{{+{:0.2f} }}$'.format(zeta1_counts_near_below_MMRs_qtls_dict[zeta_lim][1], zeta1_counts_near_below_MMRs_qtls_dict[zeta_lim][1]-zeta1_counts_near_below_MMRs_qtls_dict[zeta_lim][0], zeta1_counts_near_below_MMRs_qtls_dict[zeta_lim][2]-zeta1_counts_near_below_MMRs_qtls_dict[zeta_lim][1]), color=zeta_lim_colors[i], ha='center', fontsize=12, transform=ax.get_xaxis_transform())
+    plt.axvline(x=zetau_counts_near_below_MMRs_Kep_dict[zeta_lim], lw=lw, color=zeta_lim_colors[i], label='HFRC20 Kepler catalog, $0 \leq \zeta_{u} \leq %s$' % zeta_lim)
+    plt.text(zetau_counts_near_below_MMRs_Kep_dict[zeta_lim], 0.95, '{:0.2f}'.format(zetau_counts_near_below_MMRs_Kep_dict[zeta_lim]), color=zeta_lim_colors[i], ha='left', fontsize=12, transform=ax.get_xaxis_transform())
+    plt.text(zetau_counts_near_below_MMRs_qtls_dict[zeta_lim][1], 0.5, '${:0.2f}_{{-{:0.2f} }}^{{+{:0.2f} }}$'.format(zetau_counts_near_below_MMRs_qtls_dict[zeta_lim][1], zetau_counts_near_below_MMRs_qtls_dict[zeta_lim][1]-zetau_counts_near_below_MMRs_qtls_dict[zeta_lim][0], zetau_counts_near_below_MMRs_qtls_dict[zeta_lim][2]-zetau_counts_near_below_MMRs_qtls_dict[zeta_lim][1]), color=zeta_lim_colors[i], ha='center', fontsize=12, transform=ax.get_xaxis_transform())
     
     # Compute + print some numbers:
     print('##### For zeta_lim = %s #####' % zeta_lim)
-    print('Number of simulated catalogs with a fraction of planet-pairs just narrow of MMRs (0 < zeta_1 < %s) as low as in the Kepler catalog: %s' % (zeta_lim, np.sum(zeta1_counts_near_below_MMRs_all_dict[zeta_lim] <= zeta1_counts_near_below_MMRs_Kep_dict[zeta_lim])))
-    fratios_Kepler_to_draws = zeta1_counts_near_below_MMRs_Kep_dict[zeta_lim]/zeta1_counts_near_below_MMRs_all_dict[zeta_lim]
+    print('Number of simulated catalogs with a fraction of planet-pairs just narrow of MMRs (0 < zeta_1 < %s) as low as in the Kepler catalog: %s' % (zeta_lim, np.sum(zetau_counts_near_below_MMRs_all_dict[zeta_lim] <= zetau_counts_near_below_MMRs_Kep_dict[zeta_lim])))
+    fratios_Kepler_to_draws = zetau_counts_near_below_MMRs_Kep_dict[zeta_lim]/zetau_counts_near_below_MMRs_all_dict[zeta_lim]
     fratios_qtls = np.quantile(fratios_Kepler_to_draws, [0.16,0.5,0.84])
     print('F_Kep/F_draws = ${:0.2f}_{{-{:0.2f} }}^{{+{:0.2f} }}$'.format(fratios_qtls[1], fratios_qtls[1]-fratios_qtls[0], fratios_qtls[2]-fratios_qtls[1]))
 plt.legend(loc='upper right', bbox_to_anchor=(1.,1.), ncol=1, frameon=False, fontsize=lfs)
@@ -278,7 +260,7 @@ lfs = 16
 n_mmr = 1 # 1 => only consider the 1st order MMRs; 2 => consider both 1st and 2nd order MMRs
 pratio_max = 3. if n_mmr==1 else 4.
 
-zeta_in_mmr_lim = 0.25 # all |zeta1| <= zeta_in_mmr_lim are considered "near a 1st order MMR"
+zeta_in_mmr_lim = 0.25 # all |zetau| <= zeta_in_mmr_lim are considered "near a 1st order MMR"
 
 def compute_mult_obs_with_and_without_mmrs(ss_per_sys, n_mmr=n_mmr, pratio_max=pratio_max, zeta_in_mmr_lim=zeta_in_mmr_lim):
     
