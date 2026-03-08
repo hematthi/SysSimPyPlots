@@ -207,6 +207,13 @@ for i,zeta_lim in enumerate(zeta_in_mmr_lim_list):
     plt.axvline(x=zetau_counts_near_MMRs_Kep_dict[zeta_lim], lw=lw, color=zeta_lim_colors[i], label=r'HFRC20 Kepler catalog, $|\zeta_{u}| \leq %s$' % zeta_lim)
     plt.text(zetau_counts_near_MMRs_Kep_dict[zeta_lim], 0.95, '{:0.2f}'.format(zetau_counts_near_MMRs_Kep_dict[zeta_lim]), color=zeta_lim_colors[i], ha='left', fontsize=12, transform=ax.get_xaxis_transform())
     plt.text(zetau_counts_near_MMRs_qtls_dict[zeta_lim][1], 0.4, '${:0.2f}_{{-{:0.2f} }}^{{+{:0.2f} }}$'.format(zetau_counts_near_MMRs_qtls_dict[zeta_lim][1], zetau_counts_near_MMRs_qtls_dict[zeta_lim][1]-zetau_counts_near_MMRs_qtls_dict[zeta_lim][0], zetau_counts_near_MMRs_qtls_dict[zeta_lim][2]-zetau_counts_near_MMRs_qtls_dict[zeta_lim][1]), color=zeta_lim_colors[i], ha='center', fontsize=12, transform=ax.get_xaxis_transform())
+    
+    # Compute + print some numbers:
+    print('##### For zeta_lim = %s #####' % zeta_lim)
+    print('Number of simulated catalogs with a fraction of planet-pairs near MMRs (|zeta_u| < %s) as high as in the Kepler catalog: %s' % (zeta_lim, np.sum(zetau_counts_near_MMRs_all_dict[zeta_lim] >= zetau_counts_near_MMRs_Kep_dict[zeta_lim])))
+    fratios_Kepler_to_draws = zetau_counts_near_MMRs_Kep_dict[zeta_lim]/zetau_counts_near_MMRs_all_dict[zeta_lim]
+    fratios_qtls = np.quantile(fratios_Kepler_to_draws, [0.16,0.5,0.84])
+    print('F_Kep/F_draws = ${:0.2f}_{{-{:0.2f} }}^{{+{:0.2f} }}$'.format(fratios_qtls[1], fratios_qtls[1]-fratios_qtls[0], fratios_qtls[2]-fratios_qtls[1]))
 plt.legend(loc='upper left', bbox_to_anchor=(0.,1.), ncol=1, frameon=False, fontsize=lfs)
 if savefigures:
     plt.savefig(savefigures_directory + model_name + '_planet_fraction_near_MMRs_credible.pdf')
@@ -217,11 +224,11 @@ ax = plot_fig_pdf_simple([zetau_counts_near_above_MMRs_all_dict[zeta_lim] for ze
 for i,zeta_lim in enumerate(zeta_in_mmr_lim_list):
     plt.axvline(x=zetau_counts_near_above_MMRs_Kep_dict[zeta_lim], lw=lw, color=zeta_lim_colors[i], label='HFRC20 Kepler catalog, $-%s \leq \zeta_{u} \leq 0$' % zeta_lim)
     plt.text(zetau_counts_near_above_MMRs_Kep_dict[zeta_lim], 0.95, '{:0.2f}'.format(zetau_counts_near_above_MMRs_Kep_dict[zeta_lim]), color=zeta_lim_colors[i], ha='left', fontsize=12, transform=ax.get_xaxis_transform())
-    plt.text(zetau_counts_near_above_MMRs_qtls_dict[zeta_lim][1], 0.5, '${:0.2f}_{{-{:0.2f} }}^{{+{:0.2f} }}$'.format(zetau_counts_near_above_MMRs_qtls_dict[zeta_lim][1], zetau_counts_near_above_MMRs_qtls_dict[zeta_lim][1]-zetau_counts_near_above_MMRs_qtls_dict[zeta_lim][0], zetau_counts_near_above_MMRs_qtls_dict[zeta_lim][2]-zetau_counts_near_above_MMRs_qtls_dict[zeta_lim][1]), color=zeta_lim_colors[i], ha='center', fontsize=12, transform=ax.get_xaxis_transform())
+    plt.text(zetau_counts_near_above_MMRs_qtls_dict[zeta_lim][1]-0.002, 0.5, '${:0.2f}_{{-{:0.2f} }}^{{+{:0.2f} }}$'.format(zetau_counts_near_above_MMRs_qtls_dict[zeta_lim][1], zetau_counts_near_above_MMRs_qtls_dict[zeta_lim][1]-zetau_counts_near_above_MMRs_qtls_dict[zeta_lim][0], zetau_counts_near_above_MMRs_qtls_dict[zeta_lim][2]-zetau_counts_near_above_MMRs_qtls_dict[zeta_lim][1]), color=zeta_lim_colors[i], ha='center', fontsize=12, transform=ax.get_xaxis_transform())
     
     # Compute + print some numbers:
     print('##### For zeta_lim = %s #####' % zeta_lim)
-    print('Number of simulated catalogs with a fraction of planet-pairs just wide of MMRs (-%s < zeta_1 < 0) as high as in the Kepler catalog: %s' % (zeta_lim, np.sum(zetau_counts_near_above_MMRs_all_dict[zeta_lim] >= zetau_counts_near_above_MMRs_Kep_dict[zeta_lim])))
+    print('Number of simulated catalogs with a fraction of planet-pairs just wide of MMRs (-%s < zeta_u < 0) as high as in the Kepler catalog: %s' % (zeta_lim, np.sum(zetau_counts_near_above_MMRs_all_dict[zeta_lim] >= zetau_counts_near_above_MMRs_Kep_dict[zeta_lim])))
     fratios_Kepler_to_draws = zetau_counts_near_above_MMRs_Kep_dict[zeta_lim]/zetau_counts_near_above_MMRs_all_dict[zeta_lim]
     fratios_qtls = np.quantile(fratios_Kepler_to_draws, [0.16,0.5,0.84])
     print('F_Kep/F_draws = ${:0.2f}_{{-{:0.2f} }}^{{+{:0.2f} }}$'.format(fratios_qtls[1], fratios_qtls[1]-fratios_qtls[0], fratios_qtls[2]-fratios_qtls[1]))
@@ -239,7 +246,7 @@ for i,zeta_lim in enumerate(zeta_in_mmr_lim_list):
     
     # Compute + print some numbers:
     print('##### For zeta_lim = %s #####' % zeta_lim)
-    print('Number of simulated catalogs with a fraction of planet-pairs just narrow of MMRs (0 < zeta_1 < %s) as low as in the Kepler catalog: %s' % (zeta_lim, np.sum(zetau_counts_near_below_MMRs_all_dict[zeta_lim] <= zetau_counts_near_below_MMRs_Kep_dict[zeta_lim])))
+    print('Number of simulated catalogs with a fraction of planet-pairs just narrow of MMRs (0 < zeta_u < %s) as low as in the Kepler catalog: %s' % (zeta_lim, np.sum(zetau_counts_near_below_MMRs_all_dict[zeta_lim] <= zetau_counts_near_below_MMRs_Kep_dict[zeta_lim])))
     fratios_Kepler_to_draws = zetau_counts_near_below_MMRs_Kep_dict[zeta_lim]/zetau_counts_near_below_MMRs_all_dict[zeta_lim]
     fratios_qtls = np.quantile(fratios_Kepler_to_draws, [0.16,0.5,0.84])
     print('F_Kep/F_draws = ${:0.2f}_{{-{:0.2f} }}^{{+{:0.2f} }}$'.format(fratios_qtls[1], fratios_qtls[1]-fratios_qtls[0], fratios_qtls[2]-fratios_qtls[1]))
