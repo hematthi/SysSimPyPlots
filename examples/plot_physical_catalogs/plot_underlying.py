@@ -28,7 +28,9 @@ from syssimpyplots.plot_params import *
 
 savefigures = False
 #loadfiles_directory = '/Users/hematthi/Documents/GradSchool/Research/ACI/Simulated_Data/AMD_system/Split_stars/Singles_ecc/Params11_KS/Distribute_AMD_per_mass/durations_norm_circ_singles_multis_GF2020_KS/GP_med/' #Extrapolate_P1000d/
-loadfiles_directory = '/Users/hematthi/Documents/GradSchool/Research/SysSim/SysSimExClusters/examples/test/'
+#loadfiles_directory = '/Users/hematthi/Documents/GradSchool/Research/SysSim/SysSimExClusters/examples/test/'
+loadfiles_directory = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Simulated_catalogs/Hybrid_NR20_AMD_model1/clustered_initial_masses/Fit_some8p1_KS/Params10_fix_highM/GP_med_Tab1Col6/'
+
 #savefigures_directory = '/Users/hematthi/Documents/GradSchool/Research/ExoplanetsSysSim_Clusters/Figures/Model_Optimization/AMD_system/Split_stars/Singles_ecc/Params11_KS/Distribute_AMD_per_mass/durations_norm_circ_singles_multis_GF2020_KS/Best_models/GP_med/Underlying/' #'/Users/hematthi/Documents/GradSchool/Research/ExoplanetsSysSim_Clusters/Figures/Model_Optimization/AMD_system/Split_stars/Singles_ecc/Params11_KS/Distribute_AMD_per_mass/durations_norm_circ_singles_multis_GF2020_KS/Best_models/GP_med/Underlying/' #'/Users/hematthi/Documents/GradSchool/Research/ExoplanetsSysSim_Clusters/Figures/Model_Optimization/Split_stars/Clustered_P_R_fswp_bprp/Params13_KS/durations_KS/Best_models/GP_med/Underlying/'
 savefigures_directory = loadfiles_directory
 run_number = ''
@@ -44,7 +46,12 @@ has_extra_params = True # [NEW,TEMPORARY] whether the simulated catalog has extr
 ##### To load the underlying populations:
 
 # To first read the number of simulated targets and bounds for the periods and radii:
-N_sim, cos_factor, P_min, P_max, radii_min, radii_max = read_targets_period_radius_bounds(loadfiles_directory + 'periods%s.out' % run_number)
+sim_settings = read_targets_period_radius_bounds(loadfiles_directory + 'periods%s.out' % run_number)
+N_sim = sim_settings['N_sim']
+P_min = sim_settings['P_min']
+P_max = sim_settings['P_max']
+radii_min = sim_settings['radii_min']
+radii_max = sim_settings['radii_max']
 
 # To read the simulation parameters from the file:
 param_vals_all = read_sim_params(loadfiles_directory + 'periods%s.out' % run_number)
@@ -95,7 +102,7 @@ plot_fig_pdf_simple([sssp['Rm_all'][sssp['Rm_all'] < 5]], [], x_min=1., x_max=5.
 # Period ratios (within clusters vs. between clusters):
 bools_pr_same_clusters = (sssp_per_sys['clusterids_all'][:,:-1] == sssp_per_sys['clusterids_all'][:,1:]) & (sssp_per_sys['clusterids_all'][:,1:] != 0)
 bools_pr_diff_clusters = (sssp_per_sys['clusterids_all'][:,:-1] != sssp_per_sys['clusterids_all'][:,1:]) & (sssp_per_sys['clusterids_all'][:,1:] != 0)
-plot_fig_pdf_simple([sssp_per_sys['Rm_all'][bools_pr_same_clusters], sssp_per_sys['Rm_all'][bools_pr_diff_clusters]], [], x_min=1., x_max=20., n_bins=n_bins, normalize=True, log_x=True, c_sim=['b','r'], ls_sim=['-','-'], lw=lw, labels_sim=['Same cluster', 'Different clusters'], xticks_custom=[1,2,3,4,5,10,20,50,100], xlabel_text=r'$P_{i+1}/P_i$', ylabel_text='Fraction', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt, legend=True, save_name=savefigures_directory + subdirectory + model_name + '_underlying_periodratios_in_vs_between_clusters.pdf', save_fig=savefigures)
+plot_fig_pdf_simple([sssp_per_sys['Rm_all'][bools_pr_same_clusters], sssp_per_sys['Rm_all'][bools_pr_diff_clusters]], [], x_min=1., x_max=20., n_bins=n_bins, normalize=True, log_x=True, c_sim=['b','r'], ls_sim=['-','-'], lw=lw, alpha_sim=[0.5]*2, labels_sim=['Same cluster', 'Different clusters'], xticks_custom=[1,2,3,4,5,10,20,50,100], xlabel_text=r'$P_{i+1}/P_i$', ylabel_text='Fraction', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt, legend=True, save_name=savefigures_directory + subdirectory + model_name + '_underlying_periodratios_in_vs_between_clusters.pdf', save_fig=savefigures)
 
 # Eccentricities:
 plot_fig_pdf_simple([sssp['e_all']], [], x_min=1e-3, x_max=1., n_bins=n_bins, normalize=True, log_x=True, lw=lw, xticks_custom=[1e-3,1e-2,1e-1,1.], xlabel_text=r'$e$', ylabel_text='Fraction', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_underlying_eccentricities.pdf', save_fig=savefigures)
@@ -110,13 +117,13 @@ plot_fig_pdf_simple([sssp['mass_all']], [], x_min=0.09, x_max=1e2, n_bins=n_bins
 plot_fig_pdf_simple([sssp['radii_all']], [], x_min=0.5, x_max=10., n_bins=n_bins, normalize=True, log_x=True, lw=lw, xticks_custom=[0.5,1,2,4,10], xlabel_text=r'$R_p$ ($R_\oplus$)', ylabel_text='Fraction', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_underlying_radii.pdf', save_fig=savefigures)
 
 # Planet radii (above and below the photoevaporation boundary):
-plot_fig_pdf_simple([sssp['radii_above_all'], sssp['radii_below_all']], [], x_min=0.5, x_max=10., n_bins=n_bins, normalize=True, log_x=True, c_sim=['b','r'], ls_sim=['-','-'], lw=lw, labels_sim=['Above','Below'], xticks_custom=[0.5,1,2,4,10], xlabel_text=r'$R_p$ ($R_\oplus$)', ylabel_text='Fraction', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt, legend=True, save_name=savefigures_directory + subdirectory + model_name + '_underlying_radii_photoevap.pdf', save_fig=savefigures)
+plot_fig_pdf_simple([sssp['radii_above_all'], sssp['radii_below_all']], [], x_min=0.5, x_max=10., n_bins=n_bins, normalize=True, log_x=True, c_sim=['b','r'], ls_sim=['-','-'], lw=lw, alpha_sim=[0.5]*2, labels_sim=['Above','Below'], xticks_custom=[0.5,1,2,4,10], xlabel_text=r'$R_p$ ($R_\oplus$)', ylabel_text='Fraction', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt, legend=True, save_name=savefigures_directory + subdirectory + model_name + '_underlying_radii_photoevap.pdf', save_fig=savefigures)
 
 # Planet radii ratios:
 plot_fig_pdf_simple([sssp['radii_ratio_all']], [], x_min=0.1, x_max=10., n_bins=n_bins, normalize=True, log_x=True, lw=lw, xlabel_text=r'$R_{p,i+1}/R_{p,i}$', ylabel_text='Fraction', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_underlying_radii_ratios.pdf', save_fig=savefigures)
 
 # Planet radii ratios (above, below, and across the photoevaporation boundary):
-plot_fig_pdf_simple([sssp['radii_ratio_above_all'], sssp['radii_ratio_below_all'], sssp['radii_ratio_across_all']], [], x_min=0.1, x_max=10., n_bins=n_bins, normalize=True, log_x=True, c_sim=['b','r','k'], ls_sim=['-','-','-'], lw=lw, labels_sim=['Above','Below','Across'], xlabel_text=r'$R_{p,i+1}/R_{p,i}$', ylabel_text='Fraction', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt, legend=True, save_name=savefigures_directory + subdirectory + model_name + '_underlying_radii_photoevap.pdf', save_fig=savefigures)
+plot_fig_pdf_simple([sssp['radii_ratio_above_all'], sssp['radii_ratio_below_all'], sssp['radii_ratio_across_all']], [], x_min=0.1, x_max=10., n_bins=n_bins, normalize=True, log_x=True, c_sim=['b','r','k'], ls_sim=['-','-','-'], lw=lw, alpha_sim=[0.5]*3, labels_sim=['Above','Below','Across'], xlabel_text=r'$R_{p,i+1}/R_{p,i}$', ylabel_text='Fraction', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt, legend=True, save_name=savefigures_directory + subdirectory + model_name + '_underlying_radii_photoevap.pdf', save_fig=savefigures)
 
 # Separations in mutual Hill radii:
 plot_fig_pdf_simple([sssp['N_mH_all']], [], x_min=1., x_max=200., n_bins=n_bins, normalize=True, log_x=True, lw=lw, xlabel_text=r'$\Delta$', ylabel_text='Fraction', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_underlying_deltas.pdf', save_fig=savefigures)
@@ -140,10 +147,10 @@ plot_fig_pdf_simple([sssp_per_sys['gap_complexity']], [], x_min=0., x_max=1., n_
 ### Additional planetary properties from the Hybrid model:
 if has_extra_params:
     # Initial planet radii:
-    plot_fig_pdf_simple([sssp['init_radii_all'], sssp['radii_all']], [], x_min=0.5, x_max=10., n_bins=n_bins, normalize=True, log_x=True, c_sim=['k','k'], ls_sim=['--','-'], lw=lw, labels_sim=['Initial','Final'], xticks_custom=[0.5,1,2,4,10], xlabel_text=r'$R_p$ ($R_\oplus$)', ylabel_text='Fraction', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt, legend=True, save_name=savefigures_directory + subdirectory + model_name + '_underlying_initial_radii.pdf', save_fig=savefigures)
+    plot_fig_pdf_simple([sssp['init_radii_all'], sssp['radii_all']], [], x_min=0.5, x_max=10., n_bins=n_bins, normalize=True, log_x=True, c_sim=['k','k'], ls_sim=['--','-'], lw=lw, alpha_sim=[0.5]*2, labels_sim=['Initial','Final'], xticks_custom=[0.5,1,2,4,10], xlabel_text=r'$R_p$ ($R_\oplus$)', ylabel_text='Fraction', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt, legend=True, save_name=savefigures_directory + subdirectory + model_name + '_underlying_initial_radii.pdf', save_fig=savefigures)
     
     # Initial planet masses:
-    plot_fig_pdf_simple([sssp['init_mass_all'], sssp['mass_all']], [], x_min=0.09, x_max=1e2, n_bins=n_bins, normalize=True, log_x=True, c_sim=['k','k'], ls_sim=['--','-'], lw=lw, labels_sim=['Initial','Final'], xlabel_text=r'$M_p$ ($M_\oplus$)', ylabel_text='Fraction', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_underlying_initial_masses.pdf', save_fig=savefigures)
+    plot_fig_pdf_simple([sssp['init_mass_all'], sssp['mass_all']], [], x_min=0.09, x_max=1e2, n_bins=n_bins, normalize=True, log_x=True, c_sim=['k','k'], ls_sim=['--','-'], lw=lw, alpha_sim=[0.5]*2, labels_sim=['Initial','Final'], xlabel_text=r'$M_p$ ($M_\oplus$)', ylabel_text='Fraction', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_underlying_initial_masses.pdf', save_fig=savefigures)
     
     # Planet envelope masses:
     plot_fig_pdf_simple([sssp['env_mass_all']], [], x_min=1e-2, x_max=1e2, n_bins=n_bins, normalize=True, log_x=True, ls_sim=['--'], lw=lw, xlabel_text=r'$M_{\rm env}$ ($M_\oplus$)', ylabel_text='Fraction', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_underlying_envelope_masses.pdf', save_fig=savefigures)
@@ -155,7 +162,7 @@ if has_extra_params:
     plot_fig_pdf_simple([sssp['p_ret_all']], [], x_min=0., x_max=1., n_bins=n_bins, normalize=True, log_x=False, ls_sim=['--'], lw=lw, xlabel_text=r'$p_{\rm ret}$', ylabel_text='Fraction', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_underlying_retention_probabilities.pdf', save_fig=savefigures)
     
     # Numbers of planets that have lost vs. retained their envelopes:
-    print('Numbers (fractions) of planets that have lost vs. retained their envelopes: {:d} ({:.2f}) vs. {:d} ({:.2f})'.format(np.sum(sssp['bools_ret_all']), np.sum(sssp['bools_ret_all'])/len(sssp['bools_ret_all']), np.sum(~sssp['bools_ret_all']), np.sum(~sssp['bools_ret_all'])/len(sssp['bools_ret_all'])))
+    print('Numbers (fractions) of planets that have retained vs. lost their envelopes: {:d} ({:.2f}) vs. {:d} ({:.2f})'.format(np.sum(sssp['bools_ret_all']), np.sum(sssp['bools_ret_all'])/len(sssp['bools_ret_all']), np.sum(~sssp['bools_ret_all']), np.sum(~sssp['bools_ret_all'])/len(sssp['bools_ret_all'])))
 
 plt.show()
 plt.close()
@@ -439,5 +446,88 @@ plt.xlabel(r'$\log_{10}(P / {\rm days})$', fontsize=20)
 plt.ylabel(r'$\log_{10}(e)$', fontsize=20)
 if savefigures:
     plt.savefig(savefigures_directory + subdirectory + model_name + '_underlying_eccentricities_vs_periods.pdf')
+    plt.close()
+plt.show()
+
+
+
+##### To plot mutual inclinations and eccentricities vs radii:
+
+x = sssp_per_sys['radii_all'][np.sum(sssp_per_sys['radii_all'] > 0., axis=1) > 1]
+x = x[x > 0]
+
+# Mutual inclinations:
+y = sssp_per_sys['inclmut_all'][np.sum(sssp_per_sys['P_all'] > 0., axis=1) > 1]
+y = 180./np.pi * y[y > 0]
+
+fig = plt.figure(figsize=(8,8))
+plot = GridSpec(1,1,left=0.15,bottom=0.15,right=0.95,top=0.95,wspace=0,hspace=0)
+ax = plt.subplot(plot[:,:])
+corner.hist2d(np.log10(x), np.log10(y), bins=50, plot_density=False, contour_kwargs={'colors': ['0.6','0.4','0.2','0']}, data_kwargs={'color': 'k'})
+ax.tick_params(axis='both', labelsize=afs)
+#plt.gca().set_xscale("log")
+#plt.gca().set_yscale("log")
+plt.xlim([-0.3, 1.])
+plt.ylim([-3., 2.])
+plt.xlabel(r'$\log_{10}(R_p / R_\oplus)$', fontsize=20)
+plt.ylabel(r'$\log_{10}(i_m / {\rm deg})$', fontsize=20)
+if savefigures:
+    plt.savefig(savefigures_directory + subdirectory + model_name + '_underlying_mutualinclinations_vs_radii.pdf')
+    plt.close()
+plt.show()
+
+# Eccentricities:
+y = sssp_per_sys['e_all'][np.sum(sssp_per_sys['P_all'] > 0., axis=1) > 1]
+y = y[y > 0]
+
+fig = plt.figure(figsize=(8,8))
+plot = GridSpec(1,1,left=0.15,bottom=0.15,right=0.95,top=0.95,wspace=0,hspace=0)
+ax = plt.subplot(plot[:,:])
+corner.hist2d(np.log10(x), np.log10(y), bins=50, plot_density=False, contour_kwargs={'colors': ['0.6','0.4','0.2','0']}, data_kwargs={'color': 'k'})
+ax.tick_params(axis='both', labelsize=afs)
+#plt.gca().set_xscale("log")
+#plt.gca().set_yscale("log")
+plt.xlim([-0.3, 1.])
+plt.ylim([-3., 0.])
+plt.xlabel(r'$\log_{10}(R_p / R_\oplus)$', fontsize=20)
+plt.ylabel(r'$\log_{10}(e)$', fontsize=20)
+if savefigures:
+    plt.savefig(savefigures_directory + subdirectory + model_name + '_underlying_eccentricities_vs_radii.pdf')
+    plt.close()
+plt.show()
+
+##### [NEW, 02/20/2026]: To explore the result of Gilbert et al. (2025) (plot median eccentricity vs. planet radii bins):
+
+logRp_bins = np.linspace(np.log10(radii_min), np.log10(radii_max), 11)
+logRp_bins_mid = (logRp_bins[:-1] + logRp_bins[1:])/2.
+
+e_bins = []
+e_med_bins = np.zeros(len(logRp_bins_mid))
+e_16_bins = np.zeros(len(logRp_bins_mid))
+e_84_bins = np.zeros(len(logRp_bins_mid))
+for i,logRp_mid in enumerate(logRp_bins_mid):
+    e_bin = y[(np.log10(x) >= logRp_bins[i]) & (np.log10(x) < logRp_bins[i+1])]
+    e_bin_qtls = np.quantile(e_bin, [0.159,0.5,0.841])
+    e_bins.append(e_bin)
+    e_med_bins[i] = e_bin_qtls[1]
+    e_16_bins[i] = e_bin_qtls[0]
+    e_84_bins[i] = e_bin_qtls[2]
+
+fig = plt.figure(figsize=(8,8))
+plot = GridSpec(1,1,left=0.15,bottom=0.15,right=0.95,top=0.95,wspace=0,hspace=0)
+ax = plt.subplot(plot[:,:])
+#plt.plot(10.**(logRp_bins_mid), e_med_bins, marker='o')
+plt.errorbar(10.**(logRp_bins_mid), e_med_bins, yerr=[e_med_bins-e_16_bins, e_84_bins-e_med_bins], fmt='o')
+ax.tick_params(axis='both', labelsize=afs)
+plt.gca().set_xscale("log")
+#plt.gca().set_yscale("log")
+ax.get_xaxis().set_major_formatter(matplotlib.ticker.ScalarFormatter())
+plt.xticks([0.5, 1., 2., 4., 8.])
+plt.xlim([radii_min, radii_max])
+plt.ylim([0., 0.3])
+plt.xlabel(r'Planet radius $R_p [R_\oplus]$', fontsize=20)
+plt.ylabel(r'Eccentricity $e$', fontsize=20)
+if savefigures:
+    plt.savefig(savefigures_directory + subdirectory + model_name + '_underlying_eccentricities_vs_radii_bins.pdf')
     plt.close()
 plt.show()

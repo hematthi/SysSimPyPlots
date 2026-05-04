@@ -27,7 +27,8 @@ from syssimpyplots.plot_params import *
 
 
 savefigures = False
-loadfiles_directory = '/Users/hematthi/Documents/GradSchool/Research/SysSim/SysSimExClusters/examples/test/'
+#loadfiles_directory = '/Users/hematthi/Documents/GradSchool/Research/SysSim/SysSimExClusters/examples/test/'
+loadfiles_directory = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Simulated_catalogs/Hybrid_NR20_AMD_model1/clustered_initial_masses/Fit_some8p1_KS/Params10_fix_highM/GP_med_Tab1Col6/'
 savefigures_directory = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Figures/Hybrid_NR20_AMD_model1/clustered_initial_masses/Underlying/'
 run_number = ''
 model_name = 'Hybrid_model' + run_number
@@ -38,7 +39,12 @@ model_label, model_color = 'HM-C', 'g' #'Maximum AMD model', 'g' #'Two-Rayleigh 
 
 
 # To first read the number of simulated targets and bounds for the periods and radii:
-N_sim, cos_factor, P_min, P_max, radii_min, radii_max = read_targets_period_radius_bounds(loadfiles_directory + 'periods%s.out' % run_number)
+sim_settings = read_targets_period_radius_bounds(loadfiles_directory + 'periods%s.out' % run_number)
+N_sim = sim_settings['N_sim']
+P_min = sim_settings['P_min']
+P_max = sim_settings['P_max']
+radii_min = sim_settings['radii_min']
+radii_max = sim_settings['radii_max']
 
 # To read the simulation parameters from the file:
 param_vals_all = read_sim_params(loadfiles_directory + 'periods%s.out' % run_number)
@@ -83,7 +89,7 @@ M_core_all = []
 for i in range(runs):
     run_number = i+1
     print(i)
-    N_sim_i = read_targets_period_radius_bounds(loadfiles_directory + 'periods%s.out' % run_number)[0]
+    sim_settings_i = read_targets_period_radius_bounds(loadfiles_directory + 'periods%s.out' % run_number)
     params_i = read_sim_params(loadfiles_directory + 'periods%s.out' % run_number)
     sssp_per_sys_i, sssp_i = compute_summary_stats_from_cat_phys(file_name_path=loadfiles_directory, run_number=run_number)
 
