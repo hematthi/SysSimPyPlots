@@ -111,7 +111,7 @@ loadfiles_directory1 = '/Users/hematthi/Documents/GradSchool/Research/ACI/Simula
 #loadfiles_directory1 = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Simulated_catalogs/Hybrid_NR20_AMD_model1/Fit_all_KS/Params8/GP_best_models_100/'
 #loadfiles_directory1 = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Simulated_catalogs/Hybrid_NR20_AMD_model1/Fit_some_KS/Params8_fix_highM/GP_best_models_100/'
 #loadfiles_directory2 = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Simulated_catalogs/Hybrid_NR20_AMD_model1/Fit_some8p1_KS/Params9_fix_highM/GP_best_models_100/'
-loadfiles_directory3 = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Simulated_catalogs/Hybrid_NR20_AMD_model1/clustered_initial_masses/Fit_some8p1_KS/Params10_fix_highM/GP_best_models_100/'
+loadfiles_directory3 = '/Users/hematthi/Documents/GradSchool/Research/SysSim/Simulated_catalogs/Hybrid_NR20_AMD_model1/clustered_initial_masses/Fit_some8p1_KS/Params10_fix_highM/GP_dtotmax12.0_depthmin0.29_models/' #GP_best_models_100/'
 
 
 model_names = ['H20 model', 'HM-C'] #['H20 model', 'HM-U', 'HM-C']
@@ -520,6 +520,7 @@ ax = plt.subplot(plot[3:,0]) # individual catalog draws/histograms
 N_plot = 100
 #i_model = 2
 #sss_radii_plot_list = [sss_i['radii_obs'] for sss_i in sss_all[i_model][:N_plot]]
+i_model = 1
 sss_radii_plot_list = [sss_i['radii_obs'] for sss_i in sss_top10p[:N_plot]]
 plot_panel_pdf_simple(ax, sss_radii_plot_list + [ssk['radii_obs']], [], x_min=radii_min, x_max=radii_max_plot, y_max=y_max, c_sim=[model_colors[i_model]]*N_plot + ['k'], ls_sim=['-']*(N_plot+1), lw=[0.5]*N_plot + [lw], alpha_sim=[0.2]*N_plot + [1.], labels_sim=[model_names[i_model]+' catalogs'] + [None]*(N_plot-1) + ['Kepler'], xlabel_text=r'Planet radius, $R_p$ [$R_\oplus$]', afs=afs, tfs=tfs, lfs=lfs, legend=False)
 plt.text(x=0.98, y=0.9, s='Catalogs from ' + model_names[i_model], ha='right', fontsize=lfs, transform=ax.transAxes)
@@ -552,6 +553,7 @@ ax = plt.subplot(plot[3:,0]) # individual catalog draws/histograms
 N_plot = 100
 #i_model = 2
 #sss_radii_delta_plot_list = [sss_i['radii_delta_gap_obs'] for sss_i in sss_all[i_model][:N_plot]]
+i_model = 1
 sss_radii_delta_plot_list = [sss_i['radii_delta_gap_obs'] for sss_i in sss_top10p[:N_plot]]
 plot_panel_pdf_simple(ax, sss_radii_delta_plot_list + [ssk['radii_delta_gap_obs']], [], x_min=radii_delta_min_plot, x_max=radii_delta_max_plot, y_max=y_max, c_sim=[model_colors[i_model]]*N_plot + ['k'], ls_sim=['-']*(N_plot+1), lw=[0.5]*N_plot + [lw], alpha_sim=[0.2]*N_plot + [1.], labels_sim=[model_names[i_model]+' catalogs'] + [None]*(N_plot-1) + ['Kepler'], xlabel_text=r'Gap subtracted radius, $R_p - R_{\rm gap}$ [$R_\oplus$]', afs=afs, tfs=tfs, lfs=lfs, legend=False)
 plt.text(x=0.98, y=0.9, s='Catalogs from ' + model_names[i_model], ha='right', fontsize=lfs, transform=ax.transAxes)
