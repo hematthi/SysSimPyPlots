@@ -495,7 +495,7 @@ def pratio_is_in_any_1st_order_mmr_neighborhood(pratios, i_max=5):
     i_of_1st_order_mmr = np.zeros(len(pratios), dtype=int) # to be filled with 'i' values indicating which 1st order MMR (i.e. (i+1)/i) each period ratio is in the neighborhood of, if any (will be 0 for those not in any neighborhood)
     for i in range(1,i_max+1):
         bounds = bounds_3rd_order_mmr_neighborhood_of_1st_order_mmr(i)
-        bools_in_bounds = (pratios >= bounds[0]) & (pratios <= bounds[1])
+        bools_in_bounds = (pratios > bounds[0]) & (pratios <= bounds[1])
         bools_in_1st_order_mmr_neighborhood[bools_in_bounds] = True
         i_of_1st_order_mmr[bools_in_bounds] = i
     return bools_in_1st_order_mmr_neighborhood, i_of_1st_order_mmr
@@ -522,7 +522,7 @@ def pratio_is_in_any_2nd_order_mmr_neighborhood(pratios, i_max=5):
     i_of_2nd_order_mmr = np.zeros(len(pratios), dtype=int) # to be filled with 'i' values indicating which 1st order MMR (i.e. (i+1)/i) each period ratio is in the neighborhood of, if any (will be 0 for those not in any neighborhood)
     for i in range(1,i_max+1):
         bounds = bounds_3rd_order_mmr_neighborhood_of_2nd_order_mmr(i)
-        bools_in_bounds = (pratios >= bounds[0]) & (pratios <= bounds[1])
+        bools_in_bounds = (pratios > bounds[0]) & (pratios <= bounds[1])
         bools_in_2nd_order_mmr_neighborhood[bools_in_bounds] = True
         i_of_2nd_order_mmr[bools_in_bounds] = i
     return bools_in_2nd_order_mmr_neighborhood, i_of_2nd_order_mmr
