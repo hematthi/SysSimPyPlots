@@ -509,17 +509,17 @@ def pratio_is_in_any_2nd_order_mmr_neighborhood(pratios, i_max=5):
     pratios : array[floats]
         The period ratios (must be all greater than or equal to 1).
     i_max : int, default=5
-        The highest 2nd order MMR index to consider (i.e. ``i`` such that ``n=2*i-1`` in ``(n+1)/n``).
+        The highest 2nd order MMR index to consider (i.e. ``i`` such that ``n=2*i-1`` in ``(n+2)/n``).
     
     Returns
     -------
     bools_in_2nd_order_mmr_neighborhood : array[bool]
         A boolean array indicating which period ratios are within the neighborhood of a 2nd order MMR.
     i_of_2nd_order_mmr : array[ints]
-        An array indicating the 2nd order MMR index (i.e. ```i`` such that ``n=2*i-1`` in ``(n+1)/n``) each period ratio is within the neighborhood of, if any (otherwise 0).
+        An array indicating the 2nd order MMR index (i.e. ```i`` such that ``n=2*i-1`` in ``(n+2)/n``) each period ratio is within the neighborhood of, if any (otherwise 0).
     """
-    bools_in_2nd_order_mmr_neighborhood = np.full(len(pratios), False) # to be filled with booleans indicating which period ratios are within the neighborhood of a 1st order MMR
-    i_of_2nd_order_mmr = np.zeros(len(pratios), dtype=int) # to be filled with 'i' values indicating which 1st order MMR (i.e. (i+1)/i) each period ratio is in the neighborhood of, if any (will be 0 for those not in any neighborhood)
+    bools_in_2nd_order_mmr_neighborhood = np.full(len(pratios), False) # to be filled with booleans indicating which period ratios are within the neighborhood of a 2nd order MMR
+    i_of_2nd_order_mmr = np.zeros(len(pratios), dtype=int) # to be filled with 'i' values indicating which 2nd order MMR (i.e. (n+2)/n, where n=2*i-1) each period ratio is in the neighborhood of, if any (will be 0 for those not in any neighborhood)
     for i in range(1,i_max+1):
         bounds = bounds_3rd_order_mmr_neighborhood_of_2nd_order_mmr(i)
         bools_in_bounds = (pratios > bounds[0]) & (pratios <= bounds[1])
