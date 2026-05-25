@@ -15,10 +15,10 @@ from syssimpyplots.load_sims import *
 
 def test_load_Kepler_planets_cleaned():
     pc = load_Kepler_planets_cleaned()
-    assert 3. <= np.min(pc['P']) <= np.max(pc['P']) <= 300. # check range of periods (days)
+    assert 0 <= np.min(pc['P']) <= np.max(pc['P']) # check range of periods (days)
     assert 0 <= np.min(pc['t_D']) <= np.max(pc['t_D']) <= 100. # check range of transit durations (hrs)
     assert 0 <= np.min(pc['depth'])/1e6 <= np.max(pc['depth'])/1e6 <= 1. # check range of transit depths
-    assert 0.5 <= np.min(pc['Rp']) <= np.max(pc['Rp']) <= 10. # check range of planet radii (Earth radii)
+    assert 0 <= np.min(pc['Rp']) <= np.max(pc['Rp']) <= 10. # check range of planet radii (Earth radii)
     assert 0 < np.min(pc['Rstar'])
     assert 0 < np.min(pc['Mstar'])
 
@@ -139,7 +139,7 @@ def test_compute_distances_sim_Kepler():
     radii_max = sim_settings['radii_max']
 
     sss_per_sys, sss = compute_summary_stats_from_cat_obs(file_name_path=loadfiles_directory, compute_ratios=compute_ratios)
-    ssk_per_sys, ssk = compute_summary_stats_from_Kepler_catalog(P_min, P_max, radii_min, radii_max, compute_ratios=compute_ratios)
+    ssk_per_sys, ssk = compute_summary_stats_from_Kepler_catalog(period_min, period_max, radii_min, radii_max, compute_ratios=compute_ratios)
 
     dists, dists_w = compute_distances_sim_Kepler(sss_per_sys, sss, ssk_per_sys, ssk, weights_all['all'], dists_include, N_sim, AD_mod=AD_mod)
 

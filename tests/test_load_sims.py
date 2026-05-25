@@ -60,7 +60,7 @@ def test_load_star_phys(load_dir=loadfiles_directory, run_number=''):
     assert 0 <= np.min(star_phys['num_planets'])
 
 def test_load_planets_stars_phys_separate(load_dir=loadfiles_directory, run_number=''):
-    clusterids_per_sys, P_per_sys, radii_per_sys, mass_per_sys, e_per_sys, inclmut_per_sys, incl_per_sys, Mstar_all, Rstar_all = load_planets_stars_phys_separate(load_dir, run_number=run_number)
+    clusterids_per_sys, P_per_sys, radii_per_sys, mass_per_sys, e_per_sys, inclmut_per_sys, incl_per_sys, Mstar_all, Rstar_all, *_ = load_planets_stars_phys_separate(load_dir, run_number=run_number)
     sim_settings = read_targets_period_radius_bounds(load_dir + 'periods_all%s.out' % run_number)
     N_sim = sim_settings['N_sim']
     period_min = sim_settings['P_min']
@@ -90,11 +90,11 @@ def test_load_planets_stars_phys_separate(load_dir=loadfiles_directory, run_numb
     assert 0 < np.min(Rstar_all)
 
 def test_compute_basic_summary_stats_per_sys_cat_phys(load_dir=loadfiles_directory, run_number=''):
-    clusterids_per_sys, P_per_sys, radii_per_sys, mass_per_sys, e_per_sys, inclmut_per_sys, incl_per_sys, Mstar_all, Rstar_all = load_planets_stars_phys_separate(load_dir, run_number=run_number)
+    clusterids_per_sys, P_per_sys, radii_per_sys, mass_per_sys, e_per_sys, inclmut_per_sys, incl_per_sys, Mstar_all, Rstar_all, *_ = load_planets_stars_phys_separate(load_dir, run_number=run_number)
 
     N_sys_pl, N_pl = len(clusterids_per_sys), len(list(chain(*clusterids_per_sys)))
 
-    sssp_per_sys_basic = compute_basic_summary_stats_per_sys_cat_phys(clusterids_per_sys, P_per_sys, radii_per_sys, mass_per_sys, e_per_sys, inclmut_per_sys, incl_per_sys, Mstar_all, Rstar_all)
+    sssp_per_sys_basic = compute_basic_summary_stats_per_sys_cat_phys(clusterids_per_sys, P_per_sys, radii_per_sys, mass_per_sys, e_per_sys, inclmut_per_sys, incl_per_sys, Mstar_all, Rstar_all, [], [], [], [], [], [])
     assert type(sssp_per_sys_basic['Mmax']) is np.int64
     assert sssp_per_sys_basic['Mmax'] == np.max(sssp_per_sys_basic['Mtot_all'])
     assert N_sys_pl == len(sssp_per_sys_basic['Mtot_all'])
