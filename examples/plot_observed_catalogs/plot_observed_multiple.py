@@ -61,16 +61,19 @@ dists_include = ['delta_f',
 loadfiles_directory1 = '/Users/hematthi/Documents/GradSchool/Research/ACI/Simulated_Data/Split_stars/Clustered_P_R_fswp_bprp/Params13_KS/durations_KS/GP_med/incl0_ecc0p02/' #incl0_ecc0p02/ #ecc0_incl1/
 run_number1 = ''
 
-N_sim, cos_factor, P_min, P_max, radii_min, radii_max = read_targets_period_radius_bounds(loadfiles_directory1 + 'periods%s.out' % run_number1)
+sim_settings = read_targets_period_radius_bounds(loadfiles_directory1 + 'periods%s.out' % run_number1)
+N_sim = sim_settings['N_sim']
+period_min = sim_settings['P_min']
+period_max = sim_settings['P_max']
+radii_min = sim_settings['radii_min']
+radii_max = sim_settings['radii_max']
 
-param_vals_all1 = read_sim_params(loadfiles_directory1 + 'periods%s.out' % run_number1)
 sss_per_sys1, sss1 = compute_summary_stats_from_cat_obs(file_name_path=loadfiles_directory1, run_number=run_number1, compute_ratios=compute_ratios)
 
 # Model 2:
 loadfiles_directory2 = '/Users/hematthi/Documents/GradSchool/Research/ACI/Simulated_Data/Split_stars/Clustered_P_R_fswp_bprp/Params13_KS/durations_KS/GP_med/incl2_ecc0p02/' #incl2_ecc0p02/ #ecc0p1_incl1/
 run_number2 = ''
 
-param_vals_all2 = read_sim_params(loadfiles_directory2 + 'periods%s.out' % run_number2)
 sss_per_sys2, sss2 = compute_summary_stats_from_cat_obs(file_name_path=loadfiles_directory2, run_number=run_number2, compute_ratios=compute_ratios)
 
 # Model 3:
@@ -89,7 +92,7 @@ model_linestyles = ['-', '-']
 model_colors = ['b', 'r'] #['b', 'r']
 
 # To load and process the observed Kepler catalog and compare with our simulated catalog:
-ssk_per_sys, ssk = compute_summary_stats_from_Kepler_catalog(P_min, P_max, radii_min, radii_max)
+ssk_per_sys, ssk = compute_summary_stats_from_Kepler_catalog(period_min, period_max, radii_min, radii_max)
 
 logxi_Kep_2 = np.log10(ssk_per_sys['xi_obs'][ssk_per_sys['Mtot_obs'] == 2, 0])
 logxi_Kep_3 = np.log10(ssk_per_sys['xi_obs'][ssk_per_sys['Mtot_obs'] == 3, :2].flatten())

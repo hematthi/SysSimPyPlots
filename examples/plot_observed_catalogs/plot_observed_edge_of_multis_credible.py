@@ -59,18 +59,20 @@ dists_include = ['delta_f',
 ##### To load the files with the systems with observed planets:
 
 # To first read the number of simulated targets and bounds for the periods and radii:
-N_sim, cos_factor, P_min, P_max, radii_min, radii_max = read_targets_period_radius_bounds(loadfiles_directory + 'periods%s.out' % run_number)
-
-# To read the simulation parameters from the file:
-param_vals_all = read_sim_params(loadfiles_directory + 'periods%s.out' % run_number)
+sim_settings = read_targets_period_radius_bounds(loadfiles_directory + 'periods%s.out' % run_number)
+N_sim = sim_settings['N_sim']
+period_min = sim_settings['P_min']
+period_max = sim_settings['P_max']
+radii_min = sim_settings['radii_min']
+radii_max = sim_settings['radii_max']
 
 # To load and process the simulated observed catalog of stars and planets:
 sss_per_sys, sss = compute_summary_stats_from_cat_obs(file_name_path=loadfiles_directory, run_number=run_number, compute_ratios=compute_ratios)
 
 # To load and process the observed Kepler catalog and compare with our simulated catalog:
-ssk_per_sys, ssk = compute_summary_stats_from_Kepler_catalog(P_min, P_max, radii_min, radii_max, compute_ratios=compute_ratios)
+ssk_per_sys, ssk = compute_summary_stats_from_Kepler_catalog(period_min, period_max, radii_min, radii_max, compute_ratios=compute_ratios)
 
-dists, dists_w = compute_distances_sim_Kepler(sss_per_sys, sss, ssk_per_sys, ssk, weights_all['all'], dists_include, N_sim, cos_factor=cos_factor, AD_mod=AD_mod)
+dists, dists_w = compute_distances_sim_Kepler(sss_per_sys, sss, ssk_per_sys, ssk, weights_all['all'], dists_include, N_sim, AD_mod=AD_mod)
 
 
 
@@ -106,7 +108,7 @@ sss_all = []
 for i in range(1,runs+1):
     run_number = i
     sss_per_sys_i, sss_i = compute_summary_stats_from_cat_obs(file_name_path=loadfiles_directory, run_number=run_number, compute_ratios=compute_ratios)
-    dists_i, dists_w_i = compute_distances_sim_Kepler(sss_per_sys_i, sss_i, ssk_per_sys, ssk, weights_all['all'], dists_include, N_Kep, cos_factor=cos_factor, AD_mod=AD_mod)
+    dists_i, dists_w_i = compute_distances_sim_Kepler(sss_per_sys_i, sss_i, ssk_per_sys, ssk, weights_all['all'], dists_include, N_Kep, AD_mod=AD_mod)
 
     sss_per_sys_all.append(sss_per_sys_i)
     sss_all.append(sss_i)
@@ -121,7 +123,7 @@ N_sys_Kep = len(ssk_per_sys['P_obs'])
 P_out_per_sys_Kep = ssk_per_sys['P_obs'][np.arange(N_sys_Kep), ssk_per_sys['Mtot_obs']-1]
 Pratio_out_per_sys_Kep = ssk_per_sys['Rm_obs'][np.arange(N_sys_Kep), ssk_per_sys['Mtot_obs']-2]
 
-P_cdf_evals = np.logspace(np.log10(P_min), np.log10(P_max), n_bins+1)
+P_cdf_evals = np.logspace(np.log10(period_min), np.log10(period_max), n_bins+1)
 Pratio_cdf_evals = np.logspace(np.log10(1.), np.log10(100.), n_bins+1)
 
 P_out_cdf_evals_2_all = np.zeros((runs, len(P_cdf_evals)))
@@ -161,7 +163,7 @@ Pratio_out_cdf_evals_3_qtls = np.quantile(Pratio_out_cdf_evals_3_all, qtls, axis
 Pratio_out_cdf_evals_4p_qtls = np.quantile(Pratio_out_cdf_evals_4p_all, qtls, axis=0)
 
 # Outermost periods:
-plot_fig_cdf_simple([], [P_out_per_sys_Kep[ssk_per_sys['Mtot_obs'] == 2]], x_min=P_min, x_max=P_max, log_x=True, lw=lw, labels_Kep=['Kepler'], xticks_custom=[3,10,30,100,300], xlabel_text=r'$P_{\rm out}$ (days)', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
+plot_fig_cdf_simple([], [P_out_per_sys_Kep[ssk_per_sys['Mtot_obs'] == 2]], x_min=period_min, x_max=period_max, log_x=True, lw=lw, labels_Kep=['Kepler'], xticks_custom=[3,10,30,100,300], xlabel_text=r'$P_{\rm out}$ (days)', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 plt.fill_between(P_cdf_evals, P_out_cdf_evals_2_qtls[0], P_out_cdf_evals_2_qtls[2], alpha=alpha, color='b', label=r'SysSim (central 68%)')
 plt.plot(P_cdf_evals, P_out_cdf_evals_2_qtls[1], lw=lw, color='b', label=r'SysSim (median)')
 plt.legend(loc='upper left', bbox_to_anchor=(0,1), ncol=1, frameon=False, fontsize=lfs)
@@ -170,7 +172,7 @@ if savefigures:
     plt.savefig(savefigures_directory + subdirectory + model_name + '_periods_outermost_N2_CDFs.pdf')
     plt.close()
 
-plot_fig_cdf_simple([], [P_out_per_sys_Kep[ssk_per_sys['Mtot_obs'] == 3]], x_min=P_min, x_max=P_max, log_x=True, lw=lw, labels_Kep=['Kepler'], xticks_custom=[3,10,30,100,300], xlabel_text=r'$P_{\rm out}$ (days)', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
+plot_fig_cdf_simple([], [P_out_per_sys_Kep[ssk_per_sys['Mtot_obs'] == 3]], x_min=period_min, x_max=period_max, log_x=True, lw=lw, labels_Kep=['Kepler'], xticks_custom=[3,10,30,100,300], xlabel_text=r'$P_{\rm out}$ (days)', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 plt.fill_between(P_cdf_evals, P_out_cdf_evals_3_qtls[0], P_out_cdf_evals_3_qtls[2], alpha=alpha, color='b', label=r'SysSim (central 68%)')
 plt.plot(P_cdf_evals, P_out_cdf_evals_3_qtls[1], lw=lw, color='b', label=r'SysSim (median)')
 plt.legend(loc='upper left', bbox_to_anchor=(0,1), ncol=1, frameon=False, fontsize=lfs)
@@ -179,7 +181,7 @@ if savefigures:
     plt.savefig(savefigures_directory + subdirectory + model_name + '_periods_outermost_N3_CDFs.pdf')
     plt.close()
 
-plot_fig_cdf_simple([], [P_out_per_sys_Kep[ssk_per_sys['Mtot_obs'] >= 4]], x_min=P_min, x_max=P_max, log_x=True, lw=lw, labels_Kep=['Kepler'], xticks_custom=[3,10,30,100,300], xlabel_text=r'$P_{\rm out}$ (days)', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
+plot_fig_cdf_simple([], [P_out_per_sys_Kep[ssk_per_sys['Mtot_obs'] >= 4]], x_min=period_min, x_max=period_max, log_x=True, lw=lw, labels_Kep=['Kepler'], xticks_custom=[3,10,30,100,300], xlabel_text=r'$P_{\rm out}$ (days)', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 plt.fill_between(P_cdf_evals, P_out_cdf_evals_4p_qtls[0], P_out_cdf_evals_4p_qtls[2], alpha=alpha, color='b', label=r'SysSim (central 68%)')
 plt.plot(P_cdf_evals, P_out_cdf_evals_4p_qtls[1], lw=lw, color='b', label=r'SysSim (median)')
 plt.legend(loc='upper left', bbox_to_anchor=(0,1), ncol=1, frameon=False, fontsize=lfs)
@@ -256,7 +258,7 @@ P_i_cdf_evals_3_qtls = [np.quantile(P_i_cdf_evals_3_all[i], qtls, axis=0) for i 
 P_i_cdf_evals_4_qtls = [np.quantile(P_i_cdf_evals_4_all[i], qtls, axis=0) for i in range(4)]
 
 # Systems with 1 observed planet:
-plot_fig_cdf_simple([], [ssk_per_sys['P_obs'][ssk_per_sys['Mtot_obs'] == 1, 0]], x_min=P_min, x_max=P_max, log_x=True, lw=lw, c_Kep=colors_ith_planet, xticks_custom=[3,10,30,100,300], xlabel_text=r'$P$ (days)', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
+plot_fig_cdf_simple([], [ssk_per_sys['P_obs'][ssk_per_sys['Mtot_obs'] == 1, 0]], x_min=period_min, x_max=period_max, log_x=True, lw=lw, c_Kep=colors_ith_planet, xticks_custom=[3,10,30,100,300], xlabel_text=r'$P$ (days)', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 plt.fill_between(P_cdf_evals, P_i_cdf_evals_1_qtls[0], P_i_cdf_evals_1_qtls[2], alpha=alpha, color=colors_ith_planet[0], label=r'SysSim (central 68%)')
 plt.plot(P_cdf_evals, P_i_cdf_evals_1_qtls[1], lw=lw, color=colors_ith_planet[0], label=r'SysSim (median)')
 #plt.legend(loc='lower right', bbox_to_anchor=(1,0), ncol=1, frameon=False, fontsize=lfs)
@@ -266,7 +268,7 @@ if savefigures:
     plt.close()
 
 # Systems with 2 observed planets:
-plot_fig_cdf_simple([], [ssk_per_sys['P_obs'][ssk_per_sys['Mtot_obs'] == 2, i] for i in range(2)], x_min=P_min, x_max=P_max, log_x=True, lw=lw, c_Kep=colors_ith_planet, ls_Kep=['--']*2, labels_Kep=['Kepler $P_1$','Kepler $P_2$'], xticks_custom=[3,10,30,100,300], xlabel_text=r'$P$ (days)', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
+plot_fig_cdf_simple([], [ssk_per_sys['P_obs'][ssk_per_sys['Mtot_obs'] == 2, i] for i in range(2)], x_min=period_min, x_max=period_max, log_x=True, lw=lw, c_Kep=colors_ith_planet, ls_Kep=['--']*2, labels_Kep=['Kepler $P_1$','Kepler $P_2$'], xticks_custom=[3,10,30,100,300], xlabel_text=r'$P$ (days)', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 for i,P_i_qtls in enumerate(P_i_cdf_evals_2_qtls):
     plt.fill_between(P_cdf_evals, P_i_qtls[0], P_i_qtls[2], alpha=alpha, color=colors_ith_planet[i], label=r'SysSim (central 68%)')
     plt.plot(P_cdf_evals, P_i_qtls[1], lw=lw, color=colors_ith_planet[i], label=r'$P_%s$' % (i+1)) #label=r'SysSim (median)'
@@ -277,7 +279,7 @@ if savefigures:
     plt.close()
 
 # Systems with 3 observed planets:
-plot_fig_cdf_simple([], [ssk_per_sys['P_obs'][ssk_per_sys['Mtot_obs'] == 3, i] for i in range(3)], x_min=P_min, x_max=P_max, log_x=True, lw=lw, c_Kep=colors_ith_planet, ls_Kep=['--']*3, labels_Kep=['Kepler $P_1$','Kepler $P_2$','Kepler $P_3$'], xticks_custom=[3,10,30,100,300], xlabel_text=r'$P$ (days)', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
+plot_fig_cdf_simple([], [ssk_per_sys['P_obs'][ssk_per_sys['Mtot_obs'] == 3, i] for i in range(3)], x_min=period_min, x_max=period_max, log_x=True, lw=lw, c_Kep=colors_ith_planet, ls_Kep=['--']*3, labels_Kep=['Kepler $P_1$','Kepler $P_2$','Kepler $P_3$'], xticks_custom=[3,10,30,100,300], xlabel_text=r'$P$ (days)', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 for i,P_i_qtls in enumerate(P_i_cdf_evals_3_qtls):
     plt.fill_between(P_cdf_evals, P_i_qtls[0], P_i_qtls[2], alpha=alpha, color=colors_ith_planet[i], label=r'SysSim (central 68%)')
     plt.plot(P_cdf_evals, P_i_qtls[1], lw=lw, color=colors_ith_planet[i], label=r'$P_%s$' % (i+1)) #label=r'SysSim (median)'
@@ -288,7 +290,7 @@ if savefigures:
     plt.close()
 
 # Systems with 4 observed planets:
-ax = plot_fig_cdf_simple([], [ssk_per_sys['P_obs'][ssk_per_sys['Mtot_obs'] == 4, i] for i in range(4)], x_min=P_min, x_max=P_max, log_x=True, lw=lw, c_Kep=colors_ith_planet, ls_Kep=['--']*4, labels_Kep=['Kepler $P_1$','Kepler $P_2$','Kepler $P_3$','Kepler $P_4$'], xticks_custom=[3,10,30,100,300], xlabel_text=r'$P$ (days)', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
+ax = plot_fig_cdf_simple([], [ssk_per_sys['P_obs'][ssk_per_sys['Mtot_obs'] == 4, i] for i in range(4)], x_min=period_min, x_max=period_max, log_x=True, lw=lw, c_Kep=colors_ith_planet, ls_Kep=['--']*4, labels_Kep=['Kepler $P_1$','Kepler $P_2$','Kepler $P_3$','Kepler $P_4$'], xticks_custom=[3,10,30,100,300], xlabel_text=r'$P$ (days)', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 for i,P_i_qtls in enumerate(P_i_cdf_evals_4_qtls):
     plt.fill_between(P_cdf_evals, P_i_qtls[0], P_i_qtls[2], alpha=alpha, color=colors_ith_planet[i], label=r'SysSim (central 68%)')
     plt.plot(P_cdf_evals, P_i_qtls[1], lw=lw, color=colors_ith_planet[i], label=r'$P_%s$' % (i+1)) #label=r'SysSim (median)'

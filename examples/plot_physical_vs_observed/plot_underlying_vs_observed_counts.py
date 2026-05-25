@@ -39,9 +39,6 @@ save_name = 'Models_Compare'
 loadfiles_directory = '/Users/hematthi/Documents/GradSchool/Research/ACI/Simulated_Data/AMD_system/Split_stars/Singles_ecc/Params11_KS/Distribute_AMD_per_mass/durations_norm_circ_singles_multis_GF2020_KS/GP_med/'
 run_number = ''
 
-N_sim, cos_factor, P_min, P_max, radii_min, radii_max = read_targets_period_radius_bounds(loadfiles_directory + 'periods%s.out' % run_number)
-
-param_vals_all = read_sim_params(loadfiles_directory + 'periods%s.out' % run_number)
 sssp_per_sys, sssp = compute_summary_stats_from_cat_phys(file_name_path=loadfiles_directory, run_number=run_number, load_full_tables=True)
 
 model_name = 'Maximum AMD model'
@@ -107,8 +104,6 @@ f_n1_m1_2earth_all = []
 for i in range(1,runs+1): #range(1,runs+1)
     run_number = i
     print(i)
-    N_sim_i = read_targets_period_radius_bounds(loadfiles_directory + 'periods%s.out' % run_number)[0]
-    param_vals_i = read_sim_params(loadfiles_directory + 'periods%s.out' % run_number)
     sssp_per_sys_i, sssp_i = compute_summary_stats_from_cat_phys(file_name_path=loadfiles_directory, run_number=run_number, load_full_tables=True)
 
     mult_obs_all_i = []

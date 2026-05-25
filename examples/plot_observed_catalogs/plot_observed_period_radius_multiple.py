@@ -40,18 +40,20 @@ dists_include = ['depths_KS', 'radii_KS']
 ##### To load the files with the systems with observed planets:
 
 # To first read the number of simulated targets and bounds for the periods and radii:
-N_sim, cos_factor, P_min, P_max, radii_min, radii_max = read_targets_period_radius_bounds(loadfiles_directory + 'periods%s.out' % run_number)
-
-# To read the simulation parameters from the file:
-param_vals_all = read_sim_params(loadfiles_directory + 'periods%s.out' % run_number)
+sim_settings = read_targets_period_radius_bounds(loadfiles_directory + 'periods%s.out' % run_number)
+N_sim = sim_settings['N_sim']
+period_min = sim_settings['P_min']
+period_max = sim_settings['P_max']
+radii_min = sim_settings['radii_min']
+radii_max = sim_settings['radii_max']
 
 # To load and process the simulated observed catalog of stars and planets:
 sss_per_sys, sss = compute_summary_stats_from_cat_obs(file_name_path=loadfiles_directory, run_number=run_number, compute_ratios=compute_ratios)
 
 # To load and process the observed Kepler catalog and compare with our simulated catalog:
-ssk_per_sys, ssk = compute_summary_stats_from_Kepler_catalog(P_min, P_max, radii_min, radii_max, compute_ratios=compute_ratios)
+ssk_per_sys, ssk = compute_summary_stats_from_Kepler_catalog(period_min, period_max, radii_min, radii_max, compute_ratios=compute_ratios)
 
-dists, dists_w = compute_distances_sim_Kepler(sss_per_sys, sss, ssk_per_sys, ssk, weights_all['all'], dists_include, N_sim, cos_factor=cos_factor)
+dists, dists_w = compute_distances_sim_Kepler(sss_per_sys, sss, ssk_per_sys, ssk, weights_all['all'], dists_include, N_sim)
 
 
 
@@ -74,7 +76,6 @@ runs = 100
 
 sss_all = []
 sss_per_sys_all = []
-params_all = []
 
 radii_measures = {'KS_dist_w': [],
                   'AD_dist_w': [],
@@ -87,8 +88,7 @@ bw_factor = 0.25 # factor for multiplying the KDE bandwidth from Scott's rule
 for i in range(1,runs+1):
     run_number = i
     sss_per_sys_i, sss_i = compute_summary_stats_from_cat_obs(file_name_path=loadfiles_directory, run_number=run_number, compute_ratios=compute_ratios)
-    params_i = read_sim_params(loadfiles_directory + 'periods%s.out' % run_number)
-    dists_i, dists_w_i = compute_distances_sim_Kepler(sss_per_sys_i, sss_i, ssk_per_sys, ssk, weights_all['all'], dists_include, N_Kep, cos_factor=cos_factor)
+    dists_i, dists_w_i = compute_distances_sim_Kepler(sss_per_sys_i, sss_i, ssk_per_sys, ssk, weights_all['all'], dists_include, N_Kep)
     
     EMD_radii_i = wasserstein_distance(sss_i['radii_obs'], ssk['radii_obs'])
     depth_binned_i = measure_and_plot_radius_valley_depth_using_global_bins(sss_i['radii_obs'], n_bins=n_bins)
@@ -96,7 +96,6 @@ for i in range(1,runs+1):
     
     sss_all.append(sss_i)
     sss_per_sys_all.append(sss_per_sys_i)
-    params_all.append(params_i)
     
     radii_measures['KS_dist_w'].append(dists_w_i['radii_KS'])
     radii_measures['AD_dist_w'].append(dists_w_i['radii_AD'])
@@ -124,7 +123,7 @@ if 'depth' in sort_by:
 use_log_radii = True # choose whether to use a log-scale for the radii
 radii_min, radii_max = 0.5, 6. # optionally, further restrict the radii bounds (NOTE: this overwrites 'radii_min' and 'radii_max' read from the files)
 
-logP_min, logP_max = np.log10(P_min), np.log10(P_max)
+logP_min, logP_max = np.log10(period_min), np.log10(period_max)
 # NOTE: variable names still use 'logR_' regardless of whether a log-scale is used or not
 if use_log_radii:
     logR_min, logR_max = np.log10(radii_min), np.log10(radii_max)
@@ -160,7 +159,7 @@ m_Kep = mtrip_Kep[0] # best-fit slope
 logRgap_offset_Kep = y0trip_Kep[0] # best-fit intercept
 
 # Evaluate the line for the radius valley along an array of log10(P):
-logP_array = np.linspace(np.log10(P_min), np.log10(P_max), 101)
+logP_array = np.linspace(np.log10(period_min), np.log10(period_max), 101)
 logRgap_array_Kep = m_Kep*logP_array + logRgap_offset_Kep
 
 

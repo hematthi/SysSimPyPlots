@@ -55,8 +55,12 @@ dists_include = ['delta_f',
                  'gap_complexity_KS',
                  ]
 
-N_sim, cos_factor, P_min, P_max, radii_min, radii_max = read_targets_period_radius_bounds(loadfiles_directory + 'periods%s.out' % run_number)
-N_factor = N_sim/N_Kep
+sim_settings = read_targets_period_radius_bounds(loadfiles_directory + 'periods%s.out' % run_number)
+N_sim = sim_settings['N_sim']
+period_min = sim_settings['P_min']
+period_max = sim_settings['P_max']
+radii_min = sim_settings['radii_min']
+radii_max = sim_settings['radii_max']
 
 param_vals_all = read_sim_params(loadfiles_directory + 'periods%s.out' % run_number)
 sssp_per_sys, sssp = compute_summary_stats_from_cat_phys(file_name_path=loadfiles_directory, run_number=run_number, load_full_tables=True)
@@ -64,7 +68,7 @@ sss_per_sys, sss = compute_summary_stats_from_cat_obs(file_name_path=loadfiles_d
 
 ssk_per_sys, ssk = compute_summary_stats_from_Kepler_catalog(P_min, P_max, radii_min, radii_max, compute_ratios=compute_ratios)
 
-dists, dists_w = compute_distances_sim_Kepler(sss_per_sys, sss, ssk_per_sys, ssk, weights_all['all'], dists_include, N_sim, cos_factor=cos_factor, AD_mod=AD_mod)
+dists, dists_w = compute_distances_sim_Kepler(sss_per_sys, sss, ssk_per_sys, ssk, weights_all['all'], dists_include, N_sim, AD_mod=AD_mod)
 
 
 

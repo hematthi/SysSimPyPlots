@@ -39,7 +39,12 @@ model_label, model_color = 'Hybrid model', 'b' #'Maximum AMD model', 'g' #'Two-R
 
 
 # To first read the number of simulated targets and bounds for the periods and radii:
-N_sim, cos_factor, P_min, P_max, radii_min, radii_max = read_targets_period_radius_bounds(loadfiles_directory + 'periods%s.out' % run_number)
+sim_settings = read_targets_period_radius_bounds(loadfiles_directory + 'periods%s.out' % run_number)
+N_sim = sim_settings['N_sim']
+period_min = sim_settings['P_min']
+period_max = sim_settings['P_max']
+radii_min = sim_settings['radii_min']
+radii_max = sim_settings['radii_max']
 
 # To read the simulation parameters from the file:
 param_vals_all = read_sim_params(loadfiles_directory + 'periods%s.out' % run_number)
@@ -112,7 +117,8 @@ im_med_n_all = np.zeros((runs, len(n_array)))
 for i in range(runs):
     run_number = i+1
     print(i)
-    N_sim_i = read_targets_period_radius_bounds(loadfiles_directory + 'periods%s.out' % run_number)[0]
+    sim_settings_i = read_targets_period_radius_bounds(loadfiles_directory + 'periods%s.out' % run_number)
+    N_sim_i = sim_settings_i['N_sim']
     params_i = read_sim_params(loadfiles_directory + 'periods%s.out' % run_number)
     sssp_per_sys_i, sssp_i = compute_summary_stats_from_cat_phys(file_name_path=loadfiles_directory, run_number=run_number, load_full_tables=True)
 

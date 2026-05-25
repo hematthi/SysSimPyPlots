@@ -19,19 +19,30 @@ loadfiles_directory = '/Users/hematthi/Documents/GradSchool/Research/ACI/Simulat
 loadfiles_directory_multiple = '/Users/hematthi/Documents/GradSchool/Research/ACI/Simulated_Data/AMD_system/Split_stars/Singles_ecc/Params11_KS/Distribute_AMD_per_mass/durations_norm_circ_singles_multis_GF2020_KS/GP_best_models/'
 
 def test_read_targets_period_radius_bounds(load_dir=loadfiles_directory, run_number=''):
-    N_sim, cos_factor, P_min, P_max, radii_min, radii_max = read_targets_period_radius_bounds(load_dir + 'periods%s.out' % run_number)
+    sim_settings = read_targets_period_radius_bounds(load_dir + 'periods%s.out' % run_number)
+    N_sim = sim_settings['N_sim']
+    cos_factor = sim_settings['cos_factor']
+    period_min = sim_settings['P_min']
+    period_max = sim_settings['P_max']
+    radii_min = sim_settings['radii_min']
+    radii_max = sim_settings['radii_max']
     assert type(N_sim) is int
     assert 0 <= cos_factor <= 1
-    assert 3. <= P_min < P_max <= 300.
+    assert 3. <= period_min < period_max <= 300.
     assert 0.5 <= radii_min < radii_max <= 10.
 
 def test_load_cat_phys(load_dir=loadfiles_directory, run_number=''):
     cat_phys = load_cat_phys(load_dir + 'physical_catalog.csv')
-    N_sim, cos_factor, P_min, P_max, radii_min, radii_max = read_targets_period_radius_bounds(load_dir + 'physical_catalog%s.csv' % run_number)
+    sim_settings = read_targets_period_radius_bounds(load_dir + 'physical_catalog%s.csv' % run_number)
+    N_sim = sim_settings['N_sim']
+    period_min = sim_settings['P_min']
+    period_max = sim_settings['P_max']
+    radii_min = sim_settings['radii_min']
+    radii_max = sim_settings['radii_max']
     assert 0 <= np.min(cat_phys['planet_mass'])
     assert radii_min <= np.min(cat_phys['planet_radius']) * Rsun/Rearth
     #assert radii_max >= np.max(cat_phys['planet_radius']) * Rsun/Rearth # NOTE: fails due to differences in precision of Rsun/Rearth in SysSim vs. in 'functions_general.py'
-    assert P_min <= np.min(cat_phys['period']) <= np.max(cat_phys['period']) <= P_max
+    assert period_min <= np.min(cat_phys['period']) <= np.max(cat_phys['period']) <= period_max
     assert 0 <= np.min(cat_phys['ecc']) <= np.max(cat_phys['ecc']) <= 1
     assert 0 <= np.min(cat_phys['incl']) <= np.max(cat_phys['incl']) <= np.pi
     assert -np.pi <= np.min(cat_phys['omega']) <= np.max(cat_phys['omega']) <= np.pi
@@ -50,7 +61,12 @@ def test_load_star_phys(load_dir=loadfiles_directory, run_number=''):
 
 def test_load_planets_stars_phys_separate(load_dir=loadfiles_directory, run_number=''):
     clusterids_per_sys, P_per_sys, radii_per_sys, mass_per_sys, e_per_sys, inclmut_per_sys, incl_per_sys, Mstar_all, Rstar_all = load_planets_stars_phys_separate(load_dir, run_number=run_number)
-    N_sim, cos_factor, P_min, P_max, radii_min, radii_max = read_targets_period_radius_bounds(load_dir + 'periods_all%s.out' % run_number)
+    sim_settings = read_targets_period_radius_bounds(load_dir + 'periods_all%s.out' % run_number)
+    N_sim = sim_settings['N_sim']
+    period_min = sim_settings['P_min']
+    period_max = sim_settings['P_max']
+    radii_min = sim_settings['radii_min']
+    radii_max = sim_settings['radii_max']
 
     clusterids = list(chain(*clusterids_per_sys))
     periods = list(chain(*P_per_sys))
@@ -63,7 +79,7 @@ def test_load_planets_stars_phys_separate(load_dir=loadfiles_directory, run_numb
 
     assert N_pl == len(periods) == len(radii) == len(masses) == len(eccs) == len(inclmuts) == len(incls)
     assert N_sys_pl == len(Mstar_all) == len(Rstar_all) <= N_sim
-    assert P_min <= np.min(periods) <= np.max(periods) <= P_max
+    assert period_min <= np.min(periods) <= np.max(periods) <= period_max
     assert radii_min <= np.min(radii) * Rsun/Rearth
     #assert radii_max >= np.max(radii) * Rsun/Rearth # NOTE: fails due to differences in precision of Rsun/Rearth in SysSim vs. in 'functions_general.py'
     assert 0 <= np.min(masses)
@@ -75,7 +91,6 @@ def test_load_planets_stars_phys_separate(load_dir=loadfiles_directory, run_numb
 
 def test_compute_basic_summary_stats_per_sys_cat_phys(load_dir=loadfiles_directory, run_number=''):
     clusterids_per_sys, P_per_sys, radii_per_sys, mass_per_sys, e_per_sys, inclmut_per_sys, incl_per_sys, Mstar_all, Rstar_all = load_planets_stars_phys_separate(load_dir, run_number=run_number)
-    N_sim, cos_factor, P_min, P_max, radii_min, radii_max = read_targets_period_radius_bounds(load_dir + 'periods_all%s.out' % run_number)
 
     N_sys_pl, N_pl = len(clusterids_per_sys), len(list(chain(*clusterids_per_sys)))
 
@@ -90,9 +105,14 @@ def test_compute_basic_summary_stats_per_sys_cat_phys(load_dir=loadfiles_directo
     for key in keys:
         assert N_sys_pl == len(sssp_per_sys_basic[key])
 
-N_sim, cos_factor, P_min, P_max, radii_min, radii_max = read_targets_period_radius_bounds(loadfiles_directory + 'periods_all.out')
+sim_settings = read_targets_period_radius_bounds(loadfiles_directory + 'periods_all.out')
+N_sim = sim_settings['N_sim']
+period_min = sim_settings['P_min']
+period_max = sim_settings['P_max']
+radii_min = sim_settings['radii_min']
+radii_max = sim_settings['radii_max']
 
-def run_test_summary_stats_cat_phys(sssp_per_sys, sssp, N_sim=N_sim, P_min=P_min, P_max=P_max, radii_min=radii_min, radii_max=radii_max):
+def run_test_summary_stats_cat_phys(sssp_per_sys, sssp, N_sim=N_sim, period_min=period_min, period_max=period_max, radii_min=radii_min, radii_max=radii_max):
     N_sys_pl = len(sssp_per_sys['Mtot_all']) # total number of systems
     N_pl = np.sum(sssp_per_sys['Mtot_all']) # total number of planets
     N_pl_pairs = np.sum(sssp_per_sys['Mtot_all'][sssp_per_sys['Mtot_all'] >= 2] - 1) # total number of adjacent pairs of planets
@@ -129,7 +149,7 @@ def run_test_summary_stats_cat_phys(sssp_per_sys, sssp, N_sim=N_sim, P_min=P_min
     assert 0 <= np.min(sssp['clustertot_all'])
     assert 0 <= np.min(sssp['AMD_tot_all'])
     assert 1 <= np.min(sssp['pl_per_cluster_all'])
-    assert P_min <= np.min(sssp['P_all']) <= np.max(sssp['P_all']) <= P_max
+    assert period_min <= np.min(sssp['P_all']) <= np.max(sssp['P_all']) <= period_max
     assert radii_min <= np.min(sssp['radii_all']) <= np.max(sssp['radii_all']) #<= radii_max # NOTE: 'radii_max' check fails due to differences in precision of Rsun/Rearth in SysSim vs. in 'functions_general.py'
     assert 0 <= np.min(sssp['mass_all'])
     assert 0 <= np.min(sssp['e_all']) <= np.max(sssp['e_all']) <= 1
@@ -137,7 +157,7 @@ def run_test_summary_stats_cat_phys(sssp_per_sys, sssp, N_sim=N_sim, P_min=P_min
     assert 0 <= np.min(sssp['incl_all']) <= np.max(sssp['incl_all']) <= np.pi
     assert radii_min <= np.min(sssp['radii_above_all']) <= np.max(sssp['radii_above_all']) #<= radii_max
     assert radii_min <= np.min(sssp['radii_below_all']) <= np.max(sssp['radii_below_all']) #<= radii_max
-    assert 1 < np.min(sssp['Rm_all']) <= np.max(sssp['Rm_all']) <= P_max/P_min
+    assert 1 < np.min(sssp['Rm_all']) <= np.max(sssp['Rm_all']) <= period_max/period_min
     assert radii_min/radii_max <= np.min(sssp['radii_ratio_all']) <= np.max(sssp['radii_ratio_all']) <= radii_max/radii_min
     assert 0 < np.min(sssp['N_mH_all'])
     assert radii_min/radii_max <= np.min(sssp['radii_ratio_above_all']) <= np.max(sssp['radii_ratio_above_all']) <= radii_max/radii_min
@@ -145,9 +165,14 @@ def run_test_summary_stats_cat_phys(sssp_per_sys, sssp, N_sim=N_sim, P_min=P_min
     assert radii_min/radii_max <= np.min(sssp['radii_ratio_across_all']) <= np.max(sssp['radii_ratio_across_all']) <= radii_max/radii_min
 
 def test_compute_summary_stats_from_cat_phys(load_dir=loadfiles_directory, run_number=''):
-    N_sim, cos_factor, P_min, P_max, radii_min, radii_max = read_targets_period_radius_bounds(load_dir + 'periods_all%s.out' % run_number)
+    sim_settings = read_targets_period_radius_bounds(load_dir + 'periods_all%s.out' % run_number)
+    N_sim = sim_settings['N_sim']
+    period_min = sim_settings['P_min']
+    period_max = sim_settings['P_max']
+    radii_min = sim_settings['radii_min']
+    radii_max = sim_settings['radii_max']
     sssp_per_sys, sssp = compute_summary_stats_from_cat_phys(file_name_path=load_dir, run_number=run_number, load_full_tables=True, match_observed=True)
-    run_test_summary_stats_cat_phys(sssp_per_sys, sssp, N_sim=N_sim, P_min=P_min, P_max=P_max, radii_min=radii_min, radii_max=radii_max)
+    run_test_summary_stats_cat_phys(sssp_per_sys, sssp, N_sim=N_sim, period_min=period_min, period_max=period_max, radii_min=radii_min, radii_max=radii_max)
 
 def test_load_cat_obs(load_dir=loadfiles_directory, run_number=''):
     cat_obs = load_cat_obs(load_dir + 'observed_catalog%s.csv' % run_number)
@@ -241,9 +266,14 @@ def test_load_cat_phys_multiple_and_compute_combine_summary_stats(load_dir=loadf
     assert len(run_numbers) > 1, 'Must load more than one catalog for this test.'
     N_sim_combined = 0
     for rn in run_numbers:
-        N_sim, cos_factor, P_min, P_max, radii_min, radii_max = read_targets_period_radius_bounds(load_dir + 'periods_all%s.out' % rn)
+        sim_settings = read_targets_period_radius_bounds(load_dir + 'periods_all%s.out' % rn)
+        N_sim = sim_settings['N_sim']
+        period_min = sim_settings['P_min']
+        period_max = sim_settings['P_max']
+        radii_min = sim_settings['radii_min']
+        radii_max = sim_settings['radii_max']
         N_sim_combined += N_sim
     sssp_per_sys_combined, sssp_combined = load_cat_phys_multiple_and_compute_combine_summary_stats(load_dir, run_numbers=run_numbers, load_full_tables=True)
 
     # WARNING: assumes that each individual catalog has the same values 'P_min', 'P_max', etc.
-    run_test_summary_stats_cat_phys(sssp_per_sys_combined, sssp_combined, N_sim=N_sim_combined, P_min=P_min, P_max=P_max, radii_min=radii_min, radii_max=radii_max)
+    run_test_summary_stats_cat_phys(sssp_per_sys_combined, sssp_combined, N_sim=N_sim_combined, period_min=period_min, period_max=period_max, radii_min=radii_min, radii_max=radii_max)

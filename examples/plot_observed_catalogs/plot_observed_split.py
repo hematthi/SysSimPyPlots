@@ -58,7 +58,12 @@ dists_include = ['delta_f',
 ##### To load the files with the systems with observed planets:
 
 # To first read the number of simulated targets and bounds for the periods and radii:
-N_sim, cos_factor, P_min, P_max, radii_min, radii_max = read_targets_period_radius_bounds(loadfiles_directory + 'periods%s.out' % run_number)
+sim_settings = read_targets_period_radius_bounds(loadfiles_directory + 'periods%s.out' % run_number)
+N_sim = sim_settings['N_sim']
+period_min = sim_settings['P_min']
+period_max = sim_settings['P_max']
+radii_min = sim_settings['radii_min']
+radii_max = sim_settings['radii_max']
 
 # To read the simulation parameters from the file:
 param_vals = read_sim_params(loadfiles_directory + 'periods%s.out' % run_number)
@@ -73,9 +78,9 @@ bp_rp_corr_med = np.nanmedian(stars_cleaned['bp_rp'] - stars_cleaned['e_bp_rp_in
 
 #bins, i_blue_per_bin, i_red_per_bin = split_colors_per_cdpp_bin(stars_cleaned, nbins=10)
 
-ssk_per_sys0, ssk0 = compute_summary_stats_from_Kepler_catalog(P_min, P_max, radii_min, radii_max) # combined sample
-ssk_per_sys1, ssk1 = compute_summary_stats_from_Kepler_catalog(P_min, P_max, radii_min, radii_max, bp_rp_max=bp_rp_corr_med) #_max=_med
-ssk_per_sys2, ssk2 = compute_summary_stats_from_Kepler_catalog(P_min, P_max, radii_min, radii_max, bp_rp_min=bp_rp_corr_med) #_min=_med
+ssk_per_sys0, ssk0 = compute_summary_stats_from_Kepler_catalog(period_min, period_max, radii_min, radii_max) # combined sample
+ssk_per_sys1, ssk1 = compute_summary_stats_from_Kepler_catalog(period_min, period_max, radii_min, radii_max, bp_rp_max=bp_rp_corr_med) #_max=_med
+ssk_per_sys2, ssk2 = compute_summary_stats_from_Kepler_catalog(period_min, period_max, radii_min, radii_max, bp_rp_min=bp_rp_corr_med) #_min=_med
 
 label1, label2 = 'Bluer', 'Redder'
 
@@ -96,9 +101,9 @@ split_colors = ['b', 'r']
 
 
 
-dists0, dists_w0 = compute_distances_sim_Kepler(sss_per_sys0, sss0, ssk_per_sys0, ssk0, weights_all['all'], dists_include, N_sim, cos_factor=cos_factor, AD_mod=AD_mod)
-dists1, dists_w1 = compute_distances_sim_Kepler(sss_per_sys1, sss1, ssk_per_sys1, ssk1, weights_all['bluer'], dists_include, N_sim, cos_factor=cos_factor, AD_mod=AD_mod)
-dists2, dists_w2 = compute_distances_sim_Kepler(sss_per_sys2, sss2, ssk_per_sys2, ssk2, weights_all['redder'], dists_include, N_sim, cos_factor=cos_factor, AD_mod=AD_mod)
+dists0, dists_w0 = compute_distances_sim_Kepler(sss_per_sys0, sss0, ssk_per_sys0, ssk0, weights_all['all'], dists_include, N_sim, AD_mod=AD_mod)
+dists1, dists_w1 = compute_distances_sim_Kepler(sss_per_sys1, sss1, ssk_per_sys1, ssk1, weights_all['bluer'], dists_include, N_sim, AD_mod=AD_mod)
+dists2, dists_w2 = compute_distances_sim_Kepler(sss_per_sys2, sss2, ssk_per_sys2, ssk2, weights_all['redder'], dists_include, N_sim, AD_mod=AD_mod)
 
 
 
@@ -128,10 +133,10 @@ lfs = 16 #legend labels font size
 plot_fig_counts_hist_simple([sss_per_sys['Mtot_obs'] for sss_per_sys in split_sss_per_sys], [ssk_per_sys['Mtot_obs'] for ssk_per_sys in split_ssk_per_sys], x_min=0, y_min=1e-1, y_max=1e4, x_llim=0.5, N_sim_Kep_factor=float(N_sim)/N_Kep, log_y=True, c_sim=split_colors, c_Kep=split_colors, ls_sim=split_linestyles, ms_Kep=['x','x'], lw=lw, labels_sim=split_names, labels_Kep=[None, None], xlabel_text='Observed planets per system', ylabel_text='Number', afs=afs, tfs=tfs, lfs=lfs, legend=True, show_counts_sim=True, show_counts_Kep=True, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_multiplicities_compare.pdf', save_fig=savefigures)
 
 # Periods:
-plot_fig_pdf_simple([sss['P_obs'] for sss in split_sss], [ssk['P_obs'] for ssk in split_ssk], x_min=P_min, x_max=P_max, y_min=0.5, y_max=1e2, n_bins=n_bins, normalize=False, N_sim_Kep_factor=float(N_sim)/N_Kep, log_x=True, log_y=True, c_sim=split_colors, c_Kep=split_colors, ls_sim=split_linestyles, ls_Kep=split_linestyles, lw=lw, labels_sim=split_names, labels_Kep=[None, None], xticks_custom=[3,10,30,100,300], xlabel_text=r'$P$ (days)', ylabel_text='Number', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_periods_compare.pdf', save_fig=savefigures)
+plot_fig_pdf_simple([sss['P_obs'] for sss in split_sss], [ssk['P_obs'] for ssk in split_ssk], x_min=period_min, x_max=period_max, y_min=0.5, y_max=1e2, n_bins=n_bins, normalize=False, N_sim_Kep_factor=float(N_sim)/N_Kep, log_x=True, log_y=True, c_sim=split_colors, c_Kep=split_colors, ls_sim=split_linestyles, ls_Kep=split_linestyles, lw=lw, labels_sim=split_names, labels_Kep=[None, None], xticks_custom=[3,10,30,100,300], xlabel_text=r'$P$ (days)', ylabel_text='Number', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_periods_compare.pdf', save_fig=savefigures)
 
 # Periods of inner-most planet:
-plot_fig_pdf_simple([sss_per_sys['P_obs'][:,0] for sss_per_sys in split_sss_per_sys], [ssk_per_sys['P_obs'][:,0] for ssk_per_sys in split_ssk_per_sys], x_min=P_min, x_max=P_max, y_min=0.5, y_max=1e2, n_bins=n_bins, normalize=False, N_sim_Kep_factor=float(N_sim)/N_Kep, log_x=True, log_y=True, c_sim=split_colors, c_Kep=split_colors, ls_sim=split_linestyles, ls_Kep=split_linestyles, lw=lw, labels_sim=split_names, labels_Kep=[None, None], xticks_custom=[3,10,30,100,300], xlabel_text=r'$P_1$ (days)', ylabel_text='Number', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_periods_inner_compare.pdf', save_fig=savefigures)
+plot_fig_pdf_simple([sss_per_sys['P_obs'][:,0] for sss_per_sys in split_sss_per_sys], [ssk_per_sys['P_obs'][:,0] for ssk_per_sys in split_ssk_per_sys], x_min=period_min, x_max=period_max, y_min=0.5, y_max=1e2, n_bins=n_bins, normalize=False, N_sim_Kep_factor=float(N_sim)/N_Kep, log_x=True, log_y=True, c_sim=split_colors, c_Kep=split_colors, ls_sim=split_linestyles, ls_Kep=split_linestyles, lw=lw, labels_sim=split_names, labels_Kep=[None, None], xticks_custom=[3,10,30,100,300], xlabel_text=r'$P_1$ (days)', ylabel_text='Number', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_periods_inner_compare.pdf', save_fig=savefigures)
 
 # Period ratios (all, with some upper cut-off):
 R_max_cut = 30. #upper cut-off for plotting period ratios; np.max(sss['Rm_obs'])
@@ -203,8 +208,8 @@ x_Kep_all = [[ssk_per_sys['Mtot_obs'] for ssk_per_sys in split_ssk_per_sys],
              [np.log10(ssk['xi_obs']) for ssk in split_ssk],
              [ssk['D_obs'] for ssk in split_ssk],
              [ssk['D_ratio_obs'] for ssk in split_ssk]]
-x_mins = [0, P_min, 1., 0., -0.5, 1e-5, 10.**-1.5]
-x_maxs = [None, P_max, 30., 1.5, 0.5, 10.**-1.5, 10.**1.5]
+x_mins = [0, period_min, 1., 0., -0.5, 1e-5, 10.**-1.5]
+x_maxs = [None, period_max, 30., 1.5, 0.5, 10.**-1.5, 10.**1.5]
 y_mins = [1e-2, 1e-1, None, None, None, None, None]
 y_maxs = [1e4, 1e3, None, None, None, None, None]
 log_xs = [False, True, True, False, False, True, True]
@@ -231,10 +236,10 @@ if savefigures:
     plt.savefig(savefigures_directory + subdirectory + model_name + '_multiplicities_CDFs.pdf')
 
 # Periods CDFs:
-plot_fig_cdf_simple([sss['P_obs'] for sss in split_sss], [ssk['P_obs'] for ssk in split_ssk], x_min=P_min, x_max=P_max, log_x=True, c_sim=split_colors, c_Kep=split_colors, ls_sim=split_linestyles, ls_Kep=split_linestyles_Kep, lw=lw, labels_sim=split_names, labels_Kep=[None, None], xticks_custom=[3,10,30,100,300], xlabel_text=r'$P$ (days)', afs=afs, tfs=tfs, lfs=lfs, label_dist=True, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_periods_CDFs.pdf', save_fig=savefigures)
+plot_fig_cdf_simple([sss['P_obs'] for sss in split_sss], [ssk['P_obs'] for ssk in split_ssk], x_min=period_min, x_max=period_max, log_x=True, c_sim=split_colors, c_Kep=split_colors, ls_sim=split_linestyles, ls_Kep=split_linestyles_Kep, lw=lw, labels_sim=split_names, labels_Kep=[None, None], xticks_custom=[3,10,30,100,300], xlabel_text=r'$P$ (days)', afs=afs, tfs=tfs, lfs=lfs, label_dist=True, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_periods_CDFs.pdf', save_fig=savefigures)
 
 # Periods of inner-most planet CDFs:
-plot_fig_cdf_simple([sss_per_sys['P_obs'][:,0] for sss_per_sys in split_sss_per_sys], [ssk_per_sys['P_obs'][:,0] for ssk_per_sys in split_ssk_per_sys], x_min=P_min, x_max=P_max, log_x=True, c_sim=split_colors, c_Kep=split_colors, ls_sim=split_linestyles, ls_Kep=split_linestyles_Kep, lw=lw, labels_sim=split_names, labels_Kep=[None, None], xticks_custom=[3,10,30,100,300], xlabel_text=r'$P_1$ (days)', afs=afs, tfs=tfs, lfs=lfs, label_dist=True, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_periods_inner_CDFs.pdf', save_fig=savefigures)
+plot_fig_cdf_simple([sss_per_sys['P_obs'][:,0] for sss_per_sys in split_sss_per_sys], [ssk_per_sys['P_obs'][:,0] for ssk_per_sys in split_ssk_per_sys], x_min=period_min, x_max=period_max, log_x=True, c_sim=split_colors, c_Kep=split_colors, ls_sim=split_linestyles, ls_Kep=split_linestyles_Kep, lw=lw, labels_sim=split_names, labels_Kep=[None, None], xticks_custom=[3,10,30,100,300], xlabel_text=r'$P_1$ (days)', afs=afs, tfs=tfs, lfs=lfs, label_dist=True, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_periods_inner_CDFs.pdf', save_fig=savefigures)
 
 # Period ratios CDFs:
 plot_fig_cdf_simple([sss['Rm_obs'] for sss in split_sss], [ssk['Rm_obs'] for ssk in split_ssk], x_min=1., log_x=True, c_sim=split_colors, c_Kep=split_colors, ls_sim=split_linestyles, ls_Kep=split_linestyles_Kep, lw=lw, labels_sim=split_names, labels_Kep=[None, None], xticks_custom=[1,2,3,4,5,10,20,40], xlabel_text=r'$P_{i+1}/P_i$', afs=afs, tfs=tfs, lfs=lfs, label_dist=True, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_periodratios_CDFs.pdf', save_fig=savefigures)

@@ -67,8 +67,8 @@ dists_include = ['delta_f',
 # To first read the number of simulated targets and bounds for the periods and radii:
 sim_settings = read_targets_period_radius_bounds(loadfiles_directory + 'periods%s.out' % run_number)
 N_sim = sim_settings['N_sim']
-P_min = sim_settings['P_min']
-P_max = sim_settings['P_max']
+period_min = sim_settings['P_min']
+period_max = sim_settings['P_max']
 radii_min = sim_settings['radii_min']
 radii_max = sim_settings['radii_max']
 
@@ -79,7 +79,7 @@ param_vals_all = read_sim_params(loadfiles_directory + 'periods%s.out' % run_num
 sss_per_sys, sss = compute_summary_stats_from_cat_obs(file_name_path=loadfiles_directory, run_number=run_number, compute_ratios=compute_ratios)
 
 # To load and process the observed Kepler catalog and compare with our simulated catalog:
-ssk_per_sys, ssk = compute_summary_stats_from_Kepler_catalog(P_min, P_max, radii_min, radii_max, compute_ratios=compute_ratios)
+ssk_per_sys, ssk = compute_summary_stats_from_Kepler_catalog(period_min, period_max, radii_min, radii_max, compute_ratios=compute_ratios)
 
 dists, dists_w = compute_distances_sim_Kepler(sss_per_sys, sss, ssk_per_sys, ssk, weights_all['all'], dists_include, N_sim, AD_mod=AD_mod)
 
@@ -182,7 +182,7 @@ if savefigures:
     plt.close()
 
 # Periods CDFs:
-plot_fig_cdf_simple([sss['P_obs']], [ssk['P_obs']], x_min=P_min, x_max=P_max, log_x=True, lw=lw, xticks_custom=[3,10,30,100,300], xlabel_text=r'$P$ (days)', afs=afs, tfs=tfs, lfs=lfs, label_dist=True, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_periods_CDFs.pdf', save_fig=savefigures)
+plot_fig_cdf_simple([sss['P_obs']], [ssk['P_obs']], x_min=period_min, x_max=period_max, log_x=True, lw=lw, xticks_custom=[3,10,30,100,300], xlabel_text=r'$P$ (days)', afs=afs, tfs=tfs, lfs=lfs, label_dist=True, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_periods_CDFs.pdf', save_fig=savefigures)
 
 # Period ratios CDFs:
 plot_fig_cdf_simple([sss['Rm_obs']], [ssk['Rm_obs']], log_x=True, lw=lw, xticks_custom=[1,2,3,4,5,10,20,40], xlabel_text=r'$P_{i+1}/P_i$', afs=afs, tfs=tfs, lfs=lfs, label_dist=True, fig_size=fig_size, fig_lbrt=fig_lbrt, save_name=savefigures_directory + subdirectory + model_name + '_periodratios_CDFs.pdf', save_fig=savefigures)
@@ -404,7 +404,7 @@ plot_fig_cdf_simple([], tdur_tcirc_Kep_per_m, x_min=0., x_max=1.5, lw=lw, c_Kep=
 
 ##### To plot the fraction of planets in observed multis on a period-radius diagram:
 
-P_bins = np.logspace(np.log10(P_min), np.log10(P_max), 6+1)
+P_bins = np.logspace(np.log10(period_min), np.log10(period_max), 6+1)
 R_bins = np.logspace(np.log10(radii_min), np.log10(radii_max), 6+1)
 #P_bins = np.array([4., 8., 16., 32., 64., 128., 256.])
 #R_bins = np.array([0.5, 1., 1.5, 2., 3., 4., 6.])
@@ -425,7 +425,7 @@ plt.show()
 '''
 fig = plt.figure(figsize=(10,8)) # separations in mutual Hill radii vs. sum of masses
 plot = GridSpec(2,1,left=0.15,bottom=0.15,right=0.95,top=0.95,wspace=0,hspace=0)
-bins = np.logspace(np.log10(P_min), np.log10(P_max), 21)
+bins = np.logspace(np.log10(period_min), np.log10(period_max), 21)
 
 ax = plt.subplot(plot[0,:]) # simulated catalog
 plt.text(x=0.02, y=0.05, s='Maximum AMD model', ha='left', fontsize=lfs, transform=ax.transAxes)
@@ -443,7 +443,7 @@ for m in [1,2,3,4]:
     #plt.scatter(P_m, m*np.ones(len(P_m)))
 ax.tick_params(axis='both', labelsize=afs)
 plt.gca().set_xscale("log")
-plt.xlim([P_min, P_max])
+plt.xlim([period_min, period_max])
 plt.xlabel(r'$P$ (days)', fontsize=20)
 plt.ylabel(r'Counts', fontsize=20)
 plt.legend(loc='upper right', bbox_to_anchor=(1.,1.), ncol=1, frameon=False, fontsize=lfs)
@@ -463,7 +463,7 @@ for m in [1,2,3,4]:
     plt.hist(P_m, bins=bins, histtype='step', lw=2, label=m_label) #weights=np.ones(len(P_m))/len(P_m)
 ax.tick_params(axis='both', labelsize=afs)
 plt.gca().set_xscale("log")
-plt.xlim([P_min, P_max])
+plt.xlim([period_min, period_max])
 plt.xlabel(r'$P$ (days)', fontsize=20)
 plt.ylabel(r'Counts', fontsize=20)
 

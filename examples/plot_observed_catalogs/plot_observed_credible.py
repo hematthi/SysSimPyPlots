@@ -67,8 +67,8 @@ dists_include = ['delta_f',
 # To first read the number of simulated targets and bounds for the periods and radii:
 sim_settings = read_targets_period_radius_bounds(loadfiles_directory + 'periods%s.out' % run_number)
 N_sim = sim_settings['N_sim']
-P_min = sim_settings['P_min']
-P_max = sim_settings['P_max']
+period_min = sim_settings['P_min']
+period_max = sim_settings['P_max']
 radii_min = sim_settings['radii_min']
 radii_max = sim_settings['radii_max']
 
@@ -81,7 +81,7 @@ params = read_sim_params(loadfiles_directory + 'periods%s.out' % run_number)
 sss_per_sys, sss = compute_summary_stats_from_cat_obs(file_name_path=loadfiles_directory, run_number=run_number, compute_ratios=compute_ratios)
 
 # To load and process the observed Kepler catalog and compare with our simulated catalog:
-ssk_per_sys, ssk = compute_summary_stats_from_Kepler_catalog(P_min, P_max, radii_min, radii_max, compute_ratios=compute_ratios)
+ssk_per_sys, ssk = compute_summary_stats_from_Kepler_catalog(period_min, period_max, radii_min, radii_max, compute_ratios=compute_ratios)
 
 dists, dists_w = compute_distances_sim_Kepler(sss_per_sys, sss, ssk_per_sys, ssk, weights_all['all'], dists_include, N_sim, AD_mod=AD_mod)
 
@@ -166,7 +166,7 @@ for i in range(1,runs+1):
     f_low_gap_complexity.append(f_low_C)
 
     # To plot the fraction of planets in observed multis on a period-radius diagram:
-    #P_bins = np.logspace(np.log10(P_min), np.log10(P_max), 6+1)
+    #P_bins = np.logspace(np.log10(period_min), np.log10(period_max), 6+1)
     #R_bins = np.logspace(np.log10(radii_min), np.log10(radii_max), 6+1)
     #plot_fig_period_radius_fraction_multis(sss_per_sys_i, sss_i, P_bins, R_bins, save_name=savefigures_directory + model_name + '_%s_PR_grid_fraction_obs_multis.png' % run_number, save_fig=False)
     #plt.show()
@@ -229,7 +229,7 @@ if savefigures:
     plt.close()
 
 # Periods:
-plot_fig_pdf_credible([[sss_i['P_obs'] for sss_i in sss_all]], [ssk['P_obs']], x_min=P_min, x_max=P_max, y_min=1e-3, y_max=0.1, n_bins=n_bins, log_x=True, log_y=True, lw=lw, alpha_all=[alpha], xticks_custom=[3,10,30,100,300], xlabel_text=r'Period, $P$ (days)', afs=afs, tfs=tfs, lfs=lfs, legend=False, fig_size=fig_size, fig_lbrt=fig_lbrt)
+plot_fig_pdf_credible([[sss_i['P_obs'] for sss_i in sss_all]], [ssk['P_obs']], x_min=period_min, x_max=period_max, y_min=1e-3, y_max=0.1, n_bins=n_bins, log_x=True, log_y=True, lw=lw, alpha_all=[alpha], xticks_custom=[3,10,30,100,300], xlabel_text=r'Period, $P$ (days)', afs=afs, tfs=tfs, lfs=lfs, legend=False, fig_size=fig_size, fig_lbrt=fig_lbrt)
 if savefigures:
     plt.savefig(savefigures_directory + model_name + '_periods_compare.pdf')
     plt.close()
@@ -330,7 +330,7 @@ if savefigures:
     plt.close()
 
 # Periods:
-plot_fig_cdf_credible([[sss_i['P_obs'] for sss_i in sss_all]], [ssk['P_obs']], x_min=P_min, x_max=P_max, log_x=True, lw=lw, alpha_all=[alpha], labels_sim_all=['Simulated'], xticks_custom=[3,10,30,100,300], xlabel_text=r'Period, $P$ (days)', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_size=fig_size, fig_lbrt=fig_lbrt)
+plot_fig_cdf_credible([[sss_i['P_obs'] for sss_i in sss_all]], [ssk['P_obs']], x_min=period_min, x_max=period_max, log_x=True, lw=lw, alpha_all=[alpha], labels_sim_all=['Simulated'], xticks_custom=[3,10,30,100,300], xlabel_text=r'Period, $P$ (days)', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_size=fig_size, fig_lbrt=fig_lbrt)
 if savefigures:
     plt.savefig(savefigures_directory + model_name + '_periods_compare_CDFs.pdf')
     plt.close()
@@ -510,7 +510,7 @@ for i in range(runs):
     plt.legend(loc='lower left', bbox_to_anchor=(0.01,0.01), ncol=1, frameon=False, fontsize=lfs) #show the legend
 
     ax = plt.subplot(plot[1,0]) # periods
-    plot_panel_pdf_simple(ax, [], [ssk['P_obs']], x_min=P_min, x_max=P_max, y_min=1e-3, y_max=0.1, n_bins=n_bins, log_x=True, log_y=True, lw=lw, xticks_custom=[3,10,30,100,300], xlabel_text=r'$P$ (days)', afs=afs, tfs=tfs, lfs=lfs)
+    plot_panel_pdf_simple(ax, [], [ssk['P_obs']], x_min=period_min, x_max=period_max, y_min=1e-3, y_max=0.1, n_bins=n_bins, log_x=True, log_y=True, lw=lw, xticks_custom=[3,10,30,100,300], xlabel_text=r'$P$ (days)', afs=afs, tfs=tfs, lfs=lfs)
     plt.plot(P_bins_mid, P_counts_all[i,:], drawstyle='steps-mid', color='k', lw=lw, ls='-')
 
     ax = plt.subplot(plot[2,0]) # period ratios

@@ -54,15 +54,17 @@ dists_include = ['delta_f',
                  'gap_complexity_KS',
                  ]
 
-N_sim, cos_factor, P_min, P_max, radii_min, radii_max = read_targets_period_radius_bounds(loadfiles_directory + 'periods%s.out' % run_number)
+sim_settings = read_targets_period_radius_bounds(loadfiles_directory + 'periods%s.out' % run_number)
+N_sim = sim_settings['N_sim']
+period_min = sim_settings['P_min']
+period_max = sim_settings['P_max']
+radii_min = sim_settings['radii_min']
+radii_max = sim_settings['radii_max']
 
-param_vals_all = read_sim_params(loadfiles_directory + 'periods%s.out' % run_number)
-sssp_per_sys, sssp = compute_summary_stats_from_cat_phys(file_name_path=loadfiles_directory, run_number=run_number, load_full_tables=True)
-sss_per_sys, sss = compute_summary_stats_from_cat_obs(file_name_path=loadfiles_directory, run_number=run_number, compute_ratios=compute_ratios)
+#sssp_per_sys, sssp = compute_summary_stats_from_cat_phys(file_name_path=loadfiles_directory, run_number=run_number, load_full_tables=True)
+#sss_per_sys, sss = compute_summary_stats_from_cat_obs(file_name_path=loadfiles_directory, run_number=run_number, compute_ratios=compute_ratios)
 
-ssk_per_sys, ssk = compute_summary_stats_from_Kepler_catalog(P_min, P_max, radii_min, radii_max, compute_ratios=compute_ratios)
-
-dists, dists_w = compute_distances_sim_Kepler(sss_per_sys, sss, ssk_per_sys, ssk, weights_all['all'], dists_include, N_sim, cos_factor=cos_factor, AD_mod=AD_mod)
+ssk_per_sys, ssk = compute_summary_stats_from_Kepler_catalog(period_min, period_max, radii_min, radii_max, compute_ratios=compute_ratios)
 
 
 
@@ -80,8 +82,8 @@ sssp_per_sys_R_all = []
 for i in range(runs): #range(1,runs+1)
     run_number = i+1
     print(i)
-    N_sim_i = read_targets_period_radius_bounds(loadfiles_directory + 'periods%s.out' % run_number)[0]
-    param_vals_i = read_sim_params(loadfiles_directory + 'periods%s.out' % run_number)
+    sim_settings_i = read_targets_period_radius_bounds(loadfiles_directory + 'periods%s.out' % run_number)
+    N_sim_i = sim_settings_i['N_sim']
     sssp_per_sys_i, sssp_i = compute_summary_stats_from_cat_phys(file_name_path=loadfiles_directory, run_number=run_number, load_full_tables=True)
 
     PRK_obs = [] # 2D array to be filled with: [period, radius, K status, mean intrinsic multiplicity, mean multiplicity with K > 0.1m/s, mean multiplicity with K > 1m/s] for each observed planet, where K status = 1 (it is an intrinsic single), 2 (it is the largest K in a multiplanet system), 3 (it is NOT the largest K in a multiplanet system)
@@ -134,7 +136,7 @@ sfs = 12 # secondary numbers font size
 
 # Period-radius grids (custom bins):
 
-#P_bins = np.logspace(np.log10(P_min), np.log10(P_max), 5+1)
+#P_bins = np.logspace(np.log10(period_min), np.log10(period_max), 5+1)
 #R_bins = np.array([0.5, 1., 1.5, 2., 3., 5., 10.])
 P_bins = np.array([4., 8., 16., 32., 64., 128., 256.])
 R_bins = np.array([0.5, 1., 1.5, 2., 3., 4., 6.])

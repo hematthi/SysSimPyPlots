@@ -60,7 +60,12 @@ dists_include = ['delta_f',
 ##### To load the files with the systems with observed planets:
 
 # To first read the number of simulated targets and bounds for the periods and radii:
-N_sim, cos_factor, P_min, P_max, radii_min, radii_max = read_targets_period_radius_bounds(loadfiles_directory + 'periods%s.out' % run_number)
+sim_settings = read_targets_period_radius_bounds(loadfiles_directory + 'periods%s.out' % run_number)
+N_sim = sim_settings['N_sim']
+period_min = sim_settings['P_min']
+period_max = sim_settings['P_max']
+radii_min = sim_settings['radii_min']
+radii_max = sim_settings['radii_max']
 
 # To read the simulation parameters from the file:
 param_vals_all = read_sim_params(loadfiles_directory + 'periods%s.out' % run_number)
@@ -69,9 +74,9 @@ param_vals_all = read_sim_params(loadfiles_directory + 'periods%s.out' % run_num
 sss_per_sys, sss = compute_summary_stats_from_cat_obs(file_name_path=loadfiles_directory, run_number=run_number, compute_ratios=compute_ratios)
 
 # To load and process the observed Kepler catalog and compare with our simulated catalog:
-ssk_per_sys, ssk = compute_summary_stats_from_Kepler_catalog(P_min, P_max, radii_min, radii_max, compute_ratios=compute_ratios)
+ssk_per_sys, ssk = compute_summary_stats_from_Kepler_catalog(period_min, period_max, radii_min, radii_max, compute_ratios=compute_ratios)
 
-dists, dists_w = compute_distances_sim_Kepler(sss_per_sys, sss, ssk_per_sys, ssk, weights_all['all'], dists_include, N_sim, cos_factor=cos_factor, AD_mod=AD_mod)
+dists, dists_w = compute_distances_sim_Kepler(sss_per_sys, sss, ssk_per_sys, ssk, weights_all['all'], dists_include, N_sim, AD_mod=AD_mod)
 
 
 
@@ -105,7 +110,7 @@ pratio_max = 3. if n_mmr==1 else 4.
 
 zeta_in_mmr_lim = 0.25 # all |zeta1| <= zeta_in_mmr_lim are considered "near a 1st order MMR"
 
-x_min, x_max = 0.5*P_min, P_max
+x_min, x_max = 0.5*period_min, period_max
 s_norm = 2.
 s_examples = [1., 3., 10.]
 x_examples = np.logspace(np.log10(x_min), np.log10(x_max), len(s_examples)+2)[1:-1] # first and last elements are for buffer zones

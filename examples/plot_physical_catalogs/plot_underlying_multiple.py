@@ -40,7 +40,12 @@ save_name = 'Models_Compare'
 loadfiles_directory1 = '/Users/hematthi/Documents/GradSchool/Research/ACI/Simulated_Data/AMD_system/Split_stars/Singles_ecc/Params11_KS/Distribute_AMD_per_mass/durations_norm_circ_singles_multis_GF2020_KS/GP_med/'
 run_number1 = ''
 
-N_sim, cos_factor, P_min, P_max, radii_min, radii_max = read_targets_period_radius_bounds(loadfiles_directory1 + 'periods%s.out' % run_number1)
+sim_settings = read_targets_period_radius_bounds(loadfiles_directory1 + 'periods%s.out' % run_number1)
+N_sim = sim_settings['N_sim']
+period_min = sim_settings['P_min']
+period_max = sim_settings['P_max']
+radii_min = sim_settings['radii_min']
+radii_max = sim_settings['radii_max']
 
 param_vals_all1 = read_sim_params(loadfiles_directory1 + 'periods%s.out' % run_number1)
 sssp_per_sys1, sssp1 = compute_summary_stats_from_cat_phys(file_name_path=loadfiles_directory1, run_number=run_number1, load_full_tables=True)
@@ -210,7 +215,8 @@ ptot1 = np.zeros(10)
 for i in range(10):
     run_number1 = str(i)
 
-    N_sim, cos_factor, P_min, P_max, radii_min, radii_max = read_targets_period_radius_bounds(loadfiles_directory1 + 'periods%s.out' % run_number1)
+    sim_settings1 = read_targets_period_radius_bounds(loadfiles_directory1 + 'periods%s.out' % run_number1)
+    N_sim = sim_settings1['N_sim']
 
     param_vals_all1 = read_sim_params(loadfiles_directory1 + 'periods%s.out' % run_number1)
     sssp_per_sys1, sssp1 = compute_summary_stats_from_cat_phys(file_name_path=loadfiles_directory1, run_number=run_number1)

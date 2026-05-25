@@ -38,7 +38,6 @@ save_name = 'Models_Compare'
 
 # Model 1:
 loadfiles_directory1 = '/Users/hematthi/Documents/GradSchool/Research/ACI/Simulated_Data/Julia_v0.7/Kepler_catalog_optimization/q1q17_dr25_gaia_fgk_stars79935/Clustered_P_R/f_high_incl_low_incl_mmr/Fit_rate_mult_P_Pratios_D_Dratios_dur_durratios_mmr/Some11_params_CRPDr_KS/Fixed_Rbreak3_Ncrit8/lc_0p2_5_lp_0p5_10_alphaP_-2_2_alphaR1_-4_2_alphaR2_-6_0_ecc_0_0p1_incl_inclmmr_0_90_sigmaR_0_0p5_sigmaP_0_0p3/targs79935_maxincl0_maxiters5000/sigma_i_greater_sigma_i_mmr/GP_best_models/'
-N_sim, cos_factor, P_min, P_max, radii_min, radii_max = read_targets_period_radius_bounds(loadfiles_directory1 + 'clusterids_all1.out')
 
 # Model 2:
 loadfiles_directory2 = '/Users/hematthi/Documents/GradSchool/Research/ACI/Simulated_Data/Split_stars/Clustered_P_R_fswp/Params12_KS/durations_KS/GP_best_models/'
@@ -90,8 +89,8 @@ for loadfiles_dir in model_loadfiles_dirs:
     for i in range(1,runs+1): #range(1,runs+1)
         run_number = i
         print(i)
-        N_sim_i = read_targets_period_radius_bounds(loadfiles_dir + 'clusterids_all%s.out' % run_number)[0]
-        param_vals_i = read_sim_params(loadfiles_dir + 'clusterids_all%s.out' % run_number)
+        sim_settings_i = read_targets_period_radius_bounds(loadfiles_dir + 'clusterids_all%s.out' % run_number)
+        N_sim_i = sim_settings_i['N_sim']
         sssp_per_sys_basic_i = load_cat_phys_separate_and_compute_basic_summary_stats_per_sys(loadfiles_dir, run_number)
 
         # Multiplicities:

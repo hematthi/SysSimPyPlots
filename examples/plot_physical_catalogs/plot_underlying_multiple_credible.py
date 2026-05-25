@@ -39,7 +39,12 @@ save_name = 'Models_compare' #'Hybrid_vs_H20_models'
 loadfiles_directory1 = '/Users/hematthi/Documents/GradSchool/Research/SysSim/SysSimExClusters/examples/test/'
 run_number1 = ''
 
-N_sim, cos_factor, P_min, P_max, radii_min, radii_max = read_targets_period_radius_bounds(loadfiles_directory1 + 'periods%s.out' % run_number1)
+sim_settings = read_targets_period_radius_bounds(loadfiles_directory1 + 'periods%s.out' % run_number1)
+N_sim = sim_settings['N_sim']
+period_min = sim_settings['P_min']
+period_max = sim_settings['P_max']
+radii_min = sim_settings['radii_min']
+radii_max = sim_settings['radii_max']
 
 param_vals_all1 = read_sim_params(loadfiles_directory1 + 'periods%s.out' % run_number1)
 sssp_per_sys1, sssp1 = compute_summary_stats_from_cat_phys(file_name_path=loadfiles_directory1, run_number=run_number1)
@@ -146,7 +151,8 @@ for m,loadfiles_dir in enumerate(model_loadfiles_dirs):
     
     for i,run_number in enumerate(range(1,runs+1)):
         print('i=%s, run_number=%s' % (i, run_number))
-        N_sim_i = read_targets_period_radius_bounds(loadfiles_dir + 'periods%s.out' % run_number)[0]
+        sim_settings_i = read_targets_period_radius_bounds(loadfiles_dir + 'periods%s.out' % run_number)
+        N_sim_i = sim_settings_i['N_sim']
         params_i = read_sim_params(loadfiles_dir + 'periods%s.out' % run_number)
         sssp_per_sys_i, sssp_i = compute_summary_stats_from_cat_phys(file_name_path=loadfiles_dir, run_number=run_number)
         
@@ -440,7 +446,8 @@ run_numbers_keep = run_numbers[depths > depth_thres][:runs]
 sssp_top10p = []
 for i,run_number in enumerate(run_numbers_keep):
     print('i=%s, run_number=%s' % (i, run_number))
-    N_sim_i = read_targets_period_radius_bounds(loadfiles_directory + 'periods%s.out' % run_number)[0]
+    sim_settings_i = read_targets_period_radius_bounds(loadfiles_directory + 'periods%s.out' % run_number)
+    N_sim_i = sim_settings_i['N_sim']
     params_i = read_sim_params(loadfiles_directory + 'periods%s.out' % run_number)
     sssp_per_sys_i, sssp_i = compute_summary_stats_from_cat_phys(file_name_path=loadfiles_directory, run_number=run_number)
     

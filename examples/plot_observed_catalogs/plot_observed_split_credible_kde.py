@@ -61,7 +61,12 @@ dists_include = ['delta_f',
 ##### To load the files with the systems with observed planets:
 
 # To first read the number of simulated targets and bounds for the periods and radii:
-N_sim, cos_factor, P_min, P_max, radii_min, radii_max = read_targets_period_radius_bounds(loadfiles_directory + 'periods%s.out' % run_number)
+sim_settings = read_targets_period_radius_bounds(loadfiles_directory + 'periods%s.out' % run_number)
+N_sim = sim_settings['N_sim']
+period_min = sim_settings['P_min']
+period_max = sim_settings['P_max']
+radii_min = sim_settings['radii_min']
+radii_max = sim_settings['radii_max']
 
 # To read the simulation parameters from the file:
 param_vals = read_sim_params(loadfiles_directory + 'periods%s.out' % run_number)
@@ -74,9 +79,9 @@ teff_med = np.nanmedian(stars_cleaned['teff'])
 #bp_rp_med = np.nanmedian(stars_cleaned['bp_rp'])
 bp_rp_corr_med = np.nanmedian(stars_cleaned['bp_rp'] - stars_cleaned['e_bp_rp_interp'])
 
-ssk_per_sys0, ssk0 = compute_summary_stats_from_Kepler_catalog(P_min, P_max, radii_min, radii_max) # combined sample
-ssk_per_sys1, ssk1 = compute_summary_stats_from_Kepler_catalog(P_min, P_max, radii_min, radii_max, bp_rp_max=bp_rp_corr_med) #_max=_med
-ssk_per_sys2, ssk2 = compute_summary_stats_from_Kepler_catalog(P_min, P_max, radii_min, radii_max, bp_rp_min=bp_rp_corr_med) #_min=_med
+ssk_per_sys0, ssk0 = compute_summary_stats_from_Kepler_catalog(period_min, period_max, radii_min, radii_max) # combined sample
+ssk_per_sys1, ssk1 = compute_summary_stats_from_Kepler_catalog(period_min, period_max, radii_min, radii_max, bp_rp_max=bp_rp_corr_med) #_max=_med
+ssk_per_sys2, ssk2 = compute_summary_stats_from_Kepler_catalog(period_min, period_max, radii_min, radii_max, bp_rp_min=bp_rp_corr_med) #_min=_med
 
 sss_per_sys0, sss0 = compute_summary_stats_from_cat_obs(file_name_path=loadfiles_directory, run_number=run_number, compute_ratios=compute_ratios) # combined sample
 sss_per_sys1, sss1 = compute_summary_stats_from_cat_obs(file_name_path=loadfiles_directory, run_number=run_number, bp_rp_max=bp_rp_corr_med, compute_ratios=compute_ratios)
@@ -96,9 +101,9 @@ split_colors = ['b', 'r']
 
 
 
-dists0, dists_w0 = compute_distances_sim_Kepler(sss_per_sys0, sss0, ssk_per_sys0, ssk0, weights_all['all'], dists_include, N_sim, cos_factor=cos_factor, AD_mod=AD_mod)
-dists1, dists_w1 = compute_distances_sim_Kepler(sss_per_sys1, sss1, ssk_per_sys1, ssk1, weights_all['bluer'], dists_include, N_sim, cos_factor=cos_factor, AD_mod=AD_mod)
-dists2, dists_w2 = compute_distances_sim_Kepler(sss_per_sys2, sss2, ssk_per_sys2, ssk2, weights_all['redder'], dists_include, N_sim, cos_factor=cos_factor, AD_mod=AD_mod)
+dists0, dists_w0 = compute_distances_sim_Kepler(sss_per_sys0, sss0, ssk_per_sys0, ssk0, weights_all['all'], dists_include, N_sim, AD_mod=AD_mod)
+dists1, dists_w1 = compute_distances_sim_Kepler(sss_per_sys1, sss1, ssk_per_sys1, ssk1, weights_all['bluer'], dists_include, N_sim, AD_mod=AD_mod)
+dists2, dists_w2 = compute_distances_sim_Kepler(sss_per_sys2, sss2, ssk_per_sys2, ssk2, weights_all['redder'], dists_include, N_sim, AD_mod=AD_mod)
 
 
 
@@ -139,8 +144,6 @@ loadfiles_directory = '/Users/hematthi/Documents/GradSchool/Research/ACI/Simulat
 #loadfiles_directory = '../../ACI/Simulated_Data/AMD_system/Split_stars/Singles_ecc/Params11_KS/durations_norm_circ_singles_multis_GF2020_KS/GP_best_models/'
 runs = 100
 
-param_vals_all = []
-
 Mtot_bins = np.arange(10)-0.5
 Mtot_bins_mid = (Mtot_bins[:-1] + Mtot_bins[1:])/2.
 Mtot_counts_all = {sample: [] for sample in sample_names}
@@ -166,16 +169,13 @@ for i in range(1,runs+1): #range(1,runs+1)
     run_number = i
     print(i)
 
-    param_vals_i = read_sim_params(loadfiles_directory + 'periods%s.out' % run_number)
-    param_vals_all.append(param_vals_i)
-
     sss_per_sys0_i, sss0_i = compute_summary_stats_from_cat_obs(file_name_path=loadfiles_directory, run_number=run_number, compute_ratios=compute_ratios) # combined sample
     sss_per_sys1_i, sss1_i = compute_summary_stats_from_cat_obs(file_name_path=loadfiles_directory, run_number=run_number, bp_rp_max=bp_rp_corr_med, compute_ratios=compute_ratios)
     sss_per_sys2_i, sss2_i = compute_summary_stats_from_cat_obs(file_name_path=loadfiles_directory, run_number=run_number, bp_rp_min=bp_rp_corr_med, compute_ratios=compute_ratios)
 
-    dists0_i, dists_w0_i = compute_distances_sim_Kepler(sss_per_sys0_i, sss0_i, ssk_per_sys0, ssk0, weights_all['all'], dists_include, N_Kep, cos_factor=cos_factor, AD_mod=AD_mod)
-    dists1_i, dists_w1_i = compute_distances_sim_Kepler(sss_per_sys1_i, sss1_i, ssk_per_sys1, ssk1, weights_all['bluer'], dists_include, N_Kep, cos_factor=cos_factor, AD_mod=AD_mod)
-    dists2_i, dists_w2_i = compute_distances_sim_Kepler(sss_per_sys2_i, sss2_i, ssk_per_sys2, ssk2, weights_all['redder'], dists_include, N_Kep, cos_factor=cos_factor, AD_mod=AD_mod)
+    dists0_i, dists_w0_i = compute_distances_sim_Kepler(sss_per_sys0_i, sss0_i, ssk_per_sys0, ssk0, weights_all['all'], dists_include, N_Kep, AD_mod=AD_mod)
+    dists1_i, dists_w1_i = compute_distances_sim_Kepler(sss_per_sys1_i, sss1_i, ssk_per_sys1, ssk1, weights_all['bluer'], dists_include, N_Kep, AD_mod=AD_mod)
+    dists2_i, dists_w2_i = compute_distances_sim_Kepler(sss_per_sys2_i, sss2_i, ssk_per_sys2, ssk2, weights_all['redder'], dists_include, N_Kep, AD_mod=AD_mod)
 
     samples_sss_per_sys_i = {'all': sss_per_sys0_i, 'bluer': sss_per_sys1_i, 'redder': sss_per_sys2_i}
     samples_sss_i = {'all': sss0_i, 'bluer': sss1_i, 'redder': sss2_i}
@@ -316,8 +316,8 @@ if savefigures:
     plt.close()
 
 # Periods:
-P_axis = np.logspace(np.log10(P_min), np.log10(P_max), pts)
-ax = plot_fig_pdf_simple([], [], x_min=P_min, x_max=P_max, y_min=0, y_max=1, log_x=True, xticks_custom=[3,10,30,100,300], xlabel_text=r'$P$ (days)', ylabel_text='Density', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
+P_axis = np.logspace(np.log10(period_min), np.log10(period_max), pts)
+ax = plot_fig_pdf_simple([], [], x_min=period_min, x_max=period_max, y_min=0, y_max=1, log_x=True, xticks_custom=[3,10,30,100,300], xlabel_text=r'$P$ (days)', ylabel_text='Density', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 for i,sample in enumerate(split_names):
     #kde_pts_Kep = Rm_kde_Kep[sample](np.log10(Rm_axis))
     kde_pts_Kep, bw_pts_Kep = kde_kNN_bw(P_kde_Kep[sample], np.log10(P_axis), kNN_factor=kNN_factor)

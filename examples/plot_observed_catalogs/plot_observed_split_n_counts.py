@@ -58,10 +58,12 @@ dists_include = ['delta_f',
 ##### To load the files with the systems with observed planets:
 
 # To first read the number of simulated targets and bounds for the periods and radii:
-N_sim, cos_factor, P_min, P_max, radii_min, radii_max = read_targets_period_radius_bounds(loadfiles_directory + 'periods%s.out' % run_number)
-
-# To read the simulation parameters from the file:
-param_vals = read_sim_params(loadfiles_directory + 'periods%s.out' % run_number)
+sim_settings = read_targets_period_radius_bounds(loadfiles_directory + 'periods%s.out' % run_number)
+N_sim = sim_settings['N_sim']
+period_min = sim_settings['P_min']
+period_max = sim_settings['P_max']
+radii_min = sim_settings['radii_min']
+radii_max = sim_settings['radii_max']
 
 # To load and process the observed Kepler catalog and compare with our simulated catalog:
 stars_cleaned = load_Kepler_stars_cleaned()
@@ -71,9 +73,9 @@ teff_med = np.nanmedian(stars_cleaned['teff'])
 #bp_rp_med = np.nanmedian(stars_cleaned['bp_rp'])
 bp_rp_corr_med = np.nanmedian(stars_cleaned['bp_rp'] - stars_cleaned['e_bp_rp_interp'])
 
-ssk_per_sys0, ssk0 = compute_summary_stats_from_Kepler_catalog(P_min, P_max, radii_min, radii_max) # combined sample
-ssk_per_sys1, ssk1 = compute_summary_stats_from_Kepler_catalog(P_min, P_max, radii_min, radii_max, bp_rp_max=bp_rp_corr_med) #_max=_med
-ssk_per_sys2, ssk2 = compute_summary_stats_from_Kepler_catalog(P_min, P_max, radii_min, radii_max, bp_rp_min=bp_rp_corr_med) #_min=_med
+ssk_per_sys0, ssk0 = compute_summary_stats_from_Kepler_catalog(period_min, period_max, radii_min, radii_max) # combined sample
+ssk_per_sys1, ssk1 = compute_summary_stats_from_Kepler_catalog(period_min, period_max, radii_min, radii_max, bp_rp_max=bp_rp_corr_med) #_max=_med
+ssk_per_sys2, ssk2 = compute_summary_stats_from_Kepler_catalog(period_min, period_max, radii_min, radii_max, bp_rp_min=bp_rp_corr_med) #_min=_med
 
 sss_per_sys0, sss0 = compute_summary_stats_from_cat_obs(file_name_path=loadfiles_directory, run_number=run_number, compute_ratios=compute_ratios) # combined sample
 sss_per_sys1, sss1 = compute_summary_stats_from_cat_obs(file_name_path=loadfiles_directory, run_number=run_number, bp_rp_max=bp_rp_corr_med, compute_ratios=compute_ratios)
@@ -118,23 +120,19 @@ Nmult_Kep = {key: [] for key in sample_names}
 Nmult_runs = {key: [] for key in sample_names}
 
 # Kepler counts first:
-ssk_per_sys, ssk = compute_summary_stats_from_Kepler_catalog(P_min, P_max, radii_min, radii_max) # combined sample
+ssk_per_sys, ssk = compute_summary_stats_from_Kepler_catalog(period_min, period_max, radii_min, radii_max) # combined sample
 Nmult_Kep['all'] = bin_Nmult(ssk['Nmult_obs'])
 for j in range(samples):
-    ssk_per_sys_j, ssk_j = compute_summary_stats_from_Kepler_catalog(P_min, P_max, radii_min, radii_max, bp_rp_min=sample_bprp_bounds[j], bp_rp_max=sample_bprp_bounds[j+1])
+    ssk_per_sys_j, ssk_j = compute_summary_stats_from_Kepler_catalog(period_min, period_max, radii_min, radii_max, bp_rp_min=sample_bprp_bounds[j], bp_rp_max=sample_bprp_bounds[j+1])
     print('Kepler (sample %s): ' % j, ssk_j['Nmult_obs'])
     Nmult_Kep[str(j)] = bin_Nmult(ssk_j['Nmult_obs'])
 
-param_vals_all = []
 for i in range(1,runs+1): #range(1,runs+1)
     run_number = i
 
-    param_vals_i = read_sim_params(loadfiles_directory + 'periods%s.out' % run_number)
-    param_vals_all.append(param_vals_i)
-
     # Combined sample first:
     sss_per_sys_i, sss_i = compute_summary_stats_from_cat_obs(file_name_path=loadfiles_directory, run_number=run_number, compute_ratios=compute_ratios)
-    dists_i, dists_w_i = compute_distances_sim_Kepler(sss_per_sys_i, sss_i, ssk_per_sys, ssk, weights_all['all'], dists_include, N_Kep, cos_factor=cos_factor, AD_mod=AD_mod)
+    dists_i, dists_w_i = compute_distances_sim_Kepler(sss_per_sys_i, sss_i, ssk_per_sys, ssk, weights_all['all'], dists_include, N_Kep, AD_mod=AD_mod)
     Nmult_runs['all'].append(tuple(bin_Nmult(sss_i['Nmult_obs'])))
 
     # For each of the subsamples:
