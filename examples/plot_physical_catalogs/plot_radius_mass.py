@@ -48,9 +48,6 @@ radii_min, radii_max = 0.5, 10.
 loadfiles_directory = ''
 run_number = ''
 
-N_sim, cos_factor, period_min, period_max, radii_min, radii_max = read_targets_period_radius_bounds(loadfiles_directory + 'periods%s.out' % run_number)
-
-param_vals_all = read_sim_params(loadfiles_directory + 'periods%s.out' % run_number)
 sssp_per_sys, sssp = compute_summary_stats_from_cat_phys(file_name_path=loadfiles_directory, run_number=run_number, load_full_tables=True)
 '''
 
