@@ -335,7 +335,7 @@ def plot_fig_pdf_simple(x_sim, x_Kep, x_min=None, x_max=None, y_min=0., y_max=No
     else:
         return ax
 
-def plot_panel_pdf_credible(ax, x_sim_all, x_Kep, x_min=None, x_max=None, y_min=0., y_max=None, n_bins=100, step='mid', qtls=[0.16,0.5,0.84], plot_median=False, normalize=True, N_sim_Kep_factor=1., log_x=False, log_y=False, c_sim_all=['k'], c_Kep=['k'], ls_sim_all=['--'], ls_Kep=['-'], lw=1, alpha_all=[0.2], labels_sim_all=None, labels_Kep=['Kepler'], extra_text=None, xticks_custom=None, xlabel_text='x', ylabel_text='Fraction', afs=20, tfs=20, lfs=16, legend=False):
+def plot_panel_pdf_credible(ax, x_sim_all, x_Kep, x_min=None, x_max=None, y_min=0., y_max=None, n_bins=100, step='mid', qtls=[0.16,0.5,0.84], plot_median=False, normalize=True, N_sim_Kep_factor=1., log_x=False, log_y=False, c_sim_all=['k'], c_Kep=['k'], ls_sim_all=['--'], ls_Kep=['-'], lw_sim=1, lw_Kep=1, alpha_all=[0.2], labels_sim_all=None, labels_Kep=['Kepler'], extra_text=None, xticks_custom=None, xlabel_text='x', ylabel_text='Fraction', afs=20, tfs=20, lfs=16, legend=False):
     """
     Plot credible regions for the histograms of continuous distributions on a given panel.
 
@@ -379,8 +379,10 @@ def plot_panel_pdf_credible(ax, x_sim_all, x_Kep, x_min=None, x_max=None, y_min=
         A list of line styles for the median histograms of each set of lists in `x_sim_all`.
     ls_Kep : list[str], default=['-']
         A list of line styles for the histograms of each sample in `x_Kep`.
-    lw : float, default=1
-        The line width for the histograms.
+    lw_sim : float or list[float], default=1
+        The line width (or list of line widths) for the histograms of each sample in `x_sim_all`.
+    lw_Kep : float or list[float], default=1
+        The line width (or list of line widths) for the histograms of each sample in `x_Kep`.
     alpha_all : list[float], default=[0.2]
         A list of transparency values (between 0 and 1) for the credible regions of each set of lists in `x_sim_all`.
     labels_sim_all : list[str], optional
@@ -422,6 +424,11 @@ def plot_panel_pdf_credible(ax, x_sim_all, x_Kep, x_min=None, x_max=None, y_min=
         bins = np.linspace(x_min, x_max, n_bins+1)
         bins_mid = (bins[:-1] + bins[1:])/2.
     
+    if isinstance(lw_sim, (float, int)):
+        lw_sim = [lw_sim]*len(x_sim_all)
+    if isinstance(lw_Kep, (float, int)):
+        lw_Kep = [lw_Kep]*len(x_Kep)
+    
     bin_maxes = [] # to be filled with the maximum bin counts (or quantiles) in each histogram
     
     # To compute and plot the credible region of the histograms for each set of samples:
@@ -444,7 +451,7 @@ def plot_panel_pdf_credible(ax, x_sim_all, x_Kep, x_min=None, x_max=None, y_min=
         alpha = alpha_all[0] if len(alpha_all)==1 else alpha_all[i]
         label = f'Sample set {i}' if labels_sim_all is None else labels_sim_all[i]
         if plot_median:
-            plt.plot(bins_mid, counts_qtls[1], ls=ls, color=color)
+            plt.plot(bins_mid, counts_qtls[1], ls=ls, lw=lw_sim[i], color=color)
         plt.fill_between(bins_mid, counts_qtls[0], counts_qtls[2], step=step, color=color, alpha=alpha, label=label)
 
     # To compute and plot the histograms in 'x_Kep':
@@ -453,7 +460,7 @@ def plot_panel_pdf_credible(ax, x_sim_all, x_Kep, x_min=None, x_max=None, y_min=
         ls = ls_Kep[0] if len(ls_Kep)==1 else ls_Kep[i]
         color = c_Kep[0] if len(c_Kep)==1 else c_Kep[i]
         label = labels_Kep[0] if len(labels_Kep)==1 else labels_Kep[i]
-        ht = plt.hist(x, bins=bins, histtype='step', weights=weights, log=log_y, color=color, ls=ls, lw=lw, label=label)
+        ht = plt.hist(x, bins=bins, histtype='step', weights=weights, log=log_y, color=color, ls=ls, lw=lw_Kep[i], label=label)
         bin_maxes.append(np.nanmax(ht[0]))
 
     if y_min <= 0. and log_y:
@@ -476,7 +483,7 @@ def plot_panel_pdf_credible(ax, x_sim_all, x_Kep, x_min=None, x_max=None, y_min=
     if legend:
         plt.legend(loc='upper right', bbox_to_anchor=(0.99,0.99), ncol=1, frameon=False, fontsize=lfs) #show the legend
 
-def plot_fig_pdf_credible(x_sim_all, x_Kep, x_min=None, x_max=None, y_min=0., y_max=None, n_bins=100, step='mid', qtls=[0.16,0.5,0.84], plot_median=False, normalize=True, N_sim_Kep_factor=1., log_x=False, log_y=False, c_sim_all=['k'], c_Kep=['k'], ls_sim_all=['--'], ls_Kep=['-'], lw=1, alpha_all=[0.2], labels_sim_all=None, labels_Kep=['Kepler'], extra_text=None, xticks_custom=None, xlabel_text='x', ylabel_text='Fraction', afs=20, tfs=20, lfs=16, legend=False, fig_size=(8,4), fig_lbrt=[0.15, 0.2, 0.95, 0.925], save_name='no_name_fig.pdf', save_fig=False):
+def plot_fig_pdf_credible(x_sim_all, x_Kep, x_min=None, x_max=None, y_min=0., y_max=None, n_bins=100, step='mid', qtls=[0.16,0.5,0.84], plot_median=False, normalize=True, N_sim_Kep_factor=1., log_x=False, log_y=False, c_sim_all=['k'], c_Kep=['k'], ls_sim_all=['--'], ls_Kep=['-'], lw_sim=1, lw_Kep=1, alpha_all=[0.2], labels_sim_all=None, labels_Kep=['Kepler'], extra_text=None, xticks_custom=None, xlabel_text='x', ylabel_text='Fraction', afs=20, tfs=20, lfs=16, legend=False, fig_size=(8,4), fig_lbrt=[0.15, 0.2, 0.95, 0.925], save_name='no_name_fig.pdf', save_fig=False):
     """
     Plot a figure with credible regions of the histograms of continuous distributions.
 
@@ -501,7 +508,7 @@ def plot_fig_pdf_credible(x_sim_all, x_Kep, x_min=None, x_max=None, y_min=0., y_
     left, bottom, right, top = fig_lbrt
     ax = setup_fig_single(fig_size, left=left, bottom=bottom, right=right, top=top)
 
-    plot_panel_pdf_credible(ax, x_sim_all, x_Kep, x_min=x_min, x_max=x_max, y_min=y_min, y_max=y_max, n_bins=n_bins, step=step, qtls=qtls, plot_median=plot_median, normalize=normalize, N_sim_Kep_factor=N_sim_Kep_factor, log_x=log_x, log_y=log_y, c_sim_all=c_sim_all, c_Kep=c_Kep, ls_sim_all=ls_sim_all, ls_Kep=ls_Kep, lw=lw, alpha_all=alpha_all, labels_sim_all=labels_sim_all, labels_Kep=labels_Kep, extra_text=extra_text, xticks_custom=xticks_custom, xlabel_text=xlabel_text, ylabel_text=ylabel_text, afs=afs, tfs=tfs, lfs=lfs, legend=legend)
+    plot_panel_pdf_credible(ax, x_sim_all, x_Kep, x_min=x_min, x_max=x_max, y_min=y_min, y_max=y_max, n_bins=n_bins, step=step, qtls=qtls, plot_median=plot_median, normalize=normalize, N_sim_Kep_factor=N_sim_Kep_factor, log_x=log_x, log_y=log_y, c_sim_all=c_sim_all, c_Kep=c_Kep, ls_sim_all=ls_sim_all, ls_Kep=ls_Kep, lw_sim=lw_sim, lw_Kep=lw_Kep, alpha_all=alpha_all, labels_sim_all=labels_sim_all, labels_Kep=labels_Kep, extra_text=extra_text, xticks_custom=xticks_custom, xlabel_text=xlabel_text, ylabel_text=ylabel_text, afs=afs, tfs=tfs, lfs=lfs, legend=legend)
 
     if save_fig:
         plt.savefig(save_name)
@@ -897,14 +904,20 @@ def load_cat_obs_and_plot_fig_pdf_composite(load_dir, weights, run_number='', Rs
 
     #To load and analyze the simulated and Kepler observed catalogs:
 
-    N_sim, cos_factor, P_min, P_max, radii_min, radii_max = lsims.read_targets_period_radius_bounds(load_dir + 'periods%s.out' % run_number)
+    sim_settings = lsims.read_targets_period_radius_bounds(load_dir + 'periods%s.out' % run_number)
+    N_sim = sim_settings['N_sim']
+    period_min = sim_settings['P_min']
+    period_max = sim_settings['P_max']
+    radii_min = sim_settings['radii_min']
+    radii_max = sim_settings['radii_max']
+    
     param_vals = lsims.read_sim_params(load_dir + 'periods%s.out' % run_number)
 
     sss_per_sys, sss = lsims.compute_summary_stats_from_cat_obs(file_name_path=load_dir, run_number=run_number, Rstar_min=Rstar_min, Rstar_max=Rstar_max, Mstar_min=Mstar_min, Mstar_max=Mstar_max, teff_min=teff_min, teff_max=teff_max, bp_rp_min=bp_rp_min, bp_rp_max=bp_rp_max)
 
     ssk_per_sys, ssk = ckep.compute_summary_stats_from_Kepler_catalog(P_min, P_max, radii_min, radii_max, Rstar_min=Rstar_min, Rstar_max=Rstar_max, Mstar_min=Mstar_min, Mstar_max=Mstar_max, teff_min=teff_min, teff_max=teff_max, bp_rp_min=bp_rp_min, bp_rp_max=bp_rp_max)
 
-    dists, dists_w = ckep.compute_distances_sim_Kepler(sss_per_sys, sss, ssk_per_sys, ssk, weights, dists_include, N_sim, cos_factor=cos_factor, AD_mod=AD_mod)
+    dists, dists_w = ckep.compute_distances_sim_Kepler(sss_per_sys, sss, ssk_per_sys, ssk, weights, dists_include, N_sim, AD_mod=AD_mod)
 
 
 
@@ -1010,14 +1023,20 @@ def load_cat_obs_and_plot_fig_pdf_composite_simple(load_dir, weights, run_number
 
     #To load and analyze the simulated and Kepler observed catalogs:
 
-    N_sim, cos_factor, P_min, P_max, radii_min, radii_max = lsims.read_targets_period_radius_bounds(load_dir + 'periods%s.out' % run_number)
+    sim_settings = lsims.read_targets_period_radius_bounds(load_dir + 'periods%s.out' % run_number)
+    N_sim = sim_settings['N_sim']
+    period_min = sim_settings['P_min']
+    period_max = sim_settings['P_max']
+    radii_min = sim_settings['radii_min']
+    radii_max = sim_settings['radii_max']
+    
     param_vals = lsims.read_sim_params(load_dir + 'periods%s.out' % run_number)
 
     sss_per_sys, sss = lsims.compute_summary_stats_from_cat_obs(file_name_path=load_dir, run_number=run_number, Rstar_min=Rstar_min, Rstar_max=Rstar_max, Mstar_min=Mstar_min, Mstar_max=Mstar_max, teff_min=teff_min, teff_max=teff_max, bp_rp_min=bp_rp_min, bp_rp_max=bp_rp_max)
 
     ssk_per_sys, ssk = ckep.compute_summary_stats_from_Kepler_catalog(P_min, P_max, radii_min, radii_max, Rstar_min=Rstar_min, Rstar_max=Rstar_max, Mstar_min=Mstar_min, Mstar_max=Mstar_max, teff_min=teff_min, teff_max=teff_max, bp_rp_min=bp_rp_min, bp_rp_max=bp_rp_max)
 
-    dists, dists_w = ckep.compute_distances_sim_Kepler(sss_per_sys, sss, ssk_per_sys, ssk, weights, dists_include, N_sim, cos_factor=cos_factor, AD_mod=AD_mod)
+    dists, dists_w = ckep.compute_distances_sim_Kepler(sss_per_sys, sss, ssk_per_sys, ssk, weights, dists_include, N_sim, AD_mod=AD_mod)
 
 
 
@@ -1108,7 +1127,13 @@ def load_cat_obs_and_plot_fig_pdf_split_bprp_GF2020_metrics(load_dir, weights_al
 
     #To load and analyze the simulated and Kepler observed catalogs:
 
-    N_sim, cos_factor, P_min, P_max, radii_min, radii_max = lsims.read_targets_period_radius_bounds(load_dir + 'periods%s.out' % run_number)
+    sim_settings = lsims.read_targets_period_radius_bounds(load_dir + 'periods%s.out' % run_number)
+    N_sim = sim_settings['N_sim']
+    period_min = sim_settings['P_min']
+    period_max = sim_settings['P_max']
+    radii_min = sim_settings['radii_min']
+    radii_max = sim_settings['radii_max']
+    
     param_vals = lsims.read_sim_params(load_dir + 'periods%s.out' % run_number)
 
     #To plot the 'observed' distributions with the actual observed Kepler distributions:
@@ -1139,7 +1164,7 @@ def load_cat_obs_and_plot_fig_pdf_split_bprp_GF2020_metrics(load_dir, weights_al
     for i,sample in enumerate(sample_names):
         sss_per_sys, sss = lsims.compute_summary_stats_from_cat_obs(file_name_path=load_dir, run_number=run_number, bp_rp_min=sample_bprp_min[i], bp_rp_max=sample_bprp_max[i])
         ssk_per_sys, ssk = ckep.compute_summary_stats_from_Kepler_catalog(P_min, P_max, radii_min, radii_max, bp_rp_min=sample_bprp_min[i], bp_rp_max=sample_bprp_max[i])
-        dists, dists_w = ckep.compute_distances_sim_Kepler(sss_per_sys, sss, ssk_per_sys, ssk, weights_all[sample], dists_include, N_sim, cos_factor=cos_factor, AD_mod=AD_mod)
+        dists, dists_w = ckep.compute_distances_sim_Kepler(sss_per_sys, sss, ssk_per_sys, ssk, weights_all[sample], dists_include, N_sim, AD_mod=AD_mod)
 
         for j,key in enumerate(GF2020_metrics):
             ax = plt.subplot(plot[j+1,i])
@@ -1158,7 +1183,13 @@ def load_cat_phys_and_plot_fig_pdf_composite_simple(load_dir, run_number='', n_b
 
     #To load and analyze the simulated physical catalogs:
 
-    N_sim, cos_factor, P_min, P_max, radii_min, radii_max = lsims.read_targets_period_radius_bounds(load_dir + 'periods%s.out' % run_number)
+    sim_settings = lsims.read_targets_period_radius_bounds(load_dir + 'periods%s.out' % run_number)
+    N_sim = sim_settings['N_sim']
+    period_min = sim_settings['P_min']
+    period_max = sim_settings['P_max']
+    radii_min = sim_settings['radii_min']
+    radii_max = sim_settings['radii_max']
+    
     param_vals = lsims.read_sim_params(load_dir + 'periods%s.out' % run_number)
 
     sssp_per_sys, sssp = lsims.compute_summary_stats_from_cat_phys(file_name_path=load_dir, run_number=run_number)
@@ -1607,7 +1638,14 @@ def load_cat_obs_and_plot_fig_period_radius(load_dir, run_number='', lw=1, save_
 
     #To load and analyze the simulated and Kepler observed catalogs:
 
-    N_sim, cos_factor, P_min, P_max, radii_min, radii_max = lsims.read_targets_period_radius_bounds(load_dir + 'periods%s.out' % run_number)
+    sim_settings = lsims.read_targets_period_radius_bounds(load_dir + 'periods%s.out' % run_number)
+    N_sim = sim_settings['N_sim']
+    cos_factor = sim_settings['cos_factor']
+    period_min = sim_settings['P_min']
+    period_max = sim_settings['P_max']
+    radii_min = sim_settings['radii_min']
+    radii_max = sim_settings['radii_max']
+    
     param_vals = lsims.read_sim_params(load_dir + 'periods%s.out' % run_number)
 
     sss_per_sys, sss = lsims.compute_summary_stats_from_cat_obs(file_name_path=load_dir, run_number=run_number)
