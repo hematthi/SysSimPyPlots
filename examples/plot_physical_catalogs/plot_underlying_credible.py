@@ -254,74 +254,74 @@ if savefigures:
     plt.close()
 
 # Periods:
-plot_fig_pdf_credible([sssp_i['P_all'] for sssp_i in sssp_all], [], [sssp['P_all']] if overplot_sssp else [], x_min=P_min, x_max=P_max, y_min=1e-3, n_bins=n_bins, step=None, plot_median=True, log_x=True, log_y=True, c_sim1=model_color, lw=lw, alpha=alpha, label_sim1=model_label, labels_Kep=['Simulated catalog'], xticks_custom=[3,10,30,100,300], xlabel_text=r'Period, $P$ (days)', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
+plot_fig_pdf_credible([[sssp_i['P_all'] for sssp_i in sssp_all]], [sssp['P_all']] if overplot_sssp else [], x_min=period_min, x_max=period_max, y_min=1e-3, n_bins=n_bins, step=None, plot_median=True, log_x=True, log_y=True, c_sim_all=[model_color], lw_sim=lw, lw_Kep=lw, alpha_all=[alpha], labels_sim_all=[model_label], labels_Kep=['Simulated catalog'], xticks_custom=[3,10,30,100,300], xlabel_text=r'Period, $P$ (days)', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 plt.legend(loc='lower right', bbox_to_anchor=(1,0), ncol=1, frameon=False, fontsize=lfs)
 if savefigures:
     plt.savefig(savefigures_directory + model_name + '_underlying_periods.pdf')
     plt.close()
 
 # Period ratios:
-plot_fig_pdf_credible([sssp_i['Rm_all'] for sssp_i in sssp_all], [], [sssp['Rm_all']] if overplot_sssp else [], x_min=1., x_max=20., n_bins=n_bins, step=None, plot_median=True, log_x=True, c_sim1=model_color, lw=lw, alpha=alpha, label_sim1=model_label, labels_Kep=['Simulated catalog'], xticks_custom=[1,2,3,4,5,10,20], xlabel_text=r'Period ratio, $P_{i+1}/P_i$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
+plot_fig_pdf_credible([[sssp_i['Rm_all'] for sssp_i in sssp_all]], [sssp['Rm_all']] if overplot_sssp else [], x_min=1., x_max=20., n_bins=n_bins, step=None, plot_median=True, log_x=True, c_sim_all=[model_color], lw_sim=lw, lw_Kep=lw, alpha_all=[alpha], labels_sim_all=[model_label], labels_Kep=['Simulated catalog'], xticks_custom=[1,2,3,4,5,10,20], xlabel_text=r'Period ratio, $P_{i+1}/P_i$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 if savefigures:
     plt.savefig(savefigures_directory + model_name + '_underlying_periodratios.pdf')
     plt.close()
 
 # Eccentricities:
-plot_fig_pdf_credible([sssp_i['e_all'] for sssp_i in sssp_all], [], [sssp['e_all']] if overplot_sssp else [], x_min=1e-3, x_max=1., n_bins=n_bins, step=None, plot_median=True, log_x=True, c_sim1=model_color, lw=lw, alpha=alpha, label_sim1=model_label, labels_Kep=['Simulated catalog'], xticks_custom=[0.01, 0.1, 1.], xlabel_text=r'Eccentricity, $e$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
+plot_fig_pdf_credible([[sssp_i['e_all'] for sssp_i in sssp_all]], [sssp['e_all']] if overplot_sssp else [], x_min=1e-3, x_max=1., n_bins=n_bins, step=None, plot_median=True, log_x=True, c_sim_all=[model_color], lw_sim=lw, lw_Kep=lw, alpha_all=[alpha], labels_sim_all=[model_label], labels_Kep=['Simulated catalog'], xticks_custom=[0.01, 0.1, 1.], xlabel_text=r'Eccentricity, $e$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 if savefigures:
     plt.savefig(savefigures_directory + model_name + '_underlying_eccentricities.pdf')
     plt.close()
 
 # Mutual inclinations:
-plot_fig_pdf_credible([sssp_i['inclmut_all']*(180./np.pi) for sssp_i in sssp_all], [], [sssp['inclmut_all']*(180./np.pi)] if overplot_sssp else [], x_min=1e-2, x_max=45., n_bins=n_bins, step=None, plot_median=True, log_x=True, c_sim1=model_color, lw=lw, alpha=alpha, label_sim1=model_label, labels_Kep=['Simulated catalog'], xlabel_text=r'Mutual inclination, $i_m$ (deg)', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
+plot_fig_pdf_credible([[sssp_i['inclmut_all']*(180./np.pi) for sssp_i in sssp_all]], [sssp['inclmut_all']*(180./np.pi)] if overplot_sssp else [], x_min=1e-2, x_max=45., n_bins=n_bins, step=None, plot_median=True, log_x=True, c_sim_all=[model_color], lw_sim=lw, lw_Kep=lw, alpha_all=[alpha], labels_sim_all=[model_label], labels_Kep=['Simulated catalog'], xlabel_text=r'Mutual inclination, $i_m$ (deg)', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 if savefigures:
     plt.savefig(savefigures_directory + model_name + '_underlying_mutualinclinations.pdf')
     plt.close()
 
 # Planet masses:
-plot_fig_pdf_credible([sssp_i['mass_all'] for sssp_i in sssp_all], [], [sssp['mass_all']] if overplot_sssp else [], x_min=1e-2, x_max=1e3, n_bins=n_bins, step=None, plot_median=True, log_x=True, c_sim1=model_color, lw=lw, alpha=alpha, label_sim1=model_label, labels_Kep=['Simulated catalog'], xlabel_text=r'Planet mass, $M_p$ ($M_\oplus$)', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
+plot_fig_pdf_credible([[sssp_i['mass_all'] for sssp_i in sssp_all]], [sssp['mass_all']] if overplot_sssp else [], x_min=1e-2, x_max=1e3, n_bins=n_bins, step=None, plot_median=True, log_x=True, c_sim_all=[model_color], lw_sim=lw, lw_Kep=lw, alpha_all=[alpha], labels_sim_all=[model_label], labels_Kep=['Simulated catalog'], xlabel_text=r'Planet mass, $M_p$ ($M_\oplus$)', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 if savefigures:
     plt.savefig(savefigures_directory + model_name + '_underlying_masses.pdf')
     plt.close()
 
 # Planet radii:
-plot_fig_pdf_credible([sssp_i['radii_all'] for sssp_i in sssp_all], [], [sssp['radii_all']] if overplot_sssp else [], x_min=radii_min, x_max=radii_max, n_bins=n_bins, step=None, plot_median=True, log_x=True, c_sim1=model_color, lw=lw, alpha=alpha, xticks_custom=[0.5,1,2,4,10], label_sim1=model_label, labels_Kep=['Simulated catalog'], xlabel_text=r'Planet radius, $R_p$ ($R_\oplus$)', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
+plot_fig_pdf_credible([[sssp_i['radii_all'] for sssp_i in sssp_all]], [sssp['radii_all']] if overplot_sssp else [], x_min=radii_min, x_max=radii_max, n_bins=n_bins, step=None, plot_median=True, log_x=True, c_sim_all=[model_color], lw_sim=lw, lw_Kep=lw, alpha_all=[alpha], xticks_custom=[0.5,1,2,4,10], labels_sim_all=[model_label], labels_Kep=['Simulated catalog'], xlabel_text=r'Planet radius, $R_p$ ($R_\oplus$)', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 if savefigures:
     plt.savefig(savefigures_directory + model_name + '_underlying_radii.pdf')
     plt.close()
 
 # Planet radii ratios:
-plot_fig_pdf_credible([sssp_i['radii_ratio_all'] for sssp_i in sssp_all], [], [sssp['radii_ratio_all']] if overplot_sssp else [], x_min=0.1, x_max=10., n_bins=n_bins, step=None, plot_median=True, log_x=True, c_sim1=model_color, lw=lw, alpha=alpha, label_sim1=model_label, labels_Kep=['Simulated catalog'], xlabel_text=r'Radius ratio, $R_{p,i+1}/R_{p,i}$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
+plot_fig_pdf_credible([[sssp_i['radii_ratio_all'] for sssp_i in sssp_all]], [sssp['radii_ratio_all']] if overplot_sssp else [], x_min=0.1, x_max=10., n_bins=n_bins, step=None, plot_median=True, log_x=True, c_sim_all=[model_color], lw_sim=lw, lw_Kep=lw, alpha_all=[alpha], labels_sim_all=[model_label], labels_Kep=['Simulated catalog'], xlabel_text=r'Radius ratio, $R_{p,i+1}/R_{p,i}$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 if savefigures:
     plt.savefig(savefigures_directory + model_name + '_underlying_radii_ratios.pdf')
     plt.close()
 
 # Separations in mutual Hill radii:
-plot_fig_pdf_credible([sssp_i['N_mH_all'] for sssp_i in sssp_all], [], [sssp['N_mH_all']] if overplot_sssp else [], x_min=1., x_max=200., n_bins=n_bins, step=None, plot_median=True, log_x=True, c_sim1=model_color, lw=lw, alpha=alpha, label_sim1=model_label, labels_Kep=['Simulated catalog'], xlabel_text=r'Minimum separation, $\Delta$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
+plot_fig_pdf_credible([[sssp_i['N_mH_all'] for sssp_i in sssp_all]], [sssp['N_mH_all']] if overplot_sssp else [], x_min=1., x_max=200., n_bins=n_bins, step=None, plot_median=True, log_x=True, c_sim_all=[model_color], lw_sim=lw, lw_Kep=lw, alpha_all=[alpha], labels_sim_all=[model_label], labels_Kep=['Simulated catalog'], xlabel_text=r'Minimum separation, $\Delta$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 if savefigures:
     plt.savefig(savefigures_directory + model_name + '_underlying_deltas.pdf')
     plt.close()
 
 # Dynamical masses:
-plot_fig_pdf_credible([sssp_per_sys_i['dynamical_mass'] for sssp_per_sys_i in sssp_per_sys_all], [], [sssp_per_sys['dynamical_mass']] if overplot_sssp else [], x_min=2e-7, x_max=3e-3, n_bins=n_bins, step=None, plot_median=True, log_x=True, c_sim1=model_color, lw=lw, alpha=alpha, label_sim1=model_label, labels_Kep=['Simulated catalog'], xlabel_text=r'Dynamical mass, $\mu$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
+plot_fig_pdf_credible([[sssp_per_sys_i['dynamical_mass'] for sssp_per_sys_i in sssp_per_sys_all]], [sssp_per_sys['dynamical_mass']] if overplot_sssp else [], x_min=2e-7, x_max=3e-3, n_bins=n_bins, step=None, plot_median=True, log_x=True, c_sim_all=[model_color], lw_sim=lw, lw_Kep=lw, alpha_all=[alpha], labels_sim_all=[model_label], labels_Kep=['Simulated catalog'], xlabel_text=r'Dynamical mass, $\mu$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 if savefigures:
     plt.savefig(savefigures_directory + model_name + '_underlying_dynamical_masses.pdf')
     plt.close()
 
 # Planet radii partitioning:
-plot_fig_pdf_credible([sssp_per_sys_i['radii_partitioning'] for sssp_per_sys_i in sssp_per_sys_all], [], [sssp_per_sys['radii_partitioning']] if overplot_sssp else [], x_min=1e-4, x_max=1., n_bins=n_bins, step=None, plot_median=True, log_x=True, c_sim1=model_color, lw=lw, alpha=alpha, label_sim1=model_label, labels_Kep=['Simulated catalog'], xlabel_text=r'Radius partitioning, $\mathcal{Q}_R$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
+plot_fig_pdf_credible([[sssp_per_sys_i['radii_partitioning'] for sssp_per_sys_i in sssp_per_sys_all]], [sssp_per_sys['radii_partitioning']] if overplot_sssp else [], x_min=1e-4, x_max=1., n_bins=n_bins, step=None, plot_median=True, log_x=True, c_sim_all=[model_color], lw_sim=lw, lw_Kep=lw, alpha_all=[alpha], labels_sim_all=[model_label], labels_Kep=['Simulated catalog'], xlabel_text=r'Radius partitioning, $\mathcal{Q}_R$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 if savefigures:
     plt.savefig(savefigures_directory + model_name + '_underlying_radii_partitioning.pdf')
     plt.close()
 
 # Planet radii monotonicity:
-plot_fig_pdf_credible([sssp_per_sys_i['radii_monotonicity'] for sssp_per_sys_i in sssp_per_sys_all], [], [sssp_per_sys['radii_monotonicity']] if overplot_sssp else [], x_min=-0.7, x_max=0.7, n_bins=n_bins, step=None, plot_median=True, c_sim1=model_color, lw=lw, alpha=alpha, label_sim1=model_label, labels_Kep=['Simulated catalog'], xlabel_text=r'Radius monotonicity, $\mathcal{M}_R$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
+plot_fig_pdf_credible([[sssp_per_sys_i['radii_monotonicity'] for sssp_per_sys_i in sssp_per_sys_all]], [sssp_per_sys['radii_monotonicity']] if overplot_sssp else [], x_min=-0.7, x_max=0.7, n_bins=n_bins, step=None, plot_median=True, c_sim_all=[model_color], lw_sim=lw, lw_Kep=lw, alpha_all=[alpha], labels_sim_all=[model_label], labels_Kep=['Simulated catalog'], xlabel_text=r'Radius monotonicity, $\mathcal{M}_R$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 if savefigures:
     plt.savefig(savefigures_directory + model_name + '_underlying_radii_monotonicity.pdf')
     plt.close()
 
 # Gap complexity:
-plot_fig_pdf_credible([sssp_per_sys_i['gap_complexity'] for sssp_per_sys_i in sssp_per_sys_all], [], [sssp_per_sys['gap_complexity']] if overplot_sssp else [], x_min=0., x_max=1., n_bins=n_bins, step=None, plot_median=True, c_sim1=model_color, lw=lw, alpha=alpha, label_sim1=model_label, labels_Kep=['Simulated catalog'], xlabel_text=r'Gap complexity, $\mathcal{C}$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
+plot_fig_pdf_credible([[sssp_per_sys_i['gap_complexity'] for sssp_per_sys_i in sssp_per_sys_all]], [sssp_per_sys['gap_complexity']] if overplot_sssp else [], x_min=0., x_max=1., n_bins=n_bins, step=None, plot_median=True, c_sim_all=[model_color], lw_sim=lw, lw_Kep=lw, alpha_all=[alpha], labels_sim_all=[model_label], labels_Kep=['Simulated catalog'], xlabel_text=r'Gap complexity, $\mathcal{C}$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 if savefigures:
     plt.savefig(savefigures_directory + model_name + '_underlying_gap_complexity.pdf')
     plt.close()
