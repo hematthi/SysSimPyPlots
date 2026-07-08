@@ -298,81 +298,81 @@ if savefigures:
     plt.close()
 
 # Periods:
-plot_fig_pdf_credible([[sss_i['P_obs'] for sss_i in sss_list] for sss_list in sss_all], [ssk['P_obs']], x_min=P_min, x_max=P_max, y_min=1e-3, y_max=0.1, n_bins=n_bins, log_x=True, log_y=True, c_sim_all=model_colors, ls_sim_all=model_linestyles, lw=lw, labels_sim_all=model_names, alpha_all=model_alphas, xticks_custom=[3,10,30,100,300], xlabel_text=r'Period, $P$ (days)', afs=afs, tfs=tfs, lfs=lfs, legend=False, fig_size=fig_size, fig_lbrt=fig_lbrt)
+plot_fig_pdf_credible([[sss_i['P_obs'] for sss_i in sss_list] for sss_list in sss_all], [ssk['P_obs']], x_min=P_min, x_max=P_max, y_min=1e-3, y_max=0.1, n_bins=n_bins, log_x=True, log_y=True, c_sim_all=model_colors, ls_sim_all=model_linestyles, lw_sim=lw, lw_Kep=lw, labels_sim_all=model_names, alpha_all=model_alphas, xticks_custom=[3,10,30,100,300], xlabel_text=r'Period, $P$ (days)', afs=afs, tfs=tfs, lfs=lfs, legend=False, fig_size=fig_size, fig_lbrt=fig_lbrt)
 if savefigures:
     plt.savefig(savefigures_directory + subdirectory + save_name + '_periods_compare.pdf')
     plt.close()
 
 # Period ratios:
 R_max_cut = 30.
-plot_fig_pdf_credible([[sss_i['Rm_obs'] for sss_i in sss_list] for sss_list in sss_all], [ssk['Rm_obs']], x_min=1., x_max=R_max_cut, n_bins=n_bins, log_x=True, c_sim_all=model_colors, ls_sim_all=model_linestyles, lw=lw, alpha_all=model_alphas, xticks_custom=[1,2,3,4,5,10,20], xlabel_text=r'Period ratio, $P_{i+1}/P_i$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
+plot_fig_pdf_credible([[sss_i['Rm_obs'] for sss_i in sss_list] for sss_list in sss_all], [ssk['Rm_obs']], x_min=1., x_max=R_max_cut, n_bins=n_bins, log_x=True, c_sim_all=model_colors, ls_sim_all=model_linestyles, lw_sim=lw, lw_Kep=lw, alpha_all=model_alphas, xticks_custom=[1,2,3,4,5,10,20], xlabel_text=r'Period ratio, $P_{i+1}/P_i$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 plt.minorticks_off()
 if savefigures:
     plt.savefig(savefigures_directory + subdirectory + save_name + '_periodratios_compare.pdf')
     plt.close()
 
 # Transit durations:
-plot_fig_pdf_credible([[sss_i['tdur_obs'] for sss_i in sss_list] for sss_list in sss_all], [ssk['tdur_obs']], x_min=0., x_max=15., n_bins=n_bins, c_sim_all=model_colors, ls_sim_all=model_linestyles, lw=lw, alpha_all=model_alphas, xlabel_text=r'Transit duration, $t_{\rm dur}$ (hrs)', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
+plot_fig_pdf_credible([[sss_i['tdur_obs'] for sss_i in sss_list] for sss_list in sss_all], [ssk['tdur_obs']], x_min=0., x_max=15., n_bins=n_bins, c_sim_all=model_colors, ls_sim_all=model_linestyles, lw_sim=lw, lw_Kep=lw, alpha_all=model_alphas, xlabel_text=r'Transit duration, $t_{\rm dur}$ (hrs)', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 if savefigures:
     plt.savefig(savefigures_directory + subdirectory + save_name + '_durations_compare.pdf')
     plt.close()
 
 # Circular normalized transit durations (separate singles and multis):
-plot_fig_pdf_credible([[sss_i['tdur_tcirc_1_obs'] for sss_i in sss_list] for sss_list in sss_all], [ssk['tdur_tcirc_1_obs']], x_min=0., x_max=1.5, n_bins=n_bins, c_sim_all=model_colors, ls_sim_all=model_linestyles, lw=lw, alpha_all=model_alphas, extra_text='Observed singles', xlabel_text=r'Circular-normalized transit duration, $t_{\rm dur}/t_{\rm circ}$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
+plot_fig_pdf_credible([[sss_i['tdur_tcirc_1_obs'] for sss_i in sss_list] for sss_list in sss_all], [ssk['tdur_tcirc_1_obs']], x_min=0., x_max=1.5, n_bins=n_bins, c_sim_all=model_colors, ls_sim_all=model_linestyles, lw_sim=lw, lw_Kep=lw, alpha_all=model_alphas, extra_text='Observed singles', xlabel_text=r'Circular-normalized transit duration, $t_{\rm dur}/t_{\rm circ}$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 if savefigures:
     plt.savefig(savefigures_directory + subdirectory + save_name + '_tdur_tcirc_singles_compare.pdf')
     plt.close()
 
-plot_fig_pdf_credible([[sss_i['tdur_tcirc_2p_obs'] for sss_i in sss_list] for sss_list in sss_all], [ssk['tdur_tcirc_2p_obs']], x_min=0., x_max=1.5, n_bins=n_bins, c_sim_all=model_colors, ls_sim_all=model_linestyles, lw=lw, alpha_all=model_alphas, extra_text='Observed multis', xlabel_text=r'Circular-normalized transit duration, $t_{\rm dur}/t_{\rm circ}$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
+plot_fig_pdf_credible([[sss_i['tdur_tcirc_2p_obs'] for sss_i in sss_list] for sss_list in sss_all], [ssk['tdur_tcirc_2p_obs']], x_min=0., x_max=1.5, n_bins=n_bins, c_sim_all=model_colors, ls_sim_all=model_linestyles, lw_sim=lw, lw_Kep=lw, alpha_all=model_alphas, extra_text='Observed multis', xlabel_text=r'Circular-normalized transit duration, $t_{\rm dur}/t_{\rm circ}$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 if savefigures:
     plt.savefig(savefigures_directory + subdirectory + save_name + '_tdur_tcirc_multis_compare.pdf')
     plt.close()
 
 # Transit depths:
-plot_fig_pdf_credible([[sss_i['D_obs'] for sss_i in sss_list] for sss_list in sss_all], [ssk['D_obs']], x_min=1e-5, x_max=10**(-1.5), y_min=0., log_x=True, c_sim_all=model_colors, ls_sim_all=model_linestyles, lw=lw, alpha_all=model_alphas, xlabel_text=r'Transit depth, $\delta$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
+plot_fig_pdf_credible([[sss_i['D_obs'] for sss_i in sss_list] for sss_list in sss_all], [ssk['D_obs']], x_min=1e-5, x_max=10**(-1.5), y_min=0., log_x=True, c_sim_all=model_colors, ls_sim_all=model_linestyles, lw_sim=lw, lw_Kep=lw, alpha_all=model_alphas, xlabel_text=r'Transit depth, $\delta$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 if savefigures:
     plt.savefig(savefigures_directory + subdirectory + save_name + '_depths_compare.pdf')
     plt.close()
 
 # Planet radii:
-plot_fig_pdf_credible([[sss_i['radii_obs'] for sss_i in sss_list] for sss_list in sss_all], [ssk['radii_obs']], x_min=radii_min, x_max=radii_max, log_x=False, c_sim_all=model_colors, ls_sim_all=model_linestyles, lw=lw, alpha_all=model_alphas, xlabel_text=r'Planet radius, $R_p$ ($R_\oplus$)', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt) #, y_max=0.06
+plot_fig_pdf_credible([[sss_i['radii_obs'] for sss_i in sss_list] for sss_list in sss_all], [ssk['radii_obs']], x_min=radii_min, x_max=radii_max, log_x=False, c_sim_all=model_colors, ls_sim_all=model_linestyles, lw_sim=lw, lw_Kep=lw, alpha_all=model_alphas, xlabel_text=r'Planet radius, $R_p$ ($R_\oplus$)', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt) #, y_max=0.06
 if savefigures:
     plt.savefig(savefigures_directory + subdirectory + save_name + '_radii_compare.pdf')
     plt.close()
 
 # Transit depth ratios:
-plot_fig_pdf_credible([[sss_i['D_ratio_obs'] for sss_i in sss_list] for sss_list in sss_all], [ssk['D_ratio_obs']], x_min=10**(-1.5), x_max=10**1.5, y_min=0, n_bins=n_bins, log_x=True, c_sim_all=model_colors, ls_sim_all=model_linestyles, lw=lw, labels_sim_all=model_names, alpha_all=model_alphas, xlabel_text=r'Transit depth ratio, $\delta_{i+1}/\delta_i$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
+plot_fig_pdf_credible([[sss_i['D_ratio_obs'] for sss_i in sss_list] for sss_list in sss_all], [ssk['D_ratio_obs']], x_min=10**(-1.5), x_max=10**1.5, y_min=0, n_bins=n_bins, log_x=True, c_sim_all=model_colors, ls_sim_all=model_linestyles, lw_sim=lw, lw_Kep=lw, labels_sim_all=model_names, alpha_all=model_alphas, xlabel_text=r'Transit depth ratio, $\delta_{i+1}/\delta_i$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 plt.legend(loc='upper left', bbox_to_anchor=(0,1), ncol=1, frameon=False, fontsize=lfs)
 if savefigures:
     plt.savefig(savefigures_directory + subdirectory + save_name + '_depthratios_compare.pdf')
     plt.close()
 
 # Log(xi):
-plot_fig_pdf_credible([[np.log10(sss_i['xi_obs']) for sss_i in sss_list] for sss_list in sss_all], [np.log10(ssk['xi_obs'])], x_min=-0.5, x_max=0.5, y_min=0., n_bins=n_bins, c_sim_all=model_colors, ls_sim_all=model_linestyles, lw=lw, alpha_all=model_alphas, xlabel_text=r'Period-normalized transit duration ratio, $\log{\xi}$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
+plot_fig_pdf_credible([[np.log10(sss_i['xi_obs']) for sss_i in sss_list] for sss_list in sss_all], [np.log10(ssk['xi_obs'])], x_min=-0.5, x_max=0.5, y_min=0., n_bins=n_bins, c_sim_all=model_colors, ls_sim_all=model_linestyles, lw_sim=lw, lw_Kep=lw, alpha_all=model_alphas, xlabel_text=r'Period-normalized transit duration ratio, $\log{\xi}$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 if savefigures:
     plt.savefig(savefigures_directory + subdirectory + save_name + '_logxi_all_compare.pdf')
     plt.close()
 
 # Radius partitioning:
-plot_fig_pdf_credible([[sss_per_sys_i['radii_partitioning'] for sss_per_sys_i in sss_per_sys_list] for sss_per_sys_list in sss_per_sys_all], [ssk_per_sys['radii_partitioning']], x_min=1e-5, x_max=1., n_bins=n_bins_sys, log_x=True, c_sim_all=model_colors, ls_sim_all=model_linestyles, lw=lw, alpha_all=model_alphas, xlabel_text=r'Radius partitioning, $\mathcal{Q}_R$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
+plot_fig_pdf_credible([[sss_per_sys_i['radii_partitioning'] for sss_per_sys_i in sss_per_sys_list] for sss_per_sys_list in sss_per_sys_all], [ssk_per_sys['radii_partitioning']], x_min=1e-5, x_max=1., n_bins=n_bins_sys, log_x=True, c_sim_all=model_colors, ls_sim_all=model_linestyles, lw_sim=lw, lw_Kep=lw, alpha_all=model_alphas, xlabel_text=r'Radius partitioning, $\mathcal{Q}_R$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 if savefigures:
     plt.savefig(savefigures_directory + subdirectory + save_name + '_radii_partitioning_compare.pdf')
     plt.close()
 
 # Radius monotonicity:
-plot_fig_pdf_credible([[sss_per_sys_i['radii_monotonicity'] for sss_per_sys_i in sss_per_sys_list] for sss_per_sys_list in sss_per_sys_all], [ssk_per_sys['radii_monotonicity']], x_min=-0.5, x_max=0.6, n_bins=n_bins_sys, log_x=False, c_sim_all=model_colors, ls_sim_all=model_linestyles, lw=lw, alpha_all=model_alphas, xlabel_text=r'Radius monotonicity, $\mathcal{M}_R$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
+plot_fig_pdf_credible([[sss_per_sys_i['radii_monotonicity'] for sss_per_sys_i in sss_per_sys_list] for sss_per_sys_list in sss_per_sys_all], [ssk_per_sys['radii_monotonicity']], x_min=-0.5, x_max=0.6, n_bins=n_bins_sys, log_x=False, c_sim_all=model_colors, ls_sim_all=model_linestyles, lw_sim=lw, lw_Kep=lw, alpha_all=model_alphas, xlabel_text=r'Radius monotonicity, $\mathcal{M}_R$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 if savefigures:
     plt.savefig(savefigures_directory + subdirectory + save_name + '_radii_monotonicity_compare.pdf')
     plt.close()
 
 # Gap complexity:
-plot_fig_pdf_credible([[sss_per_sys_i['gap_complexity'] for sss_per_sys_i in sss_per_sys_list] for sss_per_sys_list in sss_per_sys_all], [ssk_per_sys['gap_complexity']], x_min=0., x_max=1., n_bins=n_bins_sys, log_x=False, c_sim_all=model_colors, ls_sim_all=model_linestyles, lw=lw, alpha_all=model_alphas, xlabel_text=r'Gap complexity, $\mathcal{C}$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
+plot_fig_pdf_credible([[sss_per_sys_i['gap_complexity'] for sss_per_sys_i in sss_per_sys_list] for sss_per_sys_list in sss_per_sys_all], [ssk_per_sys['gap_complexity']], x_min=0., x_max=1., n_bins=n_bins_sys, log_x=False, c_sim_all=model_colors, ls_sim_all=model_linestyles, lw_sim=lw, lw_Kep=lw, alpha_all=model_alphas, xlabel_text=r'Gap complexity, $\mathcal{C}$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 if savefigures:
     plt.savefig(savefigures_directory + subdirectory + save_name + '_gap_complexity_compare.pdf')
     plt.close()
 
 # Stellar radii:
-plot_fig_pdf_credible([[sss_per_sys_i['Rstar_obs'] for sss_per_sys_i in sss_per_sys_list] for sss_per_sys_list in sss_per_sys_all], [ssk_per_sys['Rstar_obs']], x_min=0.5, x_max=2., n_bins=n_bins, log_x=False, c_sim_all=model_colors, ls_sim_all=model_linestyles, lw=lw, alpha_all=model_alphas, xlabel_text=r'Stellar radius, $R_\star (R_\odot)$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
+plot_fig_pdf_credible([[sss_per_sys_i['Rstar_obs'] for sss_per_sys_i in sss_per_sys_list] for sss_per_sys_list in sss_per_sys_all], [ssk_per_sys['Rstar_obs']], x_min=0.5, x_max=2., n_bins=n_bins, log_x=False, c_sim_all=model_colors, ls_sim_all=model_linestyles, lw_sim=lw, lw_Kep=lw, alpha_all=model_alphas, xlabel_text=r'Stellar radius, $R_\star (R_\odot)$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 if savefigures:
     plt.savefig(savefigures_directory + subdirectory + save_name + '_stellar_radii_compare.pdf')
     plt.close()
@@ -396,89 +396,89 @@ if savefigures:
     plt.close()
 
 # Periods:
-plot_fig_cdf_credible([[sss_i['P_obs'] for sss_i in sss_list] for sss_list in sss_all], [ssk['P_obs']], x_min=P_min, x_max=P_max, log_x=True, c_sim_all=model_colors, lw=lw, alpha_all=model_alphas, labels_sim_all=model_names, xticks_custom=[3,10,30,100,300], xlabel_text=r'Period, $P$ (days)', afs=afs, tfs=tfs, lfs=lfs, legend=False, fig_size=fig_size, fig_lbrt=fig_lbrt)
+plot_fig_cdf_credible([[sss_i['P_obs'] for sss_i in sss_list] for sss_list in sss_all], [ssk['P_obs']], x_min=P_min, x_max=P_max, log_x=True, c_sim_all=model_colors, lw_sim=lw, lw_Kep=lw, alpha_all=model_alphas, labels_sim_all=model_names, xticks_custom=[3,10,30,100,300], xlabel_text=r'Period, $P$ (days)', afs=afs, tfs=tfs, lfs=lfs, legend=False, fig_size=fig_size, fig_lbrt=fig_lbrt)
 if savefigures:
     plt.savefig(savefigures_directory + subdirectory + save_name + '_periods_compare_CDFs.pdf')
     plt.close()
 
 # Period ratios:
-plot_fig_cdf_credible([[sss_i['Rm_obs'] for sss_i in sss_list] for sss_list in sss_all], [ssk['Rm_obs']], x_min=1., x_max=R_max_cut, log_x=True, c_sim_all=model_colors, lw=lw, alpha_all=model_alphas, xticks_custom=[1,2,3,4,5,10,20], xlabel_text=r'Period ratio, $P_{i+1}/P_i$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
+plot_fig_cdf_credible([[sss_i['Rm_obs'] for sss_i in sss_list] for sss_list in sss_all], [ssk['Rm_obs']], x_min=1., x_max=R_max_cut, log_x=True, c_sim_all=model_colors, lw_sim=lw, lw_Kep=lw, alpha_all=model_alphas, xticks_custom=[1,2,3,4,5,10,20], xlabel_text=r'Period ratio, $P_{i+1}/P_i$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 if savefigures:
     plt.savefig(savefigures_directory + subdirectory + save_name + '_periodratios_compare_CDFs.pdf')
     plt.close()
 
 # Transit durations:
-plot_fig_cdf_credible([[sss_i['tdur_obs'] for sss_i in sss_list] for sss_list in sss_all], [ssk['tdur_obs']], x_min=0., x_max=15., c_sim_all=model_colors, lw=lw, alpha_all=model_alphas, xlabel_text=r'Transit duration, $t_{\rm dur}$ (hrs)', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
+plot_fig_cdf_credible([[sss_i['tdur_obs'] for sss_i in sss_list] for sss_list in sss_all], [ssk['tdur_obs']], x_min=0., x_max=15., c_sim_all=model_colors, lw_sim=lw, lw_Kep=lw, alpha_all=model_alphas, xlabel_text=r'Transit duration, $t_{\rm dur}$ (hrs)', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 if savefigures:
     plt.savefig(savefigures_directory + subdirectory + save_name + '_durations_compare_CDFs.pdf')
     plt.close()
 
 # Circular normalized transit durations (separate singles and multis):
-plot_fig_cdf_credible([[sss_i['tdur_tcirc_1_obs'] for sss_i in sss_list] for sss_list in sss_all], [ssk['tdur_tcirc_1_obs']], x_min=0., x_max=1.5, c_sim_all=model_colors, lw=lw, alpha_all=model_alphas, extra_text='Observed singles', xlabel_text=r'Circular-normalized transit duration, $t_{\rm dur}/t_{\rm circ}$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
+plot_fig_cdf_credible([[sss_i['tdur_tcirc_1_obs'] for sss_i in sss_list] for sss_list in sss_all], [ssk['tdur_tcirc_1_obs']], x_min=0., x_max=1.5, c_sim_all=model_colors, lw_sim=lw, lw_Kep=lw, alpha_all=model_alphas, extra_text='Observed singles', xlabel_text=r'Circular-normalized transit duration, $t_{\rm dur}/t_{\rm circ}$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 if savefigures:
     plt.savefig(savefigures_directory + subdirectory + save_name + '_tdur_tcirc_singles_compare_CDFs.pdf')
     plt.close()
 
-plot_fig_cdf_credible([[sss_i['tdur_tcirc_2p_obs'] for sss_i in sss_list] for sss_list in sss_all], [ssk['tdur_tcirc_2p_obs']], x_min=0., x_max=1.5, c_sim_all=model_colors, lw=lw, alpha_all=model_alphas, extra_text='Observed multis', xlabel_text=r'Circular-normalized transit duration, $t_{\rm dur}/t_{\rm circ}$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
+plot_fig_cdf_credible([[sss_i['tdur_tcirc_2p_obs'] for sss_i in sss_list] for sss_list in sss_all], [ssk['tdur_tcirc_2p_obs']], x_min=0., x_max=1.5, c_sim_all=model_colors, lw_sim=lw, lw_Kep=lw, alpha_all=model_alphas, extra_text='Observed multis', xlabel_text=r'Circular-normalized transit duration, $t_{\rm dur}/t_{\rm circ}$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 if savefigures:
     plt.savefig(savefigures_directory + subdirectory + save_name + '_tdur_tcirc_multis_compare_CDFs.pdf')
     plt.close()
 
 # Transit depths:
-plot_fig_cdf_credible([[sss_i['D_obs'] for sss_i in sss_list] for sss_list in sss_all], [ssk['D_obs']], x_min=1e-5, x_max=10**(-1.5), log_x=True, c_sim_all=model_colors, lw=lw, alpha_all=model_alphas, xlabel_text=r'Transit depth, $\delta$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
+plot_fig_cdf_credible([[sss_i['D_obs'] for sss_i in sss_list] for sss_list in sss_all], [ssk['D_obs']], x_min=1e-5, x_max=10**(-1.5), log_x=True, c_sim_all=model_colors, lw_sim=lw, lw_Kep=lw, alpha_all=model_alphas, xlabel_text=r'Transit depth, $\delta$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 if savefigures:
     plt.savefig(savefigures_directory + subdirectory + save_name + '_depths_compare_CDFs.pdf')
     plt.close()
 
 # Planet radii:
-plot_fig_cdf_credible([[sss_i['radii_obs'] for sss_i in sss_list] for sss_list in sss_all], [ssk['radii_obs']], x_min=radii_min, x_max=radii_max, c_sim_all=model_colors, lw=lw, alpha_all=model_alphas, xlabel_text=r'Planet radius, $R_p$ ($R_\oplus$)', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
+plot_fig_cdf_credible([[sss_i['radii_obs'] for sss_i in sss_list] for sss_list in sss_all], [ssk['radii_obs']], x_min=radii_min, x_max=radii_max, c_sim_all=model_colors, lw_sim=lw, lw_Kep=lw, alpha_all=model_alphas, xlabel_text=r'Planet radius, $R_p$ ($R_\oplus$)', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 if savefigures:
     plt.savefig(savefigures_directory + subdirectory + save_name + '_radii_compare_CDFs.pdf')
     plt.close()
 
 # Transit depth ratios:
-plot_fig_cdf_credible([[sss_i['D_ratio_obs'] for sss_i in sss_list] for sss_list in sss_all], [ssk['D_ratio_obs']], x_min=10**(-1.5), x_max=10**1.5, log_x=True, c_sim_all=model_colors, lw=lw, alpha_all=model_alphas, xlabel_text=r'Transit depth ratio, $\delta_{i+1}/\delta_i$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
+plot_fig_cdf_credible([[sss_i['D_ratio_obs'] for sss_i in sss_list] for sss_list in sss_all], [ssk['D_ratio_obs']], x_min=10**(-1.5), x_max=10**1.5, log_x=True, c_sim_all=model_colors, lw_sim=lw, lw_Kep=lw, alpha_all=model_alphas, xlabel_text=r'Transit depth ratio, $\delta_{i+1}/\delta_i$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 if savefigures:
     plt.savefig(savefigures_directory + subdirectory + save_name + '_depthratios_compare_CDFs.pdf')
     plt.close()
 
 # Log(xi):
-plot_fig_cdf_credible([[np.log10(sss_i['xi_obs']) for sss_i in sss_list] for sss_list in sss_all], [np.log10(ssk['xi_obs'])], x_min=-0.5, x_max=0.5, c_sim_all=model_colors, lw=lw, alpha_all=model_alphas, xlabel_text=r'Period-normalized transit duration ratio, $\log{\xi}$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
+plot_fig_cdf_credible([[np.log10(sss_i['xi_obs']) for sss_i in sss_list] for sss_list in sss_all], [np.log10(ssk['xi_obs'])], x_min=-0.5, x_max=0.5, c_sim_all=model_colors, lw_sim=lw, lw_Kep=lw, alpha_all=model_alphas, xlabel_text=r'Period-normalized transit duration ratio, $\log{\xi}$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 if savefigures:
     plt.savefig(savefigures_directory + subdirectory + save_name + '_logxi_compare_CDFs.pdf')
     plt.close()
 
 # Log(xi) (separate near vs not-near MMRs):
-plot_fig_cdf_credible([[np.log10(sss_i['xi_res_obs']) for sss_i in sss_list] for sss_list in sss_all], [np.log10(ssk['xi_res_obs'])], x_min=-0.5, x_max=0.5, c_sim_all=model_colors, lw=lw, alpha_all=model_alphas, extra_text='Near MMR', xlabel_text=r'Period-normalized transit duration ratio, $\log{\xi}$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
+plot_fig_cdf_credible([[np.log10(sss_i['xi_res_obs']) for sss_i in sss_list] for sss_list in sss_all], [np.log10(ssk['xi_res_obs'])], x_min=-0.5, x_max=0.5, c_sim_all=model_colors, lw_sim=lw, lw_Kep=lw, alpha_all=model_alphas, extra_text='Near MMR', xlabel_text=r'Period-normalized transit duration ratio, $\log{\xi}$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 if savefigures:
     plt.savefig(savefigures_directory + subdirectory + save_name + '_logxi_mmrs_compare_CDFs.pdf')
     plt.close()
 
-plot_fig_cdf_credible([[np.log10(sss_i['xi_nonres_obs']) for sss_i in sss_list] for sss_list in sss_all], [np.log10(ssk['xi_nonres_obs'])], x_min=-0.5, x_max=0.5, c_sim_all=model_colors, lw=lw, alpha_all=model_alphas, extra_text='Not near MMR', xlabel_text=r'Period-normalized transit duration ratio, $\log{\xi}$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
+plot_fig_cdf_credible([[np.log10(sss_i['xi_nonres_obs']) for sss_i in sss_list] for sss_list in sss_all], [np.log10(ssk['xi_nonres_obs'])], x_min=-0.5, x_max=0.5, c_sim_all=model_colors, lw_sim=lw, lw_Kep=lw, alpha_all=model_alphas, extra_text='Not near MMR', xlabel_text=r'Period-normalized transit duration ratio, $\log{\xi}$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 if savefigures:
     plt.savefig(savefigures_directory + subdirectory + save_name + '_logxi_nonmmrs_compare_CDFs.pdf')
     plt.close()
 
 # Radius partitioning:
-plot_fig_cdf_credible([[sss_per_sys_i['radii_partitioning'] for sss_per_sys_i in sss_per_sys_list] for sss_per_sys_list in sss_per_sys_all], [ssk_per_sys['radii_partitioning']], x_min=1e-5, x_max=1., log_x=True, c_sim_all=model_colors, lw=lw, alpha_all=model_alphas, xlabel_text=r'Radius partitioning, $\mathcal{Q}_R$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
+plot_fig_cdf_credible([[sss_per_sys_i['radii_partitioning'] for sss_per_sys_i in sss_per_sys_list] for sss_per_sys_list in sss_per_sys_all], [ssk_per_sys['radii_partitioning']], x_min=1e-5, x_max=1., log_x=True, c_sim_all=model_colors, lw_sim=lw, lw_Kep=lw, alpha_all=model_alphas, xlabel_text=r'Radius partitioning, $\mathcal{Q}_R$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 if savefigures:
     plt.savefig(savefigures_directory + subdirectory + save_name + '_radii_partitioning_compare_CDFs.pdf')
     plt.close()
 
 # Radius monotonicity:
-plot_fig_cdf_credible([[sss_per_sys_i['radii_monotonicity'] for sss_per_sys_i in sss_per_sys_list] for sss_per_sys_list in sss_per_sys_all], [ssk_per_sys['radii_monotonicity']], x_min=-0.5, x_max=0.6, log_x=False, c_sim_all=model_colors, lw=lw, alpha_all=model_alphas, xlabel_text=r'Radius monotonicity, $\mathcal{M}_R$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
+plot_fig_cdf_credible([[sss_per_sys_i['radii_monotonicity'] for sss_per_sys_i in sss_per_sys_list] for sss_per_sys_list in sss_per_sys_all], [ssk_per_sys['radii_monotonicity']], x_min=-0.5, x_max=0.6, log_x=False, c_sim_all=model_colors, lw_sim=lw, lw_Kep=lw, alpha_all=model_alphas, xlabel_text=r'Radius monotonicity, $\mathcal{M}_R$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 if savefigures:
     plt.savefig(savefigures_directory + subdirectory + save_name + '_radii_monotonicity_compare_CDFs.pdf')
     plt.close()
 
 # Gap complexity:
-plot_fig_cdf_credible([[sss_per_sys_i['gap_complexity'] for sss_per_sys_i in sss_per_sys_list] for sss_per_sys_list in sss_per_sys_all], [ssk_per_sys['gap_complexity']], x_min=0., x_max=1., log_x=False, c_sim_all=model_colors, lw=lw, alpha_all=model_alphas, xlabel_text=r'Gap complexity, $\mathcal{C}$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
+plot_fig_cdf_credible([[sss_per_sys_i['gap_complexity'] for sss_per_sys_i in sss_per_sys_list] for sss_per_sys_list in sss_per_sys_all], [ssk_per_sys['gap_complexity']], x_min=0., x_max=1., log_x=False, c_sim_all=model_colors, lw_sim=lw, lw_Kep=lw, alpha_all=model_alphas, xlabel_text=r'Gap complexity, $\mathcal{C}$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 if savefigures:
     plt.savefig(savefigures_directory + subdirectory + save_name + '_gap_complexity_compare_CDFs.pdf')
     plt.close()
 
 # Stellar radii:
-plot_fig_cdf_credible([[sss_per_sys_i['Rstar_obs'] for sss_per_sys_i in sss_per_sys_list] for sss_per_sys_list in sss_per_sys_all], [ssk_per_sys['Rstar_obs']], x_min=0.5, x_max=2.5, c_sim_all=model_colors, lw=lw, xlabel_text=r'Stellar radius, $R_\star (R_\odot)$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
+plot_fig_cdf_credible([[sss_per_sys_i['Rstar_obs'] for sss_per_sys_i in sss_per_sys_list] for sss_per_sys_list in sss_per_sys_all], [ssk_per_sys['Rstar_obs']], x_min=0.5, x_max=2.5, c_sim_all=model_colors, lw_sim=lw, lw_Kep=lw, xlabel_text=r'Stellar radius, $R_\star (R_\odot)$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 if savefigures:
     plt.savefig(savefigures_directory + subdirectory + save_name + '_stellar_radii_compare_CDFs.pdf')
     plt.close()
@@ -507,12 +507,12 @@ plot = GridSpec(5,1,left=0.2,bottom=0.1,right=0.95,top=0.98,wspace=0,hspace=0)
 ax = plt.subplot(plot[0,0]) # credible regions of CDFs
 #sss_radii_plot_list_models = [[sss_i['radii_obs'] for sss_i in sss_list] for sss_list in sss_all]
 sss_radii_plot_list_models = [[sss_i['radii_obs'] for sss_i in sss_all[0]], [sss_i['radii_obs'] for sss_i in sss_top10p]]
-plot_panel_cdf_credible(ax, sss_radii_plot_list_models, [ssk['radii_obs']], x_min=radii_min, x_max=radii_max_plot, c_sim_all=model_colors, ls_sim_all=model_linestyles, lw=lw, labels_sim_all=model_names, alpha_all=model_alphas, xlabel_text='', afs=afs, tfs=tfs, lfs=lfs, legend=False)
+plot_panel_cdf_credible(ax, sss_radii_plot_list_models, [ssk['radii_obs']], x_min=radii_min, x_max=radii_max_plot, c_sim_all=model_colors, ls_sim_all=model_linestyles, lw_sim=lw, lw_Kep=lw, labels_sim_all=model_names, alpha_all=model_alphas, xlabel_text='', afs=afs, tfs=tfs, lfs=lfs, legend=False)
 ax.set_xticklabels([])
 plt.legend(loc='lower right', bbox_to_anchor=(1,0), ncol=1, frameon=False, fontsize=lfs)
 
 ax = plt.subplot(plot[1:3,0]) # credible regions of histograms
-plot_panel_pdf_credible(ax, sss_radii_plot_list_models, [ssk['radii_obs']], x_min=radii_min, x_max=radii_max_plot, y_max=y_max, c_sim_all=model_colors, ls_sim_all=model_linestyles, lw=lw, labels_sim_all=model_names, alpha_all=model_alphas, xlabel_text='', afs=afs, tfs=tfs, lfs=lfs, legend=False)
+plot_panel_pdf_credible(ax, sss_radii_plot_list_models, [ssk['radii_obs']], x_min=radii_min, x_max=radii_max_plot, y_max=y_max, c_sim_all=model_colors, ls_sim_all=model_linestyles, lw_sim=lw, lw_Kep=lw, labels_sim_all=model_names, alpha_all=model_alphas, xlabel_text='', afs=afs, tfs=tfs, lfs=lfs, legend=False)
 ax.set_xticklabels([])
 plt.text(x=0.98, y=0.9, s='16%-84% credible regions', ha='right', fontsize=lfs, transform=ax.transAxes)
 
@@ -539,13 +539,13 @@ plot = GridSpec(5,1,left=0.2,bottom=0.1,right=0.95,top=0.98,wspace=0,hspace=0)
 ax = plt.subplot(plot[0,0]) # credible regions of CDFs
 #sss_radii_delta_plot_list_models = [[sss_i['radii_delta_gap_obs'] for sss_i in sss_list] for sss_list in sss_all]
 sss_radii_delta_plot_list_models = [[sss_i['radii_delta_gap_obs'] for sss_i in sss_all[0]], [sss_i['radii_delta_gap_obs'] for sss_i in sss_top10p]]
-plot_panel_cdf_credible(ax, sss_radii_delta_plot_list_models, [ssk['radii_delta_gap_obs']], x_min=radii_delta_min_plot, x_max=radii_delta_max_plot, c_sim_all=model_colors, ls_sim_all=model_linestyles, lw=lw, labels_sim_all=model_names, alpha_all=model_alphas, xlabel_text='', afs=afs, tfs=tfs, lfs=lfs, legend=False)
+plot_panel_cdf_credible(ax, sss_radii_delta_plot_list_models, [ssk['radii_delta_gap_obs']], x_min=radii_delta_min_plot, x_max=radii_delta_max_plot, c_sim_all=model_colors, ls_sim_all=model_linestyles, lw_sim=lw, lw_Kep=lw, labels_sim_all=model_names, alpha_all=model_alphas, xlabel_text='', afs=afs, tfs=tfs, lfs=lfs, legend=False)
 ax.set_xticklabels([])
 plt.legend(loc='lower right', bbox_to_anchor=(1,0), ncol=1, frameon=False, fontsize=lfs)
 plt.text(x=0.02, y=0.95, s='$P < %s$d \n$R_p < %s R_\oplus$' % ('{:0.0f}'.format(P_max_subsample), '{:0.1f}'.format(radii_max_subsample)), ha='left', va='top', fontsize=lfs, transform=ax.transAxes)
 
 ax = plt.subplot(plot[1:3,0]) # credible regions of histograms
-plot_panel_pdf_credible(ax, sss_radii_delta_plot_list_models, [ssk['radii_delta_gap_obs']], x_min=radii_delta_min_plot, x_max=radii_delta_max_plot, y_max=y_max, c_sim_all=model_colors, ls_sim_all=model_linestyles, lw=lw, labels_sim_all=model_names, alpha_all=model_alphas, xlabel_text='', afs=afs, tfs=tfs, lfs=lfs, legend=False)
+plot_panel_pdf_credible(ax, sss_radii_delta_plot_list_models, [ssk['radii_delta_gap_obs']], x_min=radii_delta_min_plot, x_max=radii_delta_max_plot, y_max=y_max, c_sim_all=model_colors, ls_sim_all=model_linestyles, lw_sim=lw, lw_Kep=lw, labels_sim_all=model_names, alpha_all=model_alphas, xlabel_text='', afs=afs, tfs=tfs, lfs=lfs, legend=False)
 ax.set_xticklabels([])
 plt.text(x=0.98, y=0.9, s='16%-84% credible regions', ha='right', fontsize=lfs, transform=ax.transAxes)
 

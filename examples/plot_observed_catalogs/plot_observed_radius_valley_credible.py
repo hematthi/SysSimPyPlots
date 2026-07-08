@@ -149,7 +149,7 @@ radii_max_plot = 6.
 y_max = 0.045
 
 # First, plot the credible regions for the radius distribution (i.e. all catalogs) along with the Kepler catalog:
-plot_fig_pdf_credible([[sss_i['radii_obs'] for sss_i in sss_all]], [ssk['radii_obs']], x_min=radii_min, x_max=radii_max_plot, y_max=y_max, lw=lw, labels_sim_all=[r'Simulated 16-84%'], alpha_all=[alpha], xlabel_text=r'Planet radius, $R_p$ [$R_\oplus$]', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_size=fig_enlarged_size, fig_lbrt=fig_enlarged_lbrt)
+plot_fig_pdf_credible([[sss_i['radii_obs'] for sss_i in sss_all]], [ssk['radii_obs']], x_min=radii_min, x_max=radii_max_plot, y_max=y_max, lw_sim=lw, lw_Kep=lw, labels_sim_all=[r'Simulated 16-84%'], alpha_all=[alpha], xlabel_text=r'Planet radius, $R_p$ [$R_\oplus$]', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_size=fig_enlarged_size, fig_lbrt=fig_enlarged_lbrt)
 if savefigures:
     plt.savefig(savefigures_directory + model_name + '_radii_compare_enlarged.pdf')
     plt.close()
@@ -240,12 +240,12 @@ fig = plt.figure(figsize=(8,10))
 plot = GridSpec(5,1,left=0.2,bottom=0.1,right=0.95,top=0.98,wspace=0,hspace=0)
 
 ax = plt.subplot(plot[0,0]) # credible regions of CDFs
-plot_panel_cdf_credible(ax, [[sss_all[i]['radii_obs'] for i in iN_plot]], [ssk['radii_obs']], x_min=radii_min, x_max=radii_max_plot, c_sim_all=['g'], ls_sim_all=['--'], lw=lw, labels_sim_all=['HM-C, top 10% of catalogs'], alpha_all=[alpha], xlabel_text='', afs=afs, tfs=tfs, lfs=lfs, legend=False)
+plot_panel_cdf_credible(ax, [[sss_all[i]['radii_obs'] for i in iN_plot]], [ssk['radii_obs']], x_min=radii_min, x_max=radii_max_plot, c_sim_all=['g'], ls_sim_all=['--'], lw_sim=lw, lw_Kep=lw, labels_sim_all=['HM-C, top 10% of catalogs'], alpha_all=[alpha], xlabel_text='', afs=afs, tfs=tfs, lfs=lfs, legend=False)
 ax.set_xticklabels([])
 plt.legend(loc='lower right', bbox_to_anchor=(1,0), ncol=1, frameon=False, fontsize=lfs)
 
 ax = plt.subplot(plot[1:3,0]) # credible regions of histograms
-plot_panel_pdf_credible(ax, [[sss_all[i]['radii_obs'] for i in iN_plot]], [ssk['radii_obs']], x_min=radii_min, x_max=radii_max_plot, y_max=y_max, c_sim_all=['g'], ls_sim_all=['--'], lw=lw, labels_sim_all=[''], alpha_all=[alpha], xlabel_text='', afs=afs, tfs=tfs, lfs=lfs, legend=False)
+plot_panel_pdf_credible(ax, [[sss_all[i]['radii_obs'] for i in iN_plot]], [ssk['radii_obs']], x_min=radii_min, x_max=radii_max_plot, y_max=y_max, c_sim_all=['g'], ls_sim_all=['--'], lw_sim=lw, lw_Kep=lw, labels_sim_all=[''], alpha_all=[alpha], xlabel_text='', afs=afs, tfs=tfs, lfs=lfs, legend=False)
 ax.set_xticklabels([])
 plt.text(x=0.98, y=0.95, s='16%-84% credible region', ha='right', va='top', fontsize=lfs, transform=ax.transAxes)
 

@@ -650,7 +650,7 @@ def plot_fig_cdf_simple(x_sim, x_Kep, x_min=None, x_max=None, y_min=0., y_max=1.
     else:
         return ax
 
-def plot_panel_cdf_credible(ax, x_sim_all, x_Kep, x_min=None, x_max=None, y_min=0., y_max=1., log_x=False, eval_cdf_all_points=False, n_bins_cdf=100, qtls=[0.16,0.5,0.84], plot_median=False, c_sim_all=['k'], c_Kep=['k'], ls_sim_all=['--'], ls_Kep=['-'], lw=1, alpha_all=[0.2], labels_sim_all=None, labels_Kep=['Kepler'], extra_text=None, xticks_custom=None, xlabel_text='x', ylabel_text='CDF', one_minus=False, afs=20, tfs=20, lfs=16, legend=False):
+def plot_panel_cdf_credible(ax, x_sim_all, x_Kep, x_min=None, x_max=None, y_min=0., y_max=1., log_x=False, eval_cdf_all_points=False, n_bins_cdf=100, qtls=[0.16,0.5,0.84], plot_median=False, c_sim_all=['k'], c_Kep=['k'], ls_sim_all=['--'], ls_Kep=['-'], lw_sim=1, lw_Kep=1, alpha_all=[0.2], labels_sim_all=None, labels_Kep=['Kepler'], extra_text=None, xticks_custom=None, xlabel_text='x', ylabel_text='CDF', one_minus=False, afs=20, tfs=20, lfs=16, legend=False):
     """
     Compute and plot the credible region of multiple cumulative distribution functions (CDFs) for continuous distributions on a given panel.
 
@@ -688,8 +688,10 @@ def plot_panel_cdf_credible(ax, x_sim_all, x_Kep, x_min=None, x_max=None, y_min=
         The line styles for the median CDFs of each set of lists in `x_sim_all`.
     ls_Kep : list[str], default=['-']
         A list of line styles for the CDFs of each sample in `x_Kep`.
-    lw : float, default=1
-        The line width for the CDFs of each sample in `x_Kep`.
+    lw_sim : float or list[float], default=1
+        The line width (or list of line widths) for the median CDFs of each sample in `x_sim_all`.
+    lw_Kep : float or list[float], default=1
+        The line width (or list of line widths) for the CDFs of each sample in `x_Kep`.
     alpha_all : list[float], default=[0.2]
         A list of transparency values (between 0 and 1) for the credible regions of the CDFs for each set of lists in `x_sim_all`.
     labels_sim_all : list[str], optional
@@ -726,6 +728,11 @@ def plot_panel_cdf_credible(ax, x_sim_all, x_Kep, x_min=None, x_max=None, y_min=
             x_max_Kep = max(np.nanmax(x) for x in x_Kep)
             x_max = max(x_max, x_max_Kep)
     
+    if isinstance(lw_sim, (float, int)):
+        lw_sim = [lw_sim]*len(x_sim_all)
+    if isinstance(lw_Kep, (float, int)):
+        lw_Kep = [lw_Kep]*len(x_Kep)
+
     # To compute and plot the credible region of the CDFs for each set of samples:
     for i,x_sim in enumerate(x_sim_all):
         assert len(x_sim) > 1, 'Cannot compute credible regions from only one sample!'
@@ -756,16 +763,16 @@ def plot_panel_cdf_credible(ax, x_sim_all, x_Kep, x_min=None, x_max=None, y_min=
         alpha = alpha_all[0] if len(alpha_all)==1 else alpha_all[i]
         label = f'Sample set {i}' if labels_sim_all is None else labels_sim_all[i]
         if plot_median:
-            plt.plot(x_eval, cdf_sim_qtls[:,1], ls=ls, color=color)
+            plt.plot(x_eval, cdf_sim_qtls[:,1], ls=ls, lw=lw_sim[i], color=color)
         plt.fill_between(x_eval, cdf_sim_qtls[:,0], cdf_sim_qtls[:,2], color=color, alpha=alpha, label=label)
-    
+
     # To compute and plot the CDFs in 'x_Kep':
     for i,xs in enumerate(x_Kep):
         cdf = 1. - (np.arange(len(xs))+1.)/float(len(xs)) if one_minus else (np.arange(len(xs))+1.)/float(len(xs))
         xs = np.sort(xs)
         xs = np.insert(xs, 0, xs[0])
         cdf = np.insert(cdf, 0, 1) if one_minus else np.insert(cdf, 0, 0) # to connect the first point to 0 (or 1 if 'one_minus' is True) so the CDF does not jump abruptly at the first data point
-        plt.plot(xs, cdf, drawstyle='steps-post', color=c_Kep[i], ls=ls_Kep[i], lw=lw, label=labels_Kep[i])
+        plt.plot(xs, cdf, drawstyle='steps-post', color=c_Kep[i], ls=ls_Kep[i], lw=lw_Kep[i], label=labels_Kep[i])
     
     if log_x:
         plt.gca().set_xscale("log")
@@ -784,7 +791,7 @@ def plot_panel_cdf_credible(ax, x_sim_all, x_Kep, x_min=None, x_max=None, y_min=
         else:
             plt.legend(loc='upper left', bbox_to_anchor=(0.01,0.99), ncol=1, frameon=False, fontsize=lfs) #show the legend
 
-def plot_fig_cdf_credible(x_sim_all, x_Kep, x_min=None, x_max=None, y_min=0., y_max=1., log_x=False, eval_cdf_all_points=False, n_bins_cdf=100, qtls=[0.16,0.5,0.84], plot_median=False, c_sim_all=['k'], c_Kep=['k'], ls_sim_all=['--'], ls_Kep=['-'], lw=1, alpha_all=[0.2], labels_sim_all=None, labels_Kep=['Kepler'], extra_text=None, xticks_custom=None, xlabel_text='x', ylabel_text='CDF', one_minus=False, afs=20, tfs=20, lfs=16, legend=False, fig_size=(8,4), fig_lbrt=[0.15, 0.2, 0.95, 0.925], save_name='no_name_fig.pdf', save_fig=False):
+def plot_fig_cdf_credible(x_sim_all, x_Kep, x_min=None, x_max=None, y_min=0., y_max=1., log_x=False, eval_cdf_all_points=False, n_bins_cdf=100, qtls=[0.16,0.5,0.84], plot_median=False, c_sim_all=['k'], c_Kep=['k'], ls_sim_all=['--'], ls_Kep=['-'], lw_sim=1, lw_Kep=1, alpha_all=[0.2], labels_sim_all=None, labels_Kep=['Kepler'], extra_text=None, xticks_custom=None, xlabel_text='x', ylabel_text='CDF', one_minus=False, afs=20, tfs=20, lfs=16, legend=False, fig_size=(8,4), fig_lbrt=[0.15, 0.2, 0.95, 0.925], save_name='no_name_fig.pdf', save_fig=False):
     """
     Plot a figure with credible regions of the CDFs of continuous distributions.
 
@@ -809,7 +816,7 @@ def plot_fig_cdf_credible(x_sim_all, x_Kep, x_min=None, x_max=None, y_min=0., y_
     left, bottom, right, top = fig_lbrt
     ax = setup_fig_single(fig_size, left=left, bottom=bottom, right=right, top=top)
 
-    plot_panel_cdf_credible(ax, x_sim_all, x_Kep, x_min=x_min, x_max=x_max, y_min=y_min, y_max=y_max, log_x=log_x, eval_cdf_all_points=eval_cdf_all_points, n_bins_cdf=n_bins_cdf, qtls=qtls, plot_median=plot_median, c_sim_all=c_sim_all, c_Kep=c_Kep, ls_sim_all=ls_sim_all, ls_Kep=ls_Kep, lw=lw, alpha_all=alpha_all, labels_sim_all=labels_sim_all, labels_Kep=labels_Kep, extra_text=extra_text, xticks_custom=xticks_custom, xlabel_text=xlabel_text, ylabel_text=ylabel_text, one_minus=one_minus, afs=afs, tfs=tfs, lfs=lfs, legend=legend)
+    plot_panel_cdf_credible(ax, x_sim_all, x_Kep, x_min=x_min, x_max=x_max, y_min=y_min, y_max=y_max, log_x=log_x, eval_cdf_all_points=eval_cdf_all_points, n_bins_cdf=n_bins_cdf, qtls=qtls, plot_median=plot_median, c_sim_all=c_sim_all, c_Kep=c_Kep, ls_sim_all=ls_sim_all, ls_Kep=ls_Kep, lw_sim=lw_sim, lw_Kep=lw_Kep, alpha_all=alpha_all, labels_sim_all=labels_sim_all, labels_Kep=labels_Kep, extra_text=extra_text, xticks_custom=xticks_custom, xlabel_text=xlabel_text, ylabel_text=ylabel_text, one_minus=one_minus, afs=afs, tfs=tfs, lfs=lfs, legend=legend)
 
     if save_fig:
         plt.savefig(save_name)

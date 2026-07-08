@@ -285,96 +285,96 @@ if savefigures:
     plt.close()
 
 # Periods:
-plot_fig_pdf_credible([[sssp_i['P_all'] for sssp_i in sssp_list] for sssp_list in sssp_all], [], x_min=P_min, x_max=P_max, y_min=1e-3, n_bins=n_bins, step=None, plot_median=True, log_x=True, log_y=True, c_sim_all=model_colors, lw=lw, alpha_all=alpha_all, labels_sim_all=model_names, xticks_custom=[3,10,30,100,300], xlabel_text=r'Period, $P$ [days]', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
+plot_fig_pdf_credible([[sssp_i['P_all'] for sssp_i in sssp_list] for sssp_list in sssp_all], [], x_min=period_min, x_max=period_max, y_min=1e-3, n_bins=n_bins, step=None, plot_median=True, log_x=True, log_y=True, c_sim_all=model_colors, lw_sim=lw, lw_Kep=lw, alpha_all=alpha_all, labels_sim_all=model_names, xticks_custom=[3,10,30,100,300], xlabel_text=r'Period, $P$ [days]', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 plt.legend(loc='lower right', bbox_to_anchor=(1,0), ncol=1, frameon=False, fontsize=lfs)
 if savefigures:
     plt.savefig(savefigures_directory + subdirectory + save_name + '_underlying_periods.pdf')
     plt.close()
 
 # Period ratios:
-plot_fig_pdf_credible([[sssp_i['Rm_all'] for sssp_i in sssp_list] for sssp_list in sssp_all], [], x_min=1., x_max=20., n_bins=n_bins, step=None, plot_median=True, log_x=True, c_sim_all=model_colors, lw=lw, alpha_all=alpha_all, labels_sim_all=model_names, xticks_custom=[1,2,3,4,5,10,20], xlabel_text=r'Period ratio, $P_{i+1}/P_i$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
+plot_fig_pdf_credible([[sssp_i['Rm_all'] for sssp_i in sssp_list] for sssp_list in sssp_all], [], x_min=1., x_max=20., n_bins=n_bins, step=None, plot_median=True, log_x=True, c_sim_all=model_colors, lw_sim=lw, lw_Kep=lw, alpha_all=alpha_all, labels_sim_all=model_names, xticks_custom=[1,2,3,4,5,10,20], xlabel_text=r'Period ratio, $P_{i+1}/P_i$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 if savefigures:
     plt.savefig(savefigures_directory + subdirectory + save_name + '_underlying_periodratios.pdf')
     plt.close()
 
 # Eccentricities:
-plot_fig_pdf_credible([[sssp_i['e_all'] for sssp_i in sssp_list] for sssp_list in sssp_all], [], x_min=1e-3, x_max=1., n_bins=n_bins, step=None, plot_median=True, log_x=True, c_sim_all=model_colors, lw=lw, alpha_all=alpha_all, labels_sim_all=model_names, xticks_custom=[0.01, 0.1, 1.], xlabel_text=r'Eccentricity, $e$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
+plot_fig_pdf_credible([[sssp_i['e_all'] for sssp_i in sssp_list] for sssp_list in sssp_all], [], x_min=1e-3, x_max=1., n_bins=n_bins, step=None, plot_median=True, log_x=True, c_sim_all=model_colors, lw_sim=lw, lw_Kep=lw, alpha_all=alpha_all, labels_sim_all=model_names, xticks_custom=[0.01, 0.1, 1.], xlabel_text=r'Eccentricity, $e$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 if savefigures:
     plt.savefig(savefigures_directory + subdirectory + save_name + '_underlying_eccentricities.pdf')
     plt.close()
 
 # Mutual inclinations:
-plot_fig_pdf_credible([[sssp_i['inclmut_all']*(180./np.pi) for sssp_i in sssp_list] for sssp_list in sssp_all], [], x_min=1e-2, x_max=45., n_bins=n_bins, step=None, plot_median=True, log_x=True, c_sim_all=model_colors, lw=lw, alpha_all=alpha_all, labels_sim_all=model_names, xlabel_text=r'Mutual inclination, $i_m$ [deg]', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
+plot_fig_pdf_credible([[sssp_i['inclmut_all']*(180./np.pi) for sssp_i in sssp_list] for sssp_list in sssp_all], [], x_min=1e-2, x_max=45., n_bins=n_bins, step=None, plot_median=True, log_x=True, c_sim_all=model_colors, lw_sim=lw, lw_Kep=lw, alpha_all=alpha_all, labels_sim_all=model_names, xlabel_text=r'Mutual inclination, $i_m$ [deg]', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 if savefigures:
     plt.savefig(savefigures_directory + subdirectory + save_name + '_underlying_mutualinclinations.pdf')
     plt.close()
 
 # Planet masses:
-plot_fig_pdf_credible([[sssp_i['mass_all'] for sssp_i in sssp_list] for sssp_list in sssp_all], [], x_min=0.09, x_max=1e3, n_bins=n_bins, step=None, plot_median=True, log_x=True, c_sim_all=model_colors, lw=lw, alpha_all=alpha_all, labels_sim_all=model_names, xlabel_text=r'Planet mass, $M_p$ [$M_\oplus$]', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
+plot_fig_pdf_credible([[sssp_i['mass_all'] for sssp_i in sssp_list] for sssp_list in sssp_all], [], x_min=0.09, x_max=1e3, n_bins=n_bins, step=None, plot_median=True, log_x=True, c_sim_all=model_colors, lw_sim=lw, lw_Kep=lw, alpha_all=alpha_all, labels_sim_all=model_names, xlabel_text=r'Planet mass, $M_p$ [$M_\oplus$]', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 if savefigures:
     plt.savefig(savefigures_directory + subdirectory + save_name + '_underlying_masses.pdf')
     plt.close()
 
 # Planet radii (logged and unlogged versions):
-plot_fig_pdf_credible([[sssp_i['radii_all'] for sssp_i in sssp_list] for sssp_list in sssp_all], [], x_min=radii_min, x_max=radii_max, n_bins=n_bins, step=None, plot_median=True, log_x=True, c_sim_all=model_colors, lw=lw, alpha_all=alpha_all, labels_sim_all=model_names, xticks_custom=[0.5,1,2,4,10], xlabel_text=r'Planet radius, $R_p$ [$R_\oplus$]', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
+plot_fig_pdf_credible([[sssp_i['radii_all'] for sssp_i in sssp_list] for sssp_list in sssp_all], [], x_min=radii_min, x_max=radii_max, n_bins=n_bins, step=None, plot_median=True, log_x=True, c_sim_all=model_colors, lw_sim=lw, lw_Kep=lw, alpha_all=alpha_all, labels_sim_all=model_names, xticks_custom=[0.5,1,2,4,10], xlabel_text=r'Planet radius, $R_p$ [$R_\oplus$]', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 if savefigures:
     plt.savefig(savefigures_directory + subdirectory + save_name + '_underlying_radii.pdf')
     plt.close()
-plot_fig_pdf_credible([[sssp_i['radii_all'] for sssp_i in sssp_list] for sssp_list in sssp_all], [], x_min=radii_min, x_max=4., n_bins=n_bins, step=None, plot_median=True, log_x=False, c_sim_all=model_colors, lw=lw, alpha_all=alpha_all, labels_sim_all=model_names, xticks_custom=[1,2,3,4], xlabel_text=r'Planet radius, $R_p$ [$R_\oplus$]', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_size=fig_size, fig_lbrt=fig_lbrt)
+plot_fig_pdf_credible([[sssp_i['radii_all'] for sssp_i in sssp_list] for sssp_list in sssp_all], [], x_min=radii_min, x_max=4., n_bins=n_bins, step=None, plot_median=True, log_x=False, c_sim_all=model_colors, lw_sim=lw, lw_Kep=lw, alpha_all=alpha_all, labels_sim_all=model_names, xticks_custom=[1,2,3,4], xlabel_text=r'Planet radius, $R_p$ [$R_\oplus$]', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_size=fig_size, fig_lbrt=fig_lbrt)
 if savefigures:
     plt.savefig(savefigures_directory + subdirectory + save_name + '_underlying_radii_unlogged.pdf')
     plt.close()
 
 # Initial planet radii:
-plot_fig_pdf_credible([[sssp_i['init_radii_all'] for sssp_i in sssp_list] for sssp_list in sssp_all[:2]], [], x_min=radii_min, x_max=4., n_bins=n_bins, step=None, plot_median=True, log_x=False, c_sim_all=model_colors, lw=lw, alpha_all=alpha_all, labels_sim_all=model_names, xticks_custom=[1,2,3,4], xlabel_text=r'Planet radius (initial), $R_{p,\rm init}$ [$R_\oplus$]', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_size=fig_size, fig_lbrt=fig_lbrt)
+plot_fig_pdf_credible([[sssp_i['init_radii_all'] for sssp_i in sssp_list] for sssp_list in sssp_all[:2]], [], x_min=radii_min, x_max=4., n_bins=n_bins, step=None, plot_median=True, log_x=False, c_sim_all=model_colors, lw_sim=lw, lw_Kep=lw, alpha_all=alpha_all, labels_sim_all=model_names, xticks_custom=[1,2,3,4], xlabel_text=r'Planet radius (initial), $R_{p,\rm init}$ [$R_\oplus$]', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_size=fig_size, fig_lbrt=fig_lbrt)
 if savefigures:
     plt.savefig(savefigures_directory + subdirectory + save_name + '_underlying_initial_radii_unlogged.pdf')
     plt.close()
 
 # Planet radii ratios:
-plot_fig_pdf_credible([[sssp_i['radii_ratio_all'] for sssp_i in sssp_list] for sssp_list in sssp_all], [], x_min=0.1, x_max=10., n_bins=n_bins, step=None, plot_median=True, log_x=True, c_sim_all=model_colors, lw=lw, alpha_all=alpha_all, labels_sim_all=model_names, xlabel_text=r'Radius ratio, $R_{p,i+1}/R_{p,i}$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
+plot_fig_pdf_credible([[sssp_i['radii_ratio_all'] for sssp_i in sssp_list] for sssp_list in sssp_all], [], x_min=0.1, x_max=10., n_bins=n_bins, step=None, plot_median=True, log_x=True, c_sim_all=model_colors, lw_sim=lw, lw_Kep=lw, alpha_all=alpha_all, labels_sim_all=model_names, xlabel_text=r'Radius ratio, $R_{p,i+1}/R_{p,i}$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 if savefigures:
     plt.savefig(savefigures_directory + subdirectory + save_name + '_underlying_radii_ratios.pdf')
     plt.close()
 
 # Planet mass ratios:
-plot_fig_pdf_credible([[sssp_i['mass_ratio_all'] for sssp_i in sssp_list] for sssp_list in sssp_all], [], x_min=0.01, x_max=100., n_bins=n_bins, step=None, plot_median=True, log_x=True, c_sim_all=model_colors, lw=lw, alpha_all=alpha_all, labels_sim_all=model_names, xlabel_text=r'Mass ratio, $M_{p,i+1}/M_{p,i}$', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_size=fig_size, fig_lbrt=fig_lbrt)
+plot_fig_pdf_credible([[sssp_i['mass_ratio_all'] for sssp_i in sssp_list] for sssp_list in sssp_all], [], x_min=0.01, x_max=100., n_bins=n_bins, step=None, plot_median=True, log_x=True, c_sim_all=model_colors, lw_sim=lw, lw_Kep=lw, alpha_all=alpha_all, labels_sim_all=model_names, xlabel_text=r'Mass ratio, $M_{p,i+1}/M_{p,i}$', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_size=fig_size, fig_lbrt=fig_lbrt)
 if savefigures:
     plt.savefig(savefigures_directory + subdirectory + save_name + '_underlying_mass_ratios.pdf')
     plt.close()
 
 # Separations in mutual Hill radii:
-plot_fig_pdf_credible([[sssp_i['N_mH_all'] for sssp_i in sssp_list] for sssp_list in sssp_all], [], x_min=1., x_max=200., n_bins=n_bins, step=None, plot_median=True, log_x=True, c_sim_all=model_colors, lw=lw, alpha_all=alpha_all, labels_sim_all=model_names, xlabel_text=r'Minimum separation, $\Delta$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
+plot_fig_pdf_credible([[sssp_i['N_mH_all'] for sssp_i in sssp_list] for sssp_list in sssp_all], [], x_min=1., x_max=200., n_bins=n_bins, step=None, plot_median=True, log_x=True, c_sim_all=model_colors, lw_sim=lw, lw_Kep=lw, alpha_all=alpha_all, labels_sim_all=model_names, xlabel_text=r'Minimum separation, $\Delta$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 if savefigures:
     plt.savefig(savefigures_directory + subdirectory + save_name + '_underlying_deltas.pdf')
     plt.close()
 
 # Dynamical masses:
-plot_fig_pdf_credible([[sssp_per_sys_i['dynamical_mass'] for sssp_per_sys_i in sssp_per_sys_list] for sssp_per_sys_list in sssp_per_sys_all], [], x_min=2e-7, x_max=3e-3, n_bins=n_bins, step=None, plot_median=True, log_x=True, c_sim_all=model_colors, lw=lw, alpha_all=alpha_all, labels_sim_all=model_names, xlabel_text=r'Dynamical mass, $\mu$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
+plot_fig_pdf_credible([[sssp_per_sys_i['dynamical_mass'] for sssp_per_sys_i in sssp_per_sys_list] for sssp_per_sys_list in sssp_per_sys_all], [], x_min=2e-7, x_max=3e-3, n_bins=n_bins, step=None, plot_median=True, log_x=True, c_sim_all=model_colors, lw_sim=lw, lw_Kep=lw, alpha_all=alpha_all, labels_sim_all=model_names, xlabel_text=r'Dynamical mass, $\mu$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 if savefigures:
     plt.savefig(savefigures_directory + subdirectory + save_name + '_underlying_dynamical_masses.pdf')
     plt.close()
 
 # Planet mass partitioning:
-plot_fig_pdf_credible([[sssp_per_sys_i['mass_partitioning'] for sssp_per_sys_i in sssp_per_sys_list] for sssp_per_sys_list in sssp_per_sys_all], [], x_min=1e-4, x_max=1., n_bins=n_bins, step=None, plot_median=True, log_x=True, c_sim_all=model_colors, lw=lw, alpha_all=alpha_all, labels_sim_all=model_names, xlabel_text=r'Mass partitioning, $\mathcal{Q}_M$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
+plot_fig_pdf_credible([[sssp_per_sys_i['mass_partitioning'] for sssp_per_sys_i in sssp_per_sys_list] for sssp_per_sys_list in sssp_per_sys_all], [], x_min=1e-4, x_max=1., n_bins=n_bins, step=None, plot_median=True, log_x=True, c_sim_all=model_colors, lw_sim=lw, lw_Kep=lw, alpha_all=alpha_all, labels_sim_all=model_names, xlabel_text=r'Mass partitioning, $\mathcal{Q}_M$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 if savefigures:
     plt.savefig(savefigures_directory + subdirectory + save_name + '_underlying_mass_partitioning.pdf')
     plt.close()
 
 # Planet radii partitioning:
-plot_fig_pdf_credible([[sssp_per_sys_i['radii_partitioning'] for sssp_per_sys_i in sssp_per_sys_list] for sssp_per_sys_list in sssp_per_sys_all], [], x_min=1e-4, x_max=1., n_bins=n_bins, step=None, plot_median=True, log_x=True, c_sim_all=model_colors, lw=lw, alpha_all=alpha_all, labels_sim_all=model_names, xlabel_text=r'Radius partitioning, $\mathcal{Q}_R$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
+plot_fig_pdf_credible([[sssp_per_sys_i['radii_partitioning'] for sssp_per_sys_i in sssp_per_sys_list] for sssp_per_sys_list in sssp_per_sys_all], [], x_min=1e-4, x_max=1., n_bins=n_bins, step=None, plot_median=True, log_x=True, c_sim_all=model_colors, lw_sim=lw, lw_Kep=lw, alpha_all=alpha_all, labels_sim_all=model_names, xlabel_text=r'Radius partitioning, $\mathcal{Q}_R$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 if savefigures:
     plt.savefig(savefigures_directory + subdirectory + save_name + '_underlying_radii_partitioning.pdf')
     plt.close()
 
 # Planet radii monotonicity:
-plot_fig_pdf_credible([[sssp_per_sys_i['radii_monotonicity'] for sssp_per_sys_i in sssp_per_sys_list] for sssp_per_sys_list in sssp_per_sys_all], [], x_min=-0.7, x_max=0.7, n_bins=n_bins, step=None, plot_median=True, c_sim_all=model_colors, lw=lw, alpha_all=alpha_all, labels_sim_all=model_names, xlabel_text=r'Radius monotonicity, $\mathcal{M}_R$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
+plot_fig_pdf_credible([[sssp_per_sys_i['radii_monotonicity'] for sssp_per_sys_i in sssp_per_sys_list] for sssp_per_sys_list in sssp_per_sys_all], [], x_min=-0.7, x_max=0.7, n_bins=n_bins, step=None, plot_median=True, c_sim_all=model_colors, lw_sim=lw, lw_Kep=lw, alpha_all=alpha_all, labels_sim_all=model_names, xlabel_text=r'Radius monotonicity, $\mathcal{M}_R$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 if savefigures:
     plt.savefig(savefigures_directory + subdirectory + save_name + '_underlying_radii_monotonicity.pdf')
     plt.close()
 
 # Gap complexity:
-plot_fig_pdf_credible([[sssp_per_sys_i['gap_complexity'] for sssp_per_sys_i in sssp_per_sys_list] for sssp_per_sys_list in sssp_per_sys_all], [], x_min=0., x_max=1., n_bins=n_bins, step=None, plot_median=True, c_sim_all=model_colors, lw=lw, alpha_all=alpha_all, labels_sim_all=model_names, xlabel_text=r'Gap complexity, $\mathcal{C}$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
+plot_fig_pdf_credible([[sssp_per_sys_i['gap_complexity'] for sssp_per_sys_i in sssp_per_sys_list] for sssp_per_sys_list in sssp_per_sys_all], [], x_min=0., x_max=1., n_bins=n_bins, step=None, plot_median=True, c_sim_all=model_colors, lw_sim=lw, lw_Kep=lw, alpha_all=alpha_all, labels_sim_all=model_names, xlabel_text=r'Gap complexity, $\mathcal{C}$', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 if savefigures:
     plt.savefig(savefigures_directory + subdirectory + save_name + '_underlying_gap_complexity.pdf')
     plt.close()
@@ -392,7 +392,7 @@ plt.close()
 init_radii_all = [[sssp_i['init_radii_all'] for sssp_i in sssp_list] for sssp_list in sssp_all[:2]] # list of lists (per model) of arrays (per catalog) of initial radii
 
 # Unlogged version:
-plot_fig_pdf_credible([[sssp_i['radii_all'] for sssp_i in sssp_list] for sssp_list in sssp_all], [], x_min=radii_min, x_max=4., n_bins=n_bins, step=None, plot_median=True, log_x=False, c_sim_all=model_colors, lw=lw, alpha_all=alpha_all, labels_sim_all=model_names, xticks_custom=[0.5,1,2,3,4], xlabel_text=r'Planet radius, $R_p$ [$R_\oplus$]', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_size=fig_size, fig_lbrt=fig_lbrt)
+plot_fig_pdf_credible([[sssp_i['radii_all'] for sssp_i in sssp_list] for sssp_list in sssp_all], [], x_min=radii_min, x_max=4., n_bins=n_bins, step=None, plot_median=True, log_x=False, c_sim_all=model_colors, lw_sim=lw, lw_Kep=lw, alpha_all=alpha_all, labels_sim_all=model_names, xticks_custom=[0.5,1,2,3,4], xlabel_text=r'Planet radius, $R_p$ [$R_\oplus$]', afs=afs, tfs=tfs, lfs=lfs, legend=True, fig_size=fig_size, fig_lbrt=fig_lbrt)
 bins = np.linspace(radii_min, 4., n_bins+1)
 bins_mid = (bins[:-1] + bins[1:])/2.
 for i,x_sim in enumerate(init_radii_all):
@@ -410,7 +410,7 @@ if savefigures:
     plt.close()
 
 # Logged version:
-plot_fig_pdf_credible([[sssp_i['radii_all'] for sssp_i in sssp_list] for sssp_list in sssp_all], [], x_min=radii_min, x_max=radii_max, n_bins=n_bins, step=None, plot_median=True, log_x=True, c_sim_all=model_colors, lw=lw, alpha_all=alpha_all, labels_sim_all=model_names, xticks_custom=[0.5,1,2,4,10], xlabel_text=r'Planet radius, $R_p$ [$R_\oplus$]', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
+plot_fig_pdf_credible([[sssp_i['radii_all'] for sssp_i in sssp_list] for sssp_list in sssp_all], [], x_min=radii_min, x_max=radii_max, n_bins=n_bins, step=None, plot_median=True, log_x=True, c_sim_all=model_colors, lw_sim=lw, lw_Kep=lw, alpha_all=alpha_all, labels_sim_all=model_names, xticks_custom=[0.5,1,2,4,10], xlabel_text=r'Planet radius, $R_p$ [$R_\oplus$]', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 bins = np.logspace(np.log10(radii_min), np.log10(radii_max), n_bins+1)
 bins_mid = np.sqrt(bins[:-1] * bins[1:])
 for i,x_sim in enumerate(init_radii_all):
@@ -462,7 +462,7 @@ init_radii_top10p = [sssp_i['init_radii_all'] for sssp_i in sssp_top10p]
 fig = plt.figure(figsize=(8,8))
 plot = GridSpec(2,1,left=0.15,bottom=0.1,right=0.95,top=0.98,wspace=0,hspace=0)
 ax = plt.subplot(plot[0,0]) # full posterior
-plot_panel_pdf_credible(ax, [[sssp_i['radii_all'] for sssp_i in sssp_list] for sssp_list in sssp_all], [], x_min=radii_min, x_max=4., n_bins=n_bins, step=None, plot_median=True, log_x=False, c_sim_all=model_colors, lw=lw, alpha_all=alpha_all, labels_sim_all=model_names, xticks_custom=[1,2,3,4], xlabel_text=r'Planet radius, $R_p$ [$R_\oplus$]', afs=afs, tfs=tfs, lfs=lfs, legend=False)
+plot_panel_pdf_credible(ax, [[sssp_i['radii_all'] for sssp_i in sssp_list] for sssp_list in sssp_all], [], x_min=radii_min, x_max=4., n_bins=n_bins, step=None, plot_median=True, log_x=False, c_sim_all=model_colors, lw_sim=lw, lw_Kep=lw, alpha_all=alpha_all, labels_sim_all=model_names, xticks_custom=[1,2,3,4], xlabel_text=r'Planet radius, $R_p$ [$R_\oplus$]', afs=afs, tfs=tfs, lfs=lfs, legend=False)
 plt.legend(loc='upper right', bbox_to_anchor=(1,0.9), ncol=1, frameon=False, fontsize=lfs)
 bins = np.linspace(radii_min, 4., n_bins+1)
 bins_mid = (bins[:-1] + bins[1:])/2.
@@ -479,7 +479,7 @@ plt.ylim([0.,0.055])
 ax.set_xticklabels([])
 plt.text(x=0.98, y=0.95, s='Full posterior, 16%-84% credible regions', ha='right', va='top', fontsize=lfs, transform=ax.transAxes)
 ax = plt.subplot(plot[1,0]) # top 10%
-plot_panel_pdf_credible(ax, [[sssp_i['radii_all'] for sssp_i in sssp_top10p]], [], x_min=radii_min, x_max=4., n_bins=n_bins, step=None, plot_median=True, log_x=False, c_sim_all=model_colors[:1], lw=lw, alpha_all=alpha_all, labels_sim_all=['Final radii'], xticks_custom=[0.5,1,2,3,4], xlabel_text=r'Planet radius, $R_p$ [$R_\oplus$]', afs=afs, tfs=tfs, lfs=lfs, legend=False)
+plot_panel_pdf_credible(ax, [[sssp_i['radii_all'] for sssp_i in sssp_top10p]], [], x_min=radii_min, x_max=4., n_bins=n_bins, step=None, plot_median=True, log_x=False, c_sim_all=model_colors[:1], lw_sim=lw, lw_Kep=lw, alpha_all=alpha_all, labels_sim_all=['Final radii'], xticks_custom=[0.5,1,2,3,4], xlabel_text=r'Planet radius, $R_p$ [$R_\oplus$]', afs=afs, tfs=tfs, lfs=lfs, legend=False)
 bins = np.linspace(radii_min, 4., n_bins+1)
 bins_mid = (bins[:-1] + bins[1:])/2.
 counts_all = []
@@ -501,7 +501,7 @@ if savefigures:
 fig = plt.figure(figsize=(8,8))
 plot = GridSpec(2,1,left=0.15,bottom=0.1,right=0.95,top=0.98,wspace=0,hspace=0)
 ax = plt.subplot(plot[0,0]) # full posterior
-plot_panel_pdf_credible(ax, [[sssp_i['radii_all'] for sssp_i in sssp_list] for sssp_list in sssp_all], [], x_min=radii_min, x_max=radii_max, n_bins=n_bins, step=None, plot_median=True, log_x=True, c_sim_all=model_colors, lw=lw, alpha_all=alpha_all, labels_sim_all=model_names, xticks_custom=[0.5,1,2,4,10], xlabel_text=r'Planet radius, $R_p$ [$R_\oplus$]', afs=afs, tfs=tfs, lfs=lfs, legend=False)
+plot_panel_pdf_credible(ax, [[sssp_i['radii_all'] for sssp_i in sssp_list] for sssp_list in sssp_all], [], x_min=radii_min, x_max=radii_max, n_bins=n_bins, step=None, plot_median=True, log_x=True, c_sim_all=model_colors, lw_sim=lw, lw_Kep=lw, alpha_all=alpha_all, labels_sim_all=model_names, xticks_custom=[0.5,1,2,4,10], xlabel_text=r'Planet radius, $R_p$ [$R_\oplus$]', afs=afs, tfs=tfs, lfs=lfs, legend=False)
 bins = np.logspace(np.log10(radii_min), np.log10(radii_max), n_bins+1)
 bins_mid = np.sqrt(bins[:-1] * bins[1:])
 for i,x_sim in enumerate(init_radii_all):
@@ -517,7 +517,7 @@ plt.ylim([0.,0.055])
 ax.set_xticklabels([])
 plt.text(x=0.98, y=0.95, s='Full posterior, 16%-84% credible regions', ha='right', va='top', fontsize=lfs, transform=ax.transAxes)
 ax = plt.subplot(plot[1,0]) # top 10%
-plot_panel_pdf_credible(ax, [[sssp_i['radii_all'] for sssp_i in sssp_top10p]], [], x_min=radii_min, x_max=radii_max, n_bins=n_bins, step=None, plot_median=True, log_x=True, c_sim_all=model_colors[:1], lw=lw, alpha_all=alpha_all, labels_sim_all=model_names[:1], xticks_custom=[0.5,1,2,4,10], xlabel_text=r'Planet radius, $R_p$ [$R_\oplus$]', afs=afs, tfs=tfs, lfs=lfs, legend=False)
+plot_panel_pdf_credible(ax, [[sssp_i['radii_all'] for sssp_i in sssp_top10p]], [], x_min=radii_min, x_max=radii_max, n_bins=n_bins, step=None, plot_median=True, log_x=True, c_sim_all=model_colors[:1], lw_sim=lw, lw_Kep=lw, alpha_all=alpha_all, labels_sim_all=model_names[:1], xticks_custom=[0.5,1,2,4,10], xlabel_text=r'Planet radius, $R_p$ [$R_\oplus$]', afs=afs, tfs=tfs, lfs=lfs, legend=False)
 bins = np.logspace(np.log10(radii_min), np.log10(radii_max), n_bins+1)
 bins_mid = np.sqrt(bins[:-1] * bins[1:])
 counts_all = []
@@ -860,7 +860,7 @@ if savefigures:
     plt.close()
 
 # Periods:
-plot_fig_pdf_simple([sssp['P_all'] for sssp in model_sssp], [], x_min=P_min, x_max=P_max, n_bins=n_bins, log_x=True, log_y=True, c_sim=model_colors, lw=lw, ls_sim=model_linestyles, labels_sim=model_names, xticks_custom=[3,10,30,100,300], xlabel_text=r'$P$ (days)', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
+plot_fig_pdf_simple([sssp['P_all'] for sssp in model_sssp], [], x_min=period_min, x_max=period_max, n_bins=n_bins, log_x=True, log_y=True, c_sim=model_colors, lw=lw, ls_sim=model_linestyles, labels_sim=model_names, xticks_custom=[3,10,30,100,300], xlabel_text=r'$P$ (days)', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 for m in range(models):
     label_this = r'16%-84%' if m==0 else ''
     plt.fill_between(P_bins_mid, P_counts_qtls[m][:,0], P_counts_qtls[m][:,2], color=model_colors[m], alpha=alpha, label=label_this)

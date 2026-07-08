@@ -1,4 +1,5 @@
 .DS_Store
+.idea/
 *.pyc
 src/__pycache__
 docs/build

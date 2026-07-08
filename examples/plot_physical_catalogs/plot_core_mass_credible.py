@@ -166,7 +166,7 @@ M_core_sim = M_init_sim - M_env_sim
 plot_fig_pdf_simple([M_core_sim], [], x_min=M_min, x_max=20., n_bins=n_bins, log_x=True, lw=lw, labels_sim=[model_label], xlabel_text=r'Core mass, $M_{\rm core}$ [$M_\oplus$]', afs=afs, tfs=tfs, lfs=lfs)
 
 # Credible regions from many catalogs:
-plot_fig_pdf_credible([M_core_all], [], x_min=1e-1, x_max=20., n_bins=n_bins, step=None, plot_median=True, log_x=True, log_y=False, c_sim_all=[model_color], lw=lw, alpha_all=[alpha], labels_sim_all=[model_label], xlabel_text=r'Core mass, $M_{\rm core}$ [$M_\oplus$]', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
+plot_fig_pdf_credible([M_core_all], [], x_min=1e-1, x_max=20., n_bins=n_bins, step=None, plot_median=True, log_x=True, log_y=False, c_sim_all=[model_color], lw_sim=lw, lw_Kep=lw, alpha_all=[alpha], labels_sim_all=[model_label], xlabel_text=r'Core mass, $M_{\rm core}$ [$M_\oplus$]', afs=afs, tfs=tfs, lfs=lfs, fig_size=fig_size, fig_lbrt=fig_lbrt)
 if savefigures:
     plt.savefig(savefigures_directory + model_name + '_underlying_core_masses.pdf')
     plt.close()
